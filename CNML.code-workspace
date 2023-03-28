@@ -1,0 +1,66 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"*.cjson": "jsonc",
+			"*.wxss": "css",
+			"*.wxs": "javascript",
+			"ostream": "cpp",
+			"iostream": "cpp",
+			"string_view": "cpp",
+			"array": "cpp"
+		},
+		"editor.inlayHints.enabled": "off",
+    	"editor.fontFamily": "Ubuntu Mono derivative Powerline,Ubuntu Mono,DejaVu Sans Mono",
+		"editor.foldingStrategy": "indentation",
+		"html.completion.attributeDefaultValue": "empty",
+		"editor.formatOnSave": false,
+		"editor.tokenColorCustomizations": {
+			"textMateRules": [
+				{
+					"scope": "variable.parameter", //形参
+					"settings": {
+						"fontStyle": "italic",
+						"foreground": "#8ff"
+					}
+				}
+			]
+		},
+		"workbench.colorCustomizations": {
+		},
+		"align-text-like-table.selector__separator": "(?: {3,})|(?:\t)",
+		"align-text-like-table.separator__align_after": "   ",
+		
+		"fileheader.configObj": {
+			"createFileTime": true,
+			"language": {
+				"js/ts/c/h/cpp/cs": {
+					"head": "/*!",
+					"middle": " * @",
+					"end": " */",
+					"functionSymbol": {
+						"head": "/** ",
+						"middle": " * @",
+						"end": " */"
+					},
+					"functionParams": "js"
+				}
+			},
+			"autoAdd": false
+		}
+	},
+	"extensions": {
+		"recommendations": [
+			"obkoro1.korofileheader",
+			"albymor.increment-selection",
+			"formulahendry.auto-rename-tag",
+			"formulahendry.auto-close-tag",
+			"jock.svg",
+			"align-text-like-table.align-text-like-table"
+		]
+	}
+}

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <array>
 
 using namespace std;
 
@@ -33,9 +34,10 @@ namespace a{
 
 int main(int argc,char **argv){
     using namespace a;
-
+    
+    array<float,3> vec;
     std::cout << "hello world"<<endl;
-    cout << a::cnmd <<endl;
+    cout << get<3>(vec) <<endl;
     cout << a::b::cnm <<endl;
 
     return 0;
