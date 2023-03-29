@@ -1,4 +1,4 @@
-# CNML 
+# NML 
 *migrate from [NML](https://github.com/D-EF/NML)*
 
 * *Nittle Math Library 的 c++ 实现*   
