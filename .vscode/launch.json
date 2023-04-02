@@ -8,7 +8,7 @@
             "name": "g++.exe - 生成和调试活动文件",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/out/CNML.exe",
+            "program": "${workspaceRoot}/out/NML.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
