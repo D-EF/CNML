@@ -11,6 +11,8 @@
 #ifndef __NITTLE_MATH_LIBRARY__
 #define __NITTLE_MATH_LIBRARY__
 
+#include "Math.h"
+
 
 
 namespace NML{
