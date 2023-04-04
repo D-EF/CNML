@@ -2,7 +2,7 @@
 
 namespace NML{
 
-    void Values::setup(const int length,const var* data){
+    void Values::setup(const int length, const var* data){
         int i=length;
         if(this->length<i) delete[] this->data;
         this->data=new var[length];
@@ -12,27 +12,26 @@ namespace NML{
         }
     }
 
-
-    bool check_Equal(int i,var*& val_left, var*& val_right, var _tolerance=__TOLERANCE__){
+    bool check_Equal(int i, var*& val_left, var*& val_right, var _tolerance){
         for(--i;i>=0;--i){
-            if(!check_Equal(val_left[i],val_right[i],_tolerance))return false;
+            if(!check_Equal(val_left[i], val_right[i], _tolerance))return false;
         }
         return true;
     }
 
-    void sum(int i,var*& val_left, var*& val_right, var*& out){
+    void sum(int i, var*& val_left, var*& val_right, var*& out){
         for(--i;i>=0;--i){
             out[i]=val_left[i]+val_left[i];
         }
     }
 
-    void dif(int i,var*& val_left, var*& val_right, var*& out){
+    void dif(int i, var*& val_left, var*& val_right, var*& out){
         for(--i;i>=0;--i){
             out[i]=val_left[i]-val_left[i];
         }
     }
 
-    var dot(int i,var*& val_left,var*& val_right){
+    var dot(int i, var*& val_left, var*& val_right){
         var rtn=0;
         for(--i;i>=0;--i){
             rtn+=val_left[i]*val_left[i];
@@ -40,7 +39,7 @@ namespace NML{
         return rtn;
     }
 
-    void np(int i,var*& val,var k, var*& out){
+    void np(int i, var*& val, var k, var*& out){
         for(--i;i>=0;--i){
             out[i]=val[i]*k;
         }

@@ -3,10 +3,9 @@
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditTime: 2023-04-03 06:48:14
- * @FilePath: \NML\src\NML.h
- * @Description: 
- * @
- * @Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+ * @Description: Nittle Math Library 简单数学库
+ * 
+ * @Copyright (c) 2023 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
  */
 #ifndef __NITTLE_MATH_LIBRARY__
 #define __NITTLE_MATH_LIBRARY__
@@ -21,7 +20,7 @@ namespace NML{
         public:
             int length;
             var* data;
-            Values(const int length)    :length(length)       , data(new var[length]){}
+            Values(const int length)    :length(length)       , data(new var[length]()){}
             Values(const Values &vec)   :length(vec.length)   , data(new var[length]){setup(vec.data);}
 
             /**
@@ -30,14 +29,14 @@ namespace NML{
              * @param length   数据长度
              * @param data     数据数组
              */
-            void setup (const int length,const var* data);
-            inline void setup (const var* data){setup(this->length,data);}
+            void setup (const int length, const var* data);
+            inline void setup (const var* data){setup(this->length, data);}
 
             ~Values(){delete[] this->data;}
 
             inline var& operator[](int index){return data[index];}
 
-            inline Values& operator=(var*& d){setup(d);}
+            inline Values& operator=(var*& d){setup(d);return *this;}
     };
 
     // open * 公用的函数 * open
@@ -50,7 +49,7 @@ namespace NML{
          * @param _tolerance    容差
          * @return  返回是否相等
          */
-        inline bool check_Equal(var v1,var v2,var _tolerance=__TOLERANCE__){return abs(v1-v2)<_tolerance;}
+        inline bool check_Equal(var v1, var v2, var _tolerance=__TOLERANCE__){return abs(v1-v2)<_tolerance;}
 
         /**
          * @brief 判断数据是否相等(容差)
@@ -61,27 +60,27 @@ namespace NML{
          * @param _tolerance    容差
          * @return  返回是否相等
          */
-        bool check_Equal(int length,var*& val_left, var*& val_right, var _tolerance=__TOLERANCE__);
+        bool check_Equal(int length, var*& val_left, var*& val_right, var _tolerance=__TOLERANCE__);
         
         /**
          * @brief 数据数值 和
          * 
+         * @param out           输出对象
          * @param length        数据长度
          * @param val_left      左侧数据
          * @param val_right     右侧数据
-         * @param out           输出对象
          */
-        void sum(int length,var*& val_left, var*& val_right, var*& out);
+        void sum(var*& out, int length, var*& val_left, var*& val_right);
         
         /**
          * @brief 数据数值 差
          * 
+         * @param out           输出对象
          * @param length        数据长度
          * @param val_left      左侧数据
          * @param val_right     右侧数据
-         * @param out           输出对象
          */
-        void dif(int length,var*& val_left, var*& val_right, var*& out);
+        void dif(var*& out, int length, var*& val_left, var*& val_right);
 
         /**
          * @brief 点乘
@@ -91,17 +90,17 @@ namespace NML{
          * @param val_right     右侧数据
          * @return 输出点乘数量积
          */
-        var dot(int length,var*& val_left,var*& val_right);
+        var dot(int length, var*& val_left, var*& val_right);
 
         /**
          * @brief 标量乘
          * 
+         * @param out           输出对象
          * @param length        数据长度
          * @param val           数组数据
          * @param k             标量
-         * @param out           输出对象
          */
-        void np(int length,var*& val,var k, var*& out);
+        void np(var*& out, int length, var*& val, var k);
 
     // end  * 公用的函数 * end 
 
