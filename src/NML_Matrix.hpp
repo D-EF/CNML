@@ -1,8 +1,9 @@
-/*
- * @Description: 矩阵 Matrix 内容声明
+/*!
+ * @Description: 矩阵 Matrix
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-04-05 01:49:17
+ * @LastEditTime: 2023-04-06 02:47:34
  */
+
 #ifndef __NML_MATRIX__
 #define __NML_MATRIX__
 
@@ -31,11 +32,11 @@ namespace NML{
         /**
          * @brief 创建单位矩阵
          * 
+         * @param out       输出对象
          * @param width     矩阵宽度
          * @param height    矩阵高度
-         * @param mat       输出对象
          */
-        void setup_Identity(int width, int height, var*& out);
+        void setup_Identity(var*& out, int width, int height);
 
         /** 
          * @brief 矩阵数据转写   空省位置会保留out原有的内容
@@ -148,7 +149,6 @@ namespace NML{
          * @param mat_right     右矩阵
          */
         void multiplication(var*& out, int width, int height, var*& mat_left, var*& mat_right);
-
         
         /** 
          * @brief 检查矩阵正交
@@ -258,7 +258,7 @@ namespace NML{
                 break;
             
                 default:
-                    calc_Det__Transformation(mat,n);
+                    return calc_Det__Transformation(mat,n);
                 break;
             }
         }
@@ -272,7 +272,7 @@ namespace NML{
          */
         void setup_Inverse__Transformation(var*& out, var*& mat, int n);
 
-        // open * 矩阵求逆内联函数 * open
+        // open * 公式法矩阵求逆函数 * open
             // 公式法 m^-1=adj(m)/|m|
 
             /**
@@ -321,7 +321,7 @@ namespace NML{
              */
             void setup_Inverse__4(var*& out, var*& mat);
 
-        // end  * 矩阵求逆内联函数 * end 
+        // end  * 公式法矩阵求逆函数 * end 
 
         /**
          * @brief 矩阵求逆
@@ -330,7 +330,30 @@ namespace NML{
          * @param mat       矩阵数据 (必须是方阵)
          * @param n         表示这个矩阵是n阶矩阵
          */
-        void setup_Inverse(var*& out, var*& mat, int n);
+        void setup_Inverse(var*& out, var*& mat, int n){
+            switch (n)
+            {
+                case 1:
+                    setup_Inverse__1(out,mat);
+                break;
+                
+                case 2:
+                    setup_Inverse__2(out,mat);
+                break;
+                
+                case 3:
+                    setup_Inverse__3(out,mat);
+                break;
+                
+                case 4:
+                    setup_Inverse__4(out,mat);
+                break;
+            
+                default:
+                    setup_Inverse__Transformation(out,mat,n);
+                break;
+            }
+        }
 
     }
 }

@@ -2,11 +2,12 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-04-03 06:48:14
+ * @LastEditTime: 2023-04-06 02:43:36
  * @Description: Nittle Math Library 简单数学库
  * 
  * @Copyright (c) 2023 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
  */
+
 #ifndef __NITTLE_MATH_LIBRARY__
 #define __NITTLE_MATH_LIBRARY__
 

@@ -1,3 +1,9 @@
+/*!
+ * @Description: 向量 Vector 
+ * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
+ * @LastEditTime: 2023-04-06 02:44:52
+ */
+
 #ifndef __NML_VECTOR__
 #define __NML_VECTOR__
 
@@ -132,7 +138,7 @@ namespace NML{
          * @return 返回2d向量模长
          */
         inline var mag_v2(var*& vec){
-            sqrt(
+            return sqrt(
                 vec[0]*vec[0]+
                 vec[1]*vec[1]
             );
@@ -145,7 +151,7 @@ namespace NML{
          * @return 返回3d向量模长
          */
         inline var mag_v3(var*& vec){
-            sqrt(
+            return sqrt(
                 vec[0]*vec[0]+
                 vec[1]*vec[1]+
                 vec[2]*vec[2]

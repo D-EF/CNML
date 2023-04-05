@@ -79,7 +79,7 @@
 		"fileheader.configObj": {
 			"createFileTime": true,
 			"language": {
-				"js/ts/c/h/cpp/cs": {
+				"js/ts/c/h/hpp/cpp/cs": {
 					"head": "/*!",
 					"middle": " * @",
 					"end": " */",
