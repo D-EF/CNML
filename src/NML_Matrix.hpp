@@ -1,7 +1,7 @@
 /*!
  * @Description: 矩阵 Matrix
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-04-06 02:47:34
+ * @LastEditTime: 2023-04-07 02:23:05
  */
 
 #ifndef __NML_MATRIX__
@@ -89,11 +89,12 @@ namespace NML{
          * @brief 初等变换 换列
          * 
          * @param mat       要处理的矩阵
+         * @param widht    矩阵宽度
          * @param height    矩阵高度
          * @param u1        u坐标1
          * @param u2        u坐标2
          */
-        void transformation__ExchangeCol(var*& mat, int height, int u1, int u2);
+        void transformation__ExchangeCol(var*& mat, int widht, int height, int u1, int u2);
         
         /**
          * @brief 初等变换 行乘标量
@@ -113,7 +114,7 @@ namespace NML{
          * @param u         u坐标
          * @param k         标量乘值
          */
-        void transformation__ScaleCol(var*& mat, int height, int u, var k);
+        void transformation__ScaleCol(var*& mat, int width, int height, int u, var k);
 
         /** 
          * @brief 将矩阵某个为0的项 通过初等变换的换行操作, 变成非0
