@@ -1,46 +1,55 @@
 #include "NML.hpp"
+#include <iostream>
 
 namespace NML{
 
     void Values::setup(const int length, const var* data){
-        int i=length;
-        if(this->length<i) delete[] this->data;
+        if(this->length<length) delete[] this->data;
         this->data=new var[length];
         this->length=length;
-        for(--i;i>=0;--i){
+        for(int i=0;i<length;++i){
             this->data[i]=data[i];
         }
     }
 
-    bool check_Equal(int i, var*& val_left, var*& val_right, var _tolerance){
-        for(--i;i>=0;--i){
+    void printf_val(int length, const var* val){
+        int i=0;
+        std::cout<<'['<<val[i];
+        for(i++;i<length;i++){
+            std::cout<<','<<val[i];
+        }
+        std::cout<<"]\n";
+    }
+
+    bool check_Equal(int length, var*& val_left, var*& val_right, var _tolerance){
+        for(int i=0;i<length;++i){
             if(!check_Equal(val_left[i], val_right[i], _tolerance))return false;
         }
         return true;
     }
 
-    void sum(int i, var*& val_left, var*& val_right, var*& out){
-        for(--i;i>=0;--i){
+    void sum(int length, var*& val_left, var*& val_right, var*& out){
+        for(int i=0;i<length;++i){
             out[i]=val_left[i]+val_left[i];
         }
     }
 
-    void dif(int i, var*& val_left, var*& val_right, var*& out){
-        for(--i;i>=0;--i){
+    void dif(int length, var*& val_left, var*& val_right, var*& out){
+        for(int i=0;i<length;++i){
             out[i]=val_left[i]-val_left[i];
         }
     }
 
-    var dot(int i, var*& val_left, var*& val_right){
+    var dot(int length, var*& val_left, var*& val_right){
         var rtn=0;
-        for(--i;i>=0;--i){
+        for(int i=0;i<length;++i){
             rtn+=val_left[i]*val_left[i];
         }
         return rtn;
     }
 
-    void np(int i, var*& val, var k, var*& out){
-        for(--i;i>=0;--i){
+    void np(int length, var*& val, var k, var*& out){
+        for(int i=0;i<length;++i){
             out[i]=val[i]*k;
         }
     }

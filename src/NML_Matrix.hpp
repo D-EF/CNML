@@ -1,7 +1,7 @@
 /*!
  * @Description: 矩阵 Matrix
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-04-07 02:23:05
+ * @LastEditTime: 2023-04-09 22:35:51
  */
 
 #ifndef __NML_MATRIX__
@@ -16,13 +16,16 @@ namespace NML{
      * 
      */
     namespace Matrix{
+        
+        /** 打印矩阵*/
+        void printf_Matrix(int width, int height, var*& matrix);
 
         /**
          * @brief 使用uv坐标 获取实际下标index
          * 
          * @param width     矩阵宽度
-         * @param u         u坐标
-         * @param v         v坐标
+         * @param u         横坐标 u
+         * @param v         纵坐标 v
          * @return 返回下标index
          */
         inline int get_Index(int width, int u, int v){
@@ -41,16 +44,16 @@ namespace NML{
         /** 
          * @brief 矩阵数据转写   空省位置会保留out原有的内容
          * 
-         * @param out            输出对象 (注意！不能与 mat 使用同一地址)
-         * @param mat            数据来源 (注意！不能与 out 使用同一地址)
+         * @param out            输出对象 (不能与 mat 使用同一地址)
+         * @param mat            数据来源 (不能与 out 使用同一地址)
          * @param low_width      原矩阵宽度
          * @param new_width      新矩阵宽度
          * @param _low_height    原矩阵高度  无输入时将使用 low_width
          * @param _new_height    新矩阵高度  无输入时将使用 new_width
          * @param _shift_left    旧矩阵拷贝到新矩阵时的左侧偏移 默认为 0
-         * @param _shift_top     旧矩阵拷贝到新矩阵时的上方偏移 无输入时将使用 _shift_left
+         * @param _shift_top     旧矩阵拷贝到新矩阵时的上方偏移 默认为 0
          */
-        void setup_Resize(var*& out, var*& mat, int low_width, int new_width, int _low_height=-1, int _new_height=-1, int _shift_left=0, int _shift_top=-1);
+        void setup_Resize(var*& out, var*& mat, int low_width, int new_width, int _low_height=0, int _new_height=0, int _shift_left=0, int _shift_top=0);
 
         /** 
          * @brief 计算张量积
@@ -62,7 +65,7 @@ namespace NML{
          * @param  width_right    右矩阵的宽度
          * @param  height_right   右矩阵的高度
          */
-        void setup_TensorProduct(var*& out, var*& mat_left, var*& mat_right, int width_lef, int height_lef, int width_righ, int height_right);
+        void setup_TensorProduct(var*& out, var*& mat_left, var*& mat_right, int width_left, int height_left, int width_right, int height_right);
 
         /** 
          * @brief 合并矩阵
@@ -120,61 +123,114 @@ namespace NML{
          * @brief 将矩阵某个为0的项 通过初等变换的换行操作, 变成非0
          * 
          * @param  mat          矩阵数据
-         * @param  length       矩阵长度
+         * @param  length       矩阵数据长度
+         * @param  width        矩阵宽度
          * @param  index        当前下标
          * @param  v            当前v坐标(行下标)
          * @param  step_length  寻址步长,应为  ±width
+         * @return 返回是否成功换行
          */
-        void exchange_ToUnZero(var** mat, int length, int index, int v, int step_length);
+        bool transformation__ExchangeRow_ToUnZero(var*& mat, int length, int width,  int index, int v, int step_length);
         
         /** 
          * @brief 将矩阵某个为0的项 通过初等变换的换行操作, 变成非0; 换行将副作用到其他矩阵上
          * 
          * @param  mats         矩阵数据集合
          * @param  length       每个矩阵长度
+         * @param  width        矩阵宽度
          * @param  index        当前下标
          * @param  v            当前v坐标(行下标)
          * @param  step_length  寻址步长,应为  ±width
          * @param  length_g     有多少个矩阵
          * @param  _index_m     传入多个矩阵时使用哪个矩阵的值 默认0
+         * @return 返回是否成功换行
          */
-        void exchange_ToUnZero(var**& mat, int length, int index, int v, int step_length, int length_g, int _index_m=0);
+        bool transformation__ExchangeRow_ToUnZero(var**& mat, int length, int index, int width, int v, int step_length, int length_g, int _index_m=0);
 
         /**
          * @brief 矩阵乘法
          * 
-         * @param out           输出对象
-         * @param width         矩阵宽度
-         * @param height        矩阵高度
-         * @param mat_left      左矩阵
-         * @param mat_right     右矩阵
+         * @param out                       输出对象
+         * @param mat_left                  左矩阵
+         * @param mat_right                 右矩阵
+         * @param height_left               左矩阵高度
+         * @param width_left_height_right   右矩阵高度 和 左矩阵宽度
+         * @param width_right               右矩阵宽度
          */
-        void multiplication(var*& out, int width, int height, var*& mat_left, var*& mat_right);
+        void multiplication(var*& out, var*& mat_left, var*& mat_right, int height_left, int _width_left_height_right, int _width_right);
+
+        
+        /**
+         * @brief 矩阵乘法 (方阵)
+         * 
+         * @param out                       输出对象
+         * @param mat_left                  左矩阵
+         * @param mat_right                 右矩阵
+         * @param n                         表示这个矩阵是n*n方阵
+         */
+        void multiplication(var*& out, var*& mat_left, var*& mat_right, int n);
         
         /** 
          * @brief 检查矩阵正交
          * 
          * @param mat           矩阵数据
-         * @param n             表示这个矩阵是n阶矩阵
+         * @param n             表示这个矩阵是n*n方阵
          * @return 返回矩阵是否正交
          */
         bool check_Orthogonal(var*& mat,int _n);
 
         /**
+         * @brief 方阵转置
+         * 
+         * @param mat           方阵数据 将会被函数修改
+         * @param n             表示是n*n方阵
+         */
+        void transpose(var*& mat, int n);
+
+        /**
          * @brief 矩阵转置
          * 
-         * @param mat           矩阵数据 将会被函数修改
-         * @param width         矩阵宽度
-         * @param height        矩阵高度
+         * @param out           输出对象
+         * @param mat           矩阵数据
+         * @param width_mat     原矩阵宽度
+         * @param height_mat    原矩阵高度
          */
-        void transpose(var*& mat, int width, int height);
+        void transpose(var*& out, var*& mat, int width_mat, int height_mat);
+
+        /**
+         * @brief 2*2矩阵转置
+         * @param mat   矩阵数据
+         * @param temp  传一个temp变量引用以节约开销
+         */
+        inline void transpose_2(var*& mat,var& temp){
+            temp=mat[1];
+            mat[1]=mat[2];
+            mat[2]=temp;
+        }
+        
+        /**
+         * @brief 3*3矩阵转置
+         * @param mat   矩阵数据
+         * @param temp  传一个temp变量引用以节约开销
+         */
+        inline void transpose_3(var*& mat,var& temp){
+            temp=mat[1];
+            mat[1]=mat[3];
+            mat[3]=temp;
+            temp=mat[2];
+            mat[2]=mat[6];
+            mat[6]=temp;
+            temp=mat[5];
+            mat[5]=mat[7];
+            mat[7]=temp;
+        }
 
         /**
          * @brief 使用初等变换计算行列式;
          * 应在n>4时才使用, n<4时推荐使用 calc_Det__${n}
          * 
          * @param mat       矩阵数据 (必须是方阵)
-         * @param n         表示这个矩阵是n阶矩阵
+         * @param n         表示这个矩阵是n*n方矩阵
          * @return 返回计算的行列式值 
          */
         var calc_Det__Transformation(var*& mat,int n);
@@ -236,40 +292,17 @@ namespace NML{
          * @brief 计算矩阵行列式
          * 
          * @param mat       矩阵数据 (必须是方阵)
-         * @param n         表示这个矩阵是n阶矩阵
+         * @param n         表示这个矩阵是n*n方阵
          * @return 返回计算的行列式值
          */
-        var calc_Det(var*& mat,int n){
-            switch (n)
-            {
-                case 1:
-                    return calc_Det__1(mat);
-                break;
-                
-                case 2:
-                    return calc_Det__2(mat);
-                break;
-                
-                case 3:
-                    return calc_Det__3(mat);
-                break;
-                
-                case 4:
-                    return calc_Det__4(mat);
-                break;
-            
-                default:
-                    return calc_Det__Transformation(mat,n);
-                break;
-            }
-        }
+        var calc_Det(var*& mat,int n);
 
         /**
          * @brief 矩阵求逆 使用初等变换法(高斯乔丹消元法)
          * 
          * @param out       输出对象
          * @param mat       矩阵数据 (必须是方阵)
-         * @param n         表示这个矩阵是n阶矩阵
+         * @param n         表示这个矩阵是n*n方阵
          */
         void setup_Inverse__Transformation(var*& out, var*& mat, int n);
 
@@ -292,13 +325,7 @@ namespace NML{
              * @param out       输出对象
              * @param mat       矩阵数据 (必须是方阵)
              */
-            void setup_Inverse__2(var*& out, var*& mat){
-                var d=calc_Det__2(mat);
-                if(check_Equal(d,0))return;
-                d=1/d;
-                out[0]= mat[3]*d;   out[1]=-mat[1]*d;
-                out[2]=-mat[2]*d;   out[3]= mat[0]*d;
-            }
+            void setup_Inverse__2(var*& out, var*& mat);
             
             /**
              * @brief 3x3 矩阵求逆
@@ -306,13 +333,7 @@ namespace NML{
              * @param out       输出对象
              * @param mat       矩阵数据 (必须是方阵)
              */
-            void setup_Inverse__3(var*& out, var*& mat){
-                var d=calc_Det__3(mat);
-                if(check_Equal(d,0))return;
-                d=1/d;
-                out[0]= mat[3]*d;   out[1]=-mat[1]*d;
-                out[2]=-mat[2]*d;   out[3]= mat[0]*d;
-            }
+            void setup_Inverse__3(var*& out, var*& mat);
             
             /**
              * @brief 4x4 矩阵求逆
@@ -329,32 +350,9 @@ namespace NML{
          * 
          * @param out       输出对象
          * @param mat       矩阵数据 (必须是方阵)
-         * @param n         表示这个矩阵是n阶矩阵
+         * @param n         表示这个矩阵是n*n方矩阵
          */
-        void setup_Inverse(var*& out, var*& mat, int n){
-            switch (n)
-            {
-                case 1:
-                    setup_Inverse__1(out,mat);
-                break;
-                
-                case 2:
-                    setup_Inverse__2(out,mat);
-                break;
-                
-                case 3:
-                    setup_Inverse__3(out,mat);
-                break;
-                
-                case 4:
-                    setup_Inverse__4(out,mat);
-                break;
-            
-                default:
-                    setup_Inverse__Transformation(out,mat,n);
-                break;
-            }
-        }
+        void setup_Inverse(var*& out, var*& mat, int n);
 
     }
 }

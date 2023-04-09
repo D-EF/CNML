@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-04-06 02:43:36
+ * @LastEditTime: 2023-04-09 23:29:17
  * @Description: Nittle Math Library 简单数学库
  * 
  * @Copyright (c) 2023 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
@@ -11,11 +11,15 @@
 #ifndef __NITTLE_MATH_LIBRARY__
 #define __NITTLE_MATH_LIBRARY__
 
-#include "Math.h"
+#include <Math.h>
 
 namespace NML{
     typedef float var;
     const var __TOLERANCE__=1e-6;
+
+    template <typename value_Type> inline value_Type min(value_Type a,value_Type b){return a>b?b:a;}
+    
+    template <typename value_Type> inline value_Type max(value_Type a,value_Type b){return a>b?a:b;}
 
     class Values{
         public:
@@ -40,70 +44,71 @@ namespace NML{
             inline Values& operator=(var*& d){setup(d);return *this;}
     };
 
-    // open * 公用的函数 * open
-        
-        /**
-         * @brief 判断值是否相等(容差)
-         * 
-         * @param v1            左侧数据
-         * @param v2            右侧数据
-         * @param _tolerance    容差
-         * @return  返回是否相等
-         */
-        inline bool check_Equal(var v1, var v2, var _tolerance=__TOLERANCE__){return abs(v1-v2)<_tolerance;}
 
-        /**
-         * @brief 判断数据是否相等(容差)
-         * 
-         * @param length        数据长度
-         * @param val_left      左侧数据
-         * @param val_right     右侧数据
-         * @param _tolerance    容差
-         * @return  返回是否相等
-         */
-        bool check_Equal(int length, var*& val_left, var*& val_right, var _tolerance=__TOLERANCE__);
-        
-        /**
-         * @brief 数据数值 和
-         * 
-         * @param out           输出对象
-         * @param length        数据长度
-         * @param val_left      左侧数据
-         * @param val_right     右侧数据
-         */
-        void sum(var*& out, int length, var*& val_left, var*& val_right);
-        
-        /**
-         * @brief 数据数值 差
-         * 
-         * @param out           输出对象
-         * @param length        数据长度
-         * @param val_left      左侧数据
-         * @param val_right     右侧数据
-         */
-        void dif(var*& out, int length, var*& val_left, var*& val_right);
+    /** 打印行数据 */
+    void printf_val(int length, const var* val);
+    inline void printf_val(const Values val){printf_val(val.length, val.data);}
 
-        /**
-         * @brief 点乘
-         * 
-         * @param length        数据长度
-         * @param val_left      左侧数据
-         * @param val_right     右侧数据
-         * @return 输出点乘数量积
-         */
-        var dot(int length, var*& val_left, var*& val_right);
+    /**
+     * @brief 判断值是否相等(容差)
+     * 
+     * @param v1            左侧数据
+     * @param v2            右侧数据
+     * @param _tolerance    容差
+     * @return  返回是否相等
+     */
+    inline bool check_Equal(var v1, var v2, var _tolerance=__TOLERANCE__){return abs(v1-v2)<_tolerance;}
 
-        /**
-         * @brief 标量乘
-         * 
-         * @param out           输出对象
-         * @param length        数据长度
-         * @param val           数组数据
-         * @param k             标量
-         */
-        void np(var*& out, int length, var*& val, var k);
+    /**
+     * @brief 判断数据是否相等(容差)
+     * 
+     * @param length        数据长度
+     * @param val_left      左侧数据
+     * @param val_right     右侧数据
+     * @param _tolerance    容差
+     * @return  返回是否相等
+     */
+    bool check_Equal(int length, var*& val_left, var*& val_right, var _tolerance=__TOLERANCE__);
+    
+    /**
+     * @brief 数据数值 和
+     * 
+     * @param out           输出对象
+     * @param length        数据长度
+     * @param val_left      左侧数据
+     * @param val_right     右侧数据
+     */
+    void sum(var*& out, int length, var*& val_left, var*& val_right);
+    
+    /**
+     * @brief 数据数值 差
+     * 
+     * @param out           输出对象
+     * @param length        数据长度
+     * @param val_left      左侧数据
+     * @param val_right     右侧数据
+     */
+    void dif(var*& out, int length, var*& val_left, var*& val_right);
 
-    // end  * 公用的函数 * end 
+    /**
+     * @brief 点乘
+     * 
+     * @param length        数据长度
+     * @param val_left      左侧数据
+     * @param val_right     右侧数据
+     * @return 输出点乘数量积
+     */
+    var dot(int length, var*& val_left, var*& val_right);
+
+    /**
+     * @brief 标量乘
+     * 
+     * @param out           输出对象
+     * @param length        数据长度
+     * @param val           数组数据
+     * @param k             标量
+     */
+    void np(var*& out, int length, var*& val, var k);
 
 }
 

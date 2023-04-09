@@ -15,44 +15,44 @@ namespace NML{
 
         var mag(int length, var*& vec){
             var Squares=0;
-            for(int i = length-1;i>=0;--i){
+            for(int i=0; i<length; ++i){
                 Squares+=vec[i]*vec[i];
             }
             return sqrt(Squares);
         }
 
-        bool is_Zero__Strict(int i, var*& vec){
-            for(--i;i>=0;--i){
+        bool is_Zero__Strict(int length, var*& vec){
+            for(int i=0; i<length; ++i){
                 if(vec[i]!=0) return false;
             }
             return true;
         }
 
-        bool is_Zero(int i, var*& vec){
-            for(--i;i>=0;--i){
+        bool is_Zero(int length, var*& vec){
+            for(int i=0; i<length; ++i){
                 if(vec[i]!=0) return false;
             }
             return true;
         }
 
-        void normalize(int i, var*& vec){
-            if(!is_Zero__Strict(i, vec)){
+        void normalize(int length, var*& vec){
+            if(!is_Zero__Strict(length, vec)){
                 vec[0]=1;
-                for(--i;i>0;--i){
+                for(int i=0; i<length; ++i){
                     vec[i]=0;
                 }
             }else{
-                var magSq = mag(i, vec),
+                var magSq = mag(length, vec),
                 oneOverMag=0;
                 oneOverMag = 1.0/magSq;
-                for(--i;i>=0;--i){
+                for(int i=0; i<length; ++i){
                     vec[i] *= oneOverMag;
                 }
             }
         }
 
-        void instead(int i, var*& vec){
-            for(int i =i-1;i>=0;--i){
+        void instead(int length, var*& vec){
+            for(int i=0; i<length; ++i){
                 vec[i] = -vec[i];
             }
         }

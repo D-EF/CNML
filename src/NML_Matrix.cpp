@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-04-07 02:33:19
+ * @LastEditTime: 2023-04-10 00:24:48
  * @FilePath: \NML\src\NML_Matrix.cpp
  * @Description: 矩阵 Matrix
  * @
@@ -10,162 +10,349 @@
  */
 
 #include "NML.hpp"
+#include <iostream>
 #include "NML_Matrix.hpp"
 
 namespace NML{
     namespace Matrix{
+        void printf_Matrix(int width, int height, var*& matrix){
+            int i=0;
+            for(;i<height;i++){
+                printf_val(width, matrix+i*width);
+            }
+        }
+
         void setup_Identity(var*& out,int width, int height){
-            int u=width,
-                v=height,
-                i=u*v;
-            do{
-                --i;
-                out[i] = u==v ? 1.0f : 0.0f;
-                --u;
-                if(!u){
-                    --v;
-                    u=width;
-                }
-            }while(i);
+            int l=width*height;
+            for(int i=0;i<l;i++){
+                out[i]=0;
+            }
+            l=width>height?height:width;
+            for(int i=0;i<l;i++){
+                out[i*width+i]=1;
+            }
         }
 
-        void setup_Resize(var*& out, var*& mat, int low_width, int new_width, int _low_height, int _new_height, int _shift_left, int _shift_top){
-            int 
-                low_height    =~_low_height?_low_height:low_height,
-                new_height    =~_new_height?_new_height:new_height,
-                shift_top     =~_shift_top?_shift_top:_shift_left,
-                &shift_left   =_shift_left,
-                i             =new_width*new_height,
-                u_out         =new_width-1,
-                u_low         =u_out-shift_left,
-                v_low         =new_height-1-shift_top;
+        void setup_Resize(var*& out, var*& mat, int low_width, int new_width, int _low_height, int _new_height, int shift_left, int shift_top){
+            int low_height   = _low_height?_low_height:low_width;
+            int new_height   = _new_height?_new_height:new_width;
+            int left, load_left, top, load_top;
+            int right    = min(shift_left+low_width,new_width);
+            int bottom   = min(shift_top+low_height,new_height);
+            if(shift_left>=0){   left   = shift_left;   load_left   = 0;            }
+            else{                left   = 0;            load_left   =-shift_left;   }
+            if(shift_top>=0){    top    = shift_top;    load_top    = 0;            }
+            else{                top    = 0;            load_top    =-shift_top;    }
 
-            do{
-                --i;
-                if(!(u_low<0||v_low<0||u_low>=low_width||v_low>=low_height)){
-                    out[i]=mat[get_Index(low_width,u_low,v_low)];
+            for (int y = top; y < bottom; y++) {
+                int i_out= y * new_width;
+                int i_mat= (y + load_top) * low_width + (load_left);
+                for (int x = left; x < right; ++x,++i_out,++i_mat) {
+                    out[i_out] = mat[i_mat];
                 }
-                --u_out;
-                --u_low;
-                if(!u_out){
-                    --v_low;
-                    u_out=new_width-1;
-                    u_low=u_out-shift_left;
-                }
-            }while(i);
+            }
         }
 
-        void setup_TensorProduct(var*& out, var*& mat_left, var*& mat_right, int width_lef, int height_lef, int width_righ, int height_right){
-
-        }
-
-        void setup_Concat(var*& out, var**& mats, int width_mat, int height_mat, int width_g, int height_g){
-            int 
-                i_g   =width_g*height_g,
-                i_m   =width_mat*height_mat,
-                i     =i_m*i_g,
-                u_g   =width_g-1,
-                v_g   =height_g-1,
-                u_m   =width_mat-1,
-                v_m   =height_mat-1;
-
-            --i_m,--i_g;
-            do{
-                --i;
-                out[i]=mats[i_g][i_m];
-                --u_m;
-                --i_m;
-                if(u_m<0){
-                    u_m=width_mat-1;
-                    --u_g;
-                    if(u_g<0){
-                        u_g=width_g-1;
-                        --v_m;
-                        if(v_m<0){
-                            v_m=height_mat-1;
-                            --v_g;
+        void setup_TensorProduct(var*& out, var*& mat_left, var*& mat_right, int width_left, int height_left, int width_right, int height_right){
+            int i=0;
+            for(int v_left=0;v_left<height_left;++v_left){
+                for(int v_right=0;v_right<height_right;++v_right){
+                    int i_left=v_left*width_left;
+                    for(int u_left=0;u_left<height_left;++u_left,++i_left){
+                        int i_m=v_left*width_left;
+                        for(int u_right=0;u_right<height_right;++u_right,++i){
+                            out[i]=mat_left[i_left]*mat_right[i_m+u_right];
                         }
-                        i_g=get_Index(width_g,u_g,v_g);
                     }
-                    i_m=get_Index(width_mat,u_m,v_m);
                 }
-            }while(i);
+            }
+        }
+
+        void setup_Concat(var*& out, var**& mats, int width_m, int height_m, int width_g, int height_g){
+            int i=0;
+            for(int v_g=0;v_g<height_g;++v_g){
+                for(int v_mat=0;v_mat<height_m;++v_mat){
+                    int i_g=v_g*width_g;
+                    for(int u_g=0;u_g<height_g;++u_g,++i_g){
+                        int i_m=v_g*width_g;
+                        for(int u_mat=0;u_mat<height_m;++u_mat,++i){
+                            out[i]=mats[i_g][i_m+u_mat];
+                        }
+                    }
+                }
+            }
         }
 
         void transformation__ExchangeRow(var*& mat, int width, int v1, int v2){
             var temp;
-            int i=width,
-                i1 = get_Index(width,width-1,v1),
-                i2 = get_Index(width,width-1,v2);
-            do{
-                --i;
-                temp=mat[i1];
-                mat[i1]=mat[i2];
-                mat[i2]=temp;
-                --i1;
-                --i2;
-            }while(i);
+            int i1 = v1*width,
+                i2 = v2*width;
+            for(int i=0;i<width;++i){
+                temp=mat[i1+i];
+                mat[i1+i]=mat[i2+i];
+                mat[i2+i]=temp;
+            }
         }
 
         void transformation__ExchangeCol(var*& mat, int width,int height, int u1, int u2){
             var temp;
-            int i=height,
-                i1 = get_Index(width,u1,height-1),
-                i2 = get_Index(width,u2,height-1);
-            do{
-                --i;
+            int i1 = u1,
+                i2 = u2;
+            for(int i=0;i<height;++i,i1+=width,i2+=width){
                 temp=mat[i1];
                 mat[i1]=mat[i2];
                 mat[i2]=temp;
-                i1-=width;
-                i2-=width;
-            }while(i);
+            }
         }
 
         void transformation__ScaleRow(var*& mat, int width, int v, var k){
-            int i=width,
-                j=get_Index(width,width-1,v);
-            do{
-                --i;
-                mat[j]*=k;
-                --j;
-            }while(i);
+            int index = v*width;
+            for(int i=0;i<width;++i){
+                mat[index+i]*=k;
+            }
         }
 
         void transformation__ScaleCol(var*& mat, int width, int height, int u, var k){
-            int i=width,
-                j=get_Index(width,u,height-1);
-            do{
-                --i;
-                mat[j]*=k;
-                j-=width;
-            }while(i);
+            int index = u;
+            for(int i=0;i<width;++i,index+=width){
+                mat[index]*=k;
+            }
         }
 
-        void exchange_ToUnZero(var** mat, int length, int index, int v, int step_length){
-
+        bool transformation__ExchangeRow_ToUnZero(var*& mat, int length, int width, int index, int v, int step_length){
+            int f=step_length>0?1:-1;
+            int v_target=v+f;
+            for(int i=index+step_length;i>=0&&i<length;i+=step_length,v_target+=f){
+                if(mat[i]){
+                    transformation__ExchangeRow(mat,width,v,v_target);
+                    return true;
+                }
+            }
+            return false;
         }
 
-        void exchange_ToUnZero(var**& mat, int length, int index, int v, int step_length, int length_g, int _index_m){
-
+        bool transformation__ExchangeRow_ToUnZero(var**& mat, int length, int index, int width, int v, int step_length, int length_g, int _index_m){
+            int f=step_length>0?1:-1;
+            int v_target=v+f;
+            for(int i=index+step_length;i>=0&&i<length;i+=step_length,v_target+=f){
+                if(mat[_index_m][i]){
+                    for(int j=0;j<length_g;++j){
+                        transformation__ExchangeRow(mat[j],width,v,v_target);
+                    }
+                    return true;
+                }
+            }
+            return false;
         }
 
-        void multiplication(var*& out, int width, int height, var*& mat_left, var*& mat_right){
+        void multiplication(var*& out, var*& mat_left, var*& mat_right, int height_left, int _width_left_height_right, int _width_right){
+            int index_out=0;
+            var temp;
 
+            for(int i=0;i<height_left;++i){
+                for(int j=0;j<_width_right;++j){
+                    temp=0;
+                    for(int l=_width_left_height_right*i,k=j,c=0; c<_width_left_height_right; ++c,++l,k+=_width_right){
+                        temp+=mat_left[l]*mat_right[k];
+                    }
+                    out[index_out]=temp;
+                    ++index_out;
+                }
+            }
+        }
+
+        void multiplication(var*& out, var*& mat_left, var*& mat_right, int n){
+            int index_out=0;
+            int length=n*n;
+
+            for(int i=0;i<n;++i){
+                for(int j=0;j<n;++j){
+                    var temp=0;
+                    for(int l=n*i,k=j; k<length; ++l,k+=n){
+                        temp+=mat_left[l]*mat_right[k];
+                    }
+                    out[index_out]=temp;
+                    ++index_out;
+                }
+            }
         }
 
         bool check_Orthogonal(var*& mat,int _n){
-
+            return false;
         }
 
-        void transpose(var*& mat, int width, int height){
+        void transpose(var*& mat, int n){
+            var temp;
+            for(int v=n-1; v>0; --v){
+                for(int u=v-1; u>=0; --u){
+                    int point_u=v*n+u;
+                    int point_v=u*n+v;
+                    temp=mat[point_v];
+                    mat[point_v]=mat[point_u];
+                    mat[point_u]=temp;
+                }
+            }
+        }
+        
+        void transpose(var*& out, var*& mat, int width_mat, int height_mat){
+            int index_out=0;
 
+            for(int u=0;u<width_mat;++u){
+                for(int v=0;v<height_mat;++v){
+                    out[index_out]=mat[get_Index(width_mat,u,v)];
+                    ++index_out;
+                }
+            }
         }
 
         var calc_Det__Transformation(var*& mat,int n){
+            const int length=n*n;
+            var* temp_matrix=new var[length];
+            var* temp_row=new var[n];
+            var temp;
+            char flag=1;
+            int _n=n-1;
 
+            // clone mat
+            for(int i=0; i<length;++i){
+                temp_matrix[i]=mat[i];
+            }
+
+            for(int uv=0; uv<_n; ++uv){
+                int index_mat__uv=uv*n+uv;
+                
+                if(!temp_matrix[index_mat__uv]){    // 换行
+                    if(!transformation__ExchangeRow_ToUnZero(temp_matrix,length,n,index_mat__uv,uv,n)){
+                        return 0;
+                    }
+                    else flag=-flag;
+                }
+                
+                for(int i=0,index_v=n*uv;i<n;++i) temp_row[i]=temp_matrix[index_v+i];
+
+                // 单位化
+                if(!(temp_matrix[index_mat__uv]==1)){
+                    temp=1/(temp_matrix[index_mat__uv]);
+                    for(int i=uv; i<n; ++i){
+                        temp_row[i]*=temp;
+                    }
+                }
+                
+                // 消元
+                for(index_mat__uv+=n;index_mat__uv<length;index_mat__uv+=n){
+                    temp=(temp_matrix[index_mat__uv]);
+                    if(temp==0)continue;
+                    for(int i=uv,j=index_mat__uv;i<=n;++i,++j){
+                        temp_matrix[j]-=temp*temp_row[i];
+                    }
+                }
+            }
+
+            ++n;
+            temp=1;
+            for(int i=0;i<length;i+=n){
+                temp*=temp_matrix[i];
+            }
+
+            return temp*flag;
         }
 
-        void setup_Inverse__Transformation(var*& out, var*& mat, int n);
+        void setup_Inverse__Transformation(var*& out, var*& mat, int n){
+            // todo
+        }
+
+        var calc_Det(var*& mat,int n){
+            switch (n)
+            {
+                case 1:
+                    return calc_Det__1(mat);
+                break;
+                
+                case 2:
+                    return calc_Det__2(mat);
+                break;
+                
+                case 3:
+                    return calc_Det__3(mat);
+                break;
+                
+                case 4:
+                    return calc_Det__4(mat);
+                break;
+            
+                default:
+                    return calc_Det__Transformation(mat,n);
+                break;
+            }
+        }
+
+        void setup_Inverse__2(var*& out, var*& mat){
+            var d=calc_Det__2(mat);
+            if(check_Equal(d,0))return;
+            d=1/d;
+            out[0]= mat[3]*d;   out[1]=-mat[1]*d;
+            out[2]=-mat[2]*d;   out[3]= mat[0]*d;
+        }
+
+        
+        void setup_Inverse__3(var*& out, var*& mat){
+            var d=calc_Det__3(mat);
+            if(check_Equal(d,0))return;
+            d=1/d;
+            out[0]= mat[3]*d;   out[1]=-mat[1]*d;
+            out[2]=-mat[2]*d;   out[3]= mat[0]*d;
+        }
+        
+        void setup_Inverse__4(var*& out, var*& mat){
+            
+            var t00 = mat[0]  * mat[5]  - mat[1]  * mat[4],
+                t01 = mat[0]  * mat[6]  - mat[2]  * mat[4],
+                t02 = mat[0]  * mat[7]  - mat[3]  * mat[4],
+                t03 = mat[1]  * mat[6]  - mat[2]  * mat[5],
+                t04 = mat[1]  * mat[7]  - mat[3]  * mat[5],
+                t05 = mat[2]  * mat[7]  - mat[3]  * mat[6],
+                t06 = mat[8]  * mat[13] - mat[9]  * mat[12],
+                t07 = mat[8]  * mat[14] - mat[10] * mat[12],
+                t08 = mat[8]  * mat[15] - mat[11] * mat[12],
+                t09 = mat[9]  * mat[14] - mat[10] * mat[13],
+                t10 = mat[9]  * mat[15] - mat[11] * mat[13],
+                t11 = mat[10] * mat[15] - mat[11] * mat[14];
+            
+            var d=t00*t11-t01*t10+t02*t09+t03*t08-t04*t07+t05*t06;
+
+            if(check_Equal(d,0))return;
+            d=1/d;
+            
+            out[0]    =(mat[5]*t11-mat[6]*t10+mat[7]*t09)*d;   out[1]    =(mat[2]*t10-mat[1]*t11-mat[3]*t09)*d;   out[2]    =(mat[13]*t05-mat[14]*t04+mat[15]*t03)*d;   out[3]    =(mat[10]*t04-mat[9] *t05-mat[11]*t03)*d;
+            out[4]    =(mat[6]*t08-mat[4]*t11-mat[7]*t07)*d;   out[5]    =(mat[0]*t11-mat[2]*t08+mat[3]*t07)*d;   out[6]    =(mat[14]*t02-mat[12]*t05-mat[15]*t01)*d;   out[7]    =(mat[8] *t05-mat[10]*t02+mat[11]*t01)*d;
+            out[8]    =(mat[4]*t10-mat[5]*t08+mat[7]*t06)*d;   out[9]    =(mat[1]*t08-mat[0]*t10-mat[3]*t06)*d;   out[10]   =(mat[12]*t04-mat[13]*t02+mat[15]*t00)*d;   out[11]   =(mat[9] *t02-mat[8] *t04-mat[11]*t00)*d;
+            out[12]   =(mat[5]*t07-mat[4]*t09-mat[6]*t06)*d;   out[13]   =(mat[0]*t09-mat[1]*t07+mat[2]*t06)*d;   out[14]   =(mat[13]*t01-mat[12]*t03-mat[14]*t00)*d;   out[15]   =(mat[8] *t03-mat[9] *t01+mat[10]*t00)*d;
+        }
+
+        void setup_Inverse(var*& out, var*& mat, int n){
+            switch (n)
+            {
+                case 1:
+                    setup_Inverse__1(out,mat);
+                break;
+                
+                case 2:
+                    setup_Inverse__2(out,mat);
+                break;
+                
+                case 3:
+                    setup_Inverse__3(out,mat);
+                break;
+                
+                case 4:
+                    setup_Inverse__4(out,mat);
+                break;
+            
+                default:
+                    setup_Inverse__Transformation(out,mat,n);
+                break;
+            }
+        }
+
     }
 }
