@@ -12,7 +12,15 @@ namespace NML{
         }
     }
 
-    void printf_val(int length, const var* val){
+    var* create_Values__Clone(const var* val, int length){
+        var* rtn=new var[length];
+        for(int i=0;i<length;++i){
+            rtn[i]=val[i];
+        }
+        return rtn;
+    }
+    
+    void printf_val(const var* val, int length){
         int i=0;
         std::cout<<'['<<val[i];
         for(i++;i<length;i++){
@@ -27,6 +35,14 @@ namespace NML{
         }
         return true;
     }
+
+    bool check_Zero(int length, var*& value, var _tolerance){
+        for(int i=0;i<length;++i){
+            if(!check_Zero(value[i], _tolerance))return false;
+        }
+        return true;
+    }
+
 
     void sum(int length, var*& val_left, var*& val_right, var*& out){
         for(int i=0;i<length;++i){

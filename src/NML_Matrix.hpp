@@ -1,7 +1,7 @@
 /*!
  * @Description: 矩阵 Matrix
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-04-09 22:35:51
+ * @LastEditTime: 2023-04-12 10:08:02
  */
 
 #ifndef __NML_MATRIX__
@@ -18,7 +18,10 @@ namespace NML{
     namespace Matrix{
         
         /** 打印矩阵*/
-        void printf_Matrix(int width, int height, var*& matrix);
+        void printf_Matrix(var*& matrix, int width, int height);
+        inline void printf_Matrix(var*& matrix,int n){
+            printf_Matrix(matrix,n,n);
+        }
 
         /**
          * @brief 使用uv坐标 获取实际下标index
@@ -87,6 +90,7 @@ namespace NML{
          * @param v2        v坐标2
          */
         void transformation__ExchangeRow(var*& mat, int width, int v1, int v2);
+        void transformation__ExchangeRow(var**& mats, int length_g, int width, int v1, int v2);
 
         /**
          * @brief 初等变换 换列
@@ -98,7 +102,8 @@ namespace NML{
          * @param u2        u坐标2
          */
         void transformation__ExchangeCol(var*& mat, int widht, int height, int u1, int u2);
-        
+        void transformation__ExchangeCol(var**& mats,int length_g, int width,int height, int u1, int u2);
+
         /**
          * @brief 初等变换 行乘标量
          * 
@@ -108,6 +113,7 @@ namespace NML{
          * @param k         标量乘值
          */
         void transformation__ScaleRow(var*& mat, int width, int v, var k);
+        void transformation__ScaleRow(var**& mats,int length_g, int width, int v, var k);
 
         /**
          * @brief 初等变换 列乘标量
@@ -118,6 +124,7 @@ namespace NML{
          * @param k         标量乘值
          */
         void transformation__ScaleCol(var*& mat, int width, int height, int u, var k);
+        void transformation__ScaleCol(var**& mats,int length_g, int width, int height, int u, var k);
 
         /** 
          * @brief 将矩阵某个为0的项 通过初等变换的换行操作, 变成非0
@@ -136,16 +143,45 @@ namespace NML{
          * @brief 将矩阵某个为0的项 通过初等变换的换行操作, 变成非0; 换行将副作用到其他矩阵上
          * 
          * @param  mats         矩阵数据集合
+         * @param  length_g     有多少个矩阵
          * @param  length       每个矩阵长度
          * @param  width        矩阵宽度
          * @param  index        当前下标
          * @param  v            当前v坐标(行下标)
          * @param  step_length  寻址步长,应为  ±width
-         * @param  length_g     有多少个矩阵
          * @param  _index_m     传入多个矩阵时使用哪个矩阵的值 默认0
          * @return 返回是否成功换行
          */
-        bool transformation__ExchangeRow_ToUnZero(var**& mat, int length, int index, int width, int v, int step_length, int length_g, int _index_m=0);
+        bool transformation__ExchangeRow_ToUnZero(var**& mats, int length_g,  int length, int width, int index, int v, int step_length, int _index_m=0);
+
+
+        /** 
+         * @brief 寻找最大主元并换行
+         * 
+         * @param  mat          矩阵数据
+         * @param  length       矩阵数据长度
+         * @param  width        矩阵宽度
+         * @param  index        当前下标
+         * @param  v            当前v坐标(行下标)
+         * @param  step_length  寻址步长,应为  ±width
+         * @return 返回是否成功换行
+         */
+        bool transformation__ExchangeRow_PivotToMax(var*& mat, int length, int width,  int index, int v, int step_length);
+        
+        /** 
+         * @brief 寻找最大主元并换行; 换行将副作用到其他矩阵上
+         * 
+         * @param  mats         矩阵数据集合
+         * @param  length_g     有多少个矩阵
+         * @param  length       每个矩阵长度
+         * @param  width        矩阵宽度
+         * @param  index        当前下标
+         * @param  v            当前v坐标(行下标)
+         * @param  step_length  寻址步长,应为  ±width
+         * @param  _index_m     传入多个矩阵时使用哪个矩阵的值 默认0
+         * @return 返回是否成功换行
+         */
+        bool transformation__ExchangeRow_PivotToMax(var**& mats, int length_g, int length, int width, int index, int v, int step_length, int _index_m=0);
 
         /**
          * @brief 矩阵乘法
@@ -259,9 +295,9 @@ namespace NML{
              * @return 返回计算行列式值
              */
             inline var calc_Det__3(var*& mat){
-                return  mat[0] * (mat[4]*mat[8] - mat[5]*mat[7])+
-                        mat[1] * (mat[5]*mat[6] - mat[3]*mat[8])+
-                        mat[2] * (mat[3]*mat[7] - mat[5]*mat[6]);
+                return  mat[0]*(mat[4]*mat[8] - mat[5]*mat[7]) -
+                        mat[1]*(mat[3]*mat[8] - mat[5]*mat[6]) +
+                        mat[2]*(mat[3]*mat[7] - mat[4]*mat[6]);
             }
 
             /**
@@ -303,8 +339,9 @@ namespace NML{
          * @param out       输出对象
          * @param mat       矩阵数据 (必须是方阵)
          * @param n         表示这个矩阵是n*n方阵
+         * @return 返回是否成功计算逆矩阵
          */
-        void setup_Inverse__Transformation(var*& out, var*& mat, int n);
+        bool setup_Inverse__Transformation(var*& out, var*& mat, int n);
 
         // open * 公式法矩阵求逆函数 * open
             // 公式法 m^-1=adj(m)/|m|
@@ -314,9 +351,10 @@ namespace NML{
              * 
              * @param out       输出对象
              * @param mat       矩阵数据 (必须是方阵)
+             * @return 返回是否成功计算逆矩阵
              */
-            inline void setup_Inverse__1(var*& out, var*& mat){
-                out[0]=1/mat[0];
+            inline bool setup_Inverse__1(var*& out, var*& mat){
+                return (out[0])&&(out[0]=1/mat[0]);
             }
             
             /**
@@ -324,24 +362,27 @@ namespace NML{
              * 
              * @param out       输出对象
              * @param mat       矩阵数据 (必须是方阵)
+             * @return 返回是否成功计算逆矩阵
              */
-            void setup_Inverse__2(var*& out, var*& mat);
+            bool setup_Inverse__2(var*& out, var*& mat);
             
             /**
              * @brief 3x3 矩阵求逆
              * 
              * @param out       输出对象
              * @param mat       矩阵数据 (必须是方阵)
+             * @return 返回是否成功计算逆矩阵
              */
-            void setup_Inverse__3(var*& out, var*& mat);
+            bool setup_Inverse__3(var*& out, var*& mat);
             
             /**
              * @brief 4x4 矩阵求逆
              * 
              * @param out       输出对象
              * @param mat       矩阵数据 (必须是方阵)
+             * @return 返回是否成功计算逆矩阵
              */
-            void setup_Inverse__4(var*& out, var*& mat);
+            bool setup_Inverse__4(var*& out, var*& mat);
 
         // end  * 公式法矩阵求逆函数 * end 
 
@@ -351,8 +392,9 @@ namespace NML{
          * @param out       输出对象
          * @param mat       矩阵数据 (必须是方阵)
          * @param n         表示这个矩阵是n*n方矩阵
+         * @return 返回是否成功计算逆矩阵
          */
-        void setup_Inverse(var*& out, var*& mat, int n);
+        bool setup_Inverse(var*& out, var*& mat, int n);
 
     }
 }

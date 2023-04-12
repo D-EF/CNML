@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-04-09 23:29:17
+ * @LastEditTime: 2023-04-11 10:25:00
  * @Description: Nittle Math Library 简单数学库
  * 
  * @Copyright (c) 2023 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
@@ -44,10 +44,25 @@ namespace NML{
             inline Values& operator=(var*& d){setup(d);return *this;}
     };
 
+    /**
+     * @brief 拷贝数据
+     * 
+     * @param val       数据
+     * @param length    长度
+     * @return 拷贝数据到 new var[length] 并返回地址
+     */
+    var* create_Values__Clone(const var* val, int length);
 
     /** 打印行数据 */
-    void printf_val(int length, const var* val);
-    inline void printf_val(const Values val){printf_val(val.length, val.data);}
+
+    /**
+     * @brief 
+     * 
+     * @param val 
+     * @param length 
+     */
+    void printf_val(const var* val, int length);
+    inline void printf_val(const Values val){printf_val(val.data,val.length);}
 
     /**
      * @brief 判断值是否相等(容差)
@@ -55,9 +70,18 @@ namespace NML{
      * @param v1            左侧数据
      * @param v2            右侧数据
      * @param _tolerance    容差
-     * @return  返回是否相等
+     * @return  返回是否近似相等
      */
-    inline bool check_Equal(var v1, var v2, var _tolerance=__TOLERANCE__){return abs(v1-v2)<_tolerance;}
+    inline bool check_Equal(var v1, var v2, var _tolerance=__TOLERANCE__){return fabs(v1-v2)<_tolerance;}
+
+    /**
+     * @brief 判断是否趋近零
+     * 
+     * @param value         数值
+     * @param _tolerance    容差
+     * @return 返回数值是否趋近0
+     */
+    inline bool check_Zero(var value, var _tolerance=__TOLERANCE__){return fabs(value)<_tolerance;}
 
     /**
      * @brief 判断数据是否相等(容差)
@@ -70,6 +94,17 @@ namespace NML{
      */
     bool check_Equal(int length, var*& val_left, var*& val_right, var _tolerance=__TOLERANCE__);
     
+    
+    /**
+     * @brief 判断是否趋近零
+     * 
+     * @param length        数据长度
+     * @param value         数据
+     * @param _tolerance    容差
+     * @return 返回数值是否趋近0
+     */
+    bool check_Zero(int length, var*& value, var _tolerance=__TOLERANCE__);
+
     /**
      * @brief 数据数值 和
      * 
