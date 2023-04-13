@@ -12,12 +12,57 @@ namespace Test_Matrix{
 
 int main(int argc, char **argv){
     cout<< "hello world!"<<endl;
-
     Test_Matrix::test_transformation();
 
     return 0;
 }
 
+void check_Test(bool flag,string msg=""){
+    if(flag){
+        printf("\033[0m\033[1;32m done  ->%s\033[0m\n", msg);
+    }
+    else if(msg[0]){
+        printf("\033[0m\033[1;31m error ->%s\033[0m\n", msg);
+        throw msg;
+    }
+}
+
+namespace Test_Vector{
+    using namespace Vector;
+    
+    var* vec1=new var[3]{123.0, 456.0, 789.0};
+    var* vec2=new var[3]{3.0, 2.0, 1.0};
+    var* unit__vec1=new var[3]{0.13375998748853218, 0.49589068532333885,  0.8580213831581455};
+    var* unit__vec2=new var[3]{0.8017837257372732,  0.5345224838248488,   0.2672612419124244};
+
+    var mag__vec_1=919.5575022803088;
+    var mag__vec_2=3.7416573867739413;
+
+    void test_AllFnc(){
+        // test is_Unit
+            check_Test(false==is_Unit(3,vec1),       "test is_Unit(vec1)");
+            check_Test(false==is_Unit(3,vec2),       "test is_Unit(vec2)");
+            check_Test(true==is_Unit(3,unit__vec1),  "test is_Unit(unit__vec1)");
+            check_Test(true==is_Unit(3,unit__vec2),  "test is_Unit(unit__vec2)");
+
+        // get_Quadrant__v2
+        check_Test(1==get_Quadrant__v2(vec1), "test is_Unit(get_Quadrant__v2)");
+        // mag
+        check_Test(mag__vec_1==mag(3,vec1),         "test mag(3,vec1)");
+        // is_Zero__Strict
+        // is_Zero
+        // normalize
+        // instead
+        // cross
+        // cross_v3
+        // cross_v2
+        // dot_v2
+        // dot_v3
+        // mag_v2
+        // mag_v3
+        // cos_2Vec
+    }
+}
 
 namespace Test_Matrix{
     using namespace Matrix;

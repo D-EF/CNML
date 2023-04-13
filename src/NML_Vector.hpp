@@ -1,7 +1,7 @@
 /*!
  * @Description: 向量 Vector 
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-04-06 02:44:52
+ * @LastEditTime: 2023-04-14 03:43:49
  */
 
 #ifndef __NML_VECTOR__
@@ -29,12 +29,11 @@ namespace NML{
         }
         
         /**
-         * @brief 向量求模 
+         * @brief 判断2d向量象限 (+x=right, +y=up)
          * [2, 1]
          * [3, 4] 
-         * @param length 向量长度
-         * @param vec    数组表示的向量
-         * @return 返回向量模长
+         * @param vec2    数组表示的向量
+         * @return 返回判断向量所在象限
          */
         char get_Quadrant__v2(var*& vec2);
         
@@ -46,6 +45,7 @@ namespace NML{
          * @return 返回向量模长
          */
         var mag(int length, var*& vec);
+        inline var mag(var*& vec,int length){return mag(length,vec);}
 
         /**
          * @brief 判断向量是不是零向量     (严格的,不考虑浮点数误差)
@@ -93,7 +93,6 @@ namespace NML{
             out[1]= vec_left[2]*vec_right[0] - vec_left[0]*vec_right[2];    // y : z1x2-x1z2
             out[2]= vec_left[0]*vec_right[1] - vec_left[1]*vec_right[0];    // z : x1y2-y1x2
         }
-
         
         /**
          * @brief 3d叉乘 数据长度固定为3
@@ -166,6 +165,7 @@ namespace NML{
          * @return 返回夹角的cos值
          */
         inline var cos_2Vec(var*& vec_left, var*vec_right){return dot_v2(vec_left, vec_right)/(mag_v2(vec_left)*mag_v2(vec_right));}
+        
     }
 }
 
