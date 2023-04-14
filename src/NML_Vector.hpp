@@ -1,7 +1,7 @@
 /*!
  * @Description: 向量 Vector 
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-04-14 03:43:49
+ * @LastEditTime: 2023-04-15 03:52:08
  */
 
 #ifndef __NML_VECTOR__
@@ -55,6 +55,7 @@ namespace NML{
          * @return 返回向量是不是零向量 
          */
         bool is_Zero__Strict(int length, var*& vec);
+        inline bool is_Zero__Strict(var*& vec,int length){return is_Zero__Strict(length,vec);};
 
         /**
          * @brief 判断向量是不是零向量     
@@ -64,6 +65,7 @@ namespace NML{
          * @return 返回向量是不是零向量 
          */
         bool is_Zero(int length, var*& vec);
+        inline bool is_Zero(var*& vec,int length){return is_Zero(length,vec);};
 
         /**
          * @brief 标准化向量
@@ -72,6 +74,7 @@ namespace NML{
          * @param vec       数组表示的向量数据 将会被函数修改
          */
         void normalize(int length, var*& vec);
+        inline void normalize(var*& vec,int length){return normalize(length,vec);}
         
         /**
          * @brief 向量取反
@@ -80,6 +83,7 @@ namespace NML{
          * @param vec       数组表示的向量数据 将会被函数修改
          */
         void instead(int length, var*& vec);
+        inline void instead(var*& vec, int length){return instead(length,vec);}
         
         /**
          * @brief 3d叉乘 数据长度固定为3

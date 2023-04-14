@@ -64,9 +64,9 @@ namespace NML{
         return rtn;
     }
 
-    void np(int length, var*& val, var k, var*& out){
+    void np(var*& val, int length, var k){
         for(int i=0;i<length;++i){
-            out[i]=val[i]*k;
+            val[i]*=k;
         }
     }
 }

@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-04-11 10:25:00
+ * @LastEditTime: 2023-04-15 03:43:12
  * @Description: Nittle Math Library 简单数学库
  * 
  * @Copyright (c) 2023 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
@@ -139,11 +139,13 @@ namespace NML{
      * @brief 标量乘
      * 
      * @param out           输出对象
-     * @param length        数据长度
      * @param val           数组数据
      * @param k             标量
      */
-    void np(var*& out, int length, var*& val, var k);
+    void np(var*& out, int length, var k);
+    inline void np_v2(var*& out, var k){out[0]*=k;out[1]*=k;}
+    inline void np_v3(var*& out, var k){out[0]*=k;out[1]*=k;out[2]*=k;}
+    inline void np_v4(var*& out, var k){out[0]*=k;out[1]*=k;out[2]*=k;out[3]*=k;}
 
 }
 
