@@ -323,13 +323,6 @@ namespace NML{
             for(int uv=0; uv<n; ++uv){
                 int index_v=uv*n;
                 int index_mat__uv=index_v+uv;
-                
-                
-                std::cout<<'\n';
-                printf_Matrix(temp_mat,n);
-                std::cout<<'\n';
-                printf_Matrix(out,n);
-                std::cout<<'\n';
 
                 // 换行设置最大主元
                 if(!transformation__ExchangeRow_PivotToMax(mats,2,length,n,index_mat__uv,uv,n)) {
@@ -338,19 +331,7 @@ namespace NML{
                     return false;
                 }
 
-                std::cout<<'\n';
-                printf_Matrix(temp_mat,n);
-                std::cout<<'\n';
-                printf_Matrix(out,n);
-                std::cout<<'\n';
-                
                 transformation__ScaleRow(mats,2,n,uv,1/mats[0][index_mat__uv]);
-
-                std::cout<<'\n';
-                printf_Matrix(temp_mat,n);
-                std::cout<<'\n';
-                printf_Matrix(out,n);
-                std::cout<<'\n';
 
                 for(int i=0,index=0;i<n;++i,index+=n){
                     if(i==uv) continue;

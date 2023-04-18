@@ -73,8 +73,8 @@ namespace NML{
          * @param length    向量数组长度
          * @param vec       数组表示的向量数据 将会被函数修改
          */
-        void normalize(int length, var*& vec);
-        inline void normalize(var*& vec,int length){return normalize(length,vec);}
+        var*& normalize(int length, var*& vec);
+        inline var*& normalize(var*& vec,int length){return normalize(length,vec);}
         
         /**
          * @brief 向量取反
@@ -82,8 +82,8 @@ namespace NML{
          * @param length    向量数组长度
          * @param vec       数组表示的向量数据 将会被函数修改
          */
-        void instead(int length, var*& vec);
-        inline void instead(var*& vec, int length){return instead(length,vec);}
+        var*& instead(int length, var*& vec);
+        inline var*& instead(var*& vec, int length){return instead(length,vec);}
         
         /**
          * @brief 3d叉乘 数据长度固定为3

@@ -12,6 +12,12 @@ namespace NML{
         }
     }
 
+    void clone_To(var* to,const var* val, int length){
+        for(int i=0;i<length;++i){
+            to[i]=val[i];
+        }
+    }
+
     var* create_Values__Clone(const var* val, int length){
         var* rtn=new var[length];
         for(int i=0;i<length;++i){
@@ -59,14 +65,15 @@ namespace NML{
     var dot(int length, var*& val_left, var*& val_right){
         var rtn=0;
         for(int i=0;i<length;++i){
-            rtn+=val_left[i]*val_left[i];
+            rtn+=val_left[i]*val_right[i];
         }
         return rtn;
     }
 
-    void np(var*& val, int length, var k){
+    var*& np(var*& out, int length, var k){
         for(int i=0;i<length;++i){
-            val[i]*=k;
+            out[i]*=k;
         }
+        return out;
     }
 }

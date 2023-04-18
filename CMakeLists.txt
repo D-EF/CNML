@@ -9,6 +9,7 @@ SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/out)
 file(GLOB SRC_FILES
     "${PROJECT_SOURCE_DIR}/src/**.c"
     "${PROJECT_SOURCE_DIR}/src/**.h"
+    "${PROJECT_SOURCE_DIR}/src/**.hpp"
     "${PROJECT_SOURCE_DIR}/src/**.cpp"
 )
 

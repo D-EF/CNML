@@ -35,26 +35,27 @@ namespace NML{
             return true;
         }
 
-        void normalize(int length, var*& vec){
-            if(!is_Zero__Strict(length, vec)){
+        var*& normalize(int length, var*& vec){
+            if(is_Zero__Strict(length, vec)){
                 vec[0]=1;
-                for(int i=0; i<length; ++i){
+                for(int i=1; i<length; ++i){
                     vec[i]=0;
                 }
             }else{
                 var magSq = mag(length, vec),
-                oneOverMag=0;
                 oneOverMag = 1.0/magSq;
                 for(int i=0; i<length; ++i){
                     vec[i] *= oneOverMag;
                 }
             }
+            return vec;
         }
 
-        void instead(int length, var*& vec){
+        var*& instead(int length, var*& vec){
             for(int i=0; i<length; ++i){
                 vec[i] = -vec[i];
             }
+            return vec;
         }
     }
 }

@@ -44,6 +44,8 @@ namespace NML{
             inline Values& operator=(var*& d){setup(d);return *this;}
     };
 
+    void clone_To(var* to, const var* val, int length);
+
     /**
      * @brief 拷贝数据
      * 
@@ -93,6 +95,7 @@ namespace NML{
      * @return  返回是否相等
      */
     bool check_Equal(int length, var*& val_left, var*& val_right, var _tolerance=__TOLERANCE__);
+    inline bool check_Equal(var*& val_left, var*& val_right,int length, var _tolerance=__TOLERANCE__){return check_Equal(length, val_left, val_right, _tolerance);}
     
     
     /**
@@ -134,6 +137,7 @@ namespace NML{
      * @return 输出点乘数量积
      */
     var dot(int length, var*& val_left, var*& val_right);
+    inline var dot(var*& val_left, var*& val_right,int length){return dot(length,val_left,val_right);}
 
     /**
      * @brief 标量乘
@@ -142,10 +146,10 @@ namespace NML{
      * @param val           数组数据
      * @param k             标量
      */
-    void np(var*& out, int length, var k);
-    inline void np_v2(var*& out, var k){out[0]*=k;out[1]*=k;}
-    inline void np_v3(var*& out, var k){out[0]*=k;out[1]*=k;out[2]*=k;}
-    inline void np_v4(var*& out, var k){out[0]*=k;out[1]*=k;out[2]*=k;out[3]*=k;}
+    var*& np(var*& out, int length, var k);
+    inline var*& np_v2(var*& out, var k){out[0]*=k;out[1]*=k;       return out;}
+    inline var*& np_v3(var*& out, var k){out[0]*=k;out[1]*=k;out[2]*=k;     return out;}
+    inline var*& np_v4(var*& out, var k){out[0]*=k;out[1]*=k;out[2]*=k;out[3]*=k;       return out;}
 
 }
 
