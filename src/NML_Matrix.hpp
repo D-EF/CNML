@@ -31,9 +31,7 @@ namespace NML{
          * @param v         纵坐标 v
          * @return 返回下标index
          */
-        inline int get_Index(int width, int u, int v){
-            return u+width*v;
-        }
+        inline int get_Index(int width, int u, int v){return u+width*v;}
 
         /**
          * @brief 创建单位矩阵

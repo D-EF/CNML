@@ -1,3 +1,13 @@
+/*!
+ * @Author: Darth_Eternalfaith darth_ef@hotmail.com
+ * @Date: 2023-04-20 00:58:11
+ * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
+ * @LastEditTime: 2023-04-20 01:37:07
+ * @FilePath: \cnml\src\test.cpp
+ * @Description: 
+ * @
+ * @Copyright (c) 2023 by ${git_name} ${git_email}, All Rights Reserved. 
+ */
 #include <iostream>
 #include <chrono>
 #include "NML.hpp"
@@ -5,33 +15,53 @@
 
 using namespace std;
 using namespace NML;
+using namespace chrono;
+
+
+namespace print__check_Test{void check_Test(bool flag,char* msg="");}
+namespace unprint__check_Test{void check_Test(bool flag,char* msg="");}
 
 namespace Test_Vector{
     void test_AllFnc();
 }
 namespace Test_Matrix{
+    void test_AllFnc();
     void test_transformation();
 }
 
-int main(int argc, char **argv){
-    cout<< "hello world!"<<endl;
-    Test_Vector::test_AllFnc();
+// using namespace unprint__check_Test;
+using namespace print__check_Test;
 
-    // Test_Matrix::test_transformation();
+int main(int argc, char **argv){
+    std::chrono::_V2::system_clock::time_point start_time, end_time;
+    int64_t duration;
+
+    cout<< "start test Vector's all function:"<<endl;
+    start_time = high_resolution_clock::now();
+        Test_Vector::test_AllFnc();
+    end_time = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(end_time - start_time).count();
+    cout << "Test_Vector::test_AllFnc(); \t done!  use time: " << duration << " microseconds" << endl;
+
+    // Test_Matrix::test_AllFnc();
 
     return 0;
 }
 
-void check_Test(bool flag,char* msg=""){
-    if(flag){
-        printf("\033[32m done -> %s \033[0m \n",msg);
-    }
-    else if(msg[0]){
-        printf("\033[31m error -> %s \033[0m \n",msg);
-        // throw msg;
+namespace unprint__check_Test{
+    void check_Test(bool flag,char* msg){}
+}
+namespace print__check_Test{
+    void check_Test(bool flag,char* msg){
+        if(flag){
+            printf("\033[32m done -> %s \033[0m \n",msg);
+        }
+        else if(msg[0]){
+            printf("\033[31m error -> %s \033[0m \n",msg);
+            // throw msg;
+        }
     }
 }
-
 
 namespace Test_Vector{
     using namespace Vector;
@@ -127,7 +157,6 @@ namespace Test_Vector{
 
 namespace Test_Matrix{
     using namespace Matrix;
-    using namespace chrono;
     
     var* m4=new var[16]{
         15,   1,    2,   3,   
@@ -147,6 +176,40 @@ namespace Test_Matrix{
 
     var* m2=new var[4]{1,2,3,4};
     
+    void test_AllFnc(){
+        // todo
+        
+        // get_Index
+        // setup_Identity
+        // setup_Resize
+        // setup_TensorProduct
+        // setup_Concat
+        // transformation__ExchangeRow
+        // transformation__ExchangeCol
+        // transformation__ScaleRow
+        // transformation__ScaleCol
+        // transformation__ExchangeRow_ToUnZero
+        // transformation__ExchangeRow_ToUnZero
+        // transformation__ExchangeRow_PivotToMax
+        // transformation__ExchangeRow_PivotToMax
+        // multiplication
+        // multiplication
+        // check_Orthogonal
+        // transpose
+        // transpose_2
+        // transpose_3
+        // calc_Det__Transformation
+        // calc_Det
+        // calc_Det__1
+        // calc_Det__2
+        // calc_Det__3
+        // calc_Det__4
+        // setup_Inverse__Transformation
+        // setup_Inverse
+        // setup_Inverse__1
+        // setup_Inverse__2
+        // setup_Inverse__4
+    }
 
     void test_transformation(){
         var* t_m4=create_Values__Clone(m4,16);
