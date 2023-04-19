@@ -24,13 +24,14 @@ int main(int argc, char **argv){
 
 void check_Test(bool flag,char* msg=""){
     if(flag){
-        printf("done  -> %s\n", msg);
+        printf("\033[32m done -> %s \033[0m \n",msg);
     }
     else if(msg[0]){
-        printf("error -> %s\n", msg);
+        printf("\033[31m error -> %s \033[0m \n",msg);
         // throw msg;
     }
 }
+
 
 namespace Test_Vector{
     using namespace Vector;
@@ -40,7 +41,6 @@ namespace Test_Vector{
     var* vec2=new var[3]{3.0, 2.0, 1.0};
     var* unit__vec1=new var[3]{0.13375998748853218, 0.49589068532333885,  0.8580213831581455};
     var* unit__vec2=new var[3]{0.8017837257372732,  0.5345224838248488,   0.2672612419124244};
-
 
     var mag__vec_1=919.5575022803088;
     var mag__vec_2=3.7416573867739413;
@@ -114,7 +114,8 @@ namespace Test_Vector{
             check_Test(check_Equal(np(temp,3,mag__vec_1), vec1, 3),                   "test np(v1)");
             check_Test(check_Equal(np(temp1,3,mag__vec_2),vec2, 3),                   "test np(v2)");
         // cos_2Vec
-            check_Test(check_Equal(cos_2Vec(vec1,vec2),0.6016271623980259),           "test cos_2Vec(v1,v2)");
+            check_Test(check_Equal(cos_2Vec(vec1,vec2),0.7522492046784672),           "test cos_2Vec(v1,v2)");
+            check_Test(check_Equal(cos_3Vec(vec1,vec2),0.6016271623980259),           "test cos_3Vec(v1,v2)");
 
         delete temp;
         delete temp1;
@@ -165,7 +166,7 @@ namespace Test_Matrix{
         auto end_time = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(end_time - start_time).count();
 
-        cout <<                                                                                     "test_transformation use time: " << duration << " microseconds" << endl;
+        cout << "test_transformation use time: " << duration << " microseconds" << endl;
 
         cout<<endl;
         printf_Matrix(t_m4,4);

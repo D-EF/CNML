@@ -162,13 +162,22 @@ namespace NML{
         }
 
         /**
-         * @brief 获取  2d向量夹角值
+         * @brief 获取2d向量夹角cos值 (∠LOR)
          * 
          * @param vec_left      左侧向量数据
          * @param vec_right     右侧向量数据
          * @return 返回夹角的cos值
          */
         inline var cos_2Vec(var*& vec_left, var*vec_right){return dot_v2(vec_left, vec_right)/(mag_v2(vec_left)*mag_v2(vec_right));}
+        
+        /**
+         * @brief 获取 3d向量夹角值 (∠LOR)
+         * 
+         * @param vec_left      左侧向量数据
+         * @param vec_right     右侧向量数据
+         * @return 返回夹角的cos值
+         */
+        inline var cos_3Vec(var*& vec_left, var*vec_right){return dot_v3(vec_left, vec_right)/(mag_v3(vec_left)*mag_v3(vec_right));}
         
     }
 }

@@ -28,11 +28,14 @@ namespace NML{
     
     void printf_val(const var* val, int length){
         int i=0;
-        std::cout<<'['<<val[i];
+        // std::cout<<'['<<val[i];
+        printf("[%f",val[i]);
         for(i++;i<length;i++){
-            std::cout<<','<<val[i];
+            // std::cout<<','<<val[i];
+            printf(",%f", val[i]);
         }
-        std::cout<<"]\n";
+        // std::cout<<"]\n";
+        printf("]\n");
     }
 
     bool check_Equal(int length, var*& val_left, var*& val_right, var _tolerance){
