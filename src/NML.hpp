@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-04-15 03:43:12
+ * @LastEditTime: 2023-05-02 02:20:18
  * @Description: Nittle Math Library 简单数学库
  * 
  * @Copyright (c) 2023 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
@@ -14,7 +14,9 @@
 #include <Math.h>
 
 namespace NML{
+
     typedef float var;
+
     const var __TOLERANCE__=1e-6;
 
     template <typename value_Type> inline value_Type min(value_Type a,value_Type b){return a>b?b:a;}
@@ -45,6 +47,7 @@ namespace NML{
     };
 
     void clone_To(var* to, const var* val, int length);
+    inline void copy_To(var* to, const var* val, int length){clone_To(to, val, length);}
 
     /**
      * @brief 拷贝数据

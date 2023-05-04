@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-20 00:58:11
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-04-20 01:37:07
+ * @LastEditTime: 2023-05-05 03:04:41
  * @FilePath: \cnml\src\test.cpp
  * @Description: 
  * @
@@ -38,7 +38,8 @@ int main(int argc, char **argv){
 
     cout<< "start test Vector's all function:"<<endl;
     start_time = high_resolution_clock::now();
-        Test_Vector::test_AllFnc();
+        // Test_Vector::test_AllFnc();
+        Test_Matrix::test_AllFnc();
     end_time = high_resolution_clock::now();
     duration = duration_cast<microseconds>(end_time - start_time).count();
     cout << "Test_Vector::test_AllFnc(); \t done!  use time: " << duration << " microseconds" << endl;
@@ -98,10 +99,12 @@ namespace Test_Vector{
             check_Test(mag(3,unit__vec1)==1,                                          "test mag(3,unit__vec1)");
         // is_Zero__Strict
             check_Test(is_Zero__Strict(3,vec1)==false,                                "test is_Zero__Strict(3,vec1)");
+            check_Test(is_Zero__Strict(vec_zero__f,3)==false,                         "test is_Zero(vec2,3)");
             check_Test(is_Zero__Strict(vec2,3)==false,                                "test is_Zero__Strict(vec2,3)");
         // is_Zero
             check_Test(is_Zero(3,vec1)==false,                                        "test is_Zero(3,vec1)");
             check_Test(is_Zero(vec2,3)==false,                                        "test is_Zero(vec2,3)");
+            check_Test(is_Zero(vec_zero__f,3)==true,                                  "test is_Zero(vec2,3)");
         // normalize
             clone_To(temp,vec2,3);
             check_Test(check_Equal(3,normalize(temp,3),unit__vec2),                   "test normalize(vec2,3)");
@@ -177,13 +180,68 @@ namespace Test_Matrix{
     var* m2=new var[4]{1,2,3,4};
     
     void test_AllFnc(){
-        // todo
+        var* temp_m3=new var[9];
+        var* temp_m3_1=new var[9];
+        var* temp_m3_i=new var[9]{1,0,0,0,1,0,0,0,1};
+        var* m3__m3xm3=new var[9]{
+            150,   126,   102,
+            96,    81,    66,
+            42,    36,    30
+        };
+        var* m3__orthogonal=new var[9]{
+             1,    4,   -5,
+            -4,    2,    6,
+             5,   -6,    3
+        };
+        var* m3__orthogonal_i=new var[9]{
+             1,   -4,    5,
+             4,    2,   -6,
+            -5,    6,    3
+        };
         
+        var* m3__router_x22deg=new var[9]{
+             1,    0,           0,
+             0,    0.927184,   -0.374607,
+             0,    0.374607,    0.927184
+        };
+        
+        var* m3__router_x22deg_i=new var[9]{
+             1,    0,           0,
+             0,    0.927184,    0.374607,
+             0,   -0.374607,    0.927184
+        };
+        var* temp_m3__setup_m2_t11=new var[9]{1,0,0,0,1,2,0,3,4};
+        var* temp_m2=new var[4];
+        var* temp_m2_i=new var[4]{1,0,0,1};
+
+        var** m2x4=new var*[4]{m2,m2,m2,m2};
+        var* temp_m4=new var[16];
+        var* m4__m2_tx_m2=new var[16]{
+            1,   2,    2,    4,
+            3,   4,    6,    8,
+            3,   6,    4,    8,
+            9,   12,   12,   16
+        };
+        var* m4__m2x4=new var[16]{
+            1,   2,   1,   2,
+            3,   4,   3,   4,
+            1,   2,   1,   2,
+            3,   4,   3,   4
+        };
         // get_Index
+            check_Test(get_Index(3,0,1)==3,                                                                     "get_Index(3,0,1)");
+                check_Test(get_Index(3,2,2)==8,                                                                     "get_Index(3,2,2)");
         // setup_Identity
+            check_Test(check_Equal(3,setup_Identity(temp_m3,3,3),temp_m3_i),                                    "setup_Identity(temp_m3,3,3)");
+            check_Test(check_Equal(2,setup_Identity(temp_m2,2,2),temp_m2_i),                                    "setup_Identity(temp_m2,2,2)");
         // setup_Resize
-        // setup_TensorProduct
+            check_Test(check_Equal(3,setup_Resize(temp_m3,m2,2,3,2,3,1,1),temp_m3__setup_m2_t11),               "setup_Resize(temp_m3,m2,2,3,2,3,1,1)");
+        // setup_KroneckerProduct
+            check_Test(check_Equal(16,setup_KroneckerProduct(temp_m4,m2,m2,2,2,2,2),m4__m2_tx_m2),                 "setup_TensorProduct(temp_m4,m2,m2,2,2,2,2)");
+            // printf_Matrix(temp_m4,4,4);
         // setup_Concat
+            check_Test(check_Equal(16,setup_Concat(temp_m4,m2x4,2,2,2,2),m4__m2x4),                             "setup_Concat(temp_m4,m2x4,2,2,2,2)");
+            // printf_Matrix(temp_m4,4,4);
         // transformation__ExchangeRow
         // transformation__ExchangeCol
         // transformation__ScaleRow
@@ -192,21 +250,33 @@ namespace Test_Matrix{
         // transformation__ExchangeRow_ToUnZero
         // transformation__ExchangeRow_PivotToMax
         // transformation__ExchangeRow_PivotToMax
+            //初等变换操作在求逆矩阵中有使用，不多测试了
         // multiplication
-        // multiplication
+            check_Test(check_Equal(16,multiplication(temp_m3,m3,m3,3),m3__m3xm3),                                   "multiplication(temp_m3,m3,m3,3)");
+            check_Test(check_Equal(16,multiplication(temp_m3,m3,m3,3,3,3),m3__m3xm3),                               "multiplication(temp_m3,m3,m3,3,3,3)");
         // check_Orthogonal
+            check_Test( check_Orthogonal(m3__orthogonal,3),                                                         "check_Orthogonal(m3__orthogonal,3)");
+            check_Test(!check_Orthogonal(m3,3),                                                                     "check_Orthogonal(m3,3)");
         // transpose
+            clone_To(temp_m3,m3__orthogonal,9);
+            check_Test(check_Equal(9,transpose(temp_m3,3),m3__orthogonal_i),                                        "transpose(temp_m3,3)");
         // transpose_2
         // transpose_3
+            clone_To(temp_m3,m3__orthogonal,9);
+            check_Test(check_Equal(9,transpose_3(temp_m3),m3__orthogonal_i),                                        "transpose_3(temp_m3)");
         // calc_Det__Transformation
         // calc_Det
-        // calc_Det__1
         // calc_Det__2
         // calc_Det__3
         // calc_Det__4
         // setup_Inverse__Transformation
+            // todo
+            setup_Inverse__Transformation(temp_m3,m3__router_x22deg,3);
+            check_Test(check_Equal(3,temp_m3,m3__router_x22deg_i),                                        "setup_Inverse(temp_m3,m3__orthogonal,3)");
+            // printf_Matrix(temp_m3,3,3);
         // setup_Inverse
-        // setup_Inverse__1
+            setup_Inverse(temp_m3,m3__router_x22deg,3);
+            check_Test(check_Equal(3,temp_m3,m3__router_x22deg_i),                                        "setup_Inverse(temp_m3,m3__orthogonal,3)");
         // setup_Inverse__2
         // setup_Inverse__4
     }

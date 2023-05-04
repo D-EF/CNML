@@ -53,7 +53,8 @@
 			"numbers": "cpp",
 			"stdexcept": "cpp",
 			"streambuf": "cpp",
-			"typeinfo": "cpp"
+			"typeinfo": "cpp",
+			"ratio": "cpp"
 		},
 		"editor.inlayHints.enabled": "off",
     	"editor.fontFamily": "Ubuntu Mono derivative Powerline,Ubuntu Mono,DejaVu Sans Mono",

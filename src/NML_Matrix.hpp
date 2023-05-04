@@ -1,7 +1,7 @@
 /*!
  * @Description: 矩阵 Matrix
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-04-12 10:08:02
+ * @LastEditTime: 2023-05-05 02:03:16
  */
 
 #ifndef __NML_MATRIX__
@@ -35,12 +35,12 @@ namespace NML{
 
         /**
          * @brief 创建单位矩阵
-         * 
          * @param out       输出对象
          * @param width     矩阵宽度
          * @param height    矩阵高度
+         * @return 修改并返回 out
          */
-        void setup_Identity(var*& out, int width, int height);
+        var*& setup_Identity(var*& out, int width, int height);
 
         /** 
          * @brief 矩阵数据转写   空省位置会保留out原有的内容
@@ -53,11 +53,23 @@ namespace NML{
          * @param _new_height    新矩阵高度  无输入时将使用 new_width
          * @param _shift_left    旧矩阵拷贝到新矩阵时的左侧偏移 默认为 0
          * @param _shift_top     旧矩阵拷贝到新矩阵时的上方偏移 默认为 0
+         * @return 修改并返回 out
          */
-        void setup_Resize(var*& out, var*& mat, int low_width, int new_width, int _low_height=0, int _new_height=0, int _shift_left=0, int _shift_top=0);
+        var*& setup_Resize(var*& out, var*& mat, int low_width, int new_width, int _low_height=0, int _new_height=0, int _shift_left=0, int _shift_top=0);
+
+        /**
+         * @brief 计算哈达姆积 HadamardProduct
+         * @param  out            输出对象
+         * @param  mat_left       左矩阵
+         * @param  mat_right      右矩阵
+         * @param  width          矩阵宽度
+         * @param  height         矩阵高度
+         * @return 修改并返回 out
+         */
+        var*& setup_HadamardProduct(var*& out, var*& mat_left, var*& mat_right, int width, int height);
 
         /** 
-         * @brief 计算张量积
+         * @brief 计算 Kronecker 张量积
          * @param  out            输出对象
          * @param  mat_left       左矩阵
          * @param  mat_right      右矩阵
@@ -65,8 +77,9 @@ namespace NML{
          * @param  height_left    左矩阵的高度
          * @param  width_right    右矩阵的宽度
          * @param  height_right   右矩阵的高度
+         * @return 修改并返回 out
          */
-        void setup_TensorProduct(var*& out, var*& mat_left, var*& mat_right, int width_left, int height_left, int width_right, int height_right);
+        var*& setup_KroneckerProduct(var*& out, var*& mat_left, var*& mat_right, int width_left, int height_left, int width_right, int height_right);
 
         /** 
          * @brief 合并矩阵
@@ -77,7 +90,7 @@ namespace NML{
          * @param  width_g      输出中一行放多少个矩阵
          * @param  height_g     输出中一列放多少个矩阵
          */
-        void setup_Concat(var*& out, var**& mats, int width_mat, int height_mat, int width_g, int height_g);
+        var*& setup_Concat(var*& out, var**& mats, int width_mat, int height_mat, int width_g, int height_g);
 
         /**
          * @brief 初等变换 换行
@@ -188,10 +201,10 @@ namespace NML{
          * @param mat_left                  左矩阵
          * @param mat_right                 右矩阵
          * @param height_left               左矩阵高度
-         * @param width_left_height_right   右矩阵高度 和 左矩阵宽度
-         * @param width_right               右矩阵宽度
+         * @param _width_left_height_right   右矩阵高度 和 左矩阵宽度
+         * @param _width_right               右矩阵宽度 ; 默认使用 height_left
          */
-        void multiplication(var*& out, var*& mat_left, var*& mat_right, int height_left, int _width_left_height_right, int _width_right);
+        var*& multiplication(var*& out, var*& mat_left, var*& mat_right, int height_left, int _width_left_height_right, int _width_right=0);
 
         
         /**
@@ -202,7 +215,7 @@ namespace NML{
          * @param mat_right                 右矩阵
          * @param n                         表示这个矩阵是n*n方阵
          */
-        void multiplication(var*& out, var*& mat_left, var*& mat_right, int n);
+        var*& multiplication(var*& out, var*& mat_left, var*& mat_right, int n);
         
         /** 
          * @brief 检查矩阵正交
@@ -211,7 +224,7 @@ namespace NML{
          * @param n             表示这个矩阵是n*n方阵
          * @return 返回矩阵是否正交
          */
-        bool check_Orthogonal(var*& mat,int _n);
+        bool check_Orthogonal(var*& mat,int n);
 
         /**
          * @brief 方阵转置
@@ -219,27 +232,26 @@ namespace NML{
          * @param mat           方阵数据 将会被函数修改
          * @param n             表示是n*n方阵
          */
-        void transpose(var*& mat, int n);
+        var*& transpose(var*& mat, int n);
 
         /**
-         * @brief 矩阵转置
+         * @brief 矩阵转置 (注意输出对象不能和输入矩阵使用同一内存)
          * 
-         * @param out           输出对象
+         * @param out           输出对象 注意这个输出对象不能和输入矩阵使用同一内存
          * @param mat           矩阵数据
          * @param width_mat     原矩阵宽度
          * @param height_mat    原矩阵高度
          */
-        void transpose(var*& out, var*& mat, int width_mat, int height_mat);
+        var*& transpose(var*& out, var*& mat, int width_mat, int height_mat);
 
         /**
          * @brief 2*2矩阵转置
          * @param mat   矩阵数据
          * @param temp  传一个temp变量引用以节约开销
          */
-        inline void transpose_2(var*& mat,var& temp){
-            temp=mat[1];
-            mat[1]=mat[2];
-            mat[2]=temp;
+        inline var*& transpose_2(var*& mat){
+            std::swap(mat[1],mat[2]);
+            return mat;
         }
         
         /**
@@ -247,16 +259,25 @@ namespace NML{
          * @param mat   矩阵数据
          * @param temp  传一个temp变量引用以节约开销
          */
-        inline void transpose_3(var*& mat,var& temp){
-            temp=mat[1];
-            mat[1]=mat[3];
-            mat[3]=temp;
-            temp=mat[2];
-            mat[2]=mat[6];
-            mat[6]=temp;
-            temp=mat[5];
-            mat[5]=mat[7];
-            mat[7]=temp;
+        inline var*& transpose_3(var*& mat){
+            std::swap(mat[1],mat[3]);
+            std::swap(mat[2],mat[6]);
+            std::swap(mat[5],mat[7]);
+            return mat;
+        }
+        /**
+         * @brief 4*4矩阵转置
+         * @param mat   矩阵数据
+         * @param temp  传一个temp变量引用以节约开销
+         */
+        inline var*& transpose_4(var*& mat){
+            std::swap(mat[1],mat[4]);
+            std::swap(mat[2],mat[8]);
+            std::swap(mat[3],mat[12]);
+            std::swap(mat[6],mat[9]);
+            std::swap(mat[7],mat[13]);
+            std::swap(mat[11],mat[14]);
+            return mat;
         }
 
         /**
@@ -343,17 +364,6 @@ namespace NML{
 
         // open * 公式法矩阵求逆函数 * open
             // 公式法 m^-1=adj(m)/|m|
-
-            /**
-             * @brief 1x1 矩阵求逆
-             * 
-             * @param out       输出对象
-             * @param mat       矩阵数据 (必须是方阵)
-             * @return 返回是否成功计算逆矩阵
-             */
-            inline bool setup_Inverse__1(var*& out, var*& mat){
-                return (out[0])&&(out[0]=1/mat[0]);
-            }
             
             /**
              * @brief 2x2 矩阵求逆

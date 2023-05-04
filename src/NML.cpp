@@ -53,13 +53,13 @@ namespace NML{
     }
 
 
-    void sum(int length, var*& val_left, var*& val_right, var*& out){
+    void sum(var*& out, int length, var*& val_left, var*& val_right){
         for(int i=0;i<length;++i){
             out[i]=val_left[i]+val_left[i];
         }
     }
 
-    void dif(int length, var*& val_left, var*& val_right, var*& out){
+    void dif(var*& out, int length, var*& val_left, var*& val_right){
         for(int i=0;i<length;++i){
             out[i]=val_left[i]-val_left[i];
         }

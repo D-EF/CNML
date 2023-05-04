@@ -2,8 +2,8 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-04-12 10:14:29
- * @FilePath: \NML\src\NML_Matrix.cpp
+ * @LastEditTime: 2023-05-05 02:52:22
+ * @FilePath: \cnml\src\NML_Matrix.cpp
  * @Description: 矩阵 Matrix
  * @
  * @Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
@@ -23,7 +23,7 @@ namespace NML{
         }
 
 
-        void setup_Identity(var*& out,int width, int height){
+        var*& setup_Identity(var*& out,int width, int height){
             int l=width*height;
             for(int i=0;i<l;i++){
                 out[i]=0;
@@ -32,10 +32,11 @@ namespace NML{
             for(int i=0;i<l;i++){
                 out[i*width+i]=1;
             }
+            return out;
         }
 
 
-        void setup_Resize(var*& out, var*& mat, int low_width, int new_width, int _low_height, int _new_height, int shift_left, int shift_top){
+        var*& setup_Resize(var*& out, var*& mat, int low_width, int new_width, int _low_height, int _new_height, int shift_left, int shift_top){
             int low_height   = _low_height?_low_height:low_width;
             int new_height   = _new_height?_new_height:new_width;
             int left, load_left, top, load_top;
@@ -53,38 +54,45 @@ namespace NML{
                     out[i_out] = mat[i_mat];
                 }
             }
+            return out;
         }
 
-
-        void setup_TensorProduct(var*& out, var*& mat_left, var*& mat_right, int width_left, int height_left, int width_right, int height_right){
+        var*& setup_HadamardProduct(var*& out, var*& mat_left, var*& mat_right, int width, int height){
             int i=0;
-            for(int v_left=0;v_left<height_left;++v_left){
-                for(int v_right=0;v_right<height_right;++v_right){
-                    int i_left=v_left*width_left;
-                    for(int u_left=0;u_left<height_left;++u_left,++i_left){
-                        int i_m=v_left*width_left;
-                        for(int u_right=0;u_right<height_right;++u_right,++i){
-                            out[i]=mat_left[i_left]*mat_right[i_m+u_right];
-                        }
-                    }
+            for(int v=0;v<height;++v){
+                for(int u=0;u<width;++u,++i){
+                    out[i]=mat_left[i]*mat_right[i];
                 }
             }
+            return out;
         }
 
+        var*& setup_KroneckerProduct(var*& out, var*& mat_left, var*& mat_right, int width_left, int height_left, int width_right, int height_right){
+            // hl, hr, wl, wr
+            int i=0,i_vr_head,il=0;
 
-        void setup_Concat(var*& out, var**& mats, int width_m, int height_m, int width_g, int height_g){
-            int i=0;
-            for(int v_g=0;v_g<height_g;++v_g){
-                for(int v_mat=0;v_mat<height_m;++v_mat){
-                    int i_g=v_g*width_g;
-                    for(int u_g=0;u_g<height_g;++u_g,++i_g){
-                        int i_m=v_g*width_g;
-                        for(int u_mat=0;u_mat<height_m;++u_mat,++i){
-                            out[i]=mats[i_g][i_m+u_mat];
-                        }
-                    }
-                }
-            }
+            for(int vl=0;   vl<height_left;    ++vl)        {
+            for(int vr=0;   vr<height_right;   ++vr)        { i_vr_head=vr*width_right; il=vl*width_left;
+            for(int ul=0;   ul<width_left;     ++ul,++il)   { 
+            for(int ur=0;   ur<width_right;    ++ur,++i)    {
+                out[i]=mat_left[il]*mat_right[i_vr_head+ur];
+            }}}}
+            
+            return out;
+        }
+
+        var*& setup_Concat(var*& out, var**& mats, int width_m, int height_m, int width_g, int height_g){
+            // hl, hr, wl, wr
+            int i=0,i_vm_head,ig=0;
+
+            for(int vg=0;   vg<height_g;    ++vg)        {
+            for(int vm=0;   vm<height_m;   ++vm)        { i_vm_head=vm*width_m; ig=vg*width_g;
+            for(int ug=0;   ug<width_g;     ++ug,++ig)   { 
+            for(int um=0;   um<width_m;    ++um,++i)    {
+                out[i]=mats[ig][i_vm_head+um];
+            }}}}
+            
+            return out;
         }
 
 
@@ -198,6 +206,7 @@ namespace NML{
             if(v!=max_row) transformation__ExchangeRow(mat,width,v,max_row);
             return true;
         }
+        
         bool transformation__ExchangeRow_PivotToMax(var**& mats, int length_g, int length, int width, int index, int v, int step_length, int _index_m){
             int f=step_length>0?1:-1;
             int v_target=v+f;
@@ -218,23 +227,25 @@ namespace NML{
         }
 
 
-        void multiplication(var*& out, var*& mat_left, var*& mat_right, int height_left, int _width_left_height_right, int _width_right){
+        var*& multiplication(var*& out, var*& mat_left, var*& mat_right, int height_left, int _width_left_height_right, int _width_right){
             int index_out=0;
-            var temp;
+            int width_left_height_right=_width_left_height_right?_width_left_height_right:height_left;
+            int width_right=_width_right?_width_right:height_left;
 
             for(int i=0;i<height_left;++i){
-                for(int j=0;j<_width_right;++j){
-                    temp=0;
-                    for(int l=_width_left_height_right*i,k=j,c=0; c<_width_left_height_right; ++c,++l,k+=_width_right){
+                for(int j=0;j<width_right;++j){
+                    var temp=0;
+                    for(int l=height_left*i,k=j,c=0; c<width_left_height_right; ++c,++l,k+=width_right){
                         temp+=mat_left[l]*mat_right[k];
                     }
                     out[index_out]=temp;
                     ++index_out;
                 }
             }
+            return out;
         }
 
-        void multiplication(var*& out, var*& mat_left, var*& mat_right, int n){
+        var*& multiplication(var*& out, var*& mat_left, var*& mat_right, int n){
             int index_out=0;
             int length=n*n;
 
@@ -248,13 +259,20 @@ namespace NML{
                     ++index_out;
                 }
             }
+            return out;
         }
 
-        bool check_Orthogonal(var*& mat,int _n){
-            return false;
+        bool check_Orthogonal(var*& mat,int n){
+            int u,v;
+            for(v=0;v<n-1;++v){
+                for(u=v+1;u<n;++u){
+                    if(mat[get_Index(n,u,v)]!=-mat[get_Index(n,v,u)])return false;
+                }
+            }
+            return true;
         }
 
-        void transpose(var*& mat, int n){
+        var*& transpose(var*& mat, int n){
             var temp;
             for(int v=1; v<n; ++v){
                 int point_line=v*n;
@@ -262,9 +280,10 @@ namespace NML{
                     std::swap(mat[u*n+v],mat[point_line+u]);
                 }
             }
+            return mat;
         }
         
-        void transpose(var*& out, var*& mat, int width_mat, int height_mat){
+        var*& transpose(var*& out, var*& mat, int width_mat, int height_mat){
             int index_out=0;
 
             for(int u=0;u<width_mat;++u){
@@ -273,6 +292,7 @@ namespace NML{
                     ++index_out;
                 }
             }
+            return out;
         }
 
         var calc_Det__Transformation(var*& mat,int n){
@@ -314,7 +334,7 @@ namespace NML{
             int length=n*n;
             var* temp_mat=create_Values__Clone(mat,length);
             
-            printf_Matrix(temp_mat,n);
+            // printf_Matrix(temp_mat,n);
 
             // 初始化 out 为增广矩阵
             setup_Identity(out,n,n);
@@ -419,7 +439,7 @@ namespace NML{
             switch (n)
             {
                 case 1:
-                    return setup_Inverse__1(out,mat);
+                    return (out[0])&&(out[0]=1/mat[0]);
                 break;
                 
                 case 2:
