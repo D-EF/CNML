@@ -6,44 +6,7 @@
 namespace NML{
     namespace Matrix_2D{
         
-        // mij 表示 i行, j列 (mvu);   tx,ty 表示 x,y 齐次坐标;
-        // open * 2*3 or 3*3 矩阵算法下标定义 * open
-            
-            /** 3*3矩阵 的对应下标常量 */
-            #ifdef __NML_MATRIX_2D__USING_2X3__
-            // 2*3
-                const int
-                    w  =2,   h  =3,
-                    mxx=0,   mxy=1,
-                    myx=2,   myy=3,
-                    tx =4,   ty =5;
-
-                inline var*& setup_Matrix2D__Init(var*& out){
-                    out[0]=1;   out[1]=0;
-                    out[2]=0;   out[3]=1;
-                    out[4]=0;   out[5]=0;
-                    return out;
-                }
-            #else
-            // 3*3
-                const int
-                    w  =3,   h  =3,
-                    mxx=0,   mxy=1,   mx_null=2,
-                    myx=3,   myy=4,   my_null=5,
-                    tx =6,   ty =7,   mi_full=8;
-                    
-                inline var*& setup_Matrix2D__Init(var*& out){
-                    out[0]=1;   out[1]=0;   out[2]=0;
-                    out[3]=0;   out[4]=1;   out[5]=0;
-                    out[6]=0;   out[7]=0;   out[8]=1;
-                    return out;
-                }
-            #endif
-
-        // end  * 2*3 or 3*3 矩阵算法下标定义 * end 
-        
         // open * setup * open
-
             /**
              * @brief 写入矩阵数据
              * @param out    操作对象
@@ -54,17 +17,7 @@ namespace NML{
              * @param e      x 方向平移量
              * @param f      y 方向平移量
              */
-            inline var*& setup_Matrix2D(var*& out, var a, var b, var c, var d, var e, var f){
-                #ifndef __NML_MATRIX_2D__USING_2X3__
-                    out[mx_null]=0;
-                    out[my_null]=0;
-                    out[mi_full]=1;
-                #endif
-                out[mxx]=a;   out[mxy]=b;
-                out[myx]=c;   out[myy]=d;
-                out[tx] =e;   out[ty] =f;
-                return out;
-            }
+            var*& setup_Matrix2D(var*& out, var a, var b, var c, var d, var e, var f);
 
             /**
              * @brief Set the up Translate matrix 平移矩阵
@@ -147,13 +100,18 @@ namespace NML{
         
 
         // open * transform * open
-        
-        // todo
-            var*& transform_2DMatrix (var*& mat, var*& mat_right){
+            inline var*& transform_2DMatrix(var*& mat, var app_mxx, var app_myx, var app_mxy, var app_myy, var app_tx, var app_ty){  
                 return setup_Matrix2D(mat,
-                    mat[mxx]*mat_right[mxx]+mat[mxy]*mat_right[myx],   mat[mxx]*mat_right[mxy]+mat[mxy]*mat_right[myy],
-                    mat[myx]*mat_right[mxx]+mat[myy]*mat_right[myx],   mat[myx]*mat_right[mxy]+mat[myy]*mat_right[myy],
-                    mat[myx]*mat_right[mxx]+mat[myy]*mat_right[myx],   mat[myx]*mat_right[mxy]+mat[myy]*mat_right[myy]
+                    mat[mxx]*app_mxx + mat[mxy]*app_myx,          mat[mxx]*app_mxy + mat[mxy]*app_myy,
+                    mat[myx]*app_mxx + mat[myy]*app_myx,          mat[myx]*app_mxy + mat[myy]*app_myy,
+                    mat[tx]*app_mxx + mat[ty]*app_myx + app_tx,   mat[ty]*app_mxy + mat[ty]*app_myy + app_ty
+                );
+            }
+            inline var*& transform_2DMatrix (var*& mat, var*& mat_app){
+                return transform_2DMatrix(mat,
+                    mat_app[mxx],   mat_app[myx],
+                    mat_app[mxy],   mat_app[myy],
+                    mat_app[tx],    mat_app[ty]
                 );
             }
             

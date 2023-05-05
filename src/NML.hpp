@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-05-02 02:20:18
+ * @LastEditTime: 2023-05-06 02:41:46
  * @Description: Nittle Math Library 简单数学库
  * 
  * @Copyright (c) 2023 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
@@ -158,6 +158,27 @@ namespace NML{
     inline var*& np_v3(var*& out, var k){out[0]*=k;out[1]*=k;out[2]*=k;     return out;}
     inline var*& np_v4(var*& out, var k){out[0]*=k;out[1]*=k;out[2]*=k;out[3]*=k;       return out;}
 
+
+    namespace Matrix_2D{
+        const int M2D__2X3     =0;
+        const int M2D__3X2     =1;
+        const int M2D__3X3_L   =2;
+        const int M2D__3X3_R   =3;
+
+        //默认使用 3*3 左乘向量 (vector * matrix)
+        int _using_matrix_type=M2D__3X3_L;
+
+        // 定义操作时的下标: mij 表示 i行,j列; tx,ty 表示 x,y 齐次坐标;
+        int w  =3,   h  =3,
+            mxx=0,   mxy=1,   mx_null=2,
+            myx=3,   myy=4,   my_null=5,
+            tx =6,   ty =7,   mi_full=8;
+        /**
+         * @brief 
+         * @param type 使用的矩阵格式
+         */
+        void set_M2dConfig__using_matrix_type(int type);
+    }
 }
 
 
