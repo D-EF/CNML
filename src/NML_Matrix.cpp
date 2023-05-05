@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-05-05 02:52:22
+ * @LastEditTime: 2023-05-05 09:42:34
  * @FilePath: \cnml\src\NML_Matrix.cpp
  * @Description: 矩阵 Matrix
  * @
@@ -396,7 +396,7 @@ namespace NML{
 
         bool setup_Inverse__2(var*& out, var*& mat){
             var d=calc_Det__2(mat);
-            if(check_Equal(d,0))return false;
+            if(check_Zero(d))return false;
             d=1/d;
             out[0]= mat[3]*d;   out[1]=-mat[1]*d;
             out[2]=-mat[2]*d;   out[3]= mat[0]*d;
@@ -405,10 +405,11 @@ namespace NML{
         
         bool setup_Inverse__3(var*& out, var*& mat){
             var d=calc_Det__3(mat);
-            if(check_Equal(d,0))return false;
+            if(check_Zero(d))return false;
             d=1/d;
-            out[0]= mat[3]*d;   out[1]=-mat[1]*d;
-            out[2]=-mat[2]*d;   out[3]= mat[0]*d;
+            out[0]= +mat[4]*mat[8] - mat[5]*mat[7]*d;   out[1]= -mat[3]*mat[8] - mat[5]*mat[6]*d;   out[2]= +mat[3]*mat[7] - mat[6]*mat[4]*d;
+            out[3]= -mat[1]*mat[8] - mat[2]*mat[7]*d;   out[4]= +mat[0]*mat[8] - mat[2]*mat[6]*d;   out[5]= -mat[0]*mat[7] - mat[1]*mat[6]*d;
+            out[6]= +mat[1]*mat[5] - mat[2]*mat[4]*d;   out[7]= -mat[0]*mat[5] - mat[2]*mat[3]*d;   out[8]= +mat[0]*mat[4] - mat[1]*mat[3]*d;
             return true;
         }
         
@@ -426,7 +427,7 @@ namespace NML{
                 t10 = mat[9]  * mat[15] - mat[11] * mat[13],
                 t11 = mat[10] * mat[15] - mat[11] * mat[14];
             var d=t00*t11-t01*t10+t02*t09+t03*t08-t04*t07+t05*t06;
-            if(check_Equal(d,0))return false;
+            if(check_Zero(d))return false;
             d=1/d;
             out[0]    =(mat[5]*t11-mat[6]*t10+mat[7]*t09)*d;   out[1]    =(mat[2]*t10-mat[1]*t11-mat[3]*t09)*d;   out[2]    =(mat[13]*t05-mat[14]*t04+mat[15]*t03)*d;   out[3]    =(mat[10]*t04-mat[9] *t05-mat[11]*t03)*d;
             out[4]    =(mat[6]*t08-mat[4]*t11-mat[7]*t07)*d;   out[5]    =(mat[0]*t11-mat[2]*t08+mat[3]*t07)*d;   out[6]    =(mat[14]*t02-mat[12]*t05-mat[15]*t01)*d;   out[7]    =(mat[8] *t05-mat[10]*t02+mat[11]*t01)*d;

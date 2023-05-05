@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-20 00:58:11
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-05-05 03:04:41
+ * @LastEditTime: 2023-05-05 09:43:07
  * @FilePath: \cnml\src\test.cpp
  * @Description: 
  * @
@@ -270,13 +270,13 @@ namespace Test_Matrix{
         // calc_Det__3
         // calc_Det__4
         // setup_Inverse__Transformation
-            // todo
             setup_Inverse__Transformation(temp_m3,m3__router_x22deg,3);
             check_Test(check_Equal(3,temp_m3,m3__router_x22deg_i),                                        "setup_Inverse(temp_m3,m3__orthogonal,3)");
             // printf_Matrix(temp_m3,3,3);
         // setup_Inverse
             setup_Inverse(temp_m3,m3__router_x22deg,3);
             check_Test(check_Equal(3,temp_m3,m3__router_x22deg_i),                                        "setup_Inverse(temp_m3,m3__orthogonal,3)");
+            // printf_Matrix(temp_m3,3);
         // setup_Inverse__2
         // setup_Inverse__4
     }

@@ -11,11 +11,15 @@
 #ifndef __NITTLE_MATH_LIBRARY__
 #define __NITTLE_MATH_LIBRARY__
 
+#define __NML_VALUE_TYPE__ float
+// #define __NML_MATRIX_2D__USING_2X3__  // or use 3x3 matrix
+
+
 #include <Math.h>
 
 namespace NML{
 
-    typedef float var;
+    typedef __NML_VALUE_TYPE__ var;
 
     const var __TOLERANCE__=1e-6;
 
