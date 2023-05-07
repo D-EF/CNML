@@ -24,8 +24,8 @@ namespace NML{
          * @param _tolerance    容差 默认 1e-6
          * @return 返回是否为单位向量 
          */
-        inline bool is_Unit(int length, var*& vec, var _tolerance=__TOLERANCE__){return abs(1-dot(length, vec, vec))<(_tolerance);}
-        inline bool is_Unit(var*& vec, int length, var _tolerance=__TOLERANCE__){return abs(1-dot(length, vec, vec))<(_tolerance);}
+        inline bool is_Unit(int length, var*& vec, var _tolerance=NML_TOLERANCE){return abs(1-dot(length, vec, vec))<(_tolerance);}
+        inline bool is_Unit(var*& vec, int length, var _tolerance=NML_TOLERANCE){return abs(1-dot(length, vec, vec))<(_tolerance);}
         
         /**
          * @brief 判断2d向量象限 (+x=right, +y=up)

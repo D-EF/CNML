@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-05-06 02:41:46
+ * @LastEditTime: 2023-05-06 17:56:17
  * @Description: Nittle Math Library 简单数学库
  * 
  * @Copyright (c) 2023 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
@@ -11,9 +11,9 @@
 #ifndef __NITTLE_MATH_LIBRARY__
 #define __NITTLE_MATH_LIBRARY__
 
-#define __NML_VALUE_TYPE__ float
-// #define __NML_MATRIX_2D__USING_2X3__  // or use 3x3 matrix
-
+#ifndef __NML_VALUE_TYPE__
+    #define __NML_VALUE_TYPE__ float
+#endif
 
 #include <Math.h>
 
@@ -21,7 +21,17 @@ namespace NML{
 
     typedef __NML_VALUE_TYPE__ var;
 
-    const var __TOLERANCE__=1e-6;
+    const var NML_TOLERANCE=1e-6;
+
+    /** 三个坐标轴 */
+    enum Axis{ X=0, Y=1, Z=2 };
+    
+    /** 欧拉角旋转顺序 */
+    enum Rotation_Order{
+        XYZ=0b000110,    XYX=0b000100,    XZY=0b001001,    XZX=0b001000,
+        YXZ=0b010010,    YXY=0b010001,    YZX=0b011000,    YZY=0b011001,
+        ZXY=0b100001,    ZXZ=0b100010,    ZYX=0b100100,    ZYZ=0b100110
+    };
 
     template <typename value_Type> inline value_Type min(value_Type a,value_Type b){return a>b?b:a;}
     
@@ -70,8 +80,8 @@ namespace NML{
      * @param val 
      * @param length 
      */
-    void printf_val(const var* val, int length);
-    inline void printf_val(const Values val){printf_val(val.data,val.length);}
+    void printf_Vec(const var* val, int length);
+    inline void printf_Vec(const Values val){printf_Vec(val.data,val.length);}
 
     /**
      * @brief 判断值是否相等(容差)
@@ -81,7 +91,7 @@ namespace NML{
      * @param _tolerance    容差
      * @return  返回是否近似相等
      */
-    inline bool check_Equal(var v1, var v2, var _tolerance=__TOLERANCE__){return fabs(v1-v2)<_tolerance;}
+    inline bool check_Equal(var v1, var v2, var _tolerance=NML_TOLERANCE){return fabs(v1-v2)<_tolerance;}
 
     /**
      * @brief 判断是否趋近零
@@ -90,7 +100,7 @@ namespace NML{
      * @param _tolerance    容差
      * @return 返回数值是否趋近0
      */
-    inline bool check_Zero(var value, var _tolerance=__TOLERANCE__){return fabs(value)<_tolerance;}
+    inline bool check_Zero(var value, var _tolerance=NML_TOLERANCE){return fabs(value)<_tolerance;}
 
     /**
      * @brief 判断数据是否相等(容差)
@@ -101,8 +111,8 @@ namespace NML{
      * @param _tolerance    容差
      * @return  返回是否相等
      */
-    bool check_Equal(int length, var*& val_left, var*& val_right, var _tolerance=__TOLERANCE__);
-    inline bool check_Equal(var*& val_left, var*& val_right,int length, var _tolerance=__TOLERANCE__){return check_Equal(length, val_left, val_right, _tolerance);}
+    bool check_Equal(int length, var*& val_left, var*& val_right, var _tolerance=NML_TOLERANCE);
+    inline bool check_Equal(var*& val_left, var*& val_right,int length, var _tolerance=NML_TOLERANCE){return check_Equal(length, val_left, val_right, _tolerance);}
     
     
     /**
@@ -113,7 +123,7 @@ namespace NML{
      * @param _tolerance    容差
      * @return 返回数值是否趋近0
      */
-    bool check_Zero(int length, var*& value, var _tolerance=__TOLERANCE__);
+    bool check_Zero(int length, var*& value, var _tolerance=NML_TOLERANCE);
 
     /**
      * @brief 数据数值 和
@@ -160,15 +170,16 @@ namespace NML{
 
 
     namespace Matrix_2D{
-        const int M2D__2X3     =0;
-        const int M2D__3X2     =1;
-        const int M2D__3X3_L   =2;
-        const int M2D__3X3_R   =3;
+        enum M2D_Type{
+            M2D__2X3     =0,
+            M2D__3X2     =1,
+            M2D__3X3_L   =2,
+            M2D__3X3_R   =3
+        };
 
         //默认使用 3*3 左乘向量 (vector * matrix)
-        int _using_matrix_type=M2D__3X3_L;
+        M2D_Type _using_matrix_type=M2D__3X3_L;
 
-        // 定义操作时的下标: mij 表示 i行,j列; tx,ty 表示 x,y 齐次坐标;
         int w  =3,   h  =3,
             mxx=0,   mxy=1,   mx_null=2,
             myx=3,   myy=4,   my_null=5,
@@ -177,11 +188,32 @@ namespace NML{
          * @brief 
          * @param type 使用的矩阵格式
          */
-        void set_M2dConfig__using_matrix_type(int type);
+        void set_M2dConfig__using_matrix_type(M2D_Type type);
+    }
+
+    namespace Matrix_3D{
+        enum M3D_Type{
+            M3D__3X4     =0,
+            M3D__4X3     =1,
+            M3D__4X4_L   =2,    // 矩阵左边乘向量 vec * met
+            M3D__4X4_R   =3     // 矩阵右边乘向量 met * vec
+        };
+
+        //默认使用 3*3 左乘向量 (vector * matrix)
+        M3D_Type _using_matrix_type=M3D__4X4_L;
+
+        int w  =4,   h  =4,
+            mxx=0,    mxy=1,    mxz=2,    mx_null=3,
+            myx=4,    myy=5,    myz=6,    my_null=7,
+            mzx=8,    mzy=9,    mzz=10,   mz_null=11,
+            tx =12,   ty =13,   tz =14,   mi_full=15;
+        /**
+         * @brief 
+         * @param type 使用的矩阵格式
+         */
+        void set_M3dConfig__using_matrix_type(M3D_Type type);
     }
 }
-
-
 
 #endif
 

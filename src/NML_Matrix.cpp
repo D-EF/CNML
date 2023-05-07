@@ -18,7 +18,7 @@ namespace NML{
         void printf_Matrix(var*& matrix, int width, int height){
             int i=0;
             for(;i<height;i++){
-                printf_val(matrix+i*width, width);
+                printf_Vec(matrix+i*width, width);
             }
         }
 

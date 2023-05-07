@@ -100,15 +100,15 @@ namespace NML{
         
 
         // open * transform * open
-            inline var*& transform_2DMatrix(var*& mat, var app_mxx, var app_myx, var app_mxy, var app_myy, var app_tx, var app_ty){  
+            inline var*& transform_Matrix2D(var*& mat, var app_mxx, var app_myx, var app_mxy, var app_myy, var app_tx, var app_ty){  
                 return setup_Matrix2D(mat,
                     mat[mxx]*app_mxx + mat[mxy]*app_myx,          mat[mxx]*app_mxy + mat[mxy]*app_myy,
                     mat[myx]*app_mxx + mat[myy]*app_myx,          mat[myx]*app_mxy + mat[myy]*app_myy,
                     mat[tx]*app_mxx + mat[ty]*app_myx + app_tx,   mat[ty]*app_mxy + mat[ty]*app_myy + app_ty
                 );
             }
-            inline var*& transform_2DMatrix (var*& mat, var*& mat_app){
-                return transform_2DMatrix(mat,
+            inline var*& transform_Matrix2D (var*& mat, var*& mat_app){
+                return transform_Matrix2D(mat,
                     mat_app[mxx],   mat_app[myx],
                     mat_app[mxy],   mat_app[myy],
                     mat_app[tx],    mat_app[ty]
@@ -150,8 +150,12 @@ namespace NML{
              * @return 修改并返回 out
              */
             var*& transform_Rotate(var*& out, var theta){
-                // todo
-                return out;
+                var c=cos(theta),s=sin(theta);
+                return transform_Matrix2D(out,
+                     c,    s,
+                    -s,    c,
+                     0,    0
+                );
             }
 
             /**
@@ -161,7 +165,13 @@ namespace NML{
              * @param normal_y      对称轴的法线
              * @return 修改并返回 out
              */
-            var*& transform_Horizontal(var*& out, var normal_x, var normal_y);
+            var*& transform_Horizontal(var*& out, var normal_x, var normal_y){
+                return transform_Matrix2D(out,
+                    1-2*normal_x*normal_x ,   -2*normal_x*normal_y,
+                    -2*normal_x*normal_y  ,   1-2*normal_y*normal_y,
+                    0,                        0
+                );
+            }
 
             /**
              * @brief transform matrix Shear 切变矩阵 矩阵变换
@@ -171,7 +181,13 @@ namespace NML{
              * @param k         切变系数k
              * @return 修改并返回 out
              */
-            var*& transform_Shear(var*& out,var axis_x, var axis_y, var k);
+            var*& transform_Shear(var*& out,var axis_x, var axis_y, var k){
+                return transform_Matrix2D(out,
+                    1,          k*axis_x,
+                    k*axis_y,   1,
+                    0,          0
+                );
+            }
 
         // end  * transform * end 
     }

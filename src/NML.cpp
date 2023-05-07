@@ -26,7 +26,7 @@ namespace NML{
         return rtn;
     }
     
-    void printf_val(const var* val, int length){
+    void printf_Vec(const var* val, int length){
         int i=0;
         // std::cout<<'['<<val[i];
         printf("[%f",val[i]);
@@ -81,7 +81,7 @@ namespace NML{
     }
 
     namespace Matrix_2D{
-        void set_M2dConfig__using_matrix_type(int type){
+        void set_M2dConfig__using_matrix_type(M2D_Type type){
             _using_matrix_type=type;
             switch (_using_matrix_type){
                 case M2D__2X3:
@@ -110,6 +110,46 @@ namespace NML{
                     mxx=0,        myx=1,        tx=2,
                     mxy=3,        myy=4,        ty=5,
                     mx_null =6,   my_null =7,   mi_full=8;
+                break;
+            }
+        }
+    }
+
+    
+    namespace Matrix_3D{
+        void set_M3dConfig__using_matrix_type(M3D_Type type){
+            _using_matrix_type=type;
+            switch (_using_matrix_type){
+                case M3D__3X4:
+                    w  =3,   h  =4,
+                    mxx=0,   mxy=1,    mxz=2,    mx_null=0,
+                    myx=3,   myy=4,    myz=5,    my_null=0,
+                    mzx=6,   mzy=7,    mzz=8,    mz_null=0,
+                    tx =9,   ty =10,   tz =11,   mi_full=0;
+                break;
+
+                case M3D__4X3:
+                    w  =4,        h  =3,
+                    mxx=0,        myx=1,        mzx=2,        tx=3,
+                    mxy=4,        myy=5,        mzy=6,        ty=7,
+                    mxz=8,        myz=9,        mzz=10,       tz=11,
+                    mx_null =0,   my_null =0,   mz_null =0,   mi_full=0;
+                break;
+
+                case M3D__4X4_L:
+                    w  =4,   h  =4,
+                    mxx=0,    mxy=1,    mxz=2,    mx_null=3,
+                    myx=4,    myy=5,    myz=6,    my_null=7,
+                    mzx=8,    mzy=9,    mzz=10,   mz_null=11,
+                    tx =12,   ty =13,   tz =14,   mi_full=15;
+                break;
+
+                case M3D__4X4_R:
+                    w  =4,         h  =4,
+                    mxx=0,         myx=1,         mzx=2,         tx=3,
+                    mxy=4,         myy=5,         mzy=6,         ty=7,
+                    mxz=8,         myz=9,         mzz=10,        tz=11,
+                    mx_null =12,   my_null =13,   mz_null =14,   mi_full=15;
                 break;
             }
         }

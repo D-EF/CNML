@@ -83,7 +83,7 @@ namespace Test_Vector{
         var* temp   =new var[3];
         var* temp1  =new var[3];
 
-        np(vec_zero__f,3,__TOLERANCE__);
+        np(vec_zero__f,3,NML_TOLERANCE);
 
         // test is_Unit
             check_Test(false==is_Unit(3,vec1),                                        "test is_Unit(vec1)");
