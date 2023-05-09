@@ -1,7 +1,7 @@
 /*!
  * @Description: 向量 Vector 
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-04-24 02:04:28
+ * @LastEditTime: 2023-05-09 10:35:18
  */
 
 #ifndef __NML_VECTOR__
@@ -24,8 +24,8 @@ namespace NML{
          * @param _tolerance    容差 默认 1e-6
          * @return 返回是否为单位向量 
          */
-        inline bool is_Unit(int length, var*& vec, var _tolerance=NML_TOLERANCE){return abs(1-dot(length, vec, vec))<(_tolerance);}
-        inline bool is_Unit(var*& vec, int length, var _tolerance=NML_TOLERANCE){return abs(1-dot(length, vec, vec))<(_tolerance);}
+        inline bool is_Unit(int length, var*& vec, var _tolerance=NML_TOLERANCE){return check_Equal(1,dot(length, vec, vec),_tolerance);}
+        inline bool is_Unit(var*& vec, int length, var _tolerance=NML_TOLERANCE){return check_Equal(1,dot(length, vec, vec),_tolerance);}
         
         /**
          * @brief 判断2d向量象限 (+x=right, +y=up)

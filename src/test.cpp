@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-20 00:58:11
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-05-05 09:43:07
+ * @LastEditTime: 2023-05-09 17:57:19
  * @FilePath: \cnml\src\test.cpp
  * @Description: 
  * @
@@ -12,6 +12,8 @@
 #include <chrono>
 #include "NML.hpp"
 #include "NML_Matrix.hpp"
+#include "NML_Matrix_2D.hpp"
+#include "NML_Matrix_3D.hpp"
 
 using namespace std;
 using namespace NML;
@@ -158,6 +160,7 @@ namespace Test_Vector{
     }
 }
 
+
 namespace Test_Matrix{
     using namespace Matrix;
     
@@ -178,8 +181,18 @@ namespace Test_Matrix{
     var* m3=new var[9]{9,8,7,6,5,4,3,2,1};
 
     var* m2=new var[4]{1,2,3,4};
-    
+
+
+    void test_AllFnc__Matrix();
+    void test_AllFnc__M2d__AllType();
+    void test_AllFnc__M3d__AllType();
     void test_AllFnc(){
+        test_AllFnc__Matrix();
+        test_AllFnc__M2d__AllType();
+        test_AllFnc__M3d__AllType();
+    }
+    void test_AllFnc__Matrix(){
+        printf("\n\n start testing NML_Matrix's function.\n");
         var* temp_m3=new var[9];
         var* temp_m3_1=new var[9];
         var* temp_m3_i=new var[9]{1,0,0,0,1,0,0,0,1};
@@ -230,14 +243,14 @@ namespace Test_Matrix{
         };
         // get_Index
             check_Test(get_Index(3,0,1)==3,                                                                     "get_Index(3,0,1)");
-                check_Test(get_Index(3,2,2)==8,                                                                     "get_Index(3,2,2)");
+                check_Test(get_Index(3,2,2)==8,                                                                 "get_Index(3,2,2)");
         // setup_Identity
             check_Test(check_Equal(3,setup_Identity(temp_m3,3,3),temp_m3_i),                                    "setup_Identity(temp_m3,3,3)");
             check_Test(check_Equal(2,setup_Identity(temp_m2,2,2),temp_m2_i),                                    "setup_Identity(temp_m2,2,2)");
         // setup_Resize
             check_Test(check_Equal(3,setup_Resize(temp_m3,m2,2,3,2,3,1,1),temp_m3__setup_m2_t11),               "setup_Resize(temp_m3,m2,2,3,2,3,1,1)");
         // setup_KroneckerProduct
-            check_Test(check_Equal(16,setup_KroneckerProduct(temp_m4,m2,m2,2,2,2,2),m4__m2_tx_m2),                 "setup_TensorProduct(temp_m4,m2,m2,2,2,2,2)");
+            check_Test(check_Equal(16,setup_KroneckerProduct(temp_m4,m2,m2,2,2,2,2),m4__m2_tx_m2),              "setup_TensorProduct(temp_m4,m2,m2,2,2,2,2)");
             // printf_Matrix(temp_m4,4,4);
         // setup_Concat
             check_Test(check_Equal(16,setup_Concat(temp_m4,m2x4,2,2,2,2),m4__m2x4),                             "setup_Concat(temp_m4,m2x4,2,2,2,2)");
@@ -252,18 +265,18 @@ namespace Test_Matrix{
         // transformation__ExchangeRow_PivotToMax
             //初等变换操作在求逆矩阵中有使用，不多测试了
         // multiplication
-            check_Test(check_Equal(16,multiplication(temp_m3,m3,m3,3),m3__m3xm3),                                   "multiplication(temp_m3,m3,m3,3)");
-            check_Test(check_Equal(16,multiplication(temp_m3,m3,m3,3,3,3),m3__m3xm3),                               "multiplication(temp_m3,m3,m3,3,3,3)");
+            check_Test(check_Equal(16,multiplication(temp_m3,m3,m3,3),m3__m3xm3),                               "multiplication(temp_m3,m3,m3,3)");
+            check_Test(check_Equal(16,multiplication(temp_m3,m3,m3,3,3,3),m3__m3xm3),                           "multiplication(temp_m3,m3,m3,3,3,3)");
         // check_Orthogonal
-            check_Test( check_Orthogonal(m3__orthogonal,3),                                                         "check_Orthogonal(m3__orthogonal,3)");
-            check_Test(!check_Orthogonal(m3,3),                                                                     "check_Orthogonal(m3,3)");
+            check_Test( check_Orthogonal(m3__orthogonal,3),                                                     "check_Orthogonal(m3__orthogonal,3)");
+            check_Test(!check_Orthogonal(m3,3),                                                                 "check_Orthogonal(m3,3)");
         // transpose
             clone_To(temp_m3,m3__orthogonal,9);
-            check_Test(check_Equal(9,transpose(temp_m3,3),m3__orthogonal_i),                                        "transpose(temp_m3,3)");
+            check_Test(check_Equal(9,transpose(temp_m3,3),m3__orthogonal_i),                                    "transpose(temp_m3,3)");
         // transpose_2
         // transpose_3
             clone_To(temp_m3,m3__orthogonal,9);
-            check_Test(check_Equal(9,transpose_3(temp_m3),m3__orthogonal_i),                                        "transpose_3(temp_m3)");
+            check_Test(check_Equal(9,transpose_3(temp_m3),m3__orthogonal_i),                                    "transpose_3(temp_m3)");
         // calc_Det__Transformation
         // calc_Det
         // calc_Det__2
@@ -271,14 +284,114 @@ namespace Test_Matrix{
         // calc_Det__4
         // setup_Inverse__Transformation
             setup_Inverse__Transformation(temp_m3,m3__router_x22deg,3);
-            check_Test(check_Equal(3,temp_m3,m3__router_x22deg_i),                                        "setup_Inverse(temp_m3,m3__orthogonal,3)");
+            check_Test(check_Equal(3,temp_m3,m3__router_x22deg_i),                                              "setup_Inverse(temp_m3,m3__orthogonal,3)");
             // printf_Matrix(temp_m3,3,3);
         // setup_Inverse
             setup_Inverse(temp_m3,m3__router_x22deg,3);
-            check_Test(check_Equal(3,temp_m3,m3__router_x22deg_i),                                        "setup_Inverse(temp_m3,m3__orthogonal,3)");
+            check_Test(check_Equal(3,temp_m3,m3__router_x22deg_i),                                              "setup_Inverse(temp_m3,m3__orthogonal,3)");
             // printf_Matrix(temp_m3,3);
         // setup_Inverse__2
         // setup_Inverse__4
+    }
+    
+    var* test_m2d__setup[4]={
+        new var[9]{1,2,0,3,4,0,5,6,1},
+        new var[9]{1,3,5,2,4,6,0,0,1},
+        new var[6]{1,2,3,4,5,6},
+        new var[6]{1,3,5,2,4,6}
+    };
+
+    void test_AllFnc__M2d(Matrix_2D::M2D_Type type = Matrix_2D::M2D__3X3_L);
+    void test_AllFnc__M2d__AllType(){
+
+        test_AllFnc__M2d(Matrix_2D::M2D__3X3_L);
+        test_AllFnc__M2d(Matrix_2D::M2D__3X3_R);
+        test_AllFnc__M2d(Matrix_2D::M2D__2X3);
+        test_AllFnc__M2d(Matrix_2D::M2D__3X2);
+    }
+
+    void test_AllFnc__M2d(Matrix_2D::M2D_Type type){
+        printf("\n\n start testing NML_Matrix_2D's function.\n");
+        using namespace Matrix_2D;
+        set_NMLConfig__using_m2d_type(type);
+        int l=w*h;
+
+        var* t_m2d= new var[l];
+        setup_Matrix2D(t_m2d,1,2,3,4,5,6);
+        char* s;
+        switch (type)
+        {
+            case 0:
+                s="test setup_Matrix2D type M2D__3X3_L";
+            break;
+            case 1:
+                s="test setup_Matrix2D type M2D__3X3_R";
+            break;
+            case 2:
+                s="test setup_Matrix2D type M2D__2X3";
+            break;
+            case 3:
+                s="test setup_Matrix2D type M2D__3X2";
+            break;
+        }
+        check_Test(check_Equal(l,test_m2d__setup[type],t_m2d), s);
+        printf_Matrix(t_m2d,w,h);
+
+        var* s_test_m2d__Translate_123_321_3x3L    =new var[l];
+        var* s_test_m2d__Scale_1d234_5d678_3x3L    =new var[l];
+        var* s_test_m2d__Rotate_9d876_3x3L         =new var[l];
+        var* s_test_m2d__Horizontal_4_7_3x3L       =new var[l];
+        var* s_test_m2d__Shear_2_1_2_3x3L          =new var[l];
+
+        // init test transform matrix
+            setup_Matrix2D(s_test_m2d__Translate_123_321_3x3L,
+                1,     0,
+                0,     1,
+                123,   321
+            );
+            setup_Matrix2D(s_test_m2d__Scale_1d234_5d678_3x3L,
+                1.234,   0,
+                0,       5.678,
+                0,       0
+            );
+            setup_Matrix2D(s_test_m2d__Rotate_9d876_3x3L,
+                -0.8999148851836156,   -0.4360655907371733,
+                0.4360655907371733,    -0.8999148851836156,
+                0,                     0
+            );
+            setup_Matrix2D(s_test_m2d__Horizontal_4_7_3x3L,
+                0.5076923076923077,    -0.8615384615384617,
+                -0.8615384615384617,   -0.5076923076923081,
+                0,                     0
+            );
+            setup_Matrix2D(s_test_m2d__Shear_2_1_2_3x3L,
+                1,                     0.4472135954999579,
+                0.22360679774997896,   1,
+                0,                     0
+            );
+        //
+
+        check_Test(check_Equal(l,s_test_m2d__Translate_123_321_3x3L,setup_Translate(t_m2d,123,321)),                                "test setup_Translate(t_m2d,123,321)");
+        check_Test(check_Equal(l,s_test_m2d__Scale_1d234_5d678_3x3L,setup_Scale(t_m2d,1.234,5.678)),                                "test setup_Scale(t_m2d,1.234,5.678)");
+        check_Test(check_Equal(l,s_test_m2d__Rotate_9d876_3x3L,setup_Rotate(t_m2d,9.876)),                                          "test setup_Rotate(t_m2d,9.876)");
+        check_Test(check_Equal(l,s_test_m2d__Horizontal_4_7_3x3L,setup_Horizontal(t_m2d,0.49613893835683387,0.8682431421244593)),   "test setup_Horizontal(t_m2d,0.49613893835683387,0.8682431421244593)");
+        check_Test(check_Equal(l,s_test_m2d__Horizontal_4_7_3x3L,setup_Horizontal__Collinear(t_m2d,4,7)),                           "test setup_Horizontal__Collinear(t_m2d,4,7)");
+        check_Test(check_Equal(l,s_test_m2d__Shear_2_1_2_3x3L,setup_Shear(t_m2d,0.8944271909999159,0.4472135954999579,0.5)),        "test setup_Shear(t_m2d,0.8944271909999159,0.4472135954999579,0.5)");
+        check_Test(check_Equal(l,s_test_m2d__Shear_2_1_2_3x3L,setup_Shear__Collinear(t_m2d,2,1,0.5)),                               "test setup_Shear__Collinear(t_m2d,2,1,0.5)");
+
+        delete s_test_m2d__Translate_123_321_3x3L;
+        delete s_test_m2d__Scale_1d234_5d678_3x3L;
+        delete s_test_m2d__Rotate_9d876_3x3L;
+        delete s_test_m2d__Horizontal_4_7_3x3L;
+        delete s_test_m2d__Shear_2_1_2_3x3L;
+    }
+
+    
+
+    
+    void test_AllFnc__M3d__AllType(){
+        printf("\n\n start testing NML_Matrix_3D's function.\n");
+
     }
 
     void test_transformation(){

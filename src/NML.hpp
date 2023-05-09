@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-05-06 17:56:17
+ * @LastEditTime: 2023-05-09 17:40:11
  * @Description: Nittle Math Library 简单数学库
  * 
  * @Copyright (c) 2023 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
@@ -15,7 +15,12 @@
     #define __NML_VALUE_TYPE__ float
 #endif
 
+#define __NML__INLINE_M2D_ACTION_FUNCTION inline
+#define __NML__INLINE_M3D_ACTION_FUNCTION inline
+
+
 #include <Math.h>
+#include <iostream>
 
 namespace NML{
 
@@ -164,55 +169,10 @@ namespace NML{
      * @param k             标量
      */
     var*& np(var*& out, int length, var k);
-    inline var*& np_v2(var*& out, var k){out[0]*=k;out[1]*=k;       return out;}
-    inline var*& np_v3(var*& out, var k){out[0]*=k;out[1]*=k;out[2]*=k;     return out;}
-    inline var*& np_v4(var*& out, var k){out[0]*=k;out[1]*=k;out[2]*=k;out[3]*=k;       return out;}
+    inline var*& np_v2(var*& out, var k){out[0]*=k;out[1]*=k;                       return out;}
+    inline var*& np_v3(var*& out, var k){out[0]*=k;out[1]*=k;out[2]*=k;             return out;}
+    inline var*& np_v4(var*& out, var k){out[0]*=k;out[1]*=k;out[2]*=k;out[3]*=k;   return out;}
 
-
-    namespace Matrix_2D{
-        enum M2D_Type{
-            M2D__2X3     =0,
-            M2D__3X2     =1,
-            M2D__3X3_L   =2,
-            M2D__3X3_R   =3
-        };
-
-        //默认使用 3*3 左乘向量 (vector * matrix)
-        M2D_Type _using_matrix_type=M2D__3X3_L;
-
-        int w  =3,   h  =3,
-            mxx=0,   mxy=1,   mx_null=2,
-            myx=3,   myy=4,   my_null=5,
-            tx =6,   ty =7,   mi_full=8;
-        /**
-         * @brief 
-         * @param type 使用的矩阵格式
-         */
-        void set_M2dConfig__using_matrix_type(M2D_Type type);
-    }
-
-    namespace Matrix_3D{
-        enum M3D_Type{
-            M3D__3X4     =0,
-            M3D__4X3     =1,
-            M3D__4X4_L   =2,    // 矩阵左边乘向量 vec * met
-            M3D__4X4_R   =3     // 矩阵右边乘向量 met * vec
-        };
-
-        //默认使用 3*3 左乘向量 (vector * matrix)
-        M3D_Type _using_matrix_type=M3D__4X4_L;
-
-        int w  =4,   h  =4,
-            mxx=0,    mxy=1,    mxz=2,    mx_null=3,
-            myx=4,    myy=5,    myz=6,    my_null=7,
-            mzx=8,    mzy=9,    mzz=10,   mz_null=11,
-            tx =12,   ty =13,   tz =14,   mi_full=15;
-        /**
-         * @brief 
-         * @param type 使用的矩阵格式
-         */
-        void set_M3dConfig__using_matrix_type(M3D_Type type);
-    }
 }
 
 #endif

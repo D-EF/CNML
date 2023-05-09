@@ -80,11 +80,18 @@
     ``` c++
     namespace NML{
       namespace Matrix_2D{
-        const int M2D__2X3     =0;
-        const int M2D__3X2     =1;
-        const int M2D__3X3_L   =2;
-        const int M2D__3X3_R   =3;
-        void set_M2dConfig__using_matrix_type(int type);
+        /** 可选的2D矩阵的存储格式 */
+        enum M2D_Type{
+            M2D__3X3_L,   // 矩阵左边乘向量 vec * met
+            M2D__3X3_R,   // 矩阵右边乘向量 met * vec
+            M2D__2X3,     // 矩阵左边乘向量 vec * met 省略右侧列
+            M2D__3X2      // 矩阵右边乘向量 met * vec 省略下侧行
+        };
+        /**
+         * @brief 
+         * @param type 使用的矩阵格式
+         */
+        void set_M2dConfig__using_matrix_type(M2D_Type type);
       }
     }
     ```
@@ -93,11 +100,18 @@
     ``` c++
     namespace NML{
       namespace Matrix_3D{
-        const int M3D__3X4     =0;
-        const int M3D__4X3     =1;
-        const int M3D__4X4_L   =2;
-        const int M3D__4X4_R   =3;
-        void set_M3dConfig__using_matrix_type(int type);
+        /** 可选的3D矩阵的存储格式 */
+        enum M3D_Type{
+            M3D__4X4_L,   // 矩阵左边乘向量 vec * met
+            M3D__4X4_R,   // 矩阵右边乘向量 met * vec
+            M3D__3X4,     // 矩阵左边乘向量 vec * met 省略右侧列
+            M3D__4X3      // 矩阵右边乘向量 met * vec 省略下侧行
+        };
+        /**
+         * @brief 
+         * @param type 使用的矩阵格式
+         */
+        void set_M2dConfig__using_matrix_type(M3D_Type type);
       }
     }
     ```
