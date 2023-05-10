@@ -31,38 +31,7 @@ namespace NML{
          * @brief 切换要使用的数据格式
          * @param type 使用的矩阵格式
          */
-        void set_NMLConfig__using_m2d_type(M2D_Type type){
-            _using_m2d_type=type;
-            switch (_using_m2d_type){
-                case M2D__2X3:
-                    w=2,h=3;
-                    mxx=0,   mxy=1,    mx_null=0,
-                    myx=2,   myy=3,    my_null=0,
-                    tx =4,   ty =5,    mi_full=0;
-                break;
-
-                case M2D__3X2:
-                    w=3,h=2;
-                    mxx=0,        myx=1,        tx=2,
-                    mxy=3,        myy=4,        ty=5,
-                    mx_null =0,   my_null =0,   mi_full=0;
-                break;
-
-                case M2D__3X3_L:
-                    w=3,h=3;
-                    mxx=0,   mxy=1,   mx_null=2,
-                    myx=3,   myy=4,   my_null=5,
-                    tx =6,   ty =7,   mi_full=8;
-                break;
-
-                case M2D__3X3_R:
-                    w=3,h=3;
-                    mxx=0,        myx=1,        tx=2,
-                    mxy=3,        myy=4,        ty=5,
-                    mx_null =6,   my_null =7,   mi_full=8;
-                break;
-            }
-        }
+        void set_NMLConfig__using_m2d_type(M2D_Type type);
 
         /**
          * @brief 写入矩阵数据
@@ -88,7 +57,7 @@ namespace NML{
          * @param app_ty  y 方向平移量
          * @return 修改 mat 并返回
          */
-        __NML__INLINE_M2D_ACTION_FUNCTION  var*& transform_Matrix2D(var*& mat, var app_mxx, var app_myx, var app_mxy, var app_myy, var app_tx, var app_ty);
+        __NML__INLINE_M2D_ACTION_FUNCTION  var*& transform_Matrix2D(var*& mat, var app_mxx, var app_mxy, var app_myx, var app_myy, var app_tx, var app_ty);
         
         typedef var*&(_M2d_Act_Fnc)(var*& mat, var app_mxx, var app_myx, var app_mxy, var app_myy, var app_tx, var app_ty);
 
@@ -218,7 +187,7 @@ namespace NML{
              * @param normal_y      镜像轴法线方向上的 y 坐标
              * @return 修改 out 并返回
              */
-            inline var*& transform_Horizontal__Collinear   (var*& out, var normal_x, var normal_y)   {act_Horizontal__Collinear   (setup_Matrix2D, out, normal_x, normal_y);}
+            inline var*& transform_Horizontal__Collinear   (var*& out, var normal_x, var normal_y)   {act_Horizontal__Collinear   (transform_Matrix2D, out, normal_x, normal_y);}
             /**
              * @brief               矩阵进行切变变换
              * @param out           输出对象
@@ -249,7 +218,38 @@ namespace NML{
 namespace NML{
     namespace Matrix_2D{
 
+        void set_NMLConfig__using_m2d_type(M2D_Type type){
+            _using_m2d_type=type;
+            switch (_using_m2d_type){
+                case M2D__2X3:
+                    w=2,h=3;
+                    mxx=0,   mxy=1,    mx_null=0,
+                    myx=2,   myy=3,    my_null=0,
+                    tx =4,   ty =5,    mi_full=0;
+                break;
 
+                case M2D__3X2:
+                    w=3,h=2;
+                    mxx=0,        myx=1,        tx=2,
+                    mxy=3,        myy=4,        ty=5,
+                    mx_null =0,   my_null =0,   mi_full=0;
+                break;
+
+                case M2D__3X3_L:
+                    w=3,h=3;
+                    mxx=0,   mxy=1,   mx_null=2,
+                    myx=3,   myy=4,   my_null=5,
+                    tx =6,   ty =7,   mi_full=8;
+                break;
+
+                case M2D__3X3_R:
+                    w=3,h=3;
+                    mxx=0,        myx=1,        tx=2,
+                    mxy=3,        myy=4,        ty=5,
+                    mx_null =6,   my_null =7,   mi_full=8;
+                break;
+            }
+        }
 
         __NML__INLINE_M2D_ACTION_FUNCTION var*& setup_Matrix2D(var*& out, var a, var b, var c, var d, var e, var f){
             out[mx_null]=0;   out[my_null]=0;   out[mi_full]=1;
@@ -260,11 +260,11 @@ namespace NML{
             return out;
         }
 
-        __NML__INLINE_M2D_ACTION_FUNCTION var*& transform_Matrix2D(var*& mat, var app_mxx, var app_myx, var app_mxy, var app_myy, var app_tx, var app_ty){  
+        __NML__INLINE_M2D_ACTION_FUNCTION var*& transform_Matrix2D(var*& mat, var app_mxx, var app_mxy, var app_myx, var app_myy, var app_tx, var app_ty){  
             return setup_Matrix2D(mat,
                 mat[mxx]*app_mxx + mat[mxy]*app_myx,            mat[mxx]*app_mxy + mat[mxy]*app_myy,
                 mat[myx]*app_mxx + mat[myy]*app_myx,            mat[myx]*app_mxy + mat[myy]*app_myy,
-                mat[tx] *app_mxx + mat[ty] *app_myx + app_tx,   mat[ty] *app_mxy + mat[ty] *app_myy + app_ty
+                mat[tx] *app_mxx + mat[ty] *app_myx + app_tx,   mat[tx] *app_mxy + mat[ty] *app_myy + app_ty
             );
         }
 

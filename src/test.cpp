@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-20 00:58:11
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-05-09 17:57:19
+ * @LastEditTime: 2023-05-11 03:27:46
  * @FilePath: \cnml\src\test.cpp
  * @Description: 
  * @
@@ -294,106 +294,6 @@ namespace Test_Matrix{
         // setup_Inverse__4
     }
     
-    var* test_m2d__setup[4]={
-        new var[9]{1,2,0,3,4,0,5,6,1},
-        new var[9]{1,3,5,2,4,6,0,0,1},
-        new var[6]{1,2,3,4,5,6},
-        new var[6]{1,3,5,2,4,6}
-    };
-
-    void test_AllFnc__M2d(Matrix_2D::M2D_Type type = Matrix_2D::M2D__3X3_L);
-    void test_AllFnc__M2d__AllType(){
-
-        test_AllFnc__M2d(Matrix_2D::M2D__3X3_L);
-        test_AllFnc__M2d(Matrix_2D::M2D__3X3_R);
-        test_AllFnc__M2d(Matrix_2D::M2D__2X3);
-        test_AllFnc__M2d(Matrix_2D::M2D__3X2);
-    }
-
-    void test_AllFnc__M2d(Matrix_2D::M2D_Type type){
-        printf("\n\n start testing NML_Matrix_2D's function.\n");
-        using namespace Matrix_2D;
-        set_NMLConfig__using_m2d_type(type);
-        int l=w*h;
-
-        var* t_m2d= new var[l];
-        setup_Matrix2D(t_m2d,1,2,3,4,5,6);
-        char* s;
-        switch (type)
-        {
-            case 0:
-                s="test setup_Matrix2D type M2D__3X3_L";
-            break;
-            case 1:
-                s="test setup_Matrix2D type M2D__3X3_R";
-            break;
-            case 2:
-                s="test setup_Matrix2D type M2D__2X3";
-            break;
-            case 3:
-                s="test setup_Matrix2D type M2D__3X2";
-            break;
-        }
-        check_Test(check_Equal(l,test_m2d__setup[type],t_m2d), s);
-        printf_Matrix(t_m2d,w,h);
-
-        var* s_test_m2d__Translate_123_321_3x3L    =new var[l];
-        var* s_test_m2d__Scale_1d234_5d678_3x3L    =new var[l];
-        var* s_test_m2d__Rotate_9d876_3x3L         =new var[l];
-        var* s_test_m2d__Horizontal_4_7_3x3L       =new var[l];
-        var* s_test_m2d__Shear_2_1_2_3x3L          =new var[l];
-
-        // init test transform matrix
-            setup_Matrix2D(s_test_m2d__Translate_123_321_3x3L,
-                1,     0,
-                0,     1,
-                123,   321
-            );
-            setup_Matrix2D(s_test_m2d__Scale_1d234_5d678_3x3L,
-                1.234,   0,
-                0,       5.678,
-                0,       0
-            );
-            setup_Matrix2D(s_test_m2d__Rotate_9d876_3x3L,
-                -0.8999148851836156,   -0.4360655907371733,
-                0.4360655907371733,    -0.8999148851836156,
-                0,                     0
-            );
-            setup_Matrix2D(s_test_m2d__Horizontal_4_7_3x3L,
-                0.5076923076923077,    -0.8615384615384617,
-                -0.8615384615384617,   -0.5076923076923081,
-                0,                     0
-            );
-            setup_Matrix2D(s_test_m2d__Shear_2_1_2_3x3L,
-                1,                     0.4472135954999579,
-                0.22360679774997896,   1,
-                0,                     0
-            );
-        //
-
-        check_Test(check_Equal(l,s_test_m2d__Translate_123_321_3x3L,setup_Translate(t_m2d,123,321)),                                "test setup_Translate(t_m2d,123,321)");
-        check_Test(check_Equal(l,s_test_m2d__Scale_1d234_5d678_3x3L,setup_Scale(t_m2d,1.234,5.678)),                                "test setup_Scale(t_m2d,1.234,5.678)");
-        check_Test(check_Equal(l,s_test_m2d__Rotate_9d876_3x3L,setup_Rotate(t_m2d,9.876)),                                          "test setup_Rotate(t_m2d,9.876)");
-        check_Test(check_Equal(l,s_test_m2d__Horizontal_4_7_3x3L,setup_Horizontal(t_m2d,0.49613893835683387,0.8682431421244593)),   "test setup_Horizontal(t_m2d,0.49613893835683387,0.8682431421244593)");
-        check_Test(check_Equal(l,s_test_m2d__Horizontal_4_7_3x3L,setup_Horizontal__Collinear(t_m2d,4,7)),                           "test setup_Horizontal__Collinear(t_m2d,4,7)");
-        check_Test(check_Equal(l,s_test_m2d__Shear_2_1_2_3x3L,setup_Shear(t_m2d,0.8944271909999159,0.4472135954999579,0.5)),        "test setup_Shear(t_m2d,0.8944271909999159,0.4472135954999579,0.5)");
-        check_Test(check_Equal(l,s_test_m2d__Shear_2_1_2_3x3L,setup_Shear__Collinear(t_m2d,2,1,0.5)),                               "test setup_Shear__Collinear(t_m2d,2,1,0.5)");
-
-        delete s_test_m2d__Translate_123_321_3x3L;
-        delete s_test_m2d__Scale_1d234_5d678_3x3L;
-        delete s_test_m2d__Rotate_9d876_3x3L;
-        delete s_test_m2d__Horizontal_4_7_3x3L;
-        delete s_test_m2d__Shear_2_1_2_3x3L;
-    }
-
-    
-
-    
-    void test_AllFnc__M3d__AllType(){
-        printf("\n\n start testing NML_Matrix_3D's function.\n");
-
-    }
-
     void test_transformation(){
         var* t_m4=create_Values__Clone(m4,16);
         var* t_m4_1=create_Values__Clone(m4,16);
@@ -426,4 +326,240 @@ namespace Test_Matrix{
         delete t_m4_2;
         delete m4s;
     }
+    
+    var* test_m2d__setup[4]={
+        new var[9]{1,2,0,3,4,0,5,6,1},
+        new var[9]{1,3,5,2,4,6,0,0,1},
+        new var[6]{1,2,3,4,5,6},
+        new var[6]{1,3,5,2,4,6}
+    };
+
+    
+    var* test_m2d__transform_987654[4]={
+        new var[9]{23,20,0,55,48,0,92,80,1},
+        new var[9]{23,55,92,20,48,80,0,0,1},
+        new var[6]{23,20,55,48,92,80},
+        new var[6]{23,55,92,20,48,80}
+    };
+
+    void test_AllFnc__M2d(Matrix_2D::M2D_Type type = Matrix_2D::M2D__3X3_L);
+    void test_AllFnc__M2d__AllType(){
+        test_AllFnc__M2d(Matrix_2D::M2D__3X3_L);
+        test_AllFnc__M2d(Matrix_2D::M2D__3X3_R);
+        test_AllFnc__M2d(Matrix_2D::M2D__2X3);
+        test_AllFnc__M2d(Matrix_2D::M2D__3X2);
+    }
+
+    void test_AllFnc__M2d(Matrix_2D::M2D_Type type){
+        printf("\n\n start testing NML_Matrix_2D's function.\n");
+        using namespace Matrix_2D;
+        set_NMLConfig__using_m2d_type(type);
+        int l=w*h;
+
+        var* t_m2d= new var[l];
+        char *ss,*st;
+        switch (type)
+        {
+            case 0:
+                ss="test setup_Matrix2D type M2D__3X3_L";
+                st="test transform_Matrix2D type M2D__3X3_L";
+            break;
+            case 1:
+                ss="test setup_Matrix2D type M2D__3X3_R";
+                st="test transform_Matrix2D type M2D__3X3_R";
+            break;
+            case 2:
+                ss="test setup_Matrix2D type M2D__2X3";
+                st="test transform_Matrix2D type M2D__2X3";
+            break;
+            case 3:
+                ss="test setup_Matrix2D type M2D__3X2";
+                st="test transform_Matrix2D type M2D__3X2";
+            break;
+        }
+        
+        setup_Matrix2D(t_m2d,1,2,3,4,5,6);
+        check_Test(check_Equal(l,test_m2d__setup[type],t_m2d), ss);
+        // printf_Matrix(t_m2d,w,h);
+
+        transform_Matrix2D(t_m2d,9,8,7,6,5,4);
+        check_Test(check_Equal(l,test_m2d__transform_987654[type],t_m2d), st);
+        // printf_Matrix(t_m2d,w,h);
+        
+        var* s_test_m2d__Translate_123_321    =new var[l];
+        var* s_test_m2d__Scale_1d234_5d678    =new var[l];
+        var* s_test_m2d__Rotate_9d876         =new var[l];
+        var* s_test_m2d__Horizontal_4_7       =new var[l];
+        var* s_test_m2d__Shear_2_1_2          =new var[l];
+
+        var* s_test_m2d__ts      =new var[l];
+        var* s_test_m2d__tsr     =new var[l];
+        var* s_test_m2d__tsrh    =new var[l];
+        var* s_test_m2d__tsrhs   =new var[l];
+
+        // init test transform matrix
+            setup_Matrix2D(s_test_m2d__Translate_123_321,
+                1,     0,
+                0,     1,
+                123,   321
+            );
+            setup_Matrix2D(s_test_m2d__Scale_1d234_5d678,
+                1.234,   0,
+                0,       5.678,
+                0,       0
+            );
+            setup_Matrix2D(s_test_m2d__Rotate_9d876,
+                -0.8999148851836156,   -0.4360655907371733,
+                0.4360655907371733,    -0.8999148851836156,
+                0,                     0
+            );
+            setup_Matrix2D(s_test_m2d__Horizontal_4_7,
+                0.5076923076923077,    -0.8615384615384617,
+                -0.8615384615384617,   -0.5076923076923081,
+                0,                     0
+            );
+            setup_Matrix2D(s_test_m2d__Shear_2_1_2,
+                1,                     0.4472135954999579,
+                0.22360679774997896,   1,
+                0,                     0
+            );
+
+            setup_Matrix2D(s_test_m2d__ts,
+                1.234,     0,
+                0,         5.678,
+                151.782,   1822.638
+            );
+            setup_Matrix2D(s_test_m2d__tsr,
+                -1.1104949683165816504,   -0.5381049389696718522,
+                2.4759804242056699974,    -5.1097167180725693768,
+                658.19883506708052617,    -1706.4059739945644077
+            );
+            setup_Matrix2D(s_test_m2d__tsrh,
+                -0.10019165187916261854,   1.2299258647958118541,
+                5.6592536955515542906,   0.461011506782728714,
+                1804.2968630909120175,   299.26557504714085398
+            );
+            setup_Matrix2D(s_test_m2d__tsrh,
+                -0.10019165187916261854,   1.2299258647958118541,
+                5.6592536955515542906,   0.461011506782728714,
+                1804.2968630909120175,   299.26557504714085398
+            );
+            setup_Matrix2D(s_test_m2d__tsrhs,
+                0.17482813221770243656,   1.1851187959198513712,
+                5.7623390023091336766,    2.9919066998167637425,
+                1871.214680004009163,     1106.1716625393228379
+            );
+        //
+
+        check_Test(check_Equal(l,s_test_m2d__Translate_123_321,setup_Translate(t_m2d,123,321)),                                "test setup_Translate(t_m2d,123,321)");
+        check_Test(check_Equal(l,s_test_m2d__Scale_1d234_5d678,setup_Scale(t_m2d,1.234,5.678)),                                "test setup_Scale(t_m2d,1.234,5.678)");
+        check_Test(check_Equal(l,s_test_m2d__Rotate_9d876,setup_Rotate(t_m2d,9.876)),                                          "test setup_Rotate(t_m2d,9.876)");
+        check_Test(check_Equal(l,s_test_m2d__Horizontal_4_7,setup_Horizontal(t_m2d,0.49613893835683387,0.8682431421244593)),   "test setup_Horizontal(t_m2d,0.49613893835683387,0.8682431421244593)");
+        check_Test(check_Equal(l,s_test_m2d__Horizontal_4_7,setup_Horizontal__Collinear(t_m2d,4,7)),                           "test setup_Horizontal__Collinear(t_m2d,4,7)");
+        check_Test(check_Equal(l,s_test_m2d__Shear_2_1_2,setup_Shear(t_m2d,0.8944271909999159,0.4472135954999579,0.5)),        "test setup_Shear(t_m2d,0.8944271909999159,0.4472135954999579,0.5)");
+        check_Test(check_Equal(l,s_test_m2d__Shear_2_1_2,setup_Shear__Collinear(t_m2d,2,1,0.5)),                               "test setup_Shear__Collinear(t_m2d,2,1,0.5)");
+
+        setup_Identity(t_m2d,w,h);
+        //平移值设置太大了，所以容差改大点
+        check_Test(check_Equal(l,s_test_m2d__Translate_123_321   ,transform_Translate(t_m2d,123,321),           1e-3),   "test transform_Translate(t_m2d,123,321)");
+        check_Test(check_Equal(l,s_test_m2d__ts                  ,transform_Scale(t_m2d,1.234,5.678),           1e-3),   "test transform_Scale(t_m2d,1.234,5.678)");
+        check_Test(check_Equal(l,s_test_m2d__tsr                 ,transform_Rotate(t_m2d,9.876),                1e-3),   "test transform_Rotate(t_m2d,9.876)");
+        check_Test(check_Equal(l,s_test_m2d__tsrh                ,transform_Horizontal__Collinear(t_m2d,4,7),   2e-3),   "test transform_Horizontal__Collinear(t_m2d,4,7)");
+        check_Test(check_Equal(l,s_test_m2d__tsrhs               ,transform_Shear__Collinear(t_m2d,2,1,0.5),    1e-3),   "test transform_Shear__Collinear(t_m2d,2,1,0.5)");
+
+        delete s_test_m2d__Translate_123_321;
+        delete s_test_m2d__Scale_1d234_5d678;
+        delete s_test_m2d__Rotate_9d876;
+        delete s_test_m2d__Horizontal_4_7;
+        delete s_test_m2d__Shear_2_1_2;
+
+        delete s_test_m2d__ts;
+        delete s_test_m2d__tsr;
+        delete s_test_m2d__tsrh;
+        delete s_test_m2d__tsrhs;
+    }
+
+
+
+
+
+    var* test_m3d__setup[4]={
+        new var[16]{
+            1,    2,    3,    0,
+            4,    5,    6,    0,
+            7,    8,    9,    0,
+            10,   11,   12,   1
+        },
+        new var[16]{
+            1,   4,   7,   10,
+            2,   5,   8,   11,
+            3,   6,   9,   12,
+            0,   0,   0,   1
+        },
+        new var[12]{
+            1,    2,    3,
+            4,    5,    6,
+            7,    8,    9,
+            10,   11,   12
+        },
+        new var[12]{
+            1,   4,   7,   10,
+            2,   5,   8,   11,
+            3,   6,   9,   12,
+        },
+    };
+
+    var* test_m3d__transform_9down[4]={
+        new var[16],
+        new var[16],
+        new var[12],
+        new var[12],
+    };
+    
+    void test_AllFnc__M3d(Matrix_3D::M3D_Type type = Matrix_3D::M3D__4X4_L);
+    void test_AllFnc__M3d__AllType(){
+        test_AllFnc__M3d(Matrix_3D::M3D__4X4_L);
+        test_AllFnc__M3d(Matrix_3D::M3D__4X4_R);
+        test_AllFnc__M3d(Matrix_3D::M3D__3X4);
+        test_AllFnc__M3d(Matrix_3D::M3D__4X3);
+    }
+
+    void test_AllFnc__M3d(Matrix_3D::M3D_Type type){
+        printf("\n\n start testing NML_Matrix_3D's function.\n");
+        using namespace Matrix_3D;
+        set_NMLConfig__using_m3d_type(type);
+        int l=w*h;
+        var* t_m3d= new var[l];
+        char *ss,*st;
+        switch (type)
+        {
+            case 0:
+                ss="test setup_Matrix2D type M3D__4X4_L";
+                st="test transform_Matrix2D type M3D__4X4_L";
+            break;
+            case 1:
+                ss="test setup_Matrix2D type M3D__4X4_R";
+                st="test transform_Matrix2D type M3D__4X4_R";
+            break;
+            case 2:
+                ss="test setup_Matrix2D type M3D__3X4";
+                st="test transform_Matrix2D type M3D__3X4";
+            break;
+            case 3:
+                ss="test setup_Matrix2D type M3D__4X3";
+                st="test transform_Matrix2D type M3D__4X3";
+            break;
+        }
+
+        setup_Matrix3D(t_m3d,1,2,3,4,5,6,7,8,9,10,11,12);
+        check_Test(check_Equal(l,test_m3d__setup[type],t_m3d), ss);
+        // printf_Matrix(t_m3d,w,h);
+
+        transform_Matrix3D(t_m3d,9,8,7,6,5,4,3,2,1,0,-1,-2);
+        check_Test(check_Equal(l,test_m3d__transform_9down[type],t_m3d), st);
+        // printf_Matrix(t_m3d,w,h);
+
+        // todo
+    }
+
 }
