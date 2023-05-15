@@ -1,0 +1,193 @@
+/*!
+ * @Author: Darth_Eternalfaith darth_ef@hotmail.com
+ * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
+ * @LastEditTime: 2022-10-03 03:35:59
+ * @FilePath: \site\css\import\DEF_UI_Lib\css\basics.css
+ * @Description: 图标 和 配色
+ * 
+ * Copyright (c) 2022 by Darth_Eternalfaith darth_ef@hotmail.com,                                All Rights Reserved. 
+ */
+:root{
+    --colorA : #000;
+    --colorA0: #0000;
+    --colorA1: #0002;
+    --colorA2: #0004;
+    --colorA3: #0006;
+    --colorA4: #0008;
+    --colorA5: #000a;
+    --colorA6: #000d;
+    --colorAT: #000;
+
+    --colorB : #FFF;
+    --colorB1: #ddd;
+    --colorB2: #aaa;
+    --colorB3: #888;
+    --colorB4: #666;
+    --colorB5: #444;
+    --colorB6: #222;
+    --colorBT: #FFF;
+
+    --colorC : #f00;
+    --colorC0: #200;
+    --colorC1: #400;
+    --colorC2: #600;
+    --colorC3: #800;
+    --colorC4: #a00;
+    --colorC5: #d00;
+    --colorC6: #f00;
+    --colorCT: #d00;
+
+    --colorD : #0f0;
+    --colorD0: #020;
+    --colorD1: #040;
+    --colorD2: #060;
+    --colorD3: #080;
+    --colorD4: #0a0;
+    --colorD5: #0d0;
+    --colorD6: #0f0;
+    --colorDT: #8f8;
+
+    --colorE : #00f;
+    --colorE0: #002;
+    --colorE1: #004;
+    --colorE2: #006;
+    --colorE3: #008;
+    --colorE4: #00a;
+    --colorE5: #00d;
+    --colorE6: #00f;
+    --colorET: #def;
+
+    --colorF : #ff0;
+    --colorF0: #220;
+    --colorF1: #440;
+    --colorF2: #660;
+    --colorF3: #880;
+    --colorF4: #aa0;
+    --colorF5: #dd0;
+    --colorF6: #ff0;
+    --colorFT: #ff0;
+
+    --hidderTextColor: #0000;
+}
+
+@font-face {
+    font-family: "DejaVuSansMono";
+    src        : url("../fonts/DejaVuSansMono-1.ttf");
+}
+
+@font-face {
+    font-family: "Ubuntu Mono derivative Powerline";
+    src        : local("Ubuntu Mono derivative Powerline") 
+                 url("../fonts/Ubuntu\ Mono\ derivative\ Powerline.ttf") format("opentype");
+}
+@font-face {
+    font-family: "Ubuntu Mono derivative Powerline";
+    src        : local("Ubuntu Mono derivative Powerline") 
+                 url("../fonts/Ubuntu\ Mono\ derivative\ Powerline\ Bold.ttf") format("opentype");
+    font-weight: bold;
+}
+@font-face {
+    font-family: "Ubuntu Mono derivative Powerline";
+    src        : local("Ubuntu Mono derivative Powerline") 
+                 url("../fonts/Ubuntu\ Mono\ derivative\ Powerline\ Bold\ Italic.ttf") format("opentype");
+    font-weight: bold;
+    font-style : italic;
+}
+@font-face {
+    font-family: "Ubuntu Mono derivative Powerline";
+    src        : local("Ubuntu Mono derivative Powerline") 
+                 url("../fonts/Ubuntu\ Mono\ derivative\ Powerline\ Italic.ttf") format("opentype");
+    font-style : italic;
+}
+
+.unrap_ellipsis{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.hidderText{
+    color    : var(--hidderTextColor);
+    font-size: 0px;
+}
+.hidden{
+    display: none;
+    visibility: hidden;
+}
+/* icon精灵图像 */
+.iconSpritesSvg{
+    width             : 1em;
+    height            : 1em;
+    mask-image        : url("../img/iconSprites.svg");
+    mask-size         : 1000% 1000%;
+    -webkit-mask-image: url("../img/iconSprites.svg");
+    -webkit-mask-size : 1000% 1000%;
+    color             : var(--hidderTextColor);
+    display           : inline-block;
+    /* 不要再这个元素里加 childnode */
+}
+
+/* ----- Sprites map open ----- */
+    /* -------- Y0 -------- */
+        .iconSpritesSvg-logo                   , .iconSpritesSvg-00                  { mask-position:  000% 000%;    -webkit-mask-position:  000% 000%;}
+        .iconSpritesSvg-bbs                    , .iconSpritesSvg-10                  { mask-position: -100% 000%;    -webkit-mask-position: -100% 000%;}
+        .iconSpritesSvg-jigsaw                 , .iconSpritesSvg-20                  { mask-position: -200% 000%;    -webkit-mask-position: -200% 000%;}
+        .iconSpritesSvg-eye                    , .iconSpritesSvg-30                  { mask-position: -300% 000%;    -webkit-mask-position: -300% 000%;}
+        .iconSpritesSvg-closeEye               , .iconSpritesSvg-40                  { mask-position: -400% 000%;    -webkit-mask-position: -400% 000%;}
+        .iconSpritesSvg-sqrt                   , .iconSpritesSvg-50                  { mask-position: -500% 000%;    -webkit-mask-position: -500% 000%;}
+        .iconSpritesSvg-key                    , .iconSpritesSvg-60                  { mask-position: -600% 000%;    -webkit-mask-position: -600% 000%;}
+        .iconSpritesSvg-index                  , .iconSpritesSvg-70                  { mask-position: -700% 000%;    -webkit-mask-position: -700% 000%;}
+        .iconSpritesSvg-user                   , .iconSpritesSvg-80                  { mask-position: -800% 000%;    -webkit-mask-position: -800% 000%;}
+        .iconSpritesSvg-home                   , .iconSpritesSvg-90                  { mask-position: -900% 000%;    -webkit-mask-position: -900% 000%;}
+    /* -------- Y1 -------- */
+        .iconSpritesSvg-selete                 , .iconSpritesSvg-01                  { mask-position:  000% -100%;   -webkit-mask-position:  000% -100%;}
+        .iconSpritesSvg-reload                 , .iconSpritesSvg-11                  { mask-position: -100% -100%;   -webkit-mask-position: -100% -100%;}
+        .iconSpritesSvg-enter                  , .iconSpritesSvg-21                  { mask-position: -200% -100%;   -webkit-mask-position: -200% -100%;}
+        .iconSpritesSvg-add                    , .iconSpritesSvg-31                  { mask-position: -300% -100%;   -webkit-mask-position: -300% -100%;}
+        .iconSpritesSvg-minuid                 , .iconSpritesSvg-41                  { mask-position: -400% -100%;   -webkit-mask-position: -400% -100%;}
+        .iconSpritesSvg-multiply               , .iconSpritesSvg-51                  { mask-position: -500% -100%;   -webkit-mask-position: -500% -100%;}
+        .iconSpritesSvg-divided                , .iconSpritesSvg-61                  { mask-position: -600% -100%;   -webkit-mask-position: -600% -100%;}
+        .iconSpritesSvg-percent                , .iconSpritesSvg-71                  { mask-position: -700% -100%;   -webkit-mask-position: -700% -100%;}
+        .iconSpritesSvg-ddd                    , .iconSpritesSvg-81                  { mask-position: -800% -100%;   -webkit-mask-position: -800% -100%;}
+        .iconSpritesSvg-arrow                  , .iconSpritesSvg-91                  { mask-position: -900% -100%;   -webkit-mask-position: -900% -100%;}
+    /* -------- Y2 -------- */
+        .iconSpritesSvg-play                   , .iconSpritesSvg-02                  { mask-position:  000% -200%;   -webkit-mask-position:  000% -200%;}
+        .iconSpritesSvg-pause                  , .iconSpritesSvg-12                  { mask-position: -100% -200%;   -webkit-mask-position: -100% -200%;}
+        .iconSpritesSvg-next                   , .iconSpritesSvg-22                  { mask-position: -200% -200%;   -webkit-mask-position: -200% -200%;}
+        .iconSpritesSvg-last                   , .iconSpritesSvg-22-Mirror           { mask-position: -200% -200%;   -webkit-mask-position: -200% -200%;       transform: scaleX(-1);}
+        .iconSpritesSvg-loop                   , .iconSpritesSvg-32                  { mask-position: -300% -200%;   -webkit-mask-position: -300% -200%;}
+        .iconSpritesSvg-random                 , .iconSpritesSvg-42                  { mask-position: -400% -200%;   -webkit-mask-position: -400% -200%;}
+        .iconSpritesSvg-volume                 , .iconSpritesSvg-52                  { mask-position: -500% -200%;   -webkit-mask-position: -500% -200%;}
+        .iconSpritesSvg-fullScrren             , .iconSpritesSvg-62                  { mask-position: -600% -200%;   -webkit-mask-position: -600% -200%;}
+        .iconSpritesSvg-fullWindow             , .iconSpritesSvg-72                  { mask-position: -700% -200%;   -webkit-mask-position: -700% -200%;}
+        .iconSpritesSvg-unFullScrren           , .iconSpritesSvg-82                  { mask-position: -800% -200%;   -webkit-mask-position: -800% -200%;}
+        .iconSpritesSvg-unFullWindow           , .iconSpritesSvg-92                  { mask-position: -900% -200%;   -webkit-mask-position: -900% -200%;}
+    /* -------- Y3 -------- */
+        .iconSpritesSvg-pan                    , .iconSpritesSvg-03                  { mask-position:  000% -300%;   -webkit-mask-position:  000% -300%;}
+        .iconSpritesSvg-edit                   , .iconSpritesSvg-13                  { mask-position: -100% -300%;   -webkit-mask-position: -100% -300%;}
+        .iconSpritesSvg-save                   , .iconSpritesSvg-23                  { mask-position: -200% -300%;   -webkit-mask-position: -200% -300%;}
+        .iconSpritesSvg-download               , .iconSpritesSvg-33                  { mask-position: -300% -300%;   -webkit-mask-position: -300% -300%;}
+        .iconSpritesSvg-copy                   , .iconSpritesSvg-43                  { mask-position: -400% -300%;   -webkit-mask-position: -400% -300%;}
+        .iconSpritesSvg-cursor                 , .iconSpritesSvg-53                  { mask-position: -500% -300%;   -webkit-mask-position: -500% -300%;}
+        .iconSpritesSvg-folder                 , .iconSpritesSvg-63                  { mask-position: -600% -300%;   -webkit-mask-position: -600% -300%;}
+        .iconSpritesSvg-folder__add            , .iconSpritesSvg-73                  { mask-position: -700% -300%;   -webkit-mask-position: -700% -300%;}
+        .iconSpritesSvg-folder__minuid         , .iconSpritesSvg-83                  { mask-position: -800% -300%;   -webkit-mask-position: -800% -300%;}
+        .iconSpritesSvg-move                   , .iconSpritesSvg-93                  { mask-position: -900% -300%;   -webkit-mask-position: -900% -300%;}
+    /* -------- Y4 -------- */
+        .iconSpritesSvg-radarChart             , .iconSpritesSvg-04                  { mask-position:  000% -400%;   -webkit-mask-position:  000% -400%;}
+        .iconSpritesSvg-pieChart               , .iconSpritesSvg-14                  { mask-position: -100% -400%;   -webkit-mask-position: -100% -400%;}
+        .iconSpritesSvg-rename                 , .iconSpritesSvg-24                  { mask-position: -200% -400%;   -webkit-mask-position: -200% -400%;}
+        .iconSpritesSvg-crosscut               , .iconSpritesSvg-34                  { mask-position: -300% -400%;   -webkit-mask-position: -300% -400%;}
+        .iconSpritesSvg-crosscut               , .iconSpritesSvg-34_i                { mask-position: -300% -400%;   -webkit-mask-position: -300% -400%;       transform: rotate(90deg);}
+        .iconSpritesSvg-same_reference         , .iconSpritesSvg-74                  { mask-position: -700% -400%;   -webkit-mask-position: -700% -400%;}
+        .iconSpritesSvg-copy_SameReference     , .iconSpritesSvg-84                  { mask-position: -800% -400%;   -webkit-mask-position: -800% -400%;}
+        .iconSpritesSvg-location               , .iconSpritesSvg-94                  { mask-position: -900% -400%;   -webkit-mask-position: -900% -400%;}
+    /* -------- Y5 -------- */
+        .iconSpritesSvg-rect                   , .iconSpritesSvg-05                  { mask-position: -000% -500%;   -webkit-mask-position: -000% -500%;}
+        .iconSpritesSvg-arc                    , .iconSpritesSvg-15                  { mask-position: -100% -500%;   -webkit-mask-position: -100% -500%;}
+        .iconSpritesSvg-sector                 , .iconSpritesSvg-25                  { mask-position: -200% -500%;   -webkit-mask-position: -200% -500%;}
+        .iconSpritesSvg-polygon                , .iconSpritesSvg-35                  { mask-position: -300% -500%;   -webkit-mask-position: -300% -500%;}
+        .iconSpritesSvg-bezier                 , .iconSpritesSvg-45                  { mask-position: -400% -500%;   -webkit-mask-position: -400% -500%;}
+        .iconSpritesSvg-path                   , .iconSpritesSvg-55                  { mask-position: -500% -500%;   -webkit-mask-position: -500% -500%;}
+        .iconSpritesSvg-linear_mapping         , .iconSpritesSvg-65                  { mask-position: -600% -500%;   -webkit-mask-position: -600% -500%;}
+
+/* ----- Sprites map end  ----- */

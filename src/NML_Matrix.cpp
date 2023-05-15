@@ -21,6 +21,7 @@ namespace NML{
             for(;i<height;i++){
                 printf_Vec(matrix+i*width, width);
             }
+            printf("\n");
         }
 
 

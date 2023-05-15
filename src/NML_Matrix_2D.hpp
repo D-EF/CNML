@@ -22,10 +22,12 @@ namespace NML{
             inline int get_w(){return w;}
             inline int get_h(){return h;}
         // 数据类型的数据对应下标
-            int mxx=0,   mxy=1,   mx_null=2,
-                myx=3,   myy=4,   my_null=5,
-                tx =6,   ty =7,   mi_full=8;
+            int mxx=0,   mxy=1,   mxz=2,
+                myx=3,   myy=4,   myz=5,
+                mzx=6,   mzy=7,   mzz=8;
+            int &mx_null=mxz, &my_null=myz, &tx=mzx, &ty=mzy, &mi_full=mzz;
         //
+
 
         /**
          * @brief 切换要使用的数据格式
@@ -33,6 +35,28 @@ namespace NML{
          */
         void set_NMLConfig__using_m2d_type(M2D_Type type);
 
+        /**
+         * @brief 打印输出2d矩阵变换的css样式
+         * @param mat 矩阵数据
+         */
+        void printf_M2dCss(var*& mat){
+            var v_mxz=0,
+                v_myz=0,
+                v_mzz=1;
+                
+            if(!mx_null){
+                v_mxz=mat[mxz];
+                v_myz=mat[myz];
+                v_mzz=mat[mzz];
+            }
+            printf("transform:matrix(%f, %f, %f, %f, %f, %f);\n",
+                mat[mxx],   mat[mxy],
+                mat[myx],   mat[myy],
+                mat[tx],    mat[ty]
+            );
+        }
+
+        
         /**
          * @brief 写入矩阵数据
          * @param out    操作对象           输出对象
@@ -58,16 +82,17 @@ namespace NML{
          * @return 修改 mat 并返回
          */
         __NML__INLINE_M2D_ACTION_FUNCTION  var*& transform_Matrix2D(var*& mat, var app_mxx, var app_mxy, var app_myx, var app_myy, var app_tx, var app_ty);
+
         
         typedef var*&(_M2d_Act_Fnc)(var*& mat, var app_mxx, var app_myx, var app_mxy, var app_myy, var app_tx, var app_ty);
 
-        __NML__INLINE_M2D_ACTION_FUNCTION   var*& act_Translate               (_M2d_Act_Fnc act, var*& out, var translate_x, var translate_y=0);
-        __NML__INLINE_M2D_ACTION_FUNCTION   var*& act_Scale                   (_M2d_Act_Fnc act, var*& out, var scale_x, var scale_y);
-        __NML__INLINE_M2D_ACTION_FUNCTION   var*& act_Rotate                  (_M2d_Act_Fnc act, var*& out, var theta);
-        __NML__INLINE_M2D_ACTION_FUNCTION   var*& act_Horizontal              (_M2d_Act_Fnc act, var*& out, var normal_x, var normal_y);
-        __NML__INLINE_M2D_ACTION_FUNCTION   var*& act_Shear                   (_M2d_Act_Fnc act, var*& out, var axis_x, var axis_y, var k);
-        /** never inline */                 var*& act_Horizontal__Collinear   (_M2d_Act_Fnc act, var*& out, var normal_x, var normal_y);
-        /** never inline */                 var*& act_Shear__Collinear        (_M2d_Act_Fnc act, var*& out, var axis_x, var axis_y, var k);
+        __NML__INLINE_M2D_ACTION_FUNCTION   var*& act_Translate            (const _M2d_Act_Fnc& act, var*& out, var translate_x, var translate_y=0);
+        __NML__INLINE_M2D_ACTION_FUNCTION   var*& act_Scale                (const _M2d_Act_Fnc& act, var*& out, var scale_x, var scale_y);
+        __NML__INLINE_M2D_ACTION_FUNCTION   var*& act_Rotate               (const _M2d_Act_Fnc& act, var*& out, var theta);
+        __NML__INLINE_M2D_ACTION_FUNCTION   var*& act_Reflect              (const _M2d_Act_Fnc& act, var*& out, var normal_x, var normal_y);
+        __NML__INLINE_M2D_ACTION_FUNCTION   var*& act_Shear                (const _M2d_Act_Fnc& act, var*& out, var axis_x, var axis_y, var k);
+        /** never inline */                 var*& act_Reflect__Collinear   (const _M2d_Act_Fnc& act, var*& out, var normal_x, var normal_y);
+        /** never inline */                 var*& act_Shear__Collinear     (const _M2d_Act_Fnc& act, var*& out, var axis_x, var axis_y, var k);
 
 
         // open * setup * open
@@ -79,7 +104,7 @@ namespace NML{
              * @param translate_y   y 方向平移量
              * @return 修改 out 并返回
              */
-            inline var*& setup_Translate    (var*& out, var translate_x, var translate_y=0)      {act_Translate    (setup_Matrix2D, out, translate_x, translate_y);}
+            inline var*& setup_Translate             (var*& out, var translate_x, var translate_y=0)   {act_Translate            (setup_Matrix2D, out, translate_x, translate_y);}
             /**
              * @brief 设置 缩放矩阵
              * @param out           输出对象
@@ -87,21 +112,21 @@ namespace NML{
              * @param scale_y       y 方向缩放值
              * @return 修改 out 并返回
              */
-            inline var*& setup_Scale        (var*& out, var scale_x, var scale_y)                {act_Scale        (setup_Matrix2D, out, scale_x, scale_y);}
+            inline var*& setup_Scale                 (var*& out, var scale_x, var scale_y)             {act_Scale                (setup_Matrix2D, out, scale_x, scale_y);}
             /**
              * @brief 设置 缩放矩阵
              * @param out           输出对象
              * @param scale_value   缩放值
              * @return 修改 out 并返回
              */
-            inline var*& setup_Scale        (var*& out, var scale_value)                         {act_Scale        (setup_Matrix2D, out, scale_value, scale_value);}
+            inline var*& setup_Scale                 (var*& out, var scale_value)                      {act_Scale                (setup_Matrix2D, out, scale_value, scale_value);}
             /**
              * @brief 设置 旋转矩阵
              * @param out           输出对象
              * @param theta         旋转弧度
              * @return 修改 out 并返回
              */
-            inline var*& setup_Rotate       (var*& out, var theta)                               {act_Rotate       (setup_Matrix2D, out, theta);}
+            inline var*& setup_Rotate                (var*& out, var theta)                            {act_Rotate               (setup_Matrix2D, out, theta);}
             /**
              * @brief 设置 镜像矩阵
              * @param out           输出对象
@@ -109,7 +134,7 @@ namespace NML{
              * @param normal_y      镜像轴法线方向的标准向量的 y 坐标
              * @return 修改 out 并返回
              */
-            inline var*& setup_Horizontal   (var*& out, var normal_x, var normal_y)              {act_Horizontal   (setup_Matrix2D, out, normal_x, normal_y);}
+            inline var*& setup_Reflect               (var*& out, var normal_x, var normal_y)           {act_Reflect              (setup_Matrix2D, out, normal_x, normal_y);}
             /**
              * @brief 设置 镜像矩阵 (允许法向量为任意向量)
              * @param out           输出对象
@@ -117,7 +142,7 @@ namespace NML{
              * @param normal_y      镜像轴法线方向上的 y 坐标
              * @return 修改 out 并返回
              */
-            inline var*& setup_Horizontal__Collinear   (var*& out, var normal_x, var normal_y)   {act_Horizontal__Collinear   (setup_Matrix2D, out, normal_x, normal_y);}
+            inline var*& setup_Reflect__Collinear    (var*& out, var normal_x, var normal_y)           {act_Reflect__Collinear   (setup_Matrix2D, out, normal_x, normal_y);}
             /**
              * @brief 设置 切变矩阵
              * @param out           输出对象
@@ -126,7 +151,7 @@ namespace NML{
              * @param k             切变系数
              * @return 修改 out 并返回
              */
-            inline var*& setup_Shear        (var*& out, var axis_x, var axis_y, var k)           {act_Shear        (setup_Matrix2D, out, axis_x, axis_y, k);}
+            inline var*& setup_Shear                 (var*& out, var axis_x, var axis_y, var k)        {act_Shear                (setup_Matrix2D, out, axis_x, axis_y, k);}
             /**
              * @brief 设置 切变矩阵
              * @param out           输出对象
@@ -135,7 +160,7 @@ namespace NML{
              * @param k             切变系数
              * @return 修改 out 并返回
              */
-            inline var*& setup_Shear__Collinear        (var*& out, var axis_x, var axis_y, var k)           {act_Shear__Collinear        (setup_Matrix2D, out, axis_x, axis_y, k);}
+            inline var*& setup_Shear__Collinear      (var*& out, var axis_x, var axis_y, var k)        {act_Shear__Collinear     (setup_Matrix2D, out, axis_x, axis_y, k);}
         
         // end  * setup * end  
 
@@ -149,7 +174,7 @@ namespace NML{
              * @param translate_y   y 方向平移量
              * @return 修改 out 并返回
              */
-            inline var*& transform_Translate    (var*& out, var translate_x, var translate_y=0)      {act_Translate    (transform_Matrix2D, out, translate_x, translate_y);}
+            inline var*& transform_Translate            (var*& out, var translate_x, var translate_y=0)   {act_Translate            (transform_Matrix2D, out, translate_x, translate_y);}
             /**
              * @brief               矩阵进行缩放变换
              * @param out           输出对象
@@ -157,21 +182,21 @@ namespace NML{
              * @param scale_y       y 方向缩放值
              * @return 修改 out 并返回
              */
-            inline var*& transform_Scale        (var*& out, var scale_x, var scale_y)                {act_Scale        (transform_Matrix2D, out, scale_x, scale_y);}
+            inline var*& transform_Scale                (var*& out, var scale_x, var scale_y)             {act_Scale                (transform_Matrix2D, out, scale_x, scale_y);}
             /**
              * @brief               矩阵进行缩放变换
              * @param out           输出对象
              * @param scale_value   缩放值
              * @return 修改 out 并返回
              */
-            inline var*& transform_Scale        (var*& out, var scale_value)                         {act_Scale        (transform_Matrix2D, out, scale_value, scale_value);}
+            inline var*& transform_Scale                (var*& out, var scale_value)                      {act_Scale                (transform_Matrix2D, out, scale_value, scale_value);}
             /**
              * @brief               矩阵进行旋转变换
              * @param out           输出对象
              * @param theta         旋转轴
              * @return 修改 out 并返回
              */
-            inline var*& transform_Rotate       (var*& out, var theta)                               {act_Rotate       (transform_Matrix2D, out, theta);}
+            inline var*& transform_Rotate               (var*& out, var theta)                            {act_Rotate               (transform_Matrix2D, out, theta);}
             /**
              * @brief               矩阵进行镜像变换
              * @param out           输出对象
@@ -179,7 +204,7 @@ namespace NML{
              * @param normal_y      镜像轴法线方向的标准向量的 y 坐标
              * @return 修改 out 并返回
              */
-            inline var*& transform_Horizontal   (var*& out, var normal_x, var normal_y)              {act_Horizontal   (transform_Matrix2D, out, normal_x, normal_y);}
+            inline var*& transform_Reflect              (var*& out, var normal_x, var normal_y)           {act_Reflect              (transform_Matrix2D, out, normal_x, normal_y);}
             /**
              * @brief               矩阵进行镜像变换 (允许法向量为任意向量)
              * @param out           输出对象
@@ -187,7 +212,7 @@ namespace NML{
              * @param normal_y      镜像轴法线方向上的 y 坐标
              * @return 修改 out 并返回
              */
-            inline var*& transform_Horizontal__Collinear   (var*& out, var normal_x, var normal_y)   {act_Horizontal__Collinear   (transform_Matrix2D, out, normal_x, normal_y);}
+            inline var*& transform_Reflect__Collinear   (var*& out, var normal_x, var normal_y)           {act_Reflect__Collinear   (transform_Matrix2D, out, normal_x, normal_y);}
             /**
              * @brief               矩阵进行切变变换
              * @param out           输出对象
@@ -196,7 +221,7 @@ namespace NML{
              * @param k             切变系数
              * @return 修改 out 并返回
              */
-            inline var*& transform_Shear        (var*& out, var axis_x, var axis_y, var k)           {act_Shear        (transform_Matrix2D, out, axis_x, axis_y, k);}
+            inline var*& transform_Shear                (var*& out, var axis_x, var axis_y, var k)        {act_Shear                (transform_Matrix2D, out, axis_x, axis_y, k);}
             /**
              * @brief               矩阵进行切变变换
              * @param out           输出对象
@@ -205,7 +230,7 @@ namespace NML{
              * @param k             切变系数
              * @return 修改 out 并返回
              */
-            inline var*& transform_Shear__Collinear        (var*& out, var axis_x, var axis_y, var k)           {act_Shear__Collinear        (transform_Matrix2D, out, axis_x, axis_y, k);}
+            inline var*& transform_Shear__Collinear     (var*& out, var axis_x, var axis_y, var k)        {act_Shear__Collinear     (transform_Matrix2D, out, axis_x, axis_y, k);}
 
         // end  * transform * end 
 
@@ -268,8 +293,7 @@ namespace NML{
             );
         }
 
-
-        __NML__INLINE_M2D_ACTION_FUNCTION var*& act_Translate(_M2d_Act_Fnc act, var*& out, var translate_x, var translate_y){
+        __NML__INLINE_M2D_ACTION_FUNCTION var*& act_Translate(const _M2d_Act_Fnc& act, var*& out, var translate_x, var translate_y){
             return act(out,
                 1,             0,
                 0,             1,
@@ -277,7 +301,7 @@ namespace NML{
             );
         }
 
-        __NML__INLINE_M2D_ACTION_FUNCTION var*& act_Scale(_M2d_Act_Fnc act, var*& out,var scale_x, var scale_y){
+        __NML__INLINE_M2D_ACTION_FUNCTION var*& act_Scale(const _M2d_Act_Fnc& act, var*& out,var scale_x, var scale_y){
             return act(out,
                 scale_x,   0,
                 0,         scale_y,
@@ -285,7 +309,7 @@ namespace NML{
             );
         }
 
-        __NML__INLINE_M2D_ACTION_FUNCTION var*& act_Rotate(_M2d_Act_Fnc act, var*& out, var theta){
+        __NML__INLINE_M2D_ACTION_FUNCTION var*& act_Rotate(const _M2d_Act_Fnc& act, var*& out, var theta){
                 var c=cos(theta),s=sin(theta);
                 return act(out,
                      c,    s,
@@ -294,7 +318,7 @@ namespace NML{
                 );
         }
 
-        __NML__INLINE_M2D_ACTION_FUNCTION var*& act_Horizontal(_M2d_Act_Fnc act, var*& out, var normal_x, var normal_y){
+        __NML__INLINE_M2D_ACTION_FUNCTION var*& act_Reflect(const _M2d_Act_Fnc& act, var*& out, var normal_x, var normal_y){
             return act(out,
                 1-2*normal_x*normal_x ,   -2*normal_x*normal_y,
                 -2*normal_x*normal_y  ,   1-2*normal_y*normal_y,
@@ -302,7 +326,7 @@ namespace NML{
             );
         }
 
-        __NML__INLINE_M2D_ACTION_FUNCTION var*& act_Shear(_M2d_Act_Fnc act, var*& out,var axis_x, var axis_y, var k){
+        __NML__INLINE_M2D_ACTION_FUNCTION var*& act_Shear(const _M2d_Act_Fnc& act, var*& out,var axis_x, var axis_y, var k){
             return act(out,
                 1,          k*axis_x,
                 k*axis_y,   1,
@@ -310,16 +334,16 @@ namespace NML{
             );
         }
 
-        var*& act_Horizontal__Collinear(_M2d_Act_Fnc act, var*& out, var normal_x, var normal_y){
+        var*& act_Reflect__Collinear(const _M2d_Act_Fnc& act, var*& out, var normal_x, var normal_y){
             var m=normal_x*normal_x+normal_y*normal_y;
             if(!check_Equal(1,m)){
                 m=1/sqrt(m);
-                return act_Horizontal(act,out,normal_x*m,normal_y*m);
+                return act_Reflect(act,out,normal_x*m,normal_y*m);
             }
-            return act_Horizontal(act,out,normal_x,normal_y);
+            return act_Reflect(act,out,normal_x,normal_y);
         }
 
-        var*& act_Shear__Collinear(_M2d_Act_Fnc act, var*& out, var axis_x, var axis_y, var k){
+        var*& act_Shear__Collinear(const _M2d_Act_Fnc& act, var*& out, var axis_x, var axis_y, var k){
             var m=axis_x*axis_x+axis_y*axis_y;
             if(!check_Equal(1,m)){
                 m=1/sqrt(m);
@@ -327,6 +351,7 @@ namespace NML{
             }
             return act_Shear(act,out,axis_x,axis_y,k);
         }
+        
     }
 }
 

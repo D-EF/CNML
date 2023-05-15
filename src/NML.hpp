@@ -31,12 +31,20 @@ namespace NML{
     /** 三个坐标轴 */
     enum Axis{ X=0, Y=1, Z=2 };
     
+    enum Plane_3D{
+        YZ=0,
+        ZX=1,
+        XY=2
+    };
+    
     /** 欧拉角旋转顺序 */
     enum Rotation_Order{
         XYZ=0b000110,    XYX=0b000100,    XZY=0b001001,    XZX=0b001000,
         YXZ=0b010010,    YXY=0b010001,    YZX=0b011000,    YZY=0b011001,
         ZXY=0b100001,    ZXZ=0b100010,    ZYX=0b100100,    ZYZ=0b100110
     };
+    
+    Rotation_Order _DEFAULT_EULER_ANGLE_ORDER=XYZ;
 
     template <typename value_Type> inline value_Type min(value_Type a,value_Type b){return a>b?b:a;}
     

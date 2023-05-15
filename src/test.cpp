@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-20 00:58:11
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-05-11 03:27:46
+ * @LastEditTime: 2023-05-15 15:23:29
  * @FilePath: \cnml\src\test.cpp
  * @Description: 
  * @
@@ -389,7 +389,7 @@ namespace Test_Matrix{
         var* s_test_m2d__Translate_123_321    =new var[l];
         var* s_test_m2d__Scale_1d234_5d678    =new var[l];
         var* s_test_m2d__Rotate_9d876         =new var[l];
-        var* s_test_m2d__Horizontal_4_7       =new var[l];
+        var* s_test_m2d__Reflect_4_7       =new var[l];
         var* s_test_m2d__Shear_2_1_2          =new var[l];
 
         var* s_test_m2d__ts      =new var[l];
@@ -413,7 +413,7 @@ namespace Test_Matrix{
                 0.4360655907371733,    -0.8999148851836156,
                 0,                     0
             );
-            setup_Matrix2D(s_test_m2d__Horizontal_4_7,
+            setup_Matrix2D(s_test_m2d__Reflect_4_7,
                 0.5076923076923077,    -0.8615384615384617,
                 -0.8615384615384617,   -0.5076923076923081,
                 0,                     0
@@ -454,8 +454,8 @@ namespace Test_Matrix{
         check_Test(check_Equal(l,s_test_m2d__Translate_123_321,setup_Translate(t_m2d,123,321)),                                "test setup_Translate(t_m2d,123,321)");
         check_Test(check_Equal(l,s_test_m2d__Scale_1d234_5d678,setup_Scale(t_m2d,1.234,5.678)),                                "test setup_Scale(t_m2d,1.234,5.678)");
         check_Test(check_Equal(l,s_test_m2d__Rotate_9d876,setup_Rotate(t_m2d,9.876)),                                          "test setup_Rotate(t_m2d,9.876)");
-        check_Test(check_Equal(l,s_test_m2d__Horizontal_4_7,setup_Horizontal(t_m2d,0.49613893835683387,0.8682431421244593)),   "test setup_Horizontal(t_m2d,0.49613893835683387,0.8682431421244593)");
-        check_Test(check_Equal(l,s_test_m2d__Horizontal_4_7,setup_Horizontal__Collinear(t_m2d,4,7)),                           "test setup_Horizontal__Collinear(t_m2d,4,7)");
+        check_Test(check_Equal(l,s_test_m2d__Reflect_4_7,setup_Reflect(t_m2d,0.49613893835683387,0.8682431421244593)),   "test setup_Reflect(t_m2d,0.49613893835683387,0.8682431421244593)");
+        check_Test(check_Equal(l,s_test_m2d__Reflect_4_7,setup_Reflect__Collinear(t_m2d,4,7)),                           "test setup_Reflect__Collinear(t_m2d,4,7)");
         check_Test(check_Equal(l,s_test_m2d__Shear_2_1_2,setup_Shear(t_m2d,0.8944271909999159,0.4472135954999579,0.5)),        "test setup_Shear(t_m2d,0.8944271909999159,0.4472135954999579,0.5)");
         check_Test(check_Equal(l,s_test_m2d__Shear_2_1_2,setup_Shear__Collinear(t_m2d,2,1,0.5)),                               "test setup_Shear__Collinear(t_m2d,2,1,0.5)");
 
@@ -464,13 +464,26 @@ namespace Test_Matrix{
         check_Test(check_Equal(l,s_test_m2d__Translate_123_321   ,transform_Translate(t_m2d,123,321),           1e-3),   "test transform_Translate(t_m2d,123,321)");
         check_Test(check_Equal(l,s_test_m2d__ts                  ,transform_Scale(t_m2d,1.234,5.678),           1e-3),   "test transform_Scale(t_m2d,1.234,5.678)");
         check_Test(check_Equal(l,s_test_m2d__tsr                 ,transform_Rotate(t_m2d,9.876),                1e-3),   "test transform_Rotate(t_m2d,9.876)");
-        check_Test(check_Equal(l,s_test_m2d__tsrh                ,transform_Horizontal__Collinear(t_m2d,4,7),   2e-3),   "test transform_Horizontal__Collinear(t_m2d,4,7)");
+        check_Test(check_Equal(l,s_test_m2d__tsrh                ,transform_Reflect__Collinear(t_m2d,4,7),   2e-3),   "test transform_Reflect__Collinear(t_m2d,4,7)");
         check_Test(check_Equal(l,s_test_m2d__tsrhs               ,transform_Shear__Collinear(t_m2d,2,1,0.5),    1e-3),   "test transform_Shear__Collinear(t_m2d,2,1,0.5)");
+
+        
+        printf_M2dCss(s_test_m2d__Translate_123_321);
+        printf_M2dCss(s_test_m2d__Scale_1d234_5d678);
+        printf_M2dCss(s_test_m2d__Rotate_9d876);
+        printf_M2dCss(s_test_m2d__Reflect_4_7);
+        printf_M2dCss(s_test_m2d__Reflect_4_7);
+        printf_M2dCss(s_test_m2d__Shear_2_1_2);
+        printf_M2dCss(s_test_m2d__Shear_2_1_2);
+        printf_M2dCss(s_test_m2d__ts);
+        printf_M2dCss(s_test_m2d__tsr);
+        printf_M2dCss(s_test_m2d__tsrh);
+        printf_M2dCss(s_test_m2d__tsrhs);
 
         delete s_test_m2d__Translate_123_321;
         delete s_test_m2d__Scale_1d234_5d678;
         delete s_test_m2d__Rotate_9d876;
-        delete s_test_m2d__Horizontal_4_7;
+        delete s_test_m2d__Reflect_4_7;
         delete s_test_m2d__Shear_2_1_2;
 
         delete s_test_m2d__ts;
@@ -510,14 +523,58 @@ namespace Test_Matrix{
     };
 
     var* test_m3d__transform_9down[4]={
-        new var[16],
-        new var[16],
-        new var[12],
-        new var[12],
+        new var[16]{
+            30,    24,    18,    0,
+            84,    69,    54,    0,
+            138,   114,   90,    0,
+            192,   158,   124,   1
+        },
+        new var[16]{
+            30,   84,   138,   192,
+            24,   69,   114,   158,
+            18,   54,   90,    124,
+            0,    0,    0,     1
+        },
+        new var[12]{
+            30,    24,    18,
+            84,    69,    54,
+            138,   114,   90,
+            192,   158,   124
+        },
+        new var[12]{
+            30,   84,   138,   192,
+            24,   69,   114,   158,
+            18,   54,   90,    124
+        },
     };
     
     void test_AllFnc__M3d(Matrix_3D::M3D_Type type = Matrix_3D::M3D__4X4_L);
     void test_AllFnc__M3d__AllType(){
+
+        using namespace Matrix_3D;
+        var *x = new var[16];
+        var *y = new var[16];
+        var *z = new var[16];
+        var *t_m3d = new var[16];
+        var *t_m3d1 = new var[16];
+        setup_Rotate(x,1.23,X);
+        setup_Rotate(y,3.45,Y);
+        setup_Rotate(z,5.67,Z);
+        multiplication(t_m3d,x,y,4);
+        multiplication(t_m3d1,t_m3d,z,4);
+
+        printf_Matrix(x,4);
+        printf_Matrix(y,4);
+        printf_Matrix(z,4);
+        printf_Matrix(t_m3d,4);
+        printf_Matrix(t_m3d1,4);
+
+        printf_M3dCss(x);
+        printf_M3dCss(y);
+        printf_M3dCss(z);
+        printf_M3dCss(t_m3d);
+        printf_M3dCss(t_m3d1);
+
         test_AllFnc__M3d(Matrix_3D::M3D__4X4_L);
         test_AllFnc__M3d(Matrix_3D::M3D__4X4_R);
         test_AllFnc__M3d(Matrix_3D::M3D__3X4);
@@ -551,15 +608,56 @@ namespace Test_Matrix{
             break;
         }
 
-        setup_Matrix3D(t_m3d,1,2,3,4,5,6,7,8,9,10,11,12);
+        setup_Matrix3D__Easy(t_m3d,1,2,3,4,5,6,7,8,9,10,11,12);
         check_Test(check_Equal(l,test_m3d__setup[type],t_m3d), ss);
         // printf_Matrix(t_m3d,w,h);
 
-        transform_Matrix3D(t_m3d,9,8,7,6,5,4,3,2,1,0,-1,-2);
+        transform_Matrix3D__Easy(t_m3d,9,8,7,6,5,4,3,2,1,0,-1,-2);
         check_Test(check_Equal(l,test_m3d__transform_9down[type],t_m3d), st);
+        printf_Matrix(t_m3d,w,h);
         // printf_Matrix(t_m3d,w,h);
 
-        // todo
+        var* s_test_m3d__Translate_1d23_4d56_7d89         =new var[l];
+        var* s_test_m3d__Scale_1d234_5d678_9d876          =new var[l];
+        var* s_test_m3d__Rotate_EulerXYZ_1d23_3d45_5d67   =new var[l];
+        var* s_test_m3d__Reflect_1_2_3                    =new var[l];
+        var* s_test_m3d__Shear_X_2                        =new var[l];
+
+        setup_Matrix3D__Easy(s_test_m3d__Translate_1d23_4d56_7d89,
+            1,      0,      0,     
+            0,      1,      0,     
+            0,      0,      1,     
+            1.23,   4.56,   7.89
+        );
+        setup_Matrix3D__Easy(s_test_m3d__Scale_1d234_5d678_9d876,
+            1.234,   0,       0,       
+            0,       5.678,   0,       
+            0,       0,       9.876
+        );
+        setup_Matrix3D__Easy(s_test_m3d__Rotate_EulerXYZ_1d23_3d45_5d67,
+            -0.779233,   0.548323,    0.303542,
+            -0.041620,   0.437981,    -0.898021,
+            -0.625351,   -0.712400,   -0.318468
+        );
+        setup_Matrix3D__Easy(s_test_m3d__Reflect_1_2_3,
+            0.857143,    -0.285714,   -0.428571,   
+            -0.285714,   0.428571,    -0.857143,   
+            -0.428571,   -0.857143,   -0.285714
+        );
+        setup_Matrix3D__Easy(s_test_m3d__Shear_X_2,
+            1,   2,   1.25,
+            0,   1,   0,
+            0,   0,   1
+        );
+
+        check_Test(check_Equal(l,s_test_m3d__Translate_1d23_4d56_7d89,setup_Translate(t_m3d,1.23, 4.56, 7.89)),                         "test setup_Translate(t_m3d,1.23, 4.56, 7.89))");
+        check_Test(check_Equal(l,s_test_m3d__Scale_1d234_5d678_9d876,setup_Scale(t_m3d,1.234,5.678,9.876)),                             "test setup_Scale(t_m3d,1.234,5.678,9.876))");
+        check_Test(check_Equal(l,s_test_m3d__Rotate_EulerXYZ_1d23_3d45_5d67,setup_Rotate__EulerAngles(t_m3d,1.23, 3.45, 5.67,XYZ)),     "test setup_Rotate__EulerAngles(t_m3d,1.23, 3.45, 5.67,XYZ))");
+        check_Test(check_Equal(l,s_test_m3d__Reflect_1_2_3,setup_Reflect__Collinear(t_m3d,1,2,3)),                                      "test setup_Reflect__Collinear(t_m3d,1,2,3))");
+        check_Test(check_Equal(l,s_test_m3d__Shear_X_2,setup_Shear(t_m3d,YZ,2,1.25)),                                                    "test setup_Shear(t_m3d,X,2))");
+        printf_M3dCss(t_m3d);
+        printf_Matrix(t_m3d,w,h);
+
     }
 
 }
