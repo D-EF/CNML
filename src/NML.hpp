@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-05-09 17:40:11
+ * @LastEditTime: 2023-05-16 16:44:34
  * @Description: Nittle Math Library 简单数学库
  * 
  * @Copyright (c) 2023 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
@@ -15,8 +15,9 @@
     #define __NML_VALUE_TYPE__ float
 #endif
 
-#define __NML__INLINE_M2D_ACTION_FUNCTION inline
-#define __NML__INLINE_M3D_ACTION_FUNCTION inline
+#define __NML__INLINE__M2D_ACTION_FUNCTION inline
+#define __NML__INLINE__M3D_ACTION_FUNCTION inline
+#define __NML__INLINE__ROTATE_FUNCTION     inline
 
 
 #include <Math.h>
@@ -44,7 +45,15 @@ namespace NML{
         ZXY=0b100001,    ZXZ=0b100010,    ZYX=0b100100,    ZYZ=0b100110
     };
     
-    Rotation_Order _DEFAULT_EULER_ANGLE_ORDER=XYZ;
+    /**
+     * @brief 提取 Rotation_Order 的旋转轴
+     * @param order 欧拉角旋转顺序
+     * @param index 旋转轴下标[0,2], 表示第几次旋转
+     * @return 返回当前旋转轴向
+     */
+    inline Axis get_Rotation_Order(Rotation_Order order,char index){
+        return static_cast<Axis>(order>>(2*index) &0b11);
+    }
 
     template <typename value_Type> inline value_Type min(value_Type a,value_Type b){return a>b?b:a;}
     

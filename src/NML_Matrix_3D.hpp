@@ -38,25 +38,7 @@ namespace NML{
          * @brief 打印输出3d矩阵变换的css样式
          * @param mat 矩阵数据
          */
-        void printf_M3dCss(var*& mat){
-            var v_mxw=0,
-                v_myw=0,
-                v_mzw=0,
-                v_mww=1;
-                
-            if(!mxw){
-                v_mxw=mat[mxw];
-                v_myw=mat[myw];
-                v_mzw=mat[mzw];
-                v_mww=mat[mww];
-            }
-            printf("transform:matrix3d(%f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f);\n",
-                mat[mxx],   mat[mxy],   mat[mxz],   v_mxw,
-                mat[myx],   mat[myy],   mat[myz],   v_myw,
-                mat[mzx],   mat[mzy],   mat[mzz],   v_mzw,
-                mat[tx],    mat[ty],    mat[tz],    v_mww
-            );
-        }
+        void printf_M3dCss(var*& mat);
 
 
         /**
@@ -80,7 +62,7 @@ namespace NML{
          * @param value_mww  3d线性变换矩阵 参数 mww 
          * @return 写入 out 并返回
          */
-        __NML__INLINE_M3D_ACTION_FUNCTION var*& setup_Matrix3D__Easy(var*& out, 
+        __NML__INLINE__M3D_ACTION_FUNCTION var*& setup_Matrix3D__Easy(var*& out, 
             var value_mxx,     var value_mxy,     var value_mxz,
             var value_myx,     var value_myy,     var value_myz,
             var value_mzx,     var value_mzy,     var value_mzz,
@@ -109,7 +91,7 @@ namespace NML{
          * @param app_mww  3d线性变换矩阵 参数 mww 
          * @return 修改 mat 并返回
          */
-        __NML__INLINE_M3D_ACTION_FUNCTION var*& transform_Matrix3D__Easy(var*& mat, 
+        __NML__INLINE__M3D_ACTION_FUNCTION var*& transform_Matrix3D__Easy(var*& mat, 
             var app_mxx,     var app_mxy,     var app_mxz,
             var app_myx,     var app_myy,     var app_myz,
             var app_mzx,     var app_mzy,     var app_mzz,
@@ -130,16 +112,18 @@ namespace NML{
         /** 使用向量的函数*/
         typedef var*& (*_M3d_Act_Fnc__Use_Vec)(var*& out, var vec_x, var vec_y, var vec_z);
 
-        __NML__INLINE_M3D_ACTION_FUNCTION   var*& act_Translate                (const _M3d_Act_Fnc__Easy& act, var*& out, var translate_x, var translate_y=0, var translate_z=0);
-        __NML__INLINE_M3D_ACTION_FUNCTION   var*& act_Scale                    (const _M3d_Act_Fnc__Easy& act, var*& out, var scale_x, var scale_y, var scale_z);
-        __NML__INLINE_M3D_ACTION_FUNCTION   var*& act_Reflect                  (const _M3d_Act_Fnc__Easy& act, var*& out, var normal_x, var normal_y, var normal_z);
-        /** never inline */                 var*& act_Reflect__Collinear       (const _M3d_Act_Fnc__Easy& act, var*& out, var normal_x, var normal_y, var normal_z);
-        /** never inline */                 var*& act_Shear                    (const _M3d_Act_Fnc__Easy& act, var*& out, Plane_3D plane, var k1, var k2);
-        /** never inline */                 var*& act_Rotate                   (const _M3d_Act_Fnc__Easy& act, var*& out, var theta, Axis axis=X);
-        __NML__INLINE_M3D_ACTION_FUNCTION   var*& act_Rotate__EulerAngles      (const _M3d_Act_Fnc__Easy& act, var*& out, var thetas_1, var thetas_2, var thetas_3, Rotation_Order order);
-        __NML__INLINE_M3D_ACTION_FUNCTION   var*& act_OrthographicProjection   (const _M3d_Act_Fnc__Easy& act, var*& out, var normal_x, var normal_y, var normal_z);
+        __NML__INLINE__M3D_ACTION_FUNCTION   var*& act_Translate                (const _M3d_Act_Fnc__Easy& act, var*& out, var translate_x, var translate_y=0, var translate_z=0);
+        __NML__INLINE__M3D_ACTION_FUNCTION   var*& act_Scale                    (const _M3d_Act_Fnc__Easy& act, var*& out, var scale_x, var scale_y, var scale_z);
+        __NML__INLINE__M3D_ACTION_FUNCTION   var*& act_Reflect                  (const _M3d_Act_Fnc__Easy& act, var*& out, var normal_x, var normal_y, var normal_z);
+        /** never inline */                  var*& act_Reflect__Collinear       (const _M3d_Act_Fnc__Easy& act, var*& out, var normal_x, var normal_y, var normal_z);
+        /** never inline */                  var*& act_Shear                    (const _M3d_Act_Fnc__Easy& act, var*& out, Plane_3D plane, var k1, var k2);
+        /** never inline */                  var*& act_Rotate                   (const _M3d_Act_Fnc__Easy& act, var*& out, var theta, Axis axis=X);
+        __NML__INLINE__M3D_ACTION_FUNCTION   var*& act_Rotate__Quaternion       (const _M3d_Act_Fnc__Easy& act, var*& out, var x, var y, var z, var w);
+        __NML__INLINE__M3D_ACTION_FUNCTION   var*& act_Rotate__EulerAngles      (const _M3d_Act_Fnc__Easy& act, var*& out, var thetas_1, var thetas_2, var thetas_3, Rotation_Order order);
+        __NML__INLINE__M3D_ACTION_FUNCTION   var*& act_OrthographicProjection   (const _M3d_Act_Fnc__Easy& act, var*& out, var normal_x, var normal_y, var normal_z);
 
-        inline var*& act_Rotate__EulerAngles   (const _M3d_Act_Fnc__Easy& act, var*& out, var*& thetas, Rotation_Order order=XYZ)   {return act_Rotate__EulerAngles(act,out,thetas[0],thetas[1],thetas[2],order);}
+        inline var*& act_Rotate__Quaternion    (const _M3d_Act_Fnc__Easy& act, var*& out, var*& quat){return act_Rotate__Quaternion(act,out,quat[0],quat[1],quat[2],quat[3]);}
+        inline var*& act_Rotate__EulerAngles   (const _M3d_Act_Fnc__Easy& act, var*& out, var*& thetas, Rotation_Order order=XYZ) {return act_Rotate__EulerAngles(act,out,thetas[0],thetas[1],thetas[2],order);}
 
 
         // open * setup * open
@@ -184,7 +168,7 @@ namespace NML{
              * @param normal_z      镜像面的法向的 z 坐标
              * @return 修改 out 并输出
              */
-            inline var*& setup_Reflect               (var*& out, var normal_x, var normal_y, var normal_z)                             {return act_Reflect            (setup_Matrix3D__Easy,out, normal_x, normal_y, normal_z);}
+            inline var*& setup_Reflect               (var*& out, var normal_x, var normal_y, var normal_z)                             {return act_Reflect               (setup_Matrix3D__Easy,out, normal_x, normal_y, normal_z);}
             /**
              * @brief 设置 镜像矩阵
              * @param out           输出对象
@@ -193,7 +177,7 @@ namespace NML{
              * @param normal_z      镜像轴法线方向上的 z 坐标
              * @return 修改 out 并输出
              */
-            inline var*& setup_Reflect__Collinear    (var*& out, var normal_x, var normal_y, var normal_z)                             {return act_Reflect__Collinear (setup_Matrix3D__Easy,out, normal_x, normal_y, normal_z);}
+            inline var*& setup_Reflect__Collinear    (var*& out, var normal_x, var normal_y, var normal_z)                             {return act_Reflect__Collinear    (setup_Matrix3D__Easy,out, normal_x, normal_y, normal_z);}
             /**
              * @brief 设置 切变矩阵
              * @param out           输出对象
@@ -210,6 +194,14 @@ namespace NML{
              * @return 修改 out 并输出
              */
             inline var*& setup_Rotate                (var*& out, var theta, Axis axis=X)                                               {return act_Rotate                (setup_Matrix3D__Easy,out, theta, axis);}
+            /**
+             * @brief 设置 旋转矩阵  (使用四元数)
+             * @param out           输出对象
+             * @param quat          四元数
+             * @return 修改 out 并输出
+             */
+            inline var*& setup_Rotate_Quaternion     (var*& out, var*& quat)                                                           {return act_Rotate__Quaternion    (setup_Matrix3D__Easy,out,quat);}
+            inline var*& setup_Rotate_Quaternion     (var*& out, var x, var y, var z, var w)                                           {return act_Rotate__Quaternion    (setup_Matrix3D__Easy,out,x,y,z,w);}
             /**
              * @brief 设置 旋转矩阵  (使用欧拉角)
              * @param out           输出对象      
@@ -274,7 +266,7 @@ namespace NML{
              * @param normal_z      镜像面的法向的 z 坐标
              * @return 修改 out 并输出
              */
-            inline var*& transform_Reflect               (var*& out, var normal_x, var normal_y, var normal_z)                             {return act_Reflect            (transform_Matrix3D__Easy,out, normal_x, normal_y, normal_z);}
+            inline var*& transform_Reflect               (var*& out, var normal_x, var normal_y, var normal_z)                             {return act_Reflect               (transform_Matrix3D__Easy,out, normal_x, normal_y, normal_z);}
             /**
              * @brief 矩阵 进行 镜像 变换
              * @param out           输出对象
@@ -283,7 +275,7 @@ namespace NML{
              * @param normal_z      镜像轴法线方向上的 z 坐标
              * @return 修改 out 并输出
              */
-            inline var*& transform_Reflect__Collinear    (var*& out, var normal_x, var normal_y, var normal_z)                             {return act_Reflect__Collinear (transform_Matrix3D__Easy,out, normal_x, normal_y, normal_z);}
+            inline var*& transform_Reflect__Collinear    (var*& out, var normal_x, var normal_y, var normal_z)                             {return act_Reflect__Collinear    (transform_Matrix3D__Easy,out, normal_x, normal_y, normal_z);}
             /**
              * @brief 矩阵 进行 切变 变换
              * @param out           输出对象
@@ -300,6 +292,14 @@ namespace NML{
              * @return 修改 out 并输出
              */
             inline var*& transform_Rotate                (var*& out, var theta, Axis axis=X)                                               {return act_Rotate                (transform_Matrix3D__Easy,out, theta, axis);}
+            /**
+             * @brief 矩阵 进行 旋转 变换  (使用四元数)
+             * @param out           输出对象
+             * @param quat          四元数
+             * @return 修改 out 并输出
+             */
+            inline var*& transform_Rotate_Quaternion     (var*& out, var*& quat)                                                           {return act_Rotate__Quaternion    (transform_Matrix3D__Easy,out,quat);}
+            inline var*& transform_Rotate_Quaternion     (var*& out, var x, var y, var z, var w)                                           {return act_Rotate__Quaternion    (transform_Matrix3D__Easy,out,x,y,z,w);}
             /**
              * @brief 矩阵 进行 旋转 变换  (使用欧拉角)
              * @param out           输出对象
@@ -365,8 +365,28 @@ namespace NML{
                 break;
             }
         }
+        
+        void printf_M3dCss(var*& mat){
+            var v_mxw=0,
+                v_myw=0,
+                v_mzw=0,
+                v_mww=1;
+                
+            if(!mxw){
+                v_mxw=mat[mxw];
+                v_myw=mat[myw];
+                v_mzw=mat[mzw];
+                v_mww=mat[mww];
+            }
+            printf("transform:matrix3d(%f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f);\n",
+                mat[mxx],   mat[mxy],   mat[mxz],   v_mxw,
+                mat[myx],   mat[myy],   mat[myz],   v_myw,
+                mat[mzx],   mat[mzy],   mat[mzz],   v_mzw,
+                mat[tx],    mat[ty],    mat[tz],    v_mww
+            );
+        }
 
-        __NML__INLINE_M3D_ACTION_FUNCTION var*& setup_Matrix3D__Easy(var*& out, 
+        __NML__INLINE__M3D_ACTION_FUNCTION var*& setup_Matrix3D__Easy(var*& out, 
             var value_mxx,   var value_mxy,   var value_mxz,
             var value_myx,   var value_myy,   var value_myz,
             var value_mzx,   var value_mzy,   var value_mzz,
@@ -382,7 +402,7 @@ namespace NML{
             return out;
         }
 
-        __NML__INLINE_M3D_ACTION_FUNCTION var*& transform_Matrix3D__Easy(var*& mat, 
+        __NML__INLINE__M3D_ACTION_FUNCTION var*& transform_Matrix3D__Easy(var*& mat, 
             var app_mxx,   var app_mxy,   var app_mxz,
             var app_myx,   var app_myy,   var app_myz,
             var app_mzx,   var app_mzy,   var app_mzz,
@@ -410,7 +430,7 @@ namespace NML{
             );
         }
         
-        __NML__INLINE_M3D_ACTION_FUNCTION var*& act_Translate(const _M3d_Act_Fnc__Easy& act, var*& out, var translate_x, var translate_y, var translate_z){
+        __NML__INLINE__M3D_ACTION_FUNCTION var*& act_Translate(const _M3d_Act_Fnc__Easy& act, var*& out, var translate_x, var translate_y, var translate_z){
             return act(out,
                 1,             0,             0,
                 0,             1,             0,
@@ -420,7 +440,7 @@ namespace NML{
             );
         }
 
-        __NML__INLINE_M3D_ACTION_FUNCTION var*& act_Scale (const _M3d_Act_Fnc__Easy& act, var*& out, var scale_x, var scale_y,var scale_z){
+        __NML__INLINE__M3D_ACTION_FUNCTION var*& act_Scale (const _M3d_Act_Fnc__Easy& act, var*& out, var scale_x, var scale_y,var scale_z){
             return act(out, 
                 scale_x,   0,         0,
                 0,         scale_y,   0,
@@ -439,7 +459,7 @@ namespace NML{
             return act_Reflect(act,out,normal_x,normal_y,normal_z);
         }
 
-        __NML__INLINE_M3D_ACTION_FUNCTION var*& act_Reflect (const _M3d_Act_Fnc__Easy& act, var*& out, var normal_x, var normal_y, var normal_z){
+        __NML__INLINE__M3D_ACTION_FUNCTION var*& act_Reflect (const _M3d_Act_Fnc__Easy& act, var*& out, var normal_x, var normal_y, var normal_z){
             var i2xy=-2*normal_x*normal_y,
                 i2xz=-2*normal_x*normal_z,
                 i2yz=-2*normal_y*normal_z;
@@ -529,7 +549,26 @@ namespace NML{
             }
         }
 
-        __NML__INLINE_M3D_ACTION_FUNCTION var*& act_Rotate__EulerAngles (const _M3d_Act_Fnc__Easy& act, var*& out, var thetas_1, var thetas_2, var thetas_3, Rotation_Order order){
+        __NML__INLINE__M3D_ACTION_FUNCTION   var*& act_Rotate__Quaternion       (const _M3d_Act_Fnc__Easy& act, var*& out, var x, var y, var z, var w){
+            var xx=x*x,
+                yy=y*y,
+                zz=z*z,
+                xy=x*y,
+                xz=x*z,
+                yz=y*z,
+                wx=w*x,
+                wy=w*y,
+                wz=w*z;
+            return act(out,
+                1-2*(yy+zz),   2*(xy+wz),     2*(xz-wy),
+                2*(xy-wz),     1-2*(xx-zz),   2*(yz+wx),
+                2*(xz+wy),     2*(yz-wx),     1-2*(xx-yy),
+                0,             0,             0,
+                0,0,0,1
+            );
+        }
+
+        __NML__INLINE__M3D_ACTION_FUNCTION var*& act_Rotate__EulerAngles (const _M3d_Act_Fnc__Easy& act, var*& out, var thetas_1, var thetas_2, var thetas_3, Rotation_Order order){
             Axis axis= static_cast<Axis>(order>>4 &0b11);
             act_Rotate(act,out,thetas_1,axis);
 
@@ -540,7 +579,7 @@ namespace NML{
             return  transform_Rotate(out,thetas_3,axis);
         }
 
-        __NML__INLINE_M3D_ACTION_FUNCTION   var*& act_OrthographicProjection (const _M3d_Act_Fnc__Easy& act, var*& out, var normal_x, var normal_y, var normal_z){
+        __NML__INLINE__M3D_ACTION_FUNCTION   var*& act_OrthographicProjection (const _M3d_Act_Fnc__Easy& act, var*& out, var normal_x, var normal_y, var normal_z){
             return act(out,
                 1-normal_x*normal_x,   -normal_x*normal_y,    -normal_x*normal_z,
                 -normal_x*normal_y,    1-normal_y*normal_y,   -normal_y*normal_z,

@@ -39,22 +39,7 @@ namespace NML{
          * @brief 打印输出2d矩阵变换的css样式
          * @param mat 矩阵数据
          */
-        void printf_M2dCss(var*& mat){
-            var v_mxz=0,
-                v_myz=0,
-                v_mzz=1;
-                
-            if(!mx_null){
-                v_mxz=mat[mxz];
-                v_myz=mat[myz];
-                v_mzz=mat[mzz];
-            }
-            printf("transform:matrix(%f, %f, %f, %f, %f, %f);\n",
-                mat[mxx],   mat[mxy],
-                mat[myx],   mat[myy],
-                mat[tx],    mat[ty]
-            );
-        }
+        void printf_M2dCss(var*& mat);
 
         
         /**
@@ -68,7 +53,7 @@ namespace NML{
          * @param value_ty  y 方向平移量
          * @return 写入 out 并返回
          */
-        __NML__INLINE_M2D_ACTION_FUNCTION var*& setup_Matrix2D(var*& out, var value_mxx, var value_myx, var value_mxy, var value_myy, var value_tx, var value_ty);
+        __NML__INLINE__M2D_ACTION_FUNCTION var*& setup_Matrix2D(var*& out, var value_mxx, var value_myx, var value_mxy, var value_myy, var value_tx, var value_ty);
         
         /**
          * @brief 2d矩阵追加变换
@@ -81,16 +66,16 @@ namespace NML{
          * @param app_ty  y 方向平移量
          * @return 修改 mat 并返回
          */
-        __NML__INLINE_M2D_ACTION_FUNCTION  var*& transform_Matrix2D(var*& mat, var app_mxx, var app_mxy, var app_myx, var app_myy, var app_tx, var app_ty);
+        __NML__INLINE__M2D_ACTION_FUNCTION  var*& transform_Matrix2D(var*& mat, var app_mxx, var app_mxy, var app_myx, var app_myy, var app_tx, var app_ty);
 
         
         typedef var*&(_M2d_Act_Fnc)(var*& mat, var app_mxx, var app_myx, var app_mxy, var app_myy, var app_tx, var app_ty);
 
-        __NML__INLINE_M2D_ACTION_FUNCTION   var*& act_Translate            (const _M2d_Act_Fnc& act, var*& out, var translate_x, var translate_y=0);
-        __NML__INLINE_M2D_ACTION_FUNCTION   var*& act_Scale                (const _M2d_Act_Fnc& act, var*& out, var scale_x, var scale_y);
-        __NML__INLINE_M2D_ACTION_FUNCTION   var*& act_Rotate               (const _M2d_Act_Fnc& act, var*& out, var theta);
-        __NML__INLINE_M2D_ACTION_FUNCTION   var*& act_Reflect              (const _M2d_Act_Fnc& act, var*& out, var normal_x, var normal_y);
-        __NML__INLINE_M2D_ACTION_FUNCTION   var*& act_Shear                (const _M2d_Act_Fnc& act, var*& out, var axis_x, var axis_y, var k);
+        __NML__INLINE__M2D_ACTION_FUNCTION   var*& act_Translate            (const _M2d_Act_Fnc& act, var*& out, var translate_x, var translate_y=0);
+        __NML__INLINE__M2D_ACTION_FUNCTION   var*& act_Scale                (const _M2d_Act_Fnc& act, var*& out, var scale_x, var scale_y);
+        __NML__INLINE__M2D_ACTION_FUNCTION   var*& act_Rotate               (const _M2d_Act_Fnc& act, var*& out, var theta);
+        __NML__INLINE__M2D_ACTION_FUNCTION   var*& act_Reflect              (const _M2d_Act_Fnc& act, var*& out, var normal_x, var normal_y);
+        __NML__INLINE__M2D_ACTION_FUNCTION   var*& act_Shear                (const _M2d_Act_Fnc& act, var*& out, var axis_x, var axis_y, var k);
         /** never inline */                 var*& act_Reflect__Collinear   (const _M2d_Act_Fnc& act, var*& out, var normal_x, var normal_y);
         /** never inline */                 var*& act_Shear__Collinear     (const _M2d_Act_Fnc& act, var*& out, var axis_x, var axis_y, var k);
 
@@ -275,8 +260,25 @@ namespace NML{
                 break;
             }
         }
+        
+        void printf_M2dCss(var*& mat){
+            var v_mxz=0,
+                v_myz=0,
+                v_mzz=1;
+                
+            if(!mx_null){
+                v_mxz=mat[mxz];
+                v_myz=mat[myz];
+                v_mzz=mat[mzz];
+            }
+            printf("transform:matrix(%f, %f, %f, %f, %f, %f);\n",
+                mat[mxx],   mat[mxy],
+                mat[myx],   mat[myy],
+                mat[tx],    mat[ty]
+            );
+        }
 
-        __NML__INLINE_M2D_ACTION_FUNCTION var*& setup_Matrix2D(var*& out, var a, var b, var c, var d, var e, var f){
+        __NML__INLINE__M2D_ACTION_FUNCTION var*& setup_Matrix2D(var*& out, var a, var b, var c, var d, var e, var f){
             out[mx_null]=0;   out[my_null]=0;   out[mi_full]=1;
 
             out[mxx]=a;       out[mxy]=b;
@@ -285,7 +287,7 @@ namespace NML{
             return out;
         }
 
-        __NML__INLINE_M2D_ACTION_FUNCTION var*& transform_Matrix2D(var*& mat, var app_mxx, var app_mxy, var app_myx, var app_myy, var app_tx, var app_ty){  
+        __NML__INLINE__M2D_ACTION_FUNCTION var*& transform_Matrix2D(var*& mat, var app_mxx, var app_mxy, var app_myx, var app_myy, var app_tx, var app_ty){  
             return setup_Matrix2D(mat,
                 mat[mxx]*app_mxx + mat[mxy]*app_myx,            mat[mxx]*app_mxy + mat[mxy]*app_myy,
                 mat[myx]*app_mxx + mat[myy]*app_myx,            mat[myx]*app_mxy + mat[myy]*app_myy,
@@ -293,7 +295,7 @@ namespace NML{
             );
         }
 
-        __NML__INLINE_M2D_ACTION_FUNCTION var*& act_Translate(const _M2d_Act_Fnc& act, var*& out, var translate_x, var translate_y){
+        __NML__INLINE__M2D_ACTION_FUNCTION var*& act_Translate(const _M2d_Act_Fnc& act, var*& out, var translate_x, var translate_y){
             return act(out,
                 1,             0,
                 0,             1,
@@ -301,7 +303,7 @@ namespace NML{
             );
         }
 
-        __NML__INLINE_M2D_ACTION_FUNCTION var*& act_Scale(const _M2d_Act_Fnc& act, var*& out,var scale_x, var scale_y){
+        __NML__INLINE__M2D_ACTION_FUNCTION var*& act_Scale(const _M2d_Act_Fnc& act, var*& out,var scale_x, var scale_y){
             return act(out,
                 scale_x,   0,
                 0,         scale_y,
@@ -309,7 +311,7 @@ namespace NML{
             );
         }
 
-        __NML__INLINE_M2D_ACTION_FUNCTION var*& act_Rotate(const _M2d_Act_Fnc& act, var*& out, var theta){
+        __NML__INLINE__M2D_ACTION_FUNCTION var*& act_Rotate(const _M2d_Act_Fnc& act, var*& out, var theta){
                 var c=cos(theta),s=sin(theta);
                 return act(out,
                      c,    s,
@@ -318,7 +320,7 @@ namespace NML{
                 );
         }
 
-        __NML__INLINE_M2D_ACTION_FUNCTION var*& act_Reflect(const _M2d_Act_Fnc& act, var*& out, var normal_x, var normal_y){
+        __NML__INLINE__M2D_ACTION_FUNCTION var*& act_Reflect(const _M2d_Act_Fnc& act, var*& out, var normal_x, var normal_y){
             return act(out,
                 1-2*normal_x*normal_x ,   -2*normal_x*normal_y,
                 -2*normal_x*normal_y  ,   1-2*normal_y*normal_y,
@@ -326,7 +328,7 @@ namespace NML{
             );
         }
 
-        __NML__INLINE_M2D_ACTION_FUNCTION var*& act_Shear(const _M2d_Act_Fnc& act, var*& out,var axis_x, var axis_y, var k){
+        __NML__INLINE__M2D_ACTION_FUNCTION var*& act_Shear(const _M2d_Act_Fnc& act, var*& out,var axis_x, var axis_y, var k){
             return act(out,
                 1,          k*axis_x,
                 k*axis_y,   1,

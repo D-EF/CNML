@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-20 00:58:11
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-05-15 15:23:29
+ * @LastEditTime: 2023-05-16 16:31:30
  * @FilePath: \cnml\src\test.cpp
  * @Description: 
  * @
@@ -14,6 +14,7 @@
 #include "NML_Matrix.hpp"
 #include "NML_Matrix_2D.hpp"
 #include "NML_Matrix_3D.hpp"
+#include "NML_Rotate.hpp"
 
 using namespace std;
 using namespace NML;
@@ -563,17 +564,17 @@ namespace Test_Matrix{
         multiplication(t_m3d,x,y,4);
         multiplication(t_m3d1,t_m3d,z,4);
 
-        printf_Matrix(x,4);
-        printf_Matrix(y,4);
-        printf_Matrix(z,4);
-        printf_Matrix(t_m3d,4);
-        printf_Matrix(t_m3d1,4);
+        // printf_Matrix(x,4);
+        // printf_Matrix(y,4);
+        // printf_Matrix(z,4);
+        // printf_Matrix(t_m3d,4);
+        // printf_Matrix(t_m3d1,4);
 
-        printf_M3dCss(x);
-        printf_M3dCss(y);
-        printf_M3dCss(z);
-        printf_M3dCss(t_m3d);
-        printf_M3dCss(t_m3d1);
+        // printf_M3dCss(x);
+        // printf_M3dCss(y);
+        // printf_M3dCss(z);
+        // printf_M3dCss(t_m3d);
+        // printf_M3dCss(t_m3d1);
 
         test_AllFnc__M3d(Matrix_3D::M3D__4X4_L);
         test_AllFnc__M3d(Matrix_3D::M3D__4X4_R);
@@ -614,7 +615,6 @@ namespace Test_Matrix{
 
         transform_Matrix3D__Easy(t_m3d,9,8,7,6,5,4,3,2,1,0,-1,-2);
         check_Test(check_Equal(l,test_m3d__transform_9down[type],t_m3d), st);
-        printf_Matrix(t_m3d,w,h);
         // printf_Matrix(t_m3d,w,h);
 
         var* s_test_m3d__Translate_1d23_4d56_7d89         =new var[l];
@@ -655,8 +655,6 @@ namespace Test_Matrix{
         check_Test(check_Equal(l,s_test_m3d__Rotate_EulerXYZ_1d23_3d45_5d67,setup_Rotate__EulerAngles(t_m3d,1.23, 3.45, 5.67,XYZ)),     "test setup_Rotate__EulerAngles(t_m3d,1.23, 3.45, 5.67,XYZ))");
         check_Test(check_Equal(l,s_test_m3d__Reflect_1_2_3,setup_Reflect__Collinear(t_m3d,1,2,3)),                                      "test setup_Reflect__Collinear(t_m3d,1,2,3))");
         check_Test(check_Equal(l,s_test_m3d__Shear_X_2,setup_Shear(t_m3d,YZ,2,1.25)),                                                    "test setup_Shear(t_m3d,X,2))");
-        printf_M3dCss(t_m3d);
-        printf_Matrix(t_m3d,w,h);
 
     }
 
