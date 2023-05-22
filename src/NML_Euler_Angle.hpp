@@ -5,6 +5,13 @@
 #include "NML_Matrix_3D.hpp"
 
 namespace NML{
+    const var 
+        PI      = 3.14159265358979323846,
+        DEG     = 0.01745329251994329576,
+        DEG_90  = 1.57079632679489661923,
+        CYCLES  = 6.28318530717958647692;
+    const var &DEG_180 = PI;
+
     namespace Euler_Angle{
         
         /**
@@ -30,6 +37,19 @@ namespace NML{
          * @return 修改 out 并输出
          */
         var*& setup_EulerAngle__ByMatrix(var*& out, var*& mat, Rotation_Order order=XYZ);
+
+        var*& setup_EulerAngle__ByMatrix__XYZ(var*& out,var*& mat);
+        var*& setup_EulerAngle__ByMatrix__XZY(var*& out,var*& mat);
+        var*& setup_EulerAngle__ByMatrix__YXZ(var*& out,var*& mat);
+        var*& setup_EulerAngle__ByMatrix__YZX(var*& out,var*& mat);
+        var*& setup_EulerAngle__ByMatrix__ZXY(var*& out,var*& mat);
+        var*& setup_EulerAngle__ByMatrix__ZYX(var*& out,var*& mat);
+        var*& setup_EulerAngle__ByMatrix__XYX(var*& out,var*& mat);
+        var*& setup_EulerAngle__ByMatrix__XZX(var*& out,var*& mat);
+        var*& setup_EulerAngle__ByMatrix__YXY(var*& out,var*& mat);
+        var*& setup_EulerAngle__ByMatrix__YZY(var*& out,var*& mat);
+        var*& setup_EulerAngle__ByMatrix__ZXZ(var*& out,var*& mat);
+        var*& setup_EulerAngle__ByMatrix__ZYZ(var*& out,var*& mat);
         
         /**
          * @brief 使用四元数生成欧拉角
@@ -39,32 +59,7 @@ namespace NML{
          * @return 修改 out 并输出
          */
         var*& setup_EulerAngle__ByQuaternion(var*& out, var*& quat, Rotation_Order order=XYZ);
-
         
-        
-        var*& setup_EulerAngle__ByMatrix(var*& out, var*& mat, Rotation_Order order){
-            int v=get_Rotation_Order(order,0),
-                u=get_Rotation_Order(order,2),
-                index=Matrix::get_Index(Matrix_3D::w,u,v);
-            int inverse=Matrix_3D::_using_m3d_type&1? 
-                ((Matrix_3D::myx==index||Matrix_3D::mzy==index||Matrix_3D::mxz==index)?-1 : 1):
-                ((Matrix_3D::mxy==index||Matrix_3D::mzx==index||Matrix_3D::myz==index)?-1 : 1);
-            
-            var mat_mapping_out1=inverse*mat[index];
-
-            out[1]=u==v? acos(mat_mapping_out1):asin(mat_mapping_out1);
-
-            if(check_Zero(mat_mapping_out1)){   // 发生 万向锁 Gimbal lock
-                
-            }else{  //一般情况
-                
-            }
-        }
-
-        var*& setup_EulerAngle__ByQuaternion(var*& out, var*& quat, Rotation_Order order){
-            // todo
-        }
-
     }
 }
 

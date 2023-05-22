@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-05-08 09:29:44
+ * @LastEditTime: 2023-05-18 10:47:23
  * @FilePath: \cnml\src\NML_Matrix.cpp
  * @Description: 矩阵 Matrix
  * @
@@ -16,8 +16,8 @@
 namespace NML{
     namespace Matrix{
         
-        void printf_Matrix(var*& matrix, int width, int height){
-            int i=0;
+        void printf_Matrix(var*& matrix, Idx_VM width, Idx_VM height){
+            Idx_VM i=0;
             for(;i<height;i++){
                 printf_Vec(matrix+i*width, width);
             }
@@ -25,72 +25,72 @@ namespace NML{
         }
 
 
-        var*& setup_Identity(var*& out,int width, int height){
-            int l=width*height;
-            for(int i=0;i<l;i++){
+        var*& setup_Identity(var*& out,Idx_VM width, Idx_VM height){
+            Idx_VM l=width*height;
+            for(Idx_VM i=0;i<l;i++){
                 out[i]=0;
             }
             l=width>height?height:width;
-            for(int i=0;i<l;i++){
+            for(Idx_VM i=0;i<l;i++){
                 out[i*width+i]=1;
             }
             return out;
         }
 
 
-        var*& setup_Resize(var*& out, var*& mat, int low_width, int new_width, int _low_height, int _new_height, int shift_left, int shift_top){
-            int low_height   = _low_height?_low_height:low_width;
-            int new_height   = _new_height?_new_height:new_width;
-            int left, load_left, top, load_top;
-            int right    = min(shift_left+low_width,new_width);
-            int bottom   = min(shift_top+low_height,new_height);
+        var*& setup_Resize(var*& out, var*& mat, Idx_VM low_width, Idx_VM new_width, Idx_VM _low_height, Idx_VM _new_height, Idx_VM shift_left, Idx_VM shift_top){
+            Idx_VM low_height   = _low_height?_low_height:low_width;
+            Idx_VM new_height   = _new_height?_new_height:new_width;
+            Idx_VM left, load_left, top, load_top;
+            Idx_VM right    = min((Idx_VM)(shift_left+low_width),new_width);
+            Idx_VM bottom   = min((Idx_VM)(shift_top+low_height),new_height);
             if(shift_left>=0){   left   = shift_left;   load_left   = 0;            }
             else{                left   = 0;            load_left   =-shift_left;   }
             if(shift_top>=0){    top    = shift_top;    load_top    = 0;            }
             else{                top    = 0;            load_top    =-shift_top;    }
 
-            for (int y = top; y < bottom; y++) {
-                int i_out= y * new_width;
-                int i_mat= (y + load_top) * low_width + (load_left);
-                for (int x = left; x < right; ++x,++i_out,++i_mat) {
+            for (Idx_VM y = top; y < bottom; y++) {
+                Idx_VM i_out= y * new_width;
+                Idx_VM i_mat= (y + load_top) * low_width + (load_left);
+                for (Idx_VM x = left; x < right; ++x,++i_out,++i_mat) {
                     out[i_out] = mat[i_mat];
                 }
             }
             return out;
         }
 
-        var*& setup_HadamardProduct(var*& out, var*& mat_left, var*& mat_right, int width, int height){
-            int i=0;
-            for(int v=0;v<height;++v){
-                for(int u=0;u<width;++u,++i){
+        var*& setup_HadamardProduct(var*& out, var*& mat_left, var*& mat_right, Idx_VM width, Idx_VM height){
+            Idx_VM i=0;
+            for(Idx_VM v=0;v<height;++v){
+                for(Idx_VM u=0;u<width;++u,++i){
                     out[i]=mat_left[i]*mat_right[i];
                 }
             }
             return out;
         }
 
-        var*& setup_KroneckerProduct(var*& out, var*& mat_left, var*& mat_right, int width_left, int height_left, int width_right, int height_right){
+        var*& setup_KroneckerProduct(var*& out, var*& mat_left, var*& mat_right, Idx_VM width_left, Idx_VM height_left, Idx_VM width_right, Idx_VM height_right){
             // hl, hr, wl, wr
-            int i=0,i_vr_head,il=0;
+            Idx_VM i=0,i_vr_head,il=0;
 
-            for(int vl=0;   vl<height_left;    ++vl)        {
-            for(int vr=0;   vr<height_right;   ++vr)        { i_vr_head=vr*width_right; il=vl*width_left;
-            for(int ul=0;   ul<width_left;     ++ul,++il)   { 
-            for(int ur=0;   ur<width_right;    ++ur,++i)    {
+            for(Idx_VM vl=0;   vl<height_left;    ++vl)        {
+            for(Idx_VM vr=0;   vr<height_right;   ++vr)        { i_vr_head=vr*width_right; il=vl*width_left;
+            for(Idx_VM ul=0;   ul<width_left;     ++ul,++il)   { 
+            for(Idx_VM ur=0;   ur<width_right;    ++ur,++i)    {
                 out[i]=mat_left[il]*mat_right[i_vr_head+ur];
             }}}}
             
             return out;
         }
 
-        var*& setup_Concat(var*& out, var**& mats, int width_m, int height_m, int width_g, int height_g){
+        var*& setup_Concat(var*& out, var**& mats, Idx_VM width_m, Idx_VM height_m, Idx_VM width_g, Idx_VM height_g){
             // hl, hr, wl, wr
-            int i=0,i_vm_head,ig=0;
+            Idx_VM i=0,i_vm_head,ig=0;
 
-            for(int vg=0;   vg<height_g;    ++vg)        {
-            for(int vm=0;   vm<height_m;   ++vm)        { i_vm_head=vm*width_m; ig=vg*width_g;
-            for(int ug=0;   ug<width_g;     ++ug,++ig)   { 
-            for(int um=0;   um<width_m;    ++um,++i)    {
+            for(Idx_VM vg=0;   vg<height_g;    ++vg)        {
+            for(Idx_VM vm=0;   vm<height_m;   ++vm)        { i_vm_head=vm*width_m; ig=vg*width_g;
+            for(Idx_VM ug=0;   ug<width_g;     ++ug,++ig)   { 
+            for(Idx_VM um=0;   um<width_m;    ++um,++i)    {
                 out[i]=mats[ig][i_vm_head+um];
             }}}}
             
@@ -98,78 +98,78 @@ namespace NML{
         }
 
 
-        void transformation__ExchangeRow(var*& mat, int width, int v1, int v2){
-            int i1 = v1*width,
+        void transformation__ExchangeRow(var*& mat, Idx_VM width, Idx_VM v1, Idx_VM v2){
+            Idx_VM i1 = v1*width,
                 i2 = v2*width;
-            for(int i=0;i<width;++i){
+            for(Idx_VM i=0;i<width;++i){
                 std::swap(mat[i1+i],mat[i2+i]);
             }
         }
-        void transformation__ExchangeRow(var**& mats, int length_g, int width, int v1, int v2){
-            int i1 = v1*width,
+        void transformation__ExchangeRow(var**& mats, Idx_VM length_g, Idx_VM width, Idx_VM v1, Idx_VM v2){
+            Idx_VM i1 = v1*width,
                 i2 = v2*width;
-            for(int i=0;i<width;++i){
-                for(int j=0;j<length_g;++j){
+            for(Idx_VM i=0;i<width;++i){
+                for(Idx_VM j=0;j<length_g;++j){
                     std::swap(mats[j][i1+i],mats[j][i2+i]);
                 }
             }
         }
 
 
-        void transformation__ExchangeCol(var*& mat, int width,int height, int u1, int u2){
+        void transformation__ExchangeCol(var*& mat, Idx_VM width,Idx_VM height, Idx_VM u1, Idx_VM u2){
             var temp;
-            int i1 = u1,
+            Idx_VM i1 = u1,
                 i2 = u2;
-            for(int i=0;i<height;++i,i1+=width,i2+=width){
+            for(Idx_VM i=0;i<height;++i,i1+=width,i2+=width){
                 std::swap(mat[i1],mat[i2]);
             }
         }
-        void transformation__ExchangeCol(var**& mats,int length_g, int width,int height, int u1, int u2){
-            int i1 = u1,
+        void transformation__ExchangeCol(var**& mats,Idx_VM length_g, Idx_VM width,Idx_VM height, Idx_VM u1, Idx_VM u2){
+            Idx_VM i1 = u1,
                 i2 = u2;
-            for(int i=0;i<height;++i,i1+=width,i2+=width){
-                for(int j=0;j<length_g;++j){
+            for(Idx_VM i=0;i<height;++i,i1+=width,i2+=width){
+                for(Idx_VM j=0;j<length_g;++j){
                     std::swap(mats[j][i1],mats[j][i2]);
                 }
             }
         }
 
 
-        void transformation__ScaleRow(var*& mat, int width, int v, var k){
-            int index = v*width;
-            for(int i=0;i<width;++i){
+        void transformation__ScaleRow(var*& mat, Idx_VM width, Idx_VM v, var k){
+            Idx_VM index = v*width;
+            for(Idx_VM i=0;i<width;++i){
                 mat[index+i]*=k;
             }
         }
-        void transformation__ScaleRow(var**& mats,int length_g, int width, int v, var k){
-            int index = v*width;
-            for(int i=0;i<width;++i){
-                for(int j=0;j<length_g;++j){
+        void transformation__ScaleRow(var**& mats,Idx_VM length_g, Idx_VM width, Idx_VM v, var k){
+            Idx_VM index = v*width;
+            for(Idx_VM i=0;i<width;++i){
+                for(Idx_VM j=0;j<length_g;++j){
                     mats[j][index+i]*=k;
                 }
             }
         }
 
 
-        void transformation__ScaleCol(var*& mat, int width, int height, int u, var k){
-            int index = u;
-            for(int i=0;i<height;++i,index+=width){
+        void transformation__ScaleCol(var*& mat, Idx_VM width, Idx_VM height, Idx_VM u, var k){
+            Idx_VM index = u;
+            for(Idx_VM i=0;i<height;++i,index+=width){
                 mat[index]*=k;
             }
         }
-        void transformation__ScaleCol(var**& mats,int length_g, int width, int height, int u, var k){
-            int index = u;
-            for(int i=0;i<height;++i,index+=width){
-                for(int j=0;j<length_g;++j){
+        void transformation__ScaleCol(var**& mats,Idx_VM length_g, Idx_VM width, Idx_VM height, Idx_VM u, var k){
+            Idx_VM index = u;
+            for(Idx_VM i=0;i<height;++i,index+=width){
+                for(Idx_VM j=0;j<length_g;++j){
                     mats[j][index+i]*=k;
                 }
             }
         }
 
-        bool transformation__ExchangeRow_ToUnZero(var*& mat, int length, int width, int index, int v, int step_length){
-            int f=step_length>0?1:-1;
-            int v_target=v+f;
-            for(int i=index+step_length;i>=0&&i<length;i+=step_length,v_target+=f){
+        bool transformation__ExchangeRow_ToUnZero(var*& mat, Idx_VM length, Idx_VM width, Idx_VM index, Idx_VM v, Idx_VM step_length){
+            Idx_VM f=step_length>0?1:-1;
+            Idx_VM v_target=v+f;
+            for(Idx_VM i=index+step_length;i>=0&&i<length;i+=step_length,v_target+=f){
                 if(check_Zero(mat[i])){
                     transformation__ExchangeRow(mat,width,v,v_target);
                     return true;
@@ -177,10 +177,10 @@ namespace NML{
             }
             return false;
         }
-        bool transformation__ExchangeRow_ToUnZero(var**& mats, int length_g, int length, int width, int index, int v, int step_length, int _index_m){
-            int f=step_length>0?1:-1;
-            int v_target=v+f;
-            for(int i=index+step_length;i>=0&&i<length;i+=step_length,v_target+=f){
+        bool transformation__ExchangeRow_ToUnZero(var**& mats, Idx_VM length_g, Idx_VM length, Idx_VM width, Idx_VM index, Idx_VM v, Idx_VM step_length, Idx_VM _index_m){
+            Idx_VM f=step_length>0?1:-1;
+            Idx_VM v_target=v+f;
+            for(Idx_VM i=index+step_length;i>=0&&i<length;i+=step_length,v_target+=f){
                 if(check_Zero(mats[_index_m][i])){
                     transformation__ExchangeRow(mats,length_g,width,v,v_target);
                     return true;
@@ -190,13 +190,13 @@ namespace NML{
         }
 
         
-        bool transformation__ExchangeRow_PivotToMax(var*& mat, int length, int width, int index, int v, int step_length){
-            int f=step_length>0?1:-1;
-            int v_target=v+f;
+        bool transformation__ExchangeRow_PivotToMax(var*& mat, Idx_VM length, Idx_VM width, Idx_VM index, Idx_VM v, Idx_VM step_length){
+            Idx_VM f=step_length>0?1:-1;
+            Idx_VM v_target=v+f;
             
-            int max_row=v;
-            int max_row_pivot_index=index;
-            for(int i=index+step_length;i>=0&&i<length;i+=step_length,v_target+=f){
+            Idx_VM max_row=v;
+            Idx_VM max_row_pivot_index=index;
+            for(Idx_VM i=index+step_length;i>=0&&i<length;i+=step_length,v_target+=f){
                 if(mat[max_row_pivot_index]<mat[i]){
                     max_row_pivot_index=i;
                     max_row=v_target;
@@ -209,13 +209,13 @@ namespace NML{
             return true;
         }
         
-        bool transformation__ExchangeRow_PivotToMax(var**& mats, int length_g, int length, int width, int index, int v, int step_length, int _index_m){
-            int f=step_length>0?1:-1;
-            int v_target=v+f;
+        bool transformation__ExchangeRow_PivotToMax(var**& mats, Idx_VM length_g, Idx_VM length, Idx_VM width, Idx_VM index, Idx_VM v, Idx_VM step_length, Idx_VM _index_m){
+            Idx_VM f=step_length>0?1:-1;
+            Idx_VM v_target=v+f;
             
-            int max_row=v;
-            int max_row_pivot_index=index;
-            for(int i=index+step_length;i>=0&&i<length;i+=step_length,v_target+=f){
+            Idx_VM max_row=v;
+            Idx_VM max_row_pivot_index=index;
+            for(Idx_VM i=index+step_length;i>=0&&i<length;i+=step_length,v_target+=f){
                 if(mats[_index_m][max_row_pivot_index]<mats[_index_m][i]){
                     max_row_pivot_index=i;
                     max_row=v_target;
@@ -229,15 +229,15 @@ namespace NML{
         }
 
 
-        var*& multiplication(var*& out, var*& mat_left, var*& mat_right, int height_left, int _width_left_height_right, int _width_right){
-            int index_out=0;
-            int width_left_height_right=_width_left_height_right?_width_left_height_right:height_left;
-            int width_right=_width_right?_width_right:height_left;
+        var*& multiplication(var*& out, var*& mat_left, var*& mat_right, Idx_VM height_left, Idx_VM _width_left_height_right, Idx_VM _width_right){
+            Idx_VM index_out=0;
+            Idx_VM width_left_height_right=_width_left_height_right?_width_left_height_right:height_left;
+            Idx_VM width_right=_width_right?_width_right:height_left;
 
-            for(int i=0;i<height_left;++i){
-                for(int j=0;j<width_right;++j){
+            for(Idx_VM i=0;i<height_left;++i){
+                for(Idx_VM j=0;j<width_right;++j){
                     var temp=0;
-                    for(int l=height_left*i,k=j,c=0; c<width_left_height_right; ++c,++l,k+=width_right){
+                    for(Idx_VM l=height_left*i,k=j,c=0; c<width_left_height_right; ++c,++l,k+=width_right){
                         temp+=mat_left[l]*mat_right[k];
                     }
                     out[index_out]=temp;
@@ -247,14 +247,14 @@ namespace NML{
             return out;
         }
 
-        var*& multiplication(var*& out, var*& mat_left, var*& mat_right, int n){
-            int index_out=0;
-            int length=n*n;
+        var*& multiplication(var*& out, var*& mat_left, var*& mat_right, Idx_VM n){
+            Idx_VM index_out=0;
+            Idx_VM length=n*n;
 
-            for(int i=0;i<n;++i){
-                for(int j=0;j<n;++j){
+            for(Idx_VM i=0;i<n;++i){
+                for(Idx_VM j=0;j<n;++j){
                     var temp=0;
-                    for(int l=n*i,k=j; k<length; ++l,k+=n){
+                    for(Idx_VM l=n*i,k=j; k<length; ++l,k+=n){
                         temp+=mat_left[l]*mat_right[k];
                     }
                     out[index_out]=temp;
@@ -264,8 +264,8 @@ namespace NML{
             return out;
         }
 
-        bool check_Orthogonal(var*& mat,int n){
-            int u,v;
+        bool check_Orthogonal(var*& mat,Idx_VM n){
+            Idx_VM u,v;
             for(v=0;v<n-1;++v){
                 for(u=v+1;u<n;++u){
                     if(mat[get_Index(n,u,v)]!=-mat[get_Index(n,v,u)])return false;
@@ -274,22 +274,22 @@ namespace NML{
             return true;
         }
 
-        var*& transpose(var*& mat, int n){
+        var*& transpose(var*& mat, Idx_VM n){
             var temp;
-            for(int v=1; v<n; ++v){
-                int point_line=v*n;
-                for(int u=0; u<v; ++u){
+            for(Idx_VM v=1; v<n; ++v){
+                Idx_VM point_line=v*n;
+                for(Idx_VM u=0; u<v; ++u){
                     std::swap(mat[u*n+v],mat[point_line+u]);
                 }
             }
             return mat;
         }
         
-        var*& transpose(var*& out, var*& mat, int width_mat, int height_mat){
-            int index_out=0;
+        var*& transpose(var*& out, var*& mat, Idx_VM width_mat, Idx_VM height_mat){
+            Idx_VM index_out=0;
 
-            for(int u=0;u<width_mat;++u){
-                for(int v=0;v<height_mat;++v){
+            for(Idx_VM u=0;u<width_mat;++u){
+                for(Idx_VM v=0;v<height_mat;++v){
                     out[index_out]=mat[get_Index(width_mat,u,v)];
                     ++index_out;
                 }
@@ -297,15 +297,15 @@ namespace NML{
             return out;
         }
 
-        var calc_Det__Transformation(var*& mat,int n){
-            const int length=n*n;
+        var calc_Det__Transformation(var*& mat,Idx_VM n){
+            const Idx_VM length=n*n;
             var* temp_mat=create_Values__Clone(mat,length);
             var temp,det=1;
-            int _n=n-1;
+            Idx_VM _n=n-1;
 
-            for(int uv=0; uv<_n; ++uv){
-                int index_v=uv*n;
-                int index_mat__uv=index_v+uv;
+            for(Idx_VM uv=0; uv<_n; ++uv){
+                Idx_VM index_v=uv*n;
+                Idx_VM index_mat__uv=index_v+uv;
                 
                 if(check_Zero(temp_mat[index_mat__uv])){    // 换行
                     if(!transformation__ExchangeRow_ToUnZero(temp_mat,length,n,index_mat__uv,uv,n)){
@@ -316,9 +316,9 @@ namespace NML{
                 }
                 
                 // 消元
-                for(int index=index_mat__uv+n;index<length;index+=n){
+                for(Idx_VM index=index_mat__uv+n;index<length;index+=n){
                     temp=(temp_mat[index])/temp_mat[index_mat__uv];
-                    for(int i=uv+1,j=index+1;i<n;++i,++j){
+                    for(Idx_VM i=uv+1,j=index+1;i<n;++i,++j){
                         temp_mat[j]-=temp*temp_mat[index_v+i];
                     }
                 }
@@ -332,8 +332,8 @@ namespace NML{
         }
         
 
-        bool setup_Inverse__Transformation(var*& out, var*& mat, int n){
-            int length=n*n;
+        bool setup_Inverse__Transformation(var*& out, var*& mat, Idx_VM n){
+            Idx_VM length=n*n;
             var* temp_mat=create_Values__Clone(mat,length);
             
             // printf_Matrix(temp_mat,n);
@@ -342,9 +342,9 @@ namespace NML{
             setup_Identity(out,n,n);
             var** mats=new var*[2]{temp_mat,out};
             
-            for(int uv=0; uv<n; ++uv){
-                int index_v=uv*n;
-                int index_mat__uv=index_v+uv;
+            for(Idx_VM uv=0; uv<n; ++uv){
+                Idx_VM index_v=uv*n;
+                Idx_VM index_mat__uv=index_v+uv;
 
                 // 换行设置最大主元
                 if(!transformation__ExchangeRow_PivotToMax(mats,2,length,n,index_mat__uv,uv,n)) {
@@ -355,10 +355,10 @@ namespace NML{
 
                 transformation__ScaleRow(mats,2,n,uv,1/mats[0][index_mat__uv]);
 
-                for(int i=0,index=0;i<n;++i,index+=n){
+                for(Idx_VM i=0,index=0;i<n;++i,index+=n){
                     if(i==uv) continue;
                     var k=temp_mat[index+uv];
-                    for(int j=0;j<n;++j){
+                    for(Idx_VM j=0;j<n;++j){
                         temp_mat[index+j] -= k * temp_mat[index_v+j];
                         out[index+j]      -= k * out     [index_v+j];
                     }
@@ -371,7 +371,7 @@ namespace NML{
             return true;
         }
 
-        var calc_Det(var*& mat,int n){
+        var calc_Det(var*& mat,Idx_VM n){
             switch (n)
             {
                 case 1:
@@ -438,7 +438,7 @@ namespace NML{
             return true;
         }
 
-        bool setup_Inverse(var*& out, var*& mat, int n){
+        bool setup_Inverse(var*& out, var*& mat, Idx_VM n){
             switch (n)
             {
                 case 1:

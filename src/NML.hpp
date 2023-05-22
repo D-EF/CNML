@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-05-16 16:44:34
+ * @LastEditTime: 2023-05-18 11:35:08
  * @Description: Nittle Math Library 简单数学库
  * 
  * @Copyright (c) 2023 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
@@ -12,23 +12,38 @@
 #define __NITTLE_MATH_LIBRARY__
 
 #ifndef __NML_VALUE_TYPE__
+    /**
+     * @brief NML使用的基本数据类型
+     */
     #define __NML_VALUE_TYPE__ float
+#endif
+
+#ifndef __NML_VECTOR_INDEX_TYPE__
+    /**
+     * @brief NML使用的向量和矩阵下标类型
+     */
+    #define __NML_VECTOR_MATRIX_INDEX_TYPE__ char
+#endif
+
+#ifndef __NML_INDEX_TYPE__
+    #define __NML_INDEX_TYPE__ int
 #endif
 
 #define __NML__INLINE__M2D_ACTION_FUNCTION inline
 #define __NML__INLINE__M3D_ACTION_FUNCTION inline
-#define __NML__INLINE__ROTATE_FUNCTION     inline
+#define __NML__INLINE__QUATERNION_FUNCTION inline
 
 
 #include <Math.h>
 #include <iostream>
 
 namespace NML{
-
     typedef __NML_VALUE_TYPE__ var;
+    typedef __NML_VECTOR_MATRIX_INDEX_TYPE__ Idx_VM;
+    typedef __NML_INDEX_TYPE__ idx;
 
     const var NML_TOLERANCE=1e-6;
-
+    
     /** 三个坐标轴 */
     enum Axis{ X=0, Y=1, Z=2 };
     
@@ -52,7 +67,7 @@ namespace NML{
      * @return 返回当前旋转轴向
      */
     inline Axis get_Rotation_Order(Rotation_Order order,char index){
-        return static_cast<Axis>(order>>(2*index) &0b11);
+        return (Axis)(order>>(2*index) &0b11);
     }
 
     template <typename value_Type> inline value_Type min(value_Type a,value_Type b){return a>b?b:a;}
@@ -61,9 +76,9 @@ namespace NML{
 
     class Values{
         public:
-            int length;
+            idx length;
             var* data;
-            Values(const int length)    :length(length)       , data(new var[length]()){}
+            Values(const idx length)    :length(length)       , data(new var[length]()){}
             Values(const Values &vec)   :length(vec.length)   , data(new var[length]){setup(vec.data);}
 
             /**
@@ -72,18 +87,18 @@ namespace NML{
              * @param length   数据长度
              * @param data     数据数组
              */
-            void setup (const int length, const var* data);
+            void setup (const idx length, const var* data);
             inline void setup (const var* data){setup(this->length, data);}
 
             ~Values(){delete[] this->data;}
 
-            inline var& operator[](int index){return data[index];}
+            inline var& operator[](idx index){return data[index];}
 
             inline Values& operator=(var*& d){setup(d);return *this;}
     };
 
-    void clone_To(var* to, const var* val, int length);
-    inline void copy_To(var* to, const var* val, int length){clone_To(to, val, length);}
+    void clone_To(var* to, const var* val, idx length);
+    inline void copy_To(var* to, const var* val, idx length){clone_To(to, val, length);}
 
     /**
      * @brief 拷贝数据
@@ -92,17 +107,16 @@ namespace NML{
      * @param length    长度
      * @return 拷贝数据到 new var[length] 并返回地址
      */
-    var* create_Values__Clone(const var* val, int length);
+    var* create_Values__Clone(const var* val, idx length);
 
-    /** 打印行数据 */
 
     /**
-     * @brief 
+     * @brief 打印向量
      * 
-     * @param val 
-     * @param length 
+     * @param val    数据
+     * @param length 长度
      */
-    void printf_Vec(const var* val, int length);
+    void printf_Vec(const var* val, idx length);
     inline void printf_Vec(const Values val){printf_Vec(val.data,val.length);}
 
     /**
@@ -133,8 +147,8 @@ namespace NML{
      * @param _tolerance    容差
      * @return  返回是否相等
      */
-    bool check_Equal(int length, var*& val_left, var*& val_right, var _tolerance=NML_TOLERANCE);
-    inline bool check_Equal(var*& val_left, var*& val_right,int length, var _tolerance=NML_TOLERANCE){return check_Equal(length, val_left, val_right, _tolerance);}
+    bool check_Equal(idx length, var*& val_left, var*& val_right, var _tolerance=NML_TOLERANCE);
+    inline bool check_Equal(var*& val_left, var*& val_right,idx length, var _tolerance=NML_TOLERANCE){return check_Equal(length, val_left, val_right, _tolerance);}
     
     
     /**
@@ -145,7 +159,7 @@ namespace NML{
      * @param _tolerance    容差
      * @return 返回数值是否趋近0
      */
-    bool check_Zero(int length, var*& value, var _tolerance=NML_TOLERANCE);
+    bool check_Zero(idx length, var*& value, var _tolerance=NML_TOLERANCE);
 
     /**
      * @brief 数据数值 和
@@ -155,7 +169,7 @@ namespace NML{
      * @param val_left      左侧数据
      * @param val_right     右侧数据
      */
-    void sum(var*& out, int length, var*& val_left, var*& val_right);
+    void sum(var*& out, idx length, var*& val_left, var*& val_right);
     
     /**
      * @brief 数据数值 差
@@ -165,7 +179,7 @@ namespace NML{
      * @param val_left      左侧数据
      * @param val_right     右侧数据
      */
-    void dif(var*& out, int length, var*& val_left, var*& val_right);
+    void dif(var*& out, idx length, var*& val_left, var*& val_right);
 
     /**
      * @brief 点乘
@@ -175,8 +189,8 @@ namespace NML{
      * @param val_right     右侧数据
      * @return 输出点乘数量积
      */
-    var dot(int length, var*& val_left, var*& val_right);
-    inline var dot(var*& val_left, var*& val_right,int length){return dot(length,val_left,val_right);}
+    var dot(idx length, var*& val_left, var*& val_right);
+    inline var dot(var*& val_left, var*& val_right,idx length){return dot(length,val_left,val_right);}
 
     /**
      * @brief 标量乘
@@ -185,7 +199,7 @@ namespace NML{
      * @param val           数组数据
      * @param k             标量
      */
-    var*& np(var*& out, int length, var k);
+    var*& np(var*& out, idx length, var k);
     inline var*& np_v2(var*& out, var k){out[0]*=k;out[1]*=k;                       return out;}
     inline var*& np_v3(var*& out, var k){out[0]*=k;out[1]*=k;out[2]*=k;             return out;}
     inline var*& np_v4(var*& out, var k){out[0]*=k;out[1]*=k;out[2]*=k;out[3]*=k;   return out;}

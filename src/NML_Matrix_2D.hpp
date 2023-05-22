@@ -18,14 +18,14 @@ namespace NML{
         M2D_Type _using_m2d_type=M2D__3X3_L;
 
         // 数据类型的数据对应宽高
-            int w=3,h=3;
-            inline int get_w(){return w;}
-            inline int get_h(){return h;}
+            Idx_VM w=3,h=3;
+            inline Idx_VM get_w(){return w;}
+            inline Idx_VM get_h(){return h;}
         // 数据类型的数据对应下标
-            int mxx=0,   mxy=1,   mxz=2,
+            Idx_VM mxx=0,   mxy=1,   mxz=2,
                 myx=3,   myy=4,   myz=5,
                 mzx=6,   mzy=7,   mzz=8;
-            int &mx_null=mxz, &my_null=myz, &tx=mzx, &ty=mzy, &mi_full=mzz;
+            Idx_VM &mx_null=mxz, &my_null=myz, &tx=mzx, &ty=mzy, &mi_full=mzz;
         //
 
 

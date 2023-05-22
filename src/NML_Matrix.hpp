@@ -18,8 +18,8 @@ namespace NML{
     namespace Matrix{
         
         /** 打印矩阵*/
-        void printf_Matrix(var*& matrix, int width, int height);
-        inline void printf_Matrix(var*& matrix,int n){
+        void printf_Matrix(var*& matrix, Idx_VM width, Idx_VM height);
+        inline void printf_Matrix(var*& matrix,Idx_VM n){
             printf_Matrix(matrix,n,n);
         }
 
@@ -31,7 +31,7 @@ namespace NML{
          * @param v         纵坐标 v
          * @return 返回下标index
          */
-        inline int get_Index(int width, int u, int v){return u+width*v;}
+        inline Idx_VM get_Index(Idx_VM width, Idx_VM u, Idx_VM v){return u+width*v;}
 
         /**
          * @brief 创建单位矩阵
@@ -40,7 +40,7 @@ namespace NML{
          * @param height    矩阵高度
          * @return 修改并返回 out
          */
-        var*& setup_Identity(var*& out, int width, int height);
+        var*& setup_Identity(var*& out, Idx_VM width, Idx_VM height);
 
         /** 
          * @brief 矩阵数据转写   空省位置会保留out原有的内容
@@ -55,7 +55,7 @@ namespace NML{
          * @param _shift_top     旧矩阵拷贝到新矩阵时的上方偏移 默认为 0
          * @return 修改并返回 out
          */
-        var*& setup_Resize(var*& out, var*& mat, int low_width, int new_width, int _low_height=0, int _new_height=0, int _shift_left=0, int _shift_top=0);
+        var*& setup_Resize(var*& out, var*& mat, Idx_VM low_width, Idx_VM new_width, Idx_VM _low_height=0, Idx_VM _new_height=0, Idx_VM _shift_left=0, Idx_VM _shift_top=0);
 
         /**
          * @brief 计算哈达姆积 HadamardProduct
@@ -66,7 +66,7 @@ namespace NML{
          * @param  height         矩阵高度
          * @return 修改并返回 out
          */
-        var*& setup_HadamardProduct(var*& out, var*& mat_left, var*& mat_right, int width, int height);
+        var*& setup_HadamardProduct(var*& out, var*& mat_left, var*& mat_right, Idx_VM width, Idx_VM height);
 
         /** 
          * @brief 计算 Kronecker 张量积
@@ -79,7 +79,7 @@ namespace NML{
          * @param  height_right   右矩阵的高度
          * @return 修改并返回 out
          */
-        var*& setup_KroneckerProduct(var*& out, var*& mat_left, var*& mat_right, int width_left, int height_left, int width_right, int height_right);
+        var*& setup_KroneckerProduct(var*& out, var*& mat_left, var*& mat_right, Idx_VM width_left, Idx_VM height_left, Idx_VM width_right, Idx_VM height_right);
 
         /** 
          * @brief 合并矩阵
@@ -90,7 +90,7 @@ namespace NML{
          * @param  width_g      输出中一行放多少个矩阵
          * @param  height_g     输出中一列放多少个矩阵
          */
-        var*& setup_Concat(var*& out, var**& mats, int width_mat, int height_mat, int width_g, int height_g);
+        var*& setup_Concat(var*& out, var**& mats, Idx_VM width_mat, Idx_VM height_mat, Idx_VM width_g, Idx_VM height_g);
 
         /**
          * @brief 初等变换 换行
@@ -100,8 +100,8 @@ namespace NML{
          * @param v1        v坐标1
          * @param v2        v坐标2
          */
-        void transformation__ExchangeRow(var*& mat, int width, int v1, int v2);
-        void transformation__ExchangeRow(var**& mats, int length_g, int width, int v1, int v2);
+        void transformation__ExchangeRow(var*& mat, Idx_VM width, Idx_VM v1, Idx_VM v2);
+        void transformation__ExchangeRow(var**& mats, Idx_VM length_g, Idx_VM width, Idx_VM v1, Idx_VM v2);
 
         /**
          * @brief 初等变换 换列
@@ -112,8 +112,8 @@ namespace NML{
          * @param u1        u坐标1
          * @param u2        u坐标2
          */
-        void transformation__ExchangeCol(var*& mat, int widht, int height, int u1, int u2);
-        void transformation__ExchangeCol(var**& mats,int length_g, int width,int height, int u1, int u2);
+        void transformation__ExchangeCol(var*& mat, Idx_VM widht, Idx_VM height, Idx_VM u1, Idx_VM u2);
+        void transformation__ExchangeCol(var**& mats,Idx_VM length_g, Idx_VM width,Idx_VM height, Idx_VM u1, Idx_VM u2);
 
         /**
          * @brief 初等变换 行乘标量
@@ -123,8 +123,8 @@ namespace NML{
          * @param v         v坐标
          * @param k         标量乘值
          */
-        void transformation__ScaleRow(var*& mat, int width, int v, var k);
-        void transformation__ScaleRow(var**& mats,int length_g, int width, int v, var k);
+        void transformation__ScaleRow(var*& mat, Idx_VM width, Idx_VM v, var k);
+        void transformation__ScaleRow(var**& mats,Idx_VM length_g, Idx_VM width, Idx_VM v, var k);
 
         /**
          * @brief 初等变换 列乘标量
@@ -134,8 +134,8 @@ namespace NML{
          * @param u         u坐标
          * @param k         标量乘值
          */
-        void transformation__ScaleCol(var*& mat, int width, int height, int u, var k);
-        void transformation__ScaleCol(var**& mats,int length_g, int width, int height, int u, var k);
+        void transformation__ScaleCol(var*& mat, Idx_VM width, Idx_VM height, Idx_VM u, var k);
+        void transformation__ScaleCol(var**& mats,Idx_VM length_g, Idx_VM width, Idx_VM height, Idx_VM u, var k);
 
         /** 
          * @brief 将矩阵某个为0的项 通过初等变换的换行操作, 变成非0
@@ -148,7 +148,7 @@ namespace NML{
          * @param  step_length  寻址步长,应为  ±width
          * @return 返回是否成功换行
          */
-        bool transformation__ExchangeRow_ToUnZero(var*& mat, int length, int width,  int index, int v, int step_length);
+        bool transformation__ExchangeRow_ToUnZero(var*& mat, Idx_VM length, Idx_VM width,  Idx_VM index, Idx_VM v, Idx_VM step_length);
         
         /** 
          * @brief 将矩阵某个为0的项 通过初等变换的换行操作, 变成非0; 换行将副作用到其他矩阵上
@@ -163,7 +163,7 @@ namespace NML{
          * @param  _index_m     传入多个矩阵时使用哪个矩阵的值 默认0
          * @return 返回是否成功换行
          */
-        bool transformation__ExchangeRow_ToUnZero(var**& mats, int length_g,  int length, int width, int index, int v, int step_length, int _index_m=0);
+        bool transformation__ExchangeRow_ToUnZero(var**& mats, Idx_VM length_g,  Idx_VM length, Idx_VM width, Idx_VM index, Idx_VM v, Idx_VM step_length, Idx_VM _index_m=0);
 
 
         /** 
@@ -177,7 +177,7 @@ namespace NML{
          * @param  step_length  寻址步长,应为  ±width
          * @return 返回是否成功换行
          */
-        bool transformation__ExchangeRow_PivotToMax(var*& mat, int length, int width,  int index, int v, int step_length);
+        bool transformation__ExchangeRow_PivotToMax(var*& mat, Idx_VM length, Idx_VM width,  Idx_VM index, Idx_VM v, Idx_VM step_length);
         
         /** 
          * @brief 寻找最大主元并换行; 换行将副作用到其他矩阵上
@@ -192,7 +192,7 @@ namespace NML{
          * @param  _index_m     传入多个矩阵时使用哪个矩阵的值 默认0
          * @return 返回是否成功换行
          */
-        bool transformation__ExchangeRow_PivotToMax(var**& mats, int length_g, int length, int width, int index, int v, int step_length, int _index_m=0);
+        bool transformation__ExchangeRow_PivotToMax(var**& mats, Idx_VM length_g, Idx_VM length, Idx_VM width, Idx_VM index, Idx_VM v, Idx_VM step_length, Idx_VM _index_m=0);
 
         /**
          * @brief 矩阵乘法
@@ -204,7 +204,7 @@ namespace NML{
          * @param _width_left_height_right   右矩阵高度 和 左矩阵宽度
          * @param _width_right               右矩阵宽度 ; 默认使用 height_left
          */
-        var*& multiplication(var*& out, var*& mat_left, var*& mat_right, int height_left, int _width_left_height_right, int _width_right=0);
+        var*& multiplication(var*& out, var*& mat_left, var*& mat_right, Idx_VM height_left, Idx_VM _width_left_height_right, Idx_VM _width_right=0);
 
         
         /**
@@ -215,7 +215,7 @@ namespace NML{
          * @param mat_right                 右矩阵
          * @param n                         表示这个矩阵是n*n方阵
          */
-        var*& multiplication(var*& out, var*& mat_left, var*& mat_right, int n);
+        var*& multiplication(var*& out, var*& mat_left, var*& mat_right, Idx_VM n);
         
         /** 
          * @brief 检查矩阵正交
@@ -224,7 +224,7 @@ namespace NML{
          * @param n             表示这个矩阵是n*n方阵
          * @return 返回矩阵是否正交
          */
-        bool check_Orthogonal(var*& mat,int n);
+        bool check_Orthogonal(var*& mat,Idx_VM n);
 
         /**
          * @brief 方阵转置
@@ -232,7 +232,7 @@ namespace NML{
          * @param mat           方阵数据 将会被函数修改
          * @param n             表示是n*n方阵
          */
-        var*& transpose(var*& mat, int n);
+        var*& transpose(var*& mat, Idx_VM n);
 
         /**
          * @brief 矩阵转置 (注意输出对象不能和输入矩阵使用同一内存)
@@ -242,7 +242,7 @@ namespace NML{
          * @param width_mat     原矩阵宽度
          * @param height_mat    原矩阵高度
          */
-        var*& transpose(var*& out, var*& mat, int width_mat, int height_mat);
+        var*& transpose(var*& out, var*& mat, Idx_VM width_mat, Idx_VM height_mat);
 
         /**
          * @brief 2*2矩阵转置
@@ -288,7 +288,7 @@ namespace NML{
          * @param n         表示这个矩阵是n*n方矩阵
          * @return 返回计算的行列式值 
          */
-        var calc_Det__Transformation(var*& mat,int n);
+        var calc_Det__Transformation(var*& mat,Idx_VM n);
 
         // open * 1-4阶矩阵行列式内联函数 * open
             /**
@@ -350,7 +350,7 @@ namespace NML{
          * @param n         表示这个矩阵是n*n方阵
          * @return 返回计算的行列式值
          */
-        var calc_Det(var*& mat,int n);
+        var calc_Det(var*& mat,Idx_VM n);
 
         /**
          * @brief 矩阵求逆 使用初等变换法(高斯乔丹消元法)
@@ -360,7 +360,7 @@ namespace NML{
          * @param n         表示这个矩阵是n*n方阵
          * @return 返回是否成功计算逆矩阵
          */
-        bool setup_Inverse__Transformation(var*& out, var*& mat, int n);
+        bool setup_Inverse__Transformation(var*& out, var*& mat, Idx_VM n);
 
         // open * 公式法矩阵求逆函数 * open
             // 公式法 m^-1=adj(m)/|m|
@@ -402,7 +402,7 @@ namespace NML{
          * @param n         表示这个矩阵是n*n方矩阵
          * @return 返回是否成功计算逆矩阵
          */
-        bool setup_Inverse(var*& out, var*& mat, int n);
+        bool setup_Inverse(var*& out, var*& mat, Idx_VM n);
 
     }
 }

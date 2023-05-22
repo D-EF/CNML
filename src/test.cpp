@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-20 00:58:11
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-05-16 16:31:30
+ * @LastEditTime: 2023-05-19 17:55:19
  * @FilePath: \cnml\src\test.cpp
  * @Description: 
  * @
@@ -14,7 +14,7 @@
 #include "NML_Matrix.hpp"
 #include "NML_Matrix_2D.hpp"
 #include "NML_Matrix_3D.hpp"
-#include "NML_Rotate.hpp"
+#include "NML_Euler_Angle.hpp"
 
 using namespace std;
 using namespace NML;
@@ -31,6 +31,9 @@ namespace Test_Matrix{
     void test_AllFnc();
     void test_transformation();
 }
+namespace Test_Euler_Angle{
+    void test_AllFnc();
+}
 
 // using namespace unprint__check_Test;
 using namespace print__check_Test;
@@ -39,13 +42,14 @@ int main(int argc, char **argv){
     std::chrono::_V2::system_clock::time_point start_time, end_time;
     int64_t duration;
 
-    cout<< "start test Vector's all function:"<<endl;
+    cout<< "start test :"<<endl;
     start_time = high_resolution_clock::now();
         // Test_Vector::test_AllFnc();
-        Test_Matrix::test_AllFnc();
+        // Test_Matrix::test_AllFnc();
+        Test_Euler_Angle::test_AllFnc();
     end_time = high_resolution_clock::now();
     duration = duration_cast<microseconds>(end_time - start_time).count();
-    cout << "Test_Vector::test_AllFnc(); \t done!  use time: " << duration << " microseconds" << endl;
+    cout << "\nALL done!  use time: " << duration << " microseconds" << endl;
 
     // Test_Matrix::test_AllFnc();
 
@@ -66,6 +70,7 @@ namespace print__check_Test{
         }
     }
 }
+
 
 namespace Test_Vector{
     using namespace Vector;
@@ -658,4 +663,78 @@ namespace Test_Matrix{
 
     }
 
+}
+
+
+namespace Test_Euler_Angle{
+    using namespace Matrix_3D;
+    using namespace Euler_Angle;
+    void test_Item__MatToEulerAngle(var*& euler_angle__out, var*& euler_angle__org, var*& mat__out, var*& mat__org, Rotation_Order order, char* tip);
+    void test_MatToEulerAngle();
+    void test_AllFnc(){
+        printf("\ntesting left-handed Eluer-Angle.\n");
+        set_NMLConfig__using_m3d_type(M3D__4X4_L);
+        test_MatToEulerAngle();
+        
+        printf("\ntesting right-handed Eluer-Angle.\n");
+        set_NMLConfig__using_m3d_type(M3D__4X4_R);
+        test_MatToEulerAngle();
+    }
+    
+    void test_MatToEulerAngle(){
+        var* m3d_rotate__m=new var[16];
+        var* m3d_rotate__e=new var[16];
+        var* rotate_value=new var[3];
+        var* rotate_value__out=new var[3];
+        
+        rotate_value[0]=30*DEG;   rotate_value[1]=90*DEG;       rotate_value[2]=68*DEG;
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XYZ,"泰勒布莱顿欧拉角. XYZ 欧拉角万向锁");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XZY,"泰勒布莱顿欧拉角. XZY 欧拉角万向锁");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YXZ,"泰勒布莱顿欧拉角. YXZ 欧拉角万向锁");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YZX,"泰勒布莱顿欧拉角. YZX 欧拉角万向锁");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZXY,"泰勒布莱顿欧拉角. ZXY 欧拉角万向锁");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZYX,"泰勒布莱顿欧拉角. ZYX 欧拉角万向锁");
+
+        rotate_value[0]=34*DEG;   rotate_value[1]=26*DEG;       rotate_value[2]=78*DEG;
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XYZ,"泰勒布莱顿欧拉角. XYZ 正常情况");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XZY,"泰勒布莱顿欧拉角. XZY 正常情况");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YXZ,"泰勒布莱顿欧拉角. YXZ 正常情况");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YZX,"泰勒布莱顿欧拉角. YZX 正常情况");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZXY,"泰勒布莱顿欧拉角. ZXY 正常情况");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZYX,"泰勒布莱顿欧拉角. ZYX 正常情况");
+
+        
+        rotate_value[0]=30*DEG;   rotate_value[1]=180*DEG;      rotate_value[2]=68*DEG;
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XYX,"典型欧拉角. XYX 欧拉角万向锁");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XZX,"典型欧拉角. XZX 欧拉角万向锁");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YXY,"典型欧拉角. YXY 欧拉角万向锁");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YZY,"典型欧拉角. YZY 欧拉角万向锁");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZXZ,"典型欧拉角. ZXZ 欧拉角万向锁");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZYZ,"典型欧拉角. ZYZ 欧拉角万向锁");
+
+        rotate_value[0]=34*DEG;   rotate_value[1]=26*DEG;       rotate_value[2]=78*DEG;
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XYX,"典型欧拉角. XYX 正常情况");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XZX,"典型欧拉角. XZX 正常情况");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YXY,"典型欧拉角. YXY 正常情况");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YZY,"典型欧拉角. YZY 正常情况");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZXZ,"典型欧拉角. ZXZ 正常情况");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZYZ,"典型欧拉角. ZYZ 正常情况");
+
+        delete m3d_rotate__m;
+        delete m3d_rotate__e;
+        delete rotate_value;
+        delete rotate_value__out;
+    }
+
+    void test_Item__MatToEulerAngle(var*& euler_angle__out, var*& euler_angle__org, var*& mat__out, var*& mat__org, Rotation_Order order, char* tip){
+        // printf("\n\n\n%s\n",tip);
+        setup_Rotate__EulerAngles(mat__org,euler_angle__org,order);
+        setup_EulerAngle__ByMatrix(euler_angle__out,mat__org,order);
+        setup_Rotate__EulerAngles(mat__out,euler_angle__out,order);
+        // printf("\n原欧拉角数据:");    printf_Vec(euler_angle__org,3);   printf("\n");
+        // Matrix::printf_Matrix(mat__org,w,h);
+        // printf("生成欧拉角数据:");    printf_Vec(euler_angle__out,3);   printf("\n");
+        // Matrix::printf_Matrix(mat__out,w,h);
+        check_Test(check_Equal(mat__out,mat__org,w*h), tip);
+    }
 }

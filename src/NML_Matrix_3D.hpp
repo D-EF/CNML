@@ -19,13 +19,13 @@ namespace NML{
         M3D_Type _using_m3d_type=M3D__4X4_L;
 
         // 数据类型的数据对应宽高
-            int w=4,h=4;
+            Idx_VM w=4,h=4;
         // 数据类型的数据对应下标
-            int mxx=0,    mxy=1,    mxz=2,    mxw=3,
+            Idx_VM mxx=0,    mxy=1,    mxz=2,    mxw=3,
                 myx=4,    myy=5,    myz=6,    myw=7,
                 mzx=8,    mzy=9,    mzz=10,   mzw=11,
                 mwx=12,   mwy=13,   mwz=14,   mww=15;
-            int &tx=mwx, &ty=mwy, &tz=mwz;
+            Idx_VM &tx=mwx, &ty=mwy, &tz=mwz;
         //
 
         /**
