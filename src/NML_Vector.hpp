@@ -1,7 +1,7 @@
 /*!
  * @Description: 向量 Vector 
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-05-22 16:31:58
+ * @LastEditTime: 2023-05-09 10:35:18
  */
 
 #ifndef __NML_VECTOR__
@@ -157,20 +157,6 @@ namespace NML{
                 vec[0]*vec[0]+
                 vec[1]*vec[1]+
                 vec[2]*vec[2]
-            );
-        }
-        
-        /**
-         * @brief 4d向量求模
-         * @param vec   向量
-         * @return 返回计算的模长
-         */
-        inline var mag_v4(var*& vec){
-            return sqrt(
-                vec[0]*vec[0]+
-                vec[1]*vec[1]+
-                vec[2]*vec[2]+
-                vec[3]*vec[3]
             );
         }
 

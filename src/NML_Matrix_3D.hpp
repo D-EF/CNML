@@ -19,7 +19,7 @@ namespace NML{
         M3D_Type _using_m3d_type=M3D__4X4_L;
 
         // 数据类型的数据对应宽高
-            Idx_VM w=4,h=4;
+            Idx_VM m3d_w=4,m3d_h=4,m3d_length=16;
         // 数据类型的数据对应下标
             Idx_VM mxx=0,    mxy=1,    mxz=2,    mxw=3,
                 myx=4,    myy=5,    myz=6,    myw=7,
@@ -200,8 +200,8 @@ namespace NML{
              * @param quat          四元数
              * @return 修改 out 并输出
              */
-            inline var*& setup_Rotate_Quaternion     (var*& out, var*& quat)                                                           {return act_Rotate__Quaternion    (setup_Matrix3D__Easy,out,quat);}
-            inline var*& setup_Rotate_Quaternion     (var*& out, var x, var y, var z, var w)                                           {return act_Rotate__Quaternion    (setup_Matrix3D__Easy,out,x,y,z,w);}
+            inline var*& setup_Rotate__Quaternion     (var*& out, var*& quat)                                                           {return act_Rotate__Quaternion    (setup_Matrix3D__Easy,out,quat);}
+            inline var*& setup_Rotate__Quaternion     (var*& out, var x, var y, var z, var w)                                           {return act_Rotate__Quaternion    (setup_Matrix3D__Easy,out,x,y,z,w);}
             /**
              * @brief 设置 旋转矩阵  (使用欧拉角)
              * @param out           输出对象      
@@ -330,10 +330,11 @@ namespace NML{
     namespace Matrix_3D{
 
         void set_NMLConfig__using_m3d_type(M3D_Type type){
+            if(_using_m3d_type==type)return;
             _using_m3d_type=type;
             switch (_using_m3d_type){
                 case M3D__3X4:
-                    w=3,h=4;
+                    m3d_w=3,m3d_h=4,m3d_length=12;
                     mxx=0,   mxy=1,    mxz=2,    mxw=0,
                     myx=3,   myy=4,    myz=5,    myw=0,
                     mzx=6,   mzy=7,    mzz=8,    mzw=0,
@@ -341,7 +342,7 @@ namespace NML{
                 break;
 
                 case M3D__4X3:
-                    w=4,h=3;
+                    m3d_w=4,m3d_h=3,m3d_length=12;
                     mxx=0,     myx=1,    mzx=2,    tx=3,
                     mxy=4,     myy=5,    mzy=6,    ty=7,
                     mxz=8,     myz=9,    mzz=10,   tz=11,
@@ -349,7 +350,7 @@ namespace NML{
                 break;
 
                 case M3D__4X4_L:
-                    w=4,h=4;
+                    m3d_w=4,m3d_h=4,m3d_length=16;
                     mxx=0,    mxy=1,    mxz=2,    mxw=3,
                     myx=4,    myy=5,    myz=6,    myw=7,
                     mzx=8,    mzy=9,    mzz=10,   mzw=11,
@@ -357,7 +358,7 @@ namespace NML{
                 break;
 
                 case M3D__4X4_R:
-                    w=4,h=4;
+                    m3d_w=4,m3d_h=4,m3d_length=16;
                     mxx=0,     myx=1,     mzx=2,     tx=3,
                     mxy=4,     myy=5,     mzy=6,     ty=7,
                     mxz=8,     myz=9,     mzz=10,    tz=11,
@@ -561,8 +562,8 @@ namespace NML{
                 wz=w*z;
             return act(out,
                 1-2*(yy+zz),   2*(xy+wz),     2*(xz-wy),
-                2*(xy-wz),     1-2*(xx-zz),   2*(yz+wx),
-                2*(xz+wy),     2*(yz-wx),     1-2*(xx-yy),
+                2*(xy-wz),     1-2*(xx+zz),   2*(yz+wx),
+                2*(xz+wy),     2*(yz-wx),     1-2*(xx+yy),
                 0,             0,             0,
                 0,0,0,1
             );
