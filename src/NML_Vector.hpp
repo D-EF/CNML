@@ -1,7 +1,7 @@
 /*!
  * @Description: 向量 Vector 
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-05-09 10:35:18
+ * @LastEditTime: 2023-06-06 09:50:28
  */
 
 #ifndef __NML_VECTOR__
@@ -63,8 +63,8 @@ namespace NML{
          * @param vec                      数组表示的向量数据
          * @return 返回向量是不是零向量 
          */
-        bool is_Zero(Idx_VM length, var*& vec);
-        inline bool is_Zero(var*& vec,Idx_VM length){return is_Zero(length,vec);};
+        bool is_Zero(Idx_VM length, var*& vec, var _tolerance=NML_TOLERANCE);
+        inline bool is_Zero(var*& vec,Idx_VM length, var _tolerance=NML_TOLERANCE){return is_Zero(length,vec,_tolerance);};
 
         /**
          * @brief 标准化向量
@@ -91,20 +91,11 @@ namespace NML{
          * @param vec_left      左侧数据
          * @param vec_right     右侧数据
          */
-        inline void cross(var*& out, var*& vec_left, var*& vec_right){
+        inline void cross_V3(var*& out, var*& vec_left, var*& vec_right){
             out[0]= vec_left[1]*vec_right[2] - vec_left[2]*vec_right[1];    // x : y1z2-z1y2
             out[1]= vec_left[2]*vec_right[0] - vec_left[0]*vec_right[2];    // y : z1x2-x1z2
             out[2]= vec_left[0]*vec_right[1] - vec_left[1]*vec_right[0];    // z : x1y2-y1x2
         }
-        
-        /**
-         * @brief 3d叉乘 数据长度固定为3
-         * 
-         * @param out           输出对象
-         * @param vec_left      左侧数据
-         * @param vec_right     右侧数据
-         */
-        inline void cross_v3(var*& out, var*& vec_left, var*& vec_right){cross(vec_left, vec_right, out);}
 
         /**
          * @brief 2d叉乘 数据长度固定为2
@@ -113,7 +104,7 @@ namespace NML{
          * @param vec_right     右侧数据
          * @return 输出2d向量叉积值
          */
-        inline var cross_v2(var*& vec_left, var*& vec_right){return vec_left[0]*vec_right[1] - vec_left[1]*vec_right[0];}
+        inline var cross_V2(var*& vec_left, var*& vec_right){return vec_left[0]*vec_right[1] - vec_left[1]*vec_right[0];}
 
         /**
          * @brief 2d向量求点乘

@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-05-23 13:48:47
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-02 17:59:42
+ * @LastEditTime: 2023-06-05 17:10:15
  * @FilePath: \cnml\src\NML_Quaternion.hpp
  * @Description: 四元数相关计算.  注: 如无特殊标明,这些函数的参数中的四元数都默认需要单位向量
  */
@@ -89,7 +89,7 @@ namespace NML{
          * @param quat_right    右侧四元数
          * @return  修改 out 并输出
          */
-        inline var*& corss(var*& out, var*& quat_left, var*& quat_right){
+        inline var*& cross_Quat(var*& out, var*& quat_left, var*& quat_right){
             out[qx]=quat_left[qw]*quat_right[qx] + quat_left[qx]*quat_right[qw] + quat_left[qz]*quat_right[qy] - quat_left[qy]*quat_right[qz];
             out[qy]=quat_left[qw]*quat_right[qy] + quat_left[qy]*quat_right[qw] + quat_left[qx]*quat_right[qz] - quat_left[qz]*quat_right[qx];
             out[qz]=quat_left[qw]*quat_right[qz] + quat_left[qz]*quat_right[qw] + quat_left[qy]*quat_right[qx] - quat_left[qx]*quat_right[qy];
@@ -133,7 +133,7 @@ namespace NML{
             var temp_data[4];
             var *temp=temp_data;
             setup_Quaternion__Conjugate(temp,quat_left);
-            return corss(out,temp,quat_right);
+            return cross_Quat(out,temp,quat_right);
         }
 
         /**
@@ -165,8 +165,35 @@ namespace NML{
          * @param t           时间参数t
          * @return 修改 out 并返回
          */
-        var*& sample_Quaternion__Line(var*& out, var*& quat_form, var*& quat_to, var t); // todo
-        inline var*& sample_Quaternion__Line(var*& out, var t, var*& quat_form, var*& quat_to){return sample_Quaternion__Line(out,quat_form,quat_to,t);}
+        var*& slerp(var*& out, var*& quat_form, var*& quat_to, var t);
+
+        /**
+         * @brief  计算四元数球面线性插值的缓存数据
+         */
+        typedef struct SlerpCache{
+            var x,y,z,w,
+            omega, one_over__sin_omega;
+        } SlerpCache;
+        
+        /**
+         * @brief 加载四元数球面线性插值的计算缓存
+         * @param out           输出对象
+         * @param quat_form     初态四元数
+         * @param quat_to       终态四元数
+         * @return 修改 out 并返回
+         */
+        SlerpCache& load_SlerpCache(SlerpCache &out, var*& quat_form, var*& quat_to);
+
+        /**
+         * @brief 使用缓存计算四元数球面线性插值
+         * @param out           输出对象
+         * @param quat_form     初态四元数
+         * @param SlerpCache    load_SlerpCache计算的缓存
+         * @param t             时间参数t
+         * @return 修改 out 并返回
+         */
+        var*& slerp(var*& out, var*& quat_form, SlerpCache slerp_cache, var t);
+
 
 
         using namespace Matrix_3D;
@@ -246,6 +273,91 @@ namespace NML{
             return out;
         }
 
+        var*& slerp(var*& out, var*& quat_form, var*& quat_to, var t){
+            if(t<=0)return setup_Quaternion(out, quat_form[qx], quat_form[qy], quat_form[qz], quat_form[qw]);
+            if(t>=1)return setup_Quaternion(out, quat_to[qx], quat_to[qy], quat_to[qz], quat_to[qw]);
+
+            var cos_omega=
+                quat_form[qx]*quat_to[qx]+
+                quat_form[qy]*quat_to[qy]+
+                quat_form[qz]*quat_to[qz]+
+                quat_form[qw]*quat_to[qw];
+
+            var to_x, to_y, to_z, to_w;
+            if(cos_omega<0){
+                to_x = -quat_to[qx];
+                to_y = -quat_to[qy];
+                to_z = -quat_to[qz];
+                to_w = -quat_to[qw];
+                cos_omega=-cos_omega;
+            }else{
+                to_x = +quat_to[qx];
+                to_y = +quat_to[qy];
+                to_z = +quat_to[qz];
+                to_w = +quat_to[qw];
+            }
+
+            var  k0,k1;
+            if(cos_omega>0.999){
+                k0=1-t;
+                k1=t;
+            }else{
+                var sin_omega = sqrt(1-cos_omega*cos_omega);
+                var omega = atan2(sin_omega,cos_omega);
+                var one_over__sin_omega = 1/sin_omega;
+                k0=sin((1-t)*omega) * one_over__sin_omega;
+                k1=sin(t*omega)     * one_over__sin_omega;
+            }
+
+            out[qx]= k0*quat_form[qx] + k1*to_x;
+            out[qy]= k0*quat_form[qy] + k1*to_y;
+            out[qz]= k0*quat_form[qz] + k1*to_z;
+            out[qw]= k0*quat_form[qw] + k1*to_w;
+            return out;
+        }
+
+
+        SlerpCache& load_SlerpCache(SlerpCache &out, var*& quat_form, var*& quat_to){
+            var cos_omega=
+                quat_form[qx]*quat_to[qx]+
+                quat_form[qy]*quat_to[qy]+
+                quat_form[qz]*quat_to[qz]+
+                quat_form[qw]*quat_to[qw];
+
+            if(cos_omega<0){
+                out.x = -quat_to[qx];
+                out.y = -quat_to[qy];
+                out.z = -quat_to[qz];
+                out.w = -quat_to[qw];
+                cos_omega=-cos_omega;
+            }else{
+                out.x = +quat_to[qx];
+                out.y = +quat_to[qy];
+                out.z = +quat_to[qz];
+                out.w = +quat_to[qw];
+            }
+            
+            if(cos_omega>0.999){
+                out.omega=1;
+                out.one_over__sin_omega=1;
+            }else{
+                var sin_omega = sqrt(1-cos_omega*cos_omega);
+                out.omega = atan2(sin_omega,cos_omega);
+                out.one_over__sin_omega = 1/sin_omega;
+            }
+
+            return out;
+        }
+        
+        var*& slerp(var*& out, var*& quat_form, SlerpCache slerp_cache, var t){
+            var k0=sin( (1-t) *slerp_cache.omega ) * slerp_cache.one_over__sin_omega,
+                k1=sin(   t   *slerp_cache.omega ) * slerp_cache.one_over__sin_omega;
+            out[qx]= k0*quat_form[qx] + k1*slerp_cache.x;
+            out[qy]= k0*quat_form[qy] + k1*slerp_cache.y;
+            out[qz]= k0*quat_form[qz] + k1*slerp_cache.z;
+            out[qw]= k0*quat_form[qw] + k1*slerp_cache.w;
+            return out;
+        }
     }
 }
 

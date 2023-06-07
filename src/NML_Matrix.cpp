@@ -25,7 +25,7 @@ namespace NML{
         }
 
 
-        var*& setup_Identity(var*& out,Idx_VM width, Idx_VM height){
+        var*& setup_Matrix__Identity(var*& out,Idx_VM width, Idx_VM height){
             Idx_VM l=width*height;
             for(Idx_VM i=0;i<l;i++){
                 out[i]=0;
@@ -38,7 +38,7 @@ namespace NML{
         }
 
 
-        var*& setup_Resize(var*& out, var*& mat, Idx_VM low_width, Idx_VM new_width, Idx_VM _low_height, Idx_VM _new_height, Idx_VM shift_left, Idx_VM shift_top){
+        var*& setup_Matrix__Resize(var*& out, var*& mat, Idx_VM low_width, Idx_VM new_width, Idx_VM _low_height, Idx_VM _new_height, Idx_VM shift_left, Idx_VM shift_top){
             Idx_VM low_height   = _low_height?_low_height:low_width;
             Idx_VM new_height   = _new_height?_new_height:new_width;
             Idx_VM left, load_left, top, load_top;
@@ -59,7 +59,7 @@ namespace NML{
             return out;
         }
 
-        var*& setup_HadamardProduct(var*& out, var*& mat_left, var*& mat_right, Idx_VM width, Idx_VM height){
+        var*& setup_Matrix__HadamardProduct(var*& out, var*& mat_left, var*& mat_right, Idx_VM width, Idx_VM height){
             Idx_VM i=0;
             for(Idx_VM v=0;v<height;++v){
                 for(Idx_VM u=0;u<width;++u,++i){
@@ -69,7 +69,7 @@ namespace NML{
             return out;
         }
 
-        var*& setup_KroneckerProduct(var*& out, var*& mat_left, var*& mat_right, Idx_VM width_left, Idx_VM height_left, Idx_VM width_right, Idx_VM height_right){
+        var*& setup_Matrix__KroneckerProduct(var*& out, var*& mat_left, var*& mat_right, Idx_VM width_left, Idx_VM height_left, Idx_VM width_right, Idx_VM height_right){
             // hl, hr, wl, wr
             Idx_VM i=0,i_vr_head,il=0;
 
@@ -83,7 +83,7 @@ namespace NML{
             return out;
         }
 
-        var*& setup_Concat(var*& out, var**& mats, Idx_VM width_m, Idx_VM height_m, Idx_VM width_g, Idx_VM height_g){
+        var*& setup_Matrix__Concat(var*& out, var**& mats, Idx_VM width_m, Idx_VM height_m, Idx_VM width_g, Idx_VM height_g){
             // hl, hr, wl, wr
             Idx_VM i=0,i_vm_head,ig=0;
 
@@ -332,14 +332,14 @@ namespace NML{
         }
         
 
-        bool setup_Inverse__Transformation(var*& out, var*& mat, Idx_VM n){
+        bool setup_Matrix__Inverse__Transformation(var*& out, var*& mat, Idx_VM n){
             Idx_VM length=n*n;
             var* temp_mat=create_Values__Clone(mat,length);
             
             // printf_Matrix(temp_mat,n);
 
             // 初始化 out 为增广矩阵
-            setup_Identity(out,n,n);
+            setup_Matrix__Identity(out,n,n);
             var** mats=new var*[2]{temp_mat,out};
             
             for(Idx_VM uv=0; uv<n; ++uv){
@@ -396,7 +396,7 @@ namespace NML{
             }
         }
 
-        bool setup_Inverse__2(var*& out, var*& mat){
+        bool setup_Matrix__Inverse__2(var*& out, var*& mat){
             var d=calc_Det__2(mat);
             if(check_Zero(d))return false;
             d=1/d;
@@ -405,7 +405,7 @@ namespace NML{
             return true;
         }
         
-        bool setup_Inverse__3(var*& out, var*& mat){
+        bool setup_Matrix__Inverse__3(var*& out, var*& mat){
             var d=calc_Det__3(mat);
             if(check_Zero(d))return false;
             d=1/d;
@@ -415,7 +415,7 @@ namespace NML{
             return true;
         }
         
-        bool setup_Inverse__4(var*& out, var*& mat){
+        bool setup_Matrix__Inverse__4(var*& out, var*& mat){
             var t00 = mat[0]  * mat[5]  - mat[1]  * mat[4],
                 t01 = mat[0]  * mat[6]  - mat[2]  * mat[4],
                 t02 = mat[0]  * mat[7]  - mat[3]  * mat[4],
@@ -438,7 +438,7 @@ namespace NML{
             return true;
         }
 
-        bool setup_Inverse(var*& out, var*& mat, Idx_VM n){
+        bool setup_Matrix__Inverse(var*& out, var*& mat, Idx_VM n){
             switch (n)
             {
                 case 1:
@@ -446,19 +446,19 @@ namespace NML{
                 break;
                 
                 case 2:
-                    return setup_Inverse__2(out,mat);
+                    return setup_Matrix__Inverse__2(out,mat);
                 break;
                 
                 case 3:
-                    return setup_Inverse__3(out,mat);
+                    return setup_Matrix__Inverse__3(out,mat);
                 break;
                 
                 case 4:
-                    return setup_Inverse__4(out,mat);
+                    return setup_Matrix__Inverse__4(out,mat);
                 break;
             
                 default:
-                    return setup_Inverse__Transformation(out,mat,n);
+                    return setup_Matrix__Inverse__Transformation(out,mat,n);
                 break;
             }
         }

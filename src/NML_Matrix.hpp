@@ -1,7 +1,7 @@
 /*!
  * @Description: 矩阵 Matrix
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-05-05 02:03:16
+ * @LastEditTime: 2023-06-05 17:02:32
  */
 
 #ifndef __NML_MATRIX__
@@ -40,7 +40,7 @@ namespace NML{
          * @param height    矩阵高度
          * @return 修改并返回 out
          */
-        var*& setup_Identity(var*& out, Idx_VM width, Idx_VM height);
+        var*& setup_Matrix__Identity(var*& out, Idx_VM width, Idx_VM height);
 
         /** 
          * @brief 矩阵数据转写   空省位置会保留out原有的内容
@@ -55,7 +55,7 @@ namespace NML{
          * @param _shift_top     旧矩阵拷贝到新矩阵时的上方偏移 默认为 0
          * @return 修改并返回 out
          */
-        var*& setup_Resize(var*& out, var*& mat, Idx_VM low_width, Idx_VM new_width, Idx_VM _low_height=0, Idx_VM _new_height=0, Idx_VM _shift_left=0, Idx_VM _shift_top=0);
+        var*& setup_Matrix__Resize(var*& out, var*& mat, Idx_VM low_width, Idx_VM new_width, Idx_VM _low_height=0, Idx_VM _new_height=0, Idx_VM _shift_left=0, Idx_VM _shift_top=0);
 
         /**
          * @brief 计算哈达姆积 HadamardProduct
@@ -66,7 +66,7 @@ namespace NML{
          * @param  height         矩阵高度
          * @return 修改并返回 out
          */
-        var*& setup_HadamardProduct(var*& out, var*& mat_left, var*& mat_right, Idx_VM width, Idx_VM height);
+        var*& setup_Matrix__HadamardProduct(var*& out, var*& mat_left, var*& mat_right, Idx_VM width, Idx_VM height);
 
         /** 
          * @brief 计算 Kronecker 张量积
@@ -79,7 +79,7 @@ namespace NML{
          * @param  height_right   右矩阵的高度
          * @return 修改并返回 out
          */
-        var*& setup_KroneckerProduct(var*& out, var*& mat_left, var*& mat_right, Idx_VM width_left, Idx_VM height_left, Idx_VM width_right, Idx_VM height_right);
+        var*& setup_Matrix__KroneckerProduct(var*& out, var*& mat_left, var*& mat_right, Idx_VM width_left, Idx_VM height_left, Idx_VM width_right, Idx_VM height_right);
 
         /** 
          * @brief 合并矩阵
@@ -90,7 +90,7 @@ namespace NML{
          * @param  width_g      输出中一行放多少个矩阵
          * @param  height_g     输出中一列放多少个矩阵
          */
-        var*& setup_Concat(var*& out, var**& mats, Idx_VM width_mat, Idx_VM height_mat, Idx_VM width_g, Idx_VM height_g);
+        var*& setup_Matrix__Concat(var*& out, var**& mats, Idx_VM width_mat, Idx_VM height_mat, Idx_VM width_g, Idx_VM height_g);
 
         /**
          * @brief 初等变换 换行
@@ -360,7 +360,7 @@ namespace NML{
          * @param n         表示这个矩阵是n*n方阵
          * @return 返回是否成功计算逆矩阵
          */
-        bool setup_Inverse__Transformation(var*& out, var*& mat, Idx_VM n);
+        bool setup_Matrix__Inverse__Transformation(var*& out, var*& mat, Idx_VM n);
 
         // open * 公式法矩阵求逆函数 * open
             // 公式法 m^-1=adj(m)/|m|
@@ -372,7 +372,7 @@ namespace NML{
              * @param mat       矩阵数据 (必须是方阵)
              * @return 返回是否成功计算逆矩阵
              */
-            bool setup_Inverse__2(var*& out, var*& mat);
+            bool setup_Matrix__Inverse__2(var*& out, var*& mat);
             
             /**
              * @brief 3x3 矩阵求逆
@@ -381,7 +381,7 @@ namespace NML{
              * @param mat       矩阵数据 (必须是方阵)
              * @return 返回是否成功计算逆矩阵
              */
-            bool setup_Inverse__3(var*& out, var*& mat);
+            bool setup_Matrix__Inverse__3(var*& out, var*& mat);
             
             /**
              * @brief 4x4 矩阵求逆
@@ -390,7 +390,7 @@ namespace NML{
              * @param mat       矩阵数据 (必须是方阵)
              * @return 返回是否成功计算逆矩阵
              */
-            bool setup_Inverse__4(var*& out, var*& mat);
+            bool setup_Matrix__Inverse__4(var*& out, var*& mat);
 
         // end  * 公式法矩阵求逆函数 * end 
 
@@ -402,7 +402,7 @@ namespace NML{
          * @param n         表示这个矩阵是n*n方矩阵
          * @return 返回是否成功计算逆矩阵
          */
-        bool setup_Inverse(var*& out, var*& mat, Idx_VM n);
+        bool setup_Matrix__Inverse(var*& out, var*& mat, Idx_VM n);
 
     }
 }

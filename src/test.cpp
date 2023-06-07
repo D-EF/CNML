@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-20 00:58:11
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-05-25 17:10:13
+ * @LastEditTime: 2023-06-07 18:15:31
  * @FilePath: \cnml\src\test.cpp
  * @Description: 
  * @
@@ -15,6 +15,7 @@
 #include "NML_Matrix_2D.hpp"
 #include "NML_Matrix_3D.hpp"
 #include "NML_Euler_Angle.hpp"
+#include "NML_Quaternion.hpp"
 
 using namespace std;
 using namespace NML;
@@ -34,6 +35,9 @@ namespace Test_Matrix{
 namespace Test_Euler_Angle{
     void test_AllFnc();
 }
+namespace Test_Quaternion{
+    void test_AllFnc();
+}
 
 // using namespace unprint__check_Test;
 using namespace print__check_Test;
@@ -45,11 +49,13 @@ int main(int argc, char **argv){
     cout<< "start test :"<<endl;
     start_time = high_resolution_clock::now();
         // Test_Vector::test_AllFnc();
-        // Test_Matrix::test_AllFnc();
-        Test_Euler_Angle::test_AllFnc();
+        Test_Matrix::test_AllFnc();
+        // Test_Euler_Angle::test_AllFnc();
+        Test_Quaternion::test_AllFnc();
     end_time = high_resolution_clock::now();
     duration = duration_cast<microseconds>(end_time - start_time).count();
     cout << "\nALL done!  use time: " << duration << " microseconds" << endl;
+    cout << "\nerror counter: " << _test_error_counter << endl;
 
     // Test_Matrix::test_AllFnc();
 
@@ -75,6 +81,7 @@ namespace print__check_Test{
 }
 
 
+
 namespace Test_Vector{
     using namespace Vector;
     using namespace NML;
@@ -94,7 +101,7 @@ namespace Test_Vector{
         var* temp   =new var[3];
         var* temp1  =new var[3];
 
-        np(vec_zero__f,3,NML_TOLERANCE);
+        np(vec_zero__f,3,NML_TOLERANCE*0.1);
 
         // test is_Unit
             check_Test(false==is_Unit(3,vec1),                                        "test is_Unit(vec1)");
@@ -110,12 +117,12 @@ namespace Test_Vector{
             check_Test(mag(3,unit__vec1)==1,                                          "test mag(3,unit__vec1)");
         // is_Zero__Strict
             check_Test(is_Zero__Strict(3,vec1)==false,                                "test is_Zero__Strict(3,vec1)");
-            check_Test(is_Zero__Strict(vec_zero__f,3)==false,                         "test is_Zero(vec2,3)");
+            check_Test(is_Zero__Strict(vec_zero__f,3)==false,                         "test is_Zero__Strict(vec2,3)");
             check_Test(is_Zero__Strict(vec2,3)==false,                                "test is_Zero__Strict(vec2,3)");
         // is_Zero
             check_Test(is_Zero(3,vec1)==false,                                        "test is_Zero(3,vec1)");
             check_Test(is_Zero(vec2,3)==false,                                        "test is_Zero(vec2,3)");
-            check_Test(is_Zero(vec_zero__f,3)==true,                                  "test is_Zero(vec2,3)");
+            check_Test(is_Zero(vec_zero__f,3)==true,                                  "test is_Zero(vec_zero__f,3)");
         // normalize
             clone_To(temp,vec2,3);
             check_Test(check_Equal(3,normalize(temp,3),unit__vec2),                   "test normalize(vec2,3)");
@@ -126,14 +133,14 @@ namespace Test_Vector{
             temp1[2]=-vec2[2];
             check_Test(check_Equal(3,instead(temp,3),temp1),                          "test instead(vec2,3)");
         // cross
-            // cross_v3 == cross
-            cross(temp,vec1,vec2);
+            // cross_V3 == cross
+            cross_V3(temp,vec1,vec2);
             temp1[0]=-1122;
             temp1[1]= 2244;
             temp1[2]=-1122;
-            check_Test(check_Equal(3,temp,temp1),                                     "test cross(vec1,vec2)");
-        // cross_v2
-            check_Test(check_Equal(cross_v2(temp,vec1),-1122*456-2244*123),           "test cross_v2(vec1,vec2)");
+            check_Test(check_Equal(3,temp,temp1),                                     "test cross_V3(vec1,vec2)");
+        // cross_V2
+            check_Test(check_Equal(cross_V2(temp,vec1),-1122*456-2244*123),           "test cross_V2(vec1,vec2)");
         // dot
             check_Test(check_Equal(dot(3,vec2,vec1),2070),                            "test dot(vec1,vec2)");
             check_Test(check_Equal(dot(unit__vec1,vec1,3),919.5575022803088),         "test dot(vec1,unit__vec1)");
@@ -253,16 +260,16 @@ namespace Test_Matrix{
         // get_Index
             check_Test(get_Index(3,0,1)==3,                                                                     "get_Index(3,0,1)");
                 check_Test(get_Index(3,2,2)==8,                                                                 "get_Index(3,2,2)");
-        // setup_Identity
-            check_Test(check_Equal(3,setup_Identity(temp_m3,3,3),temp_m3_i),                                    "setup_Identity(temp_m3,3,3)");
-            check_Test(check_Equal(2,setup_Identity(temp_m2,2,2),temp_m2_i),                                    "setup_Identity(temp_m2,2,2)");
-        // setup_Resize
-            check_Test(check_Equal(3,setup_Resize(temp_m3,m2,2,3,2,3,1,1),temp_m3__setup_m2_t11),               "setup_Resize(temp_m3,m2,2,3,2,3,1,1)");
-        // setup_KroneckerProduct
-            check_Test(check_Equal(16,setup_KroneckerProduct(temp_m4,m2,m2,2,2,2,2),m4__m2_tx_m2),              "setup_TensorProduct(temp_m4,m2,m2,2,2,2,2)");
+        // setup_Matrix__Identity
+            check_Test(check_Equal(3,setup_Matrix__Identity(temp_m3,3,3),temp_m3_i),                                    "setup_Matrix__Identity(temp_m3,3,3)");
+            check_Test(check_Equal(2,setup_Matrix__Identity(temp_m2,2,2),temp_m2_i),                                    "setup_Matrix__Identity(temp_m2,2,2)");
+        // setup_Matrix__Resize
+            check_Test(check_Equal(3,setup_Matrix__Resize(temp_m3,m2,2,3,2,3,1,1),temp_m3__setup_m2_t11),               "setup_Matrix__Resize(temp_m3,m2,2,3,2,3,1,1)");
+        // setup_Matrix__KroneckerProduct
+            check_Test(check_Equal(16,setup_Matrix__KroneckerProduct(temp_m4,m2,m2,2,2,2,2),m4__m2_tx_m2),              "setup_TensorProduct(temp_m4,m2,m2,2,2,2,2)");
             // printf_Matrix(temp_m4,4,4);
-        // setup_Concat
-            check_Test(check_Equal(16,setup_Concat(temp_m4,m2x4,2,2,2,2),m4__m2x4),                             "setup_Concat(temp_m4,m2x4,2,2,2,2)");
+        // setup_Matrix__Concat
+            check_Test(check_Equal(16,setup_Matrix__Concat(temp_m4,m2x4,2,2,2,2),m4__m2x4),                             "setup_Matrix__Concat(temp_m4,m2x4,2,2,2,2)");
             // printf_Matrix(temp_m4,4,4);
         // transformation__ExchangeRow
         // transformation__ExchangeCol
@@ -291,16 +298,16 @@ namespace Test_Matrix{
         // calc_Det__2
         // calc_Det__3
         // calc_Det__4
-        // setup_Inverse__Transformation
-            setup_Inverse__Transformation(temp_m3,m3__router_x22deg,3);
-            check_Test(check_Equal(3,temp_m3,m3__router_x22deg_i),                                              "setup_Inverse(temp_m3,m3__orthogonal,3)");
+        // setup_Matrix__Inverse__Transformation
+            setup_Matrix__Inverse__Transformation(temp_m3,m3__router_x22deg,3);
+            check_Test(check_Equal(3,temp_m3,m3__router_x22deg_i),                                              "setup_Matrix__Inverse(temp_m3,m3__orthogonal,3)");
             // printf_Matrix(temp_m3,3,3);
-        // setup_Inverse
-            setup_Inverse(temp_m3,m3__router_x22deg,3);
-            check_Test(check_Equal(3,temp_m3,m3__router_x22deg_i),                                              "setup_Inverse(temp_m3,m3__orthogonal,3)");
+        // setup_Matrix__Inverse
+            setup_Matrix__Inverse(temp_m3,m3__router_x22deg,3);
+            check_Test(check_Equal(3,temp_m3,m3__router_x22deg_i),                                              "setup_Matrix__Inverse(temp_m3,m3__orthogonal,3)");
             // printf_Matrix(temp_m3,3);
-        // setup_Inverse__2
-        // setup_Inverse__4
+        // setup_Matrix__Inverse__2
+        // setup_Matrix__Inverse__4
     }
     
     void test_transformation(){
@@ -315,7 +322,7 @@ namespace Test_Matrix{
             // transformation__ExchangeRow_PivotToMax(m4s,2,16,4,0,0,4);
             // transformation__ExchangeRow_PivotToMax(t_m4,16,4,0,0,4);
             // transformation__ScaleRow(m4s,2,4,0,1/m4s[0][0]);
-            setup_Inverse__Transformation(t_m4,m4,4);
+            setup_Matrix__Inverse__Transformation(t_m4,m4,4);
 
 
         auto end_time = high_resolution_clock::now();
@@ -360,10 +367,10 @@ namespace Test_Matrix{
     }
 
     void test_AllFnc__M2d(Matrix_2D::M2D_Type type){
-        printf("\n\n start testing NML_Matrix_2D's function.\n");
+        printf("\n\n start testing NML_Matrix_2D's function.(%d)\n",type);
         using namespace Matrix_2D;
         set_NMLConfig__using_m2d_type(type);
-        int l=w*h;
+        int l=m2d_w*m2d_h;
 
         var* t_m2d= new var[l];
         char *ss,*st;
@@ -389,11 +396,11 @@ namespace Test_Matrix{
         
         setup_Matrix2D(t_m2d,1,2,3,4,5,6);
         check_Test(check_Equal(l,test_m2d__setup[type],t_m2d), ss);
-        // printf_Matrix(t_m2d,w,h);
+        // printf_Matrix(t_m2d,m2d_w,m2d_h);
 
         transform_Matrix2D(t_m2d,9,8,7,6,5,4);
         check_Test(check_Equal(l,test_m2d__transform_987654[type],t_m2d), st);
-        // printf_Matrix(t_m2d,w,h);
+        // printf_Matrix(t_m2d,m2d_w,m2d_h);
         
         var* s_test_m2d__Translate_123_321    =new var[l];
         var* s_test_m2d__Scale_1d234_5d678    =new var[l];
@@ -460,34 +467,33 @@ namespace Test_Matrix{
             );
         //
 
-        check_Test(check_Equal(l,s_test_m2d__Translate_123_321,setup_Translate(t_m2d,123,321)),                                "test setup_Translate(t_m2d,123,321)");
-        check_Test(check_Equal(l,s_test_m2d__Scale_1d234_5d678,setup_Scale(t_m2d,1.234,5.678)),                                "test setup_Scale(t_m2d,1.234,5.678)");
-        check_Test(check_Equal(l,s_test_m2d__Rotate_9d876,setup_Rotate(t_m2d,9.876)),                                          "test setup_Rotate(t_m2d,9.876)");
-        check_Test(check_Equal(l,s_test_m2d__Reflect_4_7,setup_Reflect(t_m2d,0.49613893835683387,0.8682431421244593)),   "test setup_Reflect(t_m2d,0.49613893835683387,0.8682431421244593)");
-        check_Test(check_Equal(l,s_test_m2d__Reflect_4_7,setup_Reflect__Collinear(t_m2d,4,7)),                           "test setup_Reflect__Collinear(t_m2d,4,7)");
-        check_Test(check_Equal(l,s_test_m2d__Shear_2_1_2,setup_Shear(t_m2d,0.8944271909999159,0.4472135954999579,0.5)),        "test setup_Shear(t_m2d,0.8944271909999159,0.4472135954999579,0.5)");
-        check_Test(check_Equal(l,s_test_m2d__Shear_2_1_2,setup_Shear__Collinear(t_m2d,2,1,0.5)),                               "test setup_Shear__Collinear(t_m2d,2,1,0.5)");
+        check_Test(check_Equal(l,s_test_m2d__Translate_123_321,setup_Matrix2D__Translate(t_m2d,123,321)),                                "test setup_Matrix2D__Translate(t_m2d,123,321)");
+        check_Test(check_Equal(l,s_test_m2d__Scale_1d234_5d678,setup_Matrix2D__Scale(t_m2d,1.234,5.678)),                                "test setup_Matrix2D__Scale(t_m2d,1.234,5.678)");
+        check_Test(check_Equal(l,s_test_m2d__Rotate_9d876,setup_Matrix2D__Rotate(t_m2d,9.876)),                                          "test setup_Matrix2D__Rotate(t_m2d,9.876)");
+        check_Test(check_Equal(l,s_test_m2d__Reflect_4_7,setup_Matrix2D__Reflect(t_m2d,0.49613893835683387,0.8682431421244593)),   "test setup_Matrix2D__Reflect(t_m2d,0.49613893835683387,0.8682431421244593)");
+        check_Test(check_Equal(l,s_test_m2d__Reflect_4_7,setup_Matrix2D__Reflect__Collinear(t_m2d,4,7)),                           "test setup_Matrix2D__Reflect__Collinear(t_m2d,4,7)");
+        check_Test(check_Equal(l,s_test_m2d__Shear_2_1_2,setup_Matrix2D__Shear(t_m2d,0.8944271909999159,0.4472135954999579,0.5)),        "test setup_Matrix2D__Shear(t_m2d,0.8944271909999159,0.4472135954999579,0.5)");
+        check_Test(check_Equal(l,s_test_m2d__Shear_2_1_2,setup_Matrix2D__Shear__Collinear(t_m2d,2,1,0.5)),                               "test setup_Matrix2D__Shear__Collinear(t_m2d,2,1,0.5)");
 
-        setup_Identity(t_m2d,w,h);
+        setup_Matrix__Identity(t_m2d,m2d_w,m2d_h);
         //平移值设置太大了，所以容差改大点
-        check_Test(check_Equal(l,s_test_m2d__Translate_123_321   ,transform_Translate(t_m2d,123,321),           1e-3),   "test transform_Translate(t_m2d,123,321)");
-        check_Test(check_Equal(l,s_test_m2d__ts                  ,transform_Scale(t_m2d,1.234,5.678),           1e-3),   "test transform_Scale(t_m2d,1.234,5.678)");
-        check_Test(check_Equal(l,s_test_m2d__tsr                 ,transform_Rotate(t_m2d,9.876),                1e-3),   "test transform_Rotate(t_m2d,9.876)");
-        check_Test(check_Equal(l,s_test_m2d__tsrh                ,transform_Reflect__Collinear(t_m2d,4,7),   2e-3),   "test transform_Reflect__Collinear(t_m2d,4,7)");
-        check_Test(check_Equal(l,s_test_m2d__tsrhs               ,transform_Shear__Collinear(t_m2d,2,1,0.5),    1e-3),   "test transform_Shear__Collinear(t_m2d,2,1,0.5)");
-
+        check_Test(check_Equal(l,s_test_m2d__Translate_123_321   ,transform_Matrix2D__Translate(t_m2d,123,321),           1e-3),   "test transform_Matrix2D__Translate(t_m2d,123,321)");
+        check_Test(check_Equal(l,s_test_m2d__ts                  ,transform_Matrix2D__Scale(t_m2d,1.234,5.678),           1e-3),   "test transform_Matrix2D__Scale(t_m2d,1.234,5.678)");
+        check_Test(check_Equal(l,s_test_m2d__tsr                 ,transform_Matrix2D__Rotate(t_m2d,9.876),                1e-3),   "test transform_Matrix2D__Rotate(t_m2d,9.876)");
+        check_Test(check_Equal(l,s_test_m2d__tsrh                ,transform_Matrix2D__Reflect__Collinear(t_m2d,4,7),   2e-3),   "test transform_Matrix2D__Reflect__Collinear(t_m2d,4,7)");
+        check_Test(check_Equal(l,s_test_m2d__tsrhs               ,transform_Matrix2D__Shear__Collinear(t_m2d,2,1,0.5),    1e-3),   "test transform_Matrix2D__Shear__Collinear(t_m2d,2,1,0.5)");
         
-        printf_M2dCss(s_test_m2d__Translate_123_321);
-        printf_M2dCss(s_test_m2d__Scale_1d234_5d678);
-        printf_M2dCss(s_test_m2d__Rotate_9d876);
-        printf_M2dCss(s_test_m2d__Reflect_4_7);
-        printf_M2dCss(s_test_m2d__Reflect_4_7);
-        printf_M2dCss(s_test_m2d__Shear_2_1_2);
-        printf_M2dCss(s_test_m2d__Shear_2_1_2);
-        printf_M2dCss(s_test_m2d__ts);
-        printf_M2dCss(s_test_m2d__tsr);
-        printf_M2dCss(s_test_m2d__tsrh);
-        printf_M2dCss(s_test_m2d__tsrhs);
+        // printf_M2dCss(s_test_m2d__Translate_123_321);
+        // printf_M2dCss(s_test_m2d__Scale_1d234_5d678);
+        // printf_M2dCss(s_test_m2d__Rotate_9d876);
+        // printf_M2dCss(s_test_m2d__Reflect_4_7);
+        // printf_M2dCss(s_test_m2d__Reflect_4_7);
+        // printf_M2dCss(s_test_m2d__Shear_2_1_2);
+        // printf_M2dCss(s_test_m2d__Shear_2_1_2);
+        // printf_M2dCss(s_test_m2d__ts);
+        // printf_M2dCss(s_test_m2d__tsr);
+        // printf_M2dCss(s_test_m2d__tsrh);
+        // printf_M2dCss(s_test_m2d__tsrhs);
 
         delete s_test_m2d__Translate_123_321;
         delete s_test_m2d__Scale_1d234_5d678;
@@ -500,9 +506,6 @@ namespace Test_Matrix{
         delete s_test_m2d__tsrh;
         delete s_test_m2d__tsrhs;
     }
-
-
-
 
 
     var* test_m3d__setup[4]={
@@ -566,9 +569,9 @@ namespace Test_Matrix{
         var *z = new var[16];
         var *t_m3d = new var[16];
         var *t_m3d1 = new var[16];
-        setup_Rotate(x,1.23,X);
-        setup_Rotate(y,3.45,Y);
-        setup_Rotate(z,5.67,Z);
+        setup_Matrix3D__Rotate(x,1.23,X);
+        setup_Matrix3D__Rotate(y,3.45,Y);
+        setup_Matrix3D__Rotate(z,5.67,Z);
         multiplication(t_m3d,x,y,4);
         multiplication(t_m3d1,t_m3d,z,4);
 
@@ -591,7 +594,7 @@ namespace Test_Matrix{
     }
 
     void test_AllFnc__M3d(Matrix_3D::M3D_Type type){
-        printf("\n\n start testing NML_Matrix_3D's function.\n");
+        printf("\n\n start testing NML_Matrix_3D's function (%d).\n",type);
         using namespace Matrix_3D;
         set_NMLConfig__using_m3d_type(type);
         int l=m3d_w*m3d_h;
@@ -600,20 +603,20 @@ namespace Test_Matrix{
         switch (type)
         {
             case 0:
-                ss="test setup_Matrix2D type M3D__4X4_L";
-                st="test transform_Matrix2D type M3D__4X4_L";
+                ss="test setup_Matrix3D type M3D__4X4_L";
+                st="test transform_Matrix3D type M3D__4X4_L";
             break;
             case 1:
-                ss="test setup_Matrix2D type M3D__4X4_R";
-                st="test transform_Matrix2D type M3D__4X4_R";
+                ss="test setup_Matrix3D type M3D__4X4_R";
+                st="test transform_Matrix3D type M3D__4X4_R";
             break;
             case 2:
-                ss="test setup_Matrix2D type M3D__3X4";
-                st="test transform_Matrix2D type M3D__3X4";
+                ss="test setup_Matrix3D type M3D__3X4";
+                st="test transform_Matrix3D type M3D__3X4";
             break;
             case 3:
-                ss="test setup_Matrix2D type M3D__4X3";
-                st="test transform_Matrix2D type M3D__4X3";
+                ss="test setup_Matrix3D type M3D__4X3";
+                st="test transform_Matrix3D type M3D__4X3";
             break;
         }
 
@@ -623,7 +626,8 @@ namespace Test_Matrix{
 
         transform_Matrix3D__Easy(t_m3d,9,8,7,6,5,4,3,2,1,0,-1,-2);
         check_Test(check_Equal(l,test_m3d__transform_9down[type],t_m3d), st);
-        // printf_Matrix(t_m3d,w,h);
+        // printf_Matrix(test_m3d__transform_9down[type],m3d_w,m3d_h);
+        // printf_Matrix(t_m3d,m3d_w,m3d_h);
 
         var* s_test_m3d__Translate_1d23_4d56_7d89         =new var[l];
         var* s_test_m3d__Scale_1d234_5d678_9d876          =new var[l];
@@ -643,9 +647,9 @@ namespace Test_Matrix{
             0,       0,       9.876
         );
         setup_Matrix3D__Easy(s_test_m3d__Rotate_EulerXYZ_1d23_3d45_5d67,
-            -0.779233,   0.548323,    0.303542,
-            -0.041620,   0.437981,    -0.898021,
-            -0.625351,   -0.712400,   -0.318468
+            -0.779232938488844,    -0.4263109334403601,   -0.4594072437426846,
+            -0.5483234243005856,   0.10871142553638674,   0.8291702167354582, 
+            -0.30354151270842933,   0.8980204975316853,    -0.318467794408827
         );
         setup_Matrix3D__Easy(s_test_m3d__Reflect_1_2_3,
             0.857143,    -0.285714,   -0.428571,   
@@ -658,22 +662,29 @@ namespace Test_Matrix{
             0,   0,   1
         );
 
-        check_Test(check_Equal(l,s_test_m3d__Translate_1d23_4d56_7d89,setup_Translate(t_m3d,1.23, 4.56, 7.89)),                         "test setup_Translate(t_m3d,1.23, 4.56, 7.89))");
-        check_Test(check_Equal(l,s_test_m3d__Scale_1d234_5d678_9d876,setup_Scale(t_m3d,1.234,5.678,9.876)),                             "test setup_Scale(t_m3d,1.234,5.678,9.876))");
-        check_Test(check_Equal(l,s_test_m3d__Rotate_EulerXYZ_1d23_3d45_5d67,setup_Rotate__EulerAngles(t_m3d,1.23, 3.45, 5.67,XYZ)),     "test setup_Rotate__EulerAngles(t_m3d,1.23, 3.45, 5.67,XYZ))");
-        check_Test(check_Equal(l,s_test_m3d__Reflect_1_2_3,setup_Reflect__Collinear(t_m3d,1,2,3)),                                      "test setup_Reflect__Collinear(t_m3d,1,2,3))");
-        check_Test(check_Equal(l,s_test_m3d__Shear_X_2,setup_Shear(t_m3d,YZ,2,1.25)),                                                    "test setup_Shear(t_m3d,X,2))");
-
+        check_Test(check_Equal(l,s_test_m3d__Translate_1d23_4d56_7d89,setup_Matrix3D__Translate(t_m3d,1.23, 4.56, 7.89)),                       "test setup_Matrix3D__Translate(t_m3d,1.23, 4.56, 7.89))");
+        check_Test(check_Equal(l,s_test_m3d__Scale_1d234_5d678_9d876,setup_Matrix3D__Scale(t_m3d,1.234,5.678,9.876)),                           "test setup_Matrix3D__Scale(t_m3d,1.234,5.678,9.876))");
+        check_Test(check_Equal(l,s_test_m3d__Rotate_EulerXYZ_1d23_3d45_5d67,setup_Matrix3D__Rotate__EulerAngles(t_m3d,1.23, 3.45, 5.67,XYZ)),   "test setup_Matrix3D__Rotate__EulerAngles(t_m3d,1.23, 3.45, 5.67,XYZ))");
+        // Matrix::printf_Matrix(t_m3d,m3d_w,m3d_h);
+        // printf_M3dCss(t_m3d);
+        check_Test(check_Equal(l,s_test_m3d__Reflect_1_2_3,setup_Matrix3D__Reflect__Collinear(t_m3d,1,2,3)),                                    "test setup_Matrix3D__Reflect__Collinear(t_m3d,1,2,3))");
+        check_Test(check_Equal(l,s_test_m3d__Shear_X_2,setup_Matrix3D__Shear(t_m3d,YZ,2,1.25)),                                                 "test setup_Matrix3D__Shear(t_m3d,X,2))");
     }
-
 }
 
 
 namespace Test_Euler_Angle{
-    using namespace Matrix_3D;
     using namespace Euler_Angle;
-    void test_Item(var*& euler_angle__out, var*& euler_angle__org, var*& mat__out, var*& mat__org, Rotation_Order order, char* tip);
+    using namespace Matrix_3D;
+    using namespace Quaternion;
+
     void test_MatToEulerAngle();
+    void test_Item__MatToEulerAngle(var*& euler_angle__out, var*& euler_angle__org, var*& mat__out, var*& mat__org, Rotation_Order order, char* tip);
+
+    void test_QuatToEulerAngle(){
+        // todo
+    }
+
     void test_AllFnc(){
         printf("\ntesting left-handed Eluer-Angle.\n");
         set_NMLConfig__using_m3d_type(M3D__4X4_L);
@@ -682,7 +693,16 @@ namespace Test_Euler_Angle{
         printf("\ntesting right-handed Eluer-Angle.\n");
         set_NMLConfig__using_m3d_type(M3D__4X4_R);
         test_MatToEulerAngle();
+        
+        printf("\ntesting M3D__3X4 mat Eluer-Angle.\n");
+        set_NMLConfig__using_m3d_type(M3D__3X4);
+        test_MatToEulerAngle();
+        
+        printf("\ntesting M3D__4X3 mat Eluer-Angle.\n");
+        set_NMLConfig__using_m3d_type(M3D__4X3);
+        test_MatToEulerAngle();
     }
+
     void test_MatToEulerAngle(){
         var* m3d_rotate__m=new var[16];
         var* m3d_rotate__e=new var[16];
@@ -690,37 +710,37 @@ namespace Test_Euler_Angle{
         var* rotate_value__out=new var[3];
         
         rotate_value[0]=30*DEG;   rotate_value[1]=90*DEG;       rotate_value[2]=68*DEG;
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XYZ,"泰勒布莱顿欧拉角. XYZ 欧拉角万向锁");
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XZY,"泰勒布莱顿欧拉角. XZY 欧拉角万向锁");
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YXZ,"泰勒布莱顿欧拉角. YXZ 欧拉角万向锁");
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YZX,"泰勒布莱顿欧拉角. YZX 欧拉角万向锁");
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZXY,"泰勒布莱顿欧拉角. ZXY 欧拉角万向锁");
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZYX,"泰勒布莱顿欧拉角. ZYX 欧拉角万向锁");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XYZ,"泰勒布莱顿欧拉角. XYZ 欧拉角万向锁");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XZY,"泰勒布莱顿欧拉角. XZY 欧拉角万向锁");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YXZ,"泰勒布莱顿欧拉角. YXZ 欧拉角万向锁");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YZX,"泰勒布莱顿欧拉角. YZX 欧拉角万向锁");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZXY,"泰勒布莱顿欧拉角. ZXY 欧拉角万向锁");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZYX,"泰勒布莱顿欧拉角. ZYX 欧拉角万向锁");
 
         rotate_value[0]=34*DEG;   rotate_value[1]=26*DEG;       rotate_value[2]=78*DEG;
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XYZ,"泰勒布莱顿欧拉角. XYZ 正常情况");
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XZY,"泰勒布莱顿欧拉角. XZY 正常情况");
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YXZ,"泰勒布莱顿欧拉角. YXZ 正常情况");
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YZX,"泰勒布莱顿欧拉角. YZX 正常情况");
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZXY,"泰勒布莱顿欧拉角. ZXY 正常情况");
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZYX,"泰勒布莱顿欧拉角. ZYX 正常情况");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XYZ,"泰勒布莱顿欧拉角. XYZ 正常情况");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XZY,"泰勒布莱顿欧拉角. XZY 正常情况");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YXZ,"泰勒布莱顿欧拉角. YXZ 正常情况");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YZX,"泰勒布莱顿欧拉角. YZX 正常情况");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZXY,"泰勒布莱顿欧拉角. ZXY 正常情况");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZYX,"泰勒布莱顿欧拉角. ZYX 正常情况");
 
         
         rotate_value[0]=30*DEG;   rotate_value[1]=180*DEG;      rotate_value[2]=68*DEG;
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XYX,"典型欧拉角. XYX 欧拉角万向锁");
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XZX,"典型欧拉角. XZX 欧拉角万向锁");
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YXY,"典型欧拉角. YXY 欧拉角万向锁");
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YZY,"典型欧拉角. YZY 欧拉角万向锁");
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZXZ,"典型欧拉角. ZXZ 欧拉角万向锁");
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZYZ,"典型欧拉角. ZYZ 欧拉角万向锁");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XYX,"典型欧拉角. XYX 欧拉角万向锁");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XZX,"典型欧拉角. XZX 欧拉角万向锁");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YXY,"典型欧拉角. YXY 欧拉角万向锁");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YZY,"典型欧拉角. YZY 欧拉角万向锁");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZXZ,"典型欧拉角. ZXZ 欧拉角万向锁");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZYZ,"典型欧拉角. ZYZ 欧拉角万向锁");
 
         rotate_value[0]=34*DEG;   rotate_value[1]=26*DEG;       rotate_value[2]=78*DEG;
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XYX,"典型欧拉角. XYX 正常情况");
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XZX,"典型欧拉角. XZX 正常情况");
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YXY,"典型欧拉角. YXY 正常情况");
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YZY,"典型欧拉角. YZY 正常情况");
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZXZ,"典型欧拉角. ZXZ 正常情况");
-        test_Item(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZYZ,"典型欧拉角. ZYZ 正常情况");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XYX,"典型欧拉角. XYX 正常情况");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,XZX,"典型欧拉角. XZX 正常情况");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YXY,"典型欧拉角. YXY 正常情况");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,YZY,"典型欧拉角. YZY 正常情况");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZXZ,"典型欧拉角. ZXZ 正常情况");
+        test_Item__MatToEulerAngle(rotate_value__out,rotate_value,m3d_rotate__m,m3d_rotate__e,ZYZ,"典型欧拉角. ZYZ 正常情况");
 
         delete m3d_rotate__m;
         delete m3d_rotate__e;
@@ -728,15 +748,84 @@ namespace Test_Euler_Angle{
         delete rotate_value__out;
     }
 
-    void test_Item(var*& euler_angle__out, var*& euler_angle__org, var*& mat__out, var*& mat__org, Rotation_Order order, char* tip){
+    void test_Item__MatToEulerAngle(var*& euler_angle__out, var*& euler_angle__org, var*& mat__out, var*& mat__org, Rotation_Order order, char* tip){
         // printf("\n\n\n%s\n",tip);
-        setup_Rotate__EulerAngles(mat__org,euler_angle__org,order);
+        setup_Matrix3D__Rotate__EulerAngles(mat__org,euler_angle__org,order);
         setup_EulerAngle__ByMatrix(euler_angle__out,mat__org,order);
-        setup_Rotate__EulerAngles(mat__out,euler_angle__out,order);
+        setup_Matrix3D__Rotate__EulerAngles(mat__out,euler_angle__out,order);
         // printf("\n原欧拉角数据:");    printf_Vec(euler_angle__org,3);   printf("\n");
-        // Matrix::printf_Matrix(mat__org,w,h);
+        // Matrix::printf_Matrix(mat__org,m3d_w,m3d_h);
         // printf("生成欧拉角数据:");    printf_Vec(euler_angle__out,3);   printf("\n");
-        // Matrix::printf_Matrix(mat__out,w,h);
+        // Matrix::printf_Matrix(mat__out,m3d_w,m3d_h);
         check_Test(check_Equal(mat__out,mat__org,m3d_w*m3d_h), tip);
+    }
+}
+
+
+namespace Test_Quaternion{
+    using namespace Vector;
+    using namespace Quaternion;
+    using namespace Matrix_3D;
+    using namespace Euler_Angle;
+        
+    void test_AllFnc(){
+        var *test_quat1         =new var[4],
+            *test_quat2         =new var[4],
+            *test_quat3         =new var[4],
+            *test_quat4         =new var[4],
+            *test_quat5         =new var[4],
+            *test_quat6         =new var[4],
+            *test_quat7         =new var[4],
+            *vec_routate_axis   =new var[3]{0.8017837257372732,  0.5345224838248488,   0.2672612419124244},
+            *demo_euler         =new var[3],
+            *test_euler         =new var[3],
+            *demo_m3d_euler1    =new var[m3d_w*m3d_h],
+            *demo_m3d_euler2    =new var[m3d_w*m3d_h],
+            *demo_quat1         =new var[4]{0.462,0.535,-0.267,0.817},
+            *demo_quat2         =new var[4]{0.357,-0.012,0.638,0.683},
+            *unit__quat         =new var[4]{0,0,0,1}
+            ;
+
+        set_NMLConfig__using_m3d_type(M3D__4X4_R);
+
+        printf("Now M3d's type is %d",_using_m3d_type);
+        
+        setup_Quaternion(test_quat1,1,2,3,4);
+        normalize(4,test_quat1);
+        
+        setup_Quaternion__ByAxis(test_quat2,vec_routate_axis,1.23);
+        check_Test(check_Equal(4,test_quat3,test_quat4,0.001),"axis >> quat == Quat");
+        
+        demo_euler[0]=34*DEG;   demo_euler[1]=45*DEG;       demo_euler[2]=56*DEG; // XYZ
+        setup_Matrix3D__Rotate__EulerAngles(demo_m3d_euler2,demo_euler,XYZ);
+        // printf_M3dCss(demo_m3d_euler2);
+        // Matrix::printf_Matrix(demo_m3d_euler2,m3d_w,m3d_h);
+
+        setup_Quaternion__ByEulerAngle(test_quat3,demo_euler,XYZ);
+        // printf_Vec(test_quat3,4);
+        
+        setup_Quaternion__ByMatrix(test_quat4,demo_m3d_euler2);
+        // printf_Vec(test_quat4,4);
+
+        check_Test(check_Equal(4,test_quat3,test_quat4),"EulerAngle >> Quat == Matrix >> Quat");
+
+
+        setup_Quaternion__Conjugate(test_quat5,test_quat4);
+
+        cross_Quat(test_quat6,test_quat4,test_quat5);
+        check_Test(check_Equal(4,unit__quat,test_quat6),"setup_Quaternion__Conjugate");
+
+        
+
+        // logarithms
+        // pow
+        // setup_Quaternion_division
+        // calc_Angle
+        // calc_Axis
+        // slerp
+        // load_SlerpCache
+        // slerp
+
+
     }
 }
