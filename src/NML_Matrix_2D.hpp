@@ -88,7 +88,7 @@ namespace NML{
              * @param out           输出对象
              * @param translate_x   x 方向平移量
              * @param translate_y   y 方向平移量
-             * @return 修改 out 并返回
+             * @return 修改并返回 out
              */
             inline var*& setup_Matrix2D__Translate             (var*& out, var translate_x, var translate_y=0)        {return act_Matrix2D__Translate            (setup_Matrix2D, out, translate_x, translate_y);}
             /**
@@ -96,21 +96,21 @@ namespace NML{
              * @param out           输出对象
              * @param scale_x       x 方向缩放值
              * @param scale_y       y 方向缩放值
-             * @return 修改 out 并返回
+             * @return 修改并返回 out
              */
             inline var*& setup_Matrix2D__Scale                 (var*& out, var scale_x, var scale_y)                  {return act_Matrix2D__Scale                (setup_Matrix2D, out, scale_x, scale_y);}
             /**
              * @brief 设置 缩放矩阵
              * @param out           输出对象
              * @param scale_value   缩放值
-             * @return 修改 out 并返回
+             * @return 修改并返回 out
              */
             inline var*& setup_Matrix2D__Scale                 (var*& out, var scale_value)                           {return act_Matrix2D__Scale                (setup_Matrix2D, out, scale_value, scale_value);}
             /**
              * @brief 设置 旋转矩阵
              * @param out           输出对象
              * @param theta         旋转弧度
-             * @return 修改 out 并返回
+             * @return 修改并返回 out
              */
             inline var*& setup_Matrix2D__Rotate                (var*& out, var theta)                                 {return act_Matrix2D__Rotate               (setup_Matrix2D, out, theta);}
             inline var*& setup_Matrix2D__Rotate__Vector        (var*& out, var*& unit_vec__org, var*& unit_vec__to)   {return act_Matrix2D__Rotate__Vector       (setup_Matrix2D, out, unit_vec__org, unit_vec__to);}
@@ -119,7 +119,7 @@ namespace NML{
              * @param out           输出对象
              * @param normal_x      镜像轴法线方向的标准向量的 x 坐标
              * @param normal_y      镜像轴法线方向的标准向量的 y 坐标
-             * @return 修改 out 并返回
+             * @return 修改并返回 out
              */
             inline var*& setup_Matrix2D__Reflect               (var*& out, var normal_x, var normal_y)                {return act_Matrix2D__Reflect              (setup_Matrix2D, out, normal_x, normal_y);}
             /**
@@ -127,7 +127,7 @@ namespace NML{
              * @param out           输出对象
              * @param normal_x      镜像轴法线方向上的 x 坐标
              * @param normal_y      镜像轴法线方向上的 y 坐标
-             * @return 修改 out 并返回
+             * @return 修改并返回 out
              */
             inline var*& setup_Matrix2D__Reflect__Collinear    (var*& out, var normal_x, var normal_y)                {return act_Matrix2D__Reflect__Collinear   (setup_Matrix2D, out, normal_x, normal_y);}
             /**
@@ -136,7 +136,7 @@ namespace NML{
              * @param axis_x        切变轴标准向量的 x 坐标
              * @param axis_y        切变轴标准向量的 y 坐标
              * @param k             切变系数
-             * @return 修改 out 并返回
+             * @return 修改并返回 out
              */
             inline var*& setup_Matrix2D__Shear                 (var*& out, var axis_x, var axis_y, var k)             {return act_Matrix2D__Shear                (setup_Matrix2D, out, axis_x, axis_y, k);}
             /**
@@ -145,7 +145,7 @@ namespace NML{
              * @param axis_x        切变轴方向上的 x 坐标
              * @param axis_y        切变轴方向上的 y 坐标
              * @param k             切变系数
-             * @return 修改 out 并返回
+             * @return 修改并返回 out
              */
             inline var*& setup_Matrix2D__Shear__Collinear      (var*& out, var axis_x, var axis_y, var k)             {return act_Matrix2D__Shear__Collinear     (setup_Matrix2D, out, axis_x, axis_y, k);}
         
@@ -159,7 +159,7 @@ namespace NML{
              * @param out           输出对象
              * @param translate_x   x 方向平移量
              * @param translate_y   y 方向平移量
-             * @return 修改 out 并返回
+             * @return 修改并返回 out
              */
             inline var*& transform_Matrix2D__Translate            (var*& out, var translate_x, var translate_y=0)         {return act_Matrix2D__Translate            (transform_Matrix2D, out, translate_x, translate_y);}
             /**
@@ -167,21 +167,21 @@ namespace NML{
              * @param out           输出对象
              * @param scale_x       x 方向缩放值
              * @param scale_y       y 方向缩放值
-             * @return 修改 out 并返回
+             * @return 修改并返回 out
              */
             inline var*& transform_Matrix2D__Scale                (var*& out, var scale_x, var scale_y)                   {return act_Matrix2D__Scale                (transform_Matrix2D, out, scale_x, scale_y);}
             /**
              * @brief               矩阵进行缩放变换
              * @param out           输出对象
              * @param scale_value   缩放值
-             * @return 修改 out 并返回
+             * @return 修改并返回 out
              */
             inline var*& transform_Matrix2D__Scale                (var*& out, var scale_value)                            {return act_Matrix2D__Scale                (transform_Matrix2D, out, scale_value, scale_value);}
             /**
              * @brief               矩阵进行旋转变换
              * @param out           输出对象
              * @param theta         旋转轴
-             * @return 修改 out 并返回
+             * @return 修改并返回 out
              */
             inline var*& transform_Matrix2D__Rotate               (var*& out, var theta)                                  {return act_Matrix2D__Rotate               (transform_Matrix2D, out, theta);}
             inline var*& transform_Matrix2D__Rotate__Vector       (var*& out, var*& unit_vec__org, var*& unit_vec__to)    {return act_Matrix2D__Rotate__Vector       (transform_Matrix2D, out, unit_vec__org, unit_vec__to);}
@@ -190,7 +190,7 @@ namespace NML{
              * @param out           输出对象
              * @param normal_x      镜像轴法线方向的标准向量的 x 坐标
              * @param normal_y      镜像轴法线方向的标准向量的 y 坐标
-             * @return 修改 out 并返回
+             * @return 修改并返回 out
              */
             inline var*& transform_Matrix2D__Reflect              (var*& out, var normal_x, var normal_y)                 {return act_Matrix2D__Reflect              (transform_Matrix2D, out, normal_x, normal_y);}
             /**
@@ -198,7 +198,7 @@ namespace NML{
              * @param out           输出对象
              * @param normal_x      镜像轴法线方向上的 x 坐标
              * @param normal_y      镜像轴法线方向上的 y 坐标
-             * @return 修改 out 并返回
+             * @return 修改并返回 out
              */
             inline var*& transform_Matrix2D__Reflect__Collinear   (var*& out, var normal_x, var normal_y)                 {return act_Matrix2D__Reflect__Collinear   (transform_Matrix2D, out, normal_x, normal_y);}
             /**
@@ -207,7 +207,7 @@ namespace NML{
              * @param axis_x        切变轴标准向量的 x 坐标
              * @param axis_y        切变轴标准向量的 y 坐标
              * @param k             切变系数
-             * @return 修改 out 并返回
+             * @return 修改并返回 out
              */
             inline var*& transform_Matrix2D__Shear                (var*& out, var axis_x, var axis_y, var k)              {return act_Matrix2D__Shear                (transform_Matrix2D, out, axis_x, axis_y, k);}
             /**
@@ -216,7 +216,7 @@ namespace NML{
              * @param axis_x        切变轴方向上的 x 坐标
              * @param axis_y        切变轴方向上的 y 坐标
              * @param k             切变系数
-             * @return 修改 out 并返回
+             * @return 修改并返回 out
              */
             inline var*& transform_Matrix2D__Shear__Collinear     (var*& out, var axis_x, var axis_y, var k)              {return act_Matrix2D__Shear__Collinear     (transform_Matrix2D, out, axis_x, axis_y, k);}
 

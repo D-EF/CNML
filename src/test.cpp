@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-20 00:58:11
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-07 18:15:31
+ * @LastEditTime: 2023-06-15 09:01:10
  * @FilePath: \cnml\src\test.cpp
  * @Description: 
  * @
@@ -11,6 +11,7 @@
 #include <iostream>
 #include <chrono>
 #include "NML.hpp"
+#include "NML_Algebra.hpp"
 #include "NML_Matrix.hpp"
 #include "NML_Matrix_2D.hpp"
 #include "NML_Matrix_3D.hpp"
@@ -25,6 +26,9 @@ int _test_error_counter=0;
 namespace print__check_Test{void check_Test(bool flag,char* msg="");}
 namespace unprint__check_Test{void check_Test(bool flag,char* msg="");}
 
+namespace Test_Algebra{
+    void test_AllFnc();
+}
 namespace Test_Vector{
     void test_AllFnc();
 }
@@ -48,10 +52,11 @@ int main(int argc, char **argv){
 
     cout<< "start test :"<<endl;
     start_time = high_resolution_clock::now();
+        Test_Algebra::test_AllFnc();
         // Test_Vector::test_AllFnc();
-        Test_Matrix::test_AllFnc();
+        // Test_Matrix::test_AllFnc();
         // Test_Euler_Angle::test_AllFnc();
-        Test_Quaternion::test_AllFnc();
+        // Test_Quaternion::test_AllFnc();
     end_time = high_resolution_clock::now();
     duration = duration_cast<microseconds>(end_time - start_time).count();
     cout << "\nALL done!  use time: " << duration << " microseconds" << endl;
@@ -80,6 +85,32 @@ namespace print__check_Test{
     }
 }
 
+
+
+namespace Test_Algebra{
+    using namespace Algebra;
+    void printf_IntLine(int length,int* val){
+        Idx i=0;
+        printf("[%d",val[i]);
+        for(i++;i<length;i++){
+            printf(",%d", val[i]);
+        }
+        printf("]\n");
+    }
+    void test_AllFnc(){
+        printf("length=%d,%d,%d,%d,%d\n",get_PascalsTriangleLine(1)->n,get_PascalsTriangleLine(2)->n,get_PascalsTriangleLine(3)->n,get_PascalsTriangleLine(4)->n,get_PascalsTriangleLine(5)->n);
+        printf_IntLine(1,get_PascalsTriangleLine(1)->data);
+        printf_IntLine(2,get_PascalsTriangleLine(2)->data);
+        printf_IntLine(3,get_PascalsTriangleLine(3)->data);
+        printf_IntLine(4,get_PascalsTriangleLine(4)->data);
+        printf_IntLine(5,get_PascalsTriangleLine(5)->data);
+
+        var *org=new var[5]{0, 1.1, 1.2};
+        var *d=new var[4];
+        clac_Derivative__OneUnitaryRealParameterFunction(d,org,3);
+        printf_Vec(d,2);
+    }
+}
 
 
 namespace Test_Vector{
@@ -769,18 +800,20 @@ namespace Test_Quaternion{
     using namespace Euler_Angle;
         
     void test_AllFnc(){
-        var *test_quat1         =new var[4],
+        var 
+            *test_quat1         =new var[4],
             *test_quat2         =new var[4],
             *test_quat3         =new var[4],
             *test_quat4         =new var[4],
             *test_quat5         =new var[4],
             *test_quat6         =new var[4],
             *test_quat7         =new var[4],
+            *test_quat8         =new var[4],
+            *test_quat9         =new var[4],
             *vec_routate_axis   =new var[3]{0.8017837257372732,  0.5345224838248488,   0.2672612419124244},
             *demo_euler         =new var[3],
             *test_euler         =new var[3],
-            *demo_m3d_euler1    =new var[m3d_w*m3d_h],
-            *demo_m3d_euler2    =new var[m3d_w*m3d_h],
+            *demo_m3d_euler     =new var[m3d_w*m3d_h],
             *demo_quat1         =new var[4]{0.462,0.535,-0.267,0.817},
             *demo_quat2         =new var[4]{0.357,-0.012,0.638,0.683},
             *unit__quat         =new var[4]{0,0,0,1}
@@ -788,7 +821,7 @@ namespace Test_Quaternion{
 
         set_NMLConfig__using_m3d_type(M3D__4X4_R);
 
-        printf("Now M3d's type is %d",_using_m3d_type);
+        printf("  Now M3d's type is %d \n",_using_m3d_type);
         
         setup_Quaternion(test_quat1,1,2,3,4);
         normalize(4,test_quat1);
@@ -797,35 +830,52 @@ namespace Test_Quaternion{
         check_Test(check_Equal(4,test_quat3,test_quat4,0.001),"axis >> quat == Quat");
         
         demo_euler[0]=34*DEG;   demo_euler[1]=45*DEG;       demo_euler[2]=56*DEG; // XYZ
-        setup_Matrix3D__Rotate__EulerAngles(demo_m3d_euler2,demo_euler,XYZ);
-        // printf_M3dCss(demo_m3d_euler2);
-        // Matrix::printf_Matrix(demo_m3d_euler2,m3d_w,m3d_h);
 
         setup_Quaternion__ByEulerAngle(test_quat3,demo_euler,XYZ);
-        // printf_Vec(test_quat3,4);
         
-        setup_Quaternion__ByMatrix(test_quat4,demo_m3d_euler2);
-        // printf_Vec(test_quat4,4);
+        setup_Matrix3D__Rotate__EulerAngles(demo_m3d_euler,demo_euler,XYZ);
+        setup_Quaternion__ByMatrix(test_quat4,demo_m3d_euler);
 
         check_Test(check_Equal(4,test_quat3,test_quat4),"EulerAngle >> Quat == Matrix >> Quat");
-
 
         setup_Quaternion__Conjugate(test_quat5,test_quat4);
 
         cross_Quat(test_quat6,test_quat4,test_quat5);
         check_Test(check_Equal(4,unit__quat,test_quat6),"setup_Quaternion__Conjugate");
 
+        setup_Quaternion__Logarithms(test_quat6,test_quat4);
         
+        setup_Quaternion__Pow(test_quat6,2,test_quat4);
+        cross_Quat(test_quat7,test_quat4,test_quat4);
+        check_Test(check_Equal(4,test_quat6,test_quat7),"quat ^2 == quat*quat");
 
-        // logarithms
-        // pow
-        // setup_Quaternion_division
-        // calc_Angle
-        // calc_Axis
-        // slerp
-        // load_SlerpCache
-        // slerp
 
+        setup_Quaternion__Slerp(test_quat8,test_quat4,test_quat6,0.456);
+        printf_Vec(test_quat8,4);
+
+        var 
+            angle,
+            *axis                   =new var[3],
+            *demo_m3d_euler_q_s1    =new var[m3d_w*m3d_h],
+            *demo_m3d_euler_q_org   =new var[m3d_w*m3d_h],
+            *demo_m3d_euler_q_tgt   =new var[m3d_w*m3d_h];
+
+        setup_Matrix3D__Rotate__Quaternion(demo_m3d_euler_q_s1,test_quat8);
+        setup_Matrix3D__Rotate__Quaternion(demo_m3d_euler_q_org,test_quat4);
+        setup_Matrix3D__Rotate__Quaternion(demo_m3d_euler_q_tgt,test_quat6);
+
+        angle=calc_Angle__GetQuaternion(test_quat6);
+        calc_Axis__GetQuaternion(axis,test_quat6);
+
+        printf("\n");
+        printf("Quat slerp -> matrix:\n");
+        printf("org:\n");
+        printf_M3dCss(demo_m3d_euler_q_s1);
+        printf("s1:\n");
+        printf_M3dCss(demo_m3d_euler_q_org);
+        printf("tgt:\n");
+        printf_M3dCss(demo_m3d_euler_q_tgt);
+        printf("transform: rotate3d(%f, %f, %f, %frad);", axis[0], axis[1], axis[2], angle);
 
     }
 }

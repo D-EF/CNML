@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-05-23 13:48:47
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-05 17:10:15
+ * @LastEditTime: 2023-06-13 16:54:31
  * @FilePath: \cnml\src\NML_Quaternion.hpp
  * @Description: 四元数相关计算.  注: 如无特殊标明,这些函数的参数中的四元数都默认需要单位向量
  */
@@ -46,7 +46,7 @@ namespace NML{
          * @param out       输出对象
          * @param axis_vec  旋转轴向量 (3d单位向量)
          * @param theta     旋转弧度
-         * @return 修改 out 并返回
+         * @return 修改并返回 out
          */
         __NML__INLINE__QUATERNION_FUNCTION var*& setup_Quaternion__ByAxis(var*& out, var*& axis_vec, var theta);
 
@@ -72,7 +72,7 @@ namespace NML{
          * @brief 四元数的共轭(逆)
          * @param out   输出对象
          * @param quat  原四元数
-         * @return 修改 out 并返回
+         * @return 修改并返回 out
          */
         inline var*& setup_Quaternion__Conjugate(var*& out, var*& quat){
             out[qx]=-quat[qx];
@@ -101,9 +101,9 @@ namespace NML{
          * @brief 四元数的对数
          * @param out 输出对象
          * @param quat 原四元数
-         * @return 修改out并返回
+         * @return 修改并返回 out
          */
-        var*& logarithms(var*& out,var*& quat){
+        var*& setup_Quaternion__Logarithms(var*& out,var*& quat){
             var ac=acos(out[qw]);
             out[qx]=quat[qx]*ac;
             out[qy]=quat[qy]*ac;
@@ -117,9 +117,9 @@ namespace NML{
          * @param out   输出对象
          * @param n     n次幂
          * @param quat  原四元数
-         * @return 修改 out 并返回
+         * @return 修改并返回 out
          */
-        var*& pow(var*& out,var n,var*& quat);
+        var*& setup_Quaternion__Pow(var*& out,var n,var*& quat);
         
 
         /**
@@ -127,9 +127,9 @@ namespace NML{
          * @param out           输出对象
          * @param quat_left     左侧四元数
          * @param quat_right    右侧四元数
-         * @return 修改 out 并返回
+         * @return 修改并返回 out
          */
-        inline var*& setup_Quaternion_division(var*& out, var*& quat_left, var*& quat_right){
+        inline var*& setup_Quaternion__Division(var*& out, var*& quat_left, var*& quat_right){
             var temp_data[4];
             var *temp=temp_data;
             setup_Quaternion__Conjugate(temp,quat_left);
@@ -141,15 +141,15 @@ namespace NML{
          * @param quat 标准化的四元数数据
          * @return 返回四元数旋转量(弧度)
          */
-        inline var calc_Angle(var*& quat){return acos(quat[qw])*2;}
+        inline var calc_Angle__GetQuaternion(var*& quat){return acos(quat[qw])*2;}
 
         /**
          * @brief 提取四元数旋转轴
          * @param out   输出对象(3d向量)
          * @param quat  标准化的四元数数据
-         * @return 修改 out 并返回
+         * @return 修改并返回 out
          */
-        inline var*& calc_Axis (var*& out,var*& quat){
+        inline var*& calc_Axis__GetQuaternion (var*& out,var*& quat){
             var k=1/sqrt(1.0-quat[qw]*quat[qw]);
             out[qx]=quat[qx]*k;
             out[qy]=quat[qy]*k;
@@ -163,9 +163,9 @@ namespace NML{
          * @param quat_form   初态四元数
          * @param quat_to     终态四元数
          * @param t           时间参数t
-         * @return 修改 out 并返回
+         * @return 修改并返回 out
          */
-        var*& slerp(var*& out, var*& quat_form, var*& quat_to, var t);
+        var*& setup_Quaternion__Slerp(var*& out, var*& quat_form, var*& quat_to, var t);
 
         /**
          * @brief  计算四元数球面线性插值的缓存数据
@@ -180,7 +180,7 @@ namespace NML{
          * @param out           输出对象
          * @param quat_form     初态四元数
          * @param quat_to       终态四元数
-         * @return 修改 out 并返回
+         * @return 修改并返回 out
          */
         SlerpCache& load_SlerpCache(SlerpCache &out, var*& quat_form, var*& quat_to);
 
@@ -190,9 +190,9 @@ namespace NML{
          * @param quat_form     初态四元数
          * @param SlerpCache    load_SlerpCache计算的缓存
          * @param t             时间参数t
-         * @return 修改 out 并返回
+         * @return 修改并返回 out
          */
-        var*& slerp(var*& out, var*& quat_form, SlerpCache slerp_cache, var t);
+        var*& setup_Quaternion__Slerp(var*& out, var*& quat_form, SlerpCache slerp_cache, var t);
 
 
 
@@ -218,14 +218,14 @@ namespace NML{
             out[qw]=+mat[mxx]+mat[myy]+mat[mzz];
 
             var temp=out[qx], mult;
-            Idx__Quaternion idx__biggest=qx;
-            if(out[qx]<out[qy]){temp=out[qy]; idx__biggest=qy;}
-            if(out[qy]<out[qz]){temp=out[qz]; idx__biggest=qz;}
-            if(out[qz]<out[qw]){temp=out[qw]; idx__biggest=qw;}
+            Idx__Quaternion Idx__biggest=qx;
+            if(out[qx]<out[qy]){temp=out[qy]; Idx__biggest=qy;}
+            if(out[qy]<out[qz]){temp=out[qz]; Idx__biggest=qz;}
+            if(out[qz]<out[qw]){temp=out[qw]; Idx__biggest=qw;}
 
             temp=sqrt(temp+1)*0.5;
             mult=0.25/temp;
-            switch (idx__biggest)
+            switch (Idx__biggest)
             {
                 case qw:   out[qw]=temp;   out[qx]=(mat[myz] - mat[mzy])*mult;   out[qy]=(mat[mzx] - mat[mxz])*mult;   out[qz]=(mat[mxy] - mat[myx])*mult;   break;
                 case qx:   out[qx]=temp;   out[qy]=(mat[mxy] + mat[myx])*mult;   out[qz]=(mat[mzx] + mat[mxz])*mult;   out[qw]=(mat[myz] - mat[mzy])*mult;   break;
@@ -255,7 +255,7 @@ namespace NML{
             return out;
         }
 
-        var*& pow(var*& out,var n,var*& quat){
+        var*& setup_Quaternion__Pow(var*& out,var n,var*& quat){
             if(check_Equal(quat[qw],1)){
                 out[qx]=quat[qx];
                 out[qy]=quat[qy];
@@ -273,7 +273,7 @@ namespace NML{
             return out;
         }
 
-        var*& slerp(var*& out, var*& quat_form, var*& quat_to, var t){
+        var*& setup_Quaternion__Slerp(var*& out, var*& quat_form, var*& quat_to, var t){
             if(t<=0)return setup_Quaternion(out, quat_form[qx], quat_form[qy], quat_form[qz], quat_form[qw]);
             if(t>=1)return setup_Quaternion(out, quat_to[qx], quat_to[qy], quat_to[qz], quat_to[qw]);
 
@@ -349,7 +349,7 @@ namespace NML{
             return out;
         }
         
-        var*& slerp(var*& out, var*& quat_form, SlerpCache slerp_cache, var t){
+        var*& setup_Quaternion__Slerp(var*& out, var*& quat_form, SlerpCache slerp_cache, var t){
             var k0=sin( (1-t) *slerp_cache.omega ) * slerp_cache.one_over__sin_omega,
                 k1=sin(   t   *slerp_cache.omega ) * slerp_cache.one_over__sin_omega;
             out[qx]= k0*quat_form[qx] + k1*slerp_cache.x;
