@@ -3,6 +3,18 @@
 
 namespace NML{
 
+    const var NML_TOLERANCE=1e-6;
+    
+    const var 
+        PI      = 3.14159265358979323846,
+        DEG     = 0.01745329251994329576,
+        DEG_90  = 1.57079632679489661923,
+        CYCLES  = 6.28318530717958647692;
+    const var &DEG_180 = PI;
+
+    const var ONE_OVER_THREE= 1.0/3;
+    const var FOUR_OVER_THREE= 4.0/3;
+
     void Values::setup(const Idx length, const var* data){
         if(this->length<length) delete[] this->data;
         this->data=new var[length];

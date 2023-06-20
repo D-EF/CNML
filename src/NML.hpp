@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-19 17:17:00
+ * @LastEditTime: 2023-06-21 03:25:56
  * @Description: Nittle Math Library 简单数学库
  * 
  * @Copyright (c) 2023 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
@@ -57,7 +57,7 @@ namespace NML{
     /** @brief 算数下标类型 */
     typedef __NML_ALGEBRA_INDEX_TYPE__ Idx_Algebra;
 
-    const var NML_TOLERANCE=1e-6;
+    extern const var NML_TOLERANCE;
     
     /** 三个坐标轴 */
     enum Axis{ X=0, Y=1, Z=2 };
@@ -75,15 +75,10 @@ namespace NML{
         ZXY=0b100001,    ZXZ=0b100010,    ZYX=0b100100,    ZYZ=0b100110
     };
     
-    const var 
-        PI      = 3.14159265358979323846,
-        DEG     = 0.01745329251994329576,
-        DEG_90  = 1.57079632679489661923,
-        CYCLES  = 6.28318530717958647692;
-    const var &DEG_180 = PI;
-
-    const var ONE_OVER_THREE= 1.0/3;
-    const var FOUR_OVER_THREE= 4.0/3;
+    extern const var PI, DEG, DEG_90, CYCLES;
+    extern const var &DEG_180;
+    extern const var ONE_OVER_THREE;
+    extern const var FOUR_OVER_THREE;
 
 
     /**
@@ -139,13 +134,12 @@ namespace NML{
      */
     class Points_Iterator{
         public:
-        void *data;
+        var *data;
         Idx points_length;
         Idx_Algebra dimensional;
         Points_Iterator():data(0),points_length(0),dimensional(0){}
-        Points_Iterator(int,Idx_Algebra);
-        virtual var* operator [] (int v);
-        virtual void free_Data ();
+        virtual var* operator [] (int v){return data;}
+        virtual void free_Data (){}
     };
     
     class Points_Iterator__2DList :public Points_Iterator{

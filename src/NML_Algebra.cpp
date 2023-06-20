@@ -3,6 +3,17 @@
 namespace NML{
     namespace Algebra{
         
+        /**
+         * @brief 帕斯卡三角数据
+        */
+        Pascals_Triangle_Line _G_PASCALS_TRIANGLE={&_G_PASCALS_TRIANGLE,0,new int[3]{0,1,0}+1};
+        Pascals_Triangle_Line *_ROOT__G_PASCALS_TRIANGLE=&_G_PASCALS_TRIANGLE;
+
+        /**
+         * @brief 最后一次演算的一层帕斯卡三角数组; next 指向第零层(_G_PASCALS_TRIANGLE)
+         */
+        Pascals_Triangle_Line *_last_clac_pascals_triangle=&_G_PASCALS_TRIANGLE;
+        
         Pascals_Triangle_Line *_calc_PascalsTriangle(Idx_Algebra n){
             Pascals_Triangle_Line *&rtn=_last_clac_pascals_triangle;
             while(rtn->n<n){
@@ -123,6 +134,7 @@ namespace NML{
             out[0] = u1 - v1 - a * ONE_OVER_THREE;
             return 1;
         }
+
 
 
     }

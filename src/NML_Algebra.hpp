@@ -1,7 +1,7 @@
 /*!
  * @Description: 数与代数 运算相关
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-16 18:28:26
+ * @LastEditTime: 2023-06-21 02:54:37
  */
 
 #ifndef __NML_ALGEBRA__
@@ -17,13 +17,13 @@ namespace NML{
         /**
          * @brief 帕斯卡三角数据
         */
-        Pascals_Triangle_Line _G_PASCALS_TRIANGLE={&_G_PASCALS_TRIANGLE,0,new int[3]{0,1,0}+1};
-        Pascals_Triangle_Line *_ROOT__G_PASCALS_TRIANGLE=&_G_PASCALS_TRIANGLE;
+        extern Pascals_Triangle_Line _G_PASCALS_TRIANGLE;
+        extern Pascals_Triangle_Line *_ROOT__G_PASCALS_TRIANGLE;
 
         /**
          * @brief 最后一次演算的一层帕斯卡三角数组; next 指向第零层(_G_PASCALS_TRIANGLE)
          */
-        Pascals_Triangle_Line *_last_clac_pascals_triangle=&_G_PASCALS_TRIANGLE;
+        extern Pascals_Triangle_Line *_last_clac_pascals_triangle;
 
         /**
          * @brief 演算帕斯卡三角

@@ -15,16 +15,15 @@ namespace NML{
         };
 
         //默认使用 3*3 左乘向量 (vector * matrix)
-        M2D_Type _using_m2d_type=M2D__3X3_L;
+        extern M2D_Type _using_m2d_type;
 
         // 数据类型的数据对应宽高
-            Idx_VM m2d_w=3,m2d_h=3;
-            inline Idx_VM get_w(){return m2d_w;}
-            inline Idx_VM get_h(){return m2d_h;}
+            extern Idx_VM m2d_w,m2d_h;
         // 数据类型的数据对应下标
-            Idx_VM mxx=0,   mxy=1,   mxz=2,
-                myx=3,   myy=4,   myz=5,
-                mzx=6,   mzy=7,   mzz=8;
+            extern Idx_VM 
+                mxx,   mxy,   mxz,
+                myx,   myy,   myz,
+                mzx,   mzy,   mzz;
             Idx_VM &mx_null=mxz, &my_null=myz, &tx=mzx, &ty=mzy, &mi_full=mzz;
         //
 
@@ -223,6 +222,7 @@ namespace NML{
         // end  * transform * end 
 
 
+        
         void set_NMLConfig__using_m2d_type(M2D_Type type){
             if(_using_m2d_type==type)return;
             _using_m2d_type=type;
@@ -256,7 +256,7 @@ namespace NML{
                 break;
             }
         }
-        
+
         void printf_M2dCss(var*& mat){
             var v_mxz=0,
                 v_myz=0,
@@ -272,6 +272,34 @@ namespace NML{
                 mat[myx],   mat[myy],
                 mat[tx],    mat[ty]
             );
+        }
+
+        var*& act_Matrix2D__Rotate__Vector (const _M2d_Act_Fnc& act, var*& out, var*& unit_vec__org, var*& unit_vec__to){
+            var c=unit_vec__org[0]*unit_vec__to[0]+unit_vec__org[1]*unit_vec__to[1],
+                s=unit_vec__org[1]*unit_vec__to[0]-unit_vec__org[0]*unit_vec__to[1];
+            return act(out,
+                c,   s,
+               -s,   c,
+                0,   0
+            );
+        }
+
+        var*& act_Matrix2D__Reflect__Collinear(const _M2d_Act_Fnc& act, var*& out, var normal_x, var normal_y){
+            var m=normal_x*normal_x+normal_y*normal_y;
+            if(!check_Equal(1,m)){
+                m=1/sqrt(m);
+                return act_Matrix2D__Reflect(act,out,normal_x*m,normal_y*m);
+            }
+            return act_Matrix2D__Reflect(act,out,normal_x,normal_y);
+        }
+
+        var*& act_Matrix2D__Shear__Collinear(const _M2d_Act_Fnc& act, var*& out, var axis_x, var axis_y, var k){
+            var m=axis_x*axis_x+axis_y*axis_y;
+            if(!check_Equal(1,m)){
+                m=1/sqrt(m);
+                return act_Matrix2D__Shear(act,out,axis_x*m,axis_y*m,k);
+            }
+            return act_Matrix2D__Shear(act,out,axis_x,axis_y,k);
         }
 
         __NML__INLINE__M2D_ACTION_FUNCTION var*& setup_Matrix2D(var*& out, var a, var b, var c, var d, var e, var f){
@@ -316,15 +344,6 @@ namespace NML{
                 );
         }
 
-        var*& act_Matrix2D__Rotate__Vector (const _M2d_Act_Fnc& act, var*& out, var*& unit_vec__org, var*& unit_vec__to){
-            var c=unit_vec__org[0]*unit_vec__to[0]+unit_vec__org[1]*unit_vec__to[1],
-                s=unit_vec__org[1]*unit_vec__to[0]-unit_vec__org[0]*unit_vec__to[1];
-            return act(out,
-                c,   s,
-               -s,   c,
-                0,   0
-            );
-        }
 
         __NML__INLINE__M2D_ACTION_FUNCTION var*& act_Matrix2D__Reflect(const _M2d_Act_Fnc& act, var*& out, var normal_x, var normal_y){
             return act(out,
@@ -342,24 +361,6 @@ namespace NML{
             );
         }
 
-        var*& act_Matrix2D__Reflect__Collinear(const _M2d_Act_Fnc& act, var*& out, var normal_x, var normal_y){
-            var m=normal_x*normal_x+normal_y*normal_y;
-            if(!check_Equal(1,m)){
-                m=1/sqrt(m);
-                return act_Matrix2D__Reflect(act,out,normal_x*m,normal_y*m);
-            }
-            return act_Matrix2D__Reflect(act,out,normal_x,normal_y);
-        }
-
-        var*& act_Matrix2D__Shear__Collinear(const _M2d_Act_Fnc& act, var*& out, var axis_x, var axis_y, var k){
-            var m=axis_x*axis_x+axis_y*axis_y;
-            if(!check_Equal(1,m)){
-                m=1/sqrt(m);
-                return act_Matrix2D__Shear(act,out,axis_x*m,axis_y*m,k);
-            }
-            return act_Matrix2D__Shear(act,out,axis_x,axis_y,k);
-        }
-        
     }
 }
 

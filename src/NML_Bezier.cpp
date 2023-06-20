@@ -36,7 +36,7 @@ namespace NML{
         Bezier_Clac_Matrix _BEZIER_CLAC_MATRIX={&_BEZIER_CLAC_MATRIX,0,new int[1]{1}};
         Bezier_Clac_Matrix* _last_load_bezier_clac_matrix=&_BEZIER_CLAC_MATRIX;
 
-        int* get_BezierClacMatrix(Idx n){
+        int* get_BezierClacMatrix(Idx_Algebra n){
             Bezier_Clac_Matrix* ptr__move, *ptr__static;
             ptr__move=ptr__static = _last_load_bezier_clac_matrix;
             while (!(n==ptr__move->n||ptr__move->next==ptr__static)){

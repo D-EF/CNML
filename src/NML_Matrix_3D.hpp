@@ -16,15 +16,16 @@ namespace NML{
         
 
         //默认使用 3*3 左乘向量 (vector * matrix)
-        M3D_Type _using_m3d_type=M3D__4X4_L;
+        extern M3D_Type _using_m3d_type;
 
         // 数据类型的数据对应宽高
-            Idx_VM m3d_w=4,m3d_h=4,m3d_length=16;
+            extern Idx_VM m3d_w,m3d_h,m3d_length;
         // 数据类型的数据对应下标
-            Idx_VM mxx=0,    mxy=1,    mxz=2,    mxw=3,
-                myx=4,    myy=5,    myz=6,    myw=7,
-                mzx=8,    mzy=9,    mzz=10,   mzw=11,
-                mwx=12,   mwy=13,   mwz=14,   mww=15;
+            extern Idx_VM 
+                mxx,   mxy,   mxz,   mxw,
+                myx,   myy,   myz,   myw,
+                mzx,   mzy,   mzz,   mzw,
+                mwx,   mwy,   mwz,   mww;
             Idx_VM &tx=mwx, &ty=mwy, &tz=mwz;
         //
 
@@ -386,23 +387,7 @@ namespace NML{
                 mat[tx],    mat[ty],    mat[tz],    v_mww
             );
         }
-
-        __NML__INLINE__M3D_ACTION_FUNCTION var*& setup_Matrix3D__Easy(var*& out, 
-            var value_mxx,   var value_mxy,   var value_mxz,
-            var value_myx,   var value_myy,   var value_myz,
-            var value_mzx,   var value_mzy,   var value_mzz,
-            var value_tx,    var value_ty,    var value_tz,
-            var value_mxw,   var value_myw,   var value_mzw,   var value_mww
-        ){
-            out[mxw]=value_mxw;        out[myw]=value_myw;        out[mzw]=value_mzw;       out[mww]=value_mww;
-            
-            out[mxx]= value_mxx;   out[mxy]= value_mxy;   out[mxz]=value_mxz;
-            out[myx]= value_myx;   out[myy]= value_myy;   out[myz]=value_myz;
-            out[mzx]= value_mzx;   out[mzy]= value_mzy;   out[mzz]=value_mzz;
-            out[tx] = value_tx ;   out[ty] = value_ty ;   out[tz] =value_tz ;
-            return out;
-        }
-
+    
         var*& transform_Matrix3D__Easy(var*& mat, 
             var app_mxx,   var app_mxy,   var app_mxz,
             var app_myx,   var app_myy,   var app_myz,
@@ -440,27 +425,8 @@ namespace NML{
                 // mat_mxw*app_mwx + mat_myw*app_mwy + mat_mzw*app_mwz + mat_mww*app_mww
             );
         }
+
         
-        __NML__INLINE__M3D_ACTION_FUNCTION var*& act_Matrix3D__Translate(const _M3d_Act_Fnc__Easy& act, var*& out, var translate_x, var translate_y, var translate_z){
-            return act(out,
-                1,             0,             0,
-                0,             1,             0,
-                0,             0,             1,
-                translate_x,   translate_y,   translate_z,
-                0,0,0,1
-            );
-        }
-
-        __NML__INLINE__M3D_ACTION_FUNCTION var*& act_Matrix3D__Scale (const _M3d_Act_Fnc__Easy& act, var*& out, var scale_x, var scale_y,var scale_z){
-            return act(out, 
-                scale_x,   0,         0,
-                0,         scale_y,   0,
-                0,         0,         scale_z,
-                0,         0,         0,
-                0,0,0,1
-            );
-        }
-
         var*& act_Matrix3D__Reflect__Collinear (const _M3d_Act_Fnc__Easy& act, var*& out, var normal_x, var normal_y, var normal_z){
             var m=normal_x*normal_x+normal_y*normal_y+normal_z*normal_z;
             if(!check_Equal(1,m)){
@@ -468,19 +434,6 @@ namespace NML{
                 return act_Matrix3D__Reflect(act,out,normal_x*m,normal_y*m,normal_z*m);
             }
             return act_Matrix3D__Reflect(act,out,normal_x,normal_y,normal_z);
-        }
-
-        __NML__INLINE__M3D_ACTION_FUNCTION var*& act_Matrix3D__Reflect (const _M3d_Act_Fnc__Easy& act, var*& out, var normal_x, var normal_y, var normal_z){
-            var i2xy=-2*normal_x*normal_y,
-                i2xz=-2*normal_x*normal_z,
-                i2yz=-2*normal_y*normal_z;
-            return act(out,
-                1-2*normal_x*normal_x,   i2xy,                    i2xz,
-                i2xy,                    1-2*normal_y*normal_y,   i2yz,
-                i2xz,                    i2yz,                    1-2*normal_z*normal_z,
-                0,                       0,                       0,
-                0,0,0,1
-            );
         }
 
         var*& act_Matrix3D__Shear (const _M3d_Act_Fnc__Easy& act, var*& out, Plane_3D plane, var k1, var k2){
@@ -558,6 +511,55 @@ namespace NML{
                     return out;
                 break;
             }
+        }
+        
+        __NML__INLINE__M3D_ACTION_FUNCTION var*& setup_Matrix3D__Easy(var*& out, 
+            var value_mxx,   var value_mxy,   var value_mxz,
+            var value_myx,   var value_myy,   var value_myz,
+            var value_mzx,   var value_mzy,   var value_mzz,
+            var value_tx,    var value_ty,    var value_tz,
+            var value_mxw,   var value_myw,   var value_mzw,   var value_mww
+        ){
+            out[mxw]=value_mxw;        out[myw]=value_myw;        out[mzw]=value_mzw;       out[mww]=value_mww;
+            
+            out[mxx]= value_mxx;   out[mxy]= value_mxy;   out[mxz]=value_mxz;
+            out[myx]= value_myx;   out[myy]= value_myy;   out[myz]=value_myz;
+            out[mzx]= value_mzx;   out[mzy]= value_mzy;   out[mzz]=value_mzz;
+            out[tx] = value_tx ;   out[ty] = value_ty ;   out[tz] =value_tz ;
+            return out;
+        }
+        
+        __NML__INLINE__M3D_ACTION_FUNCTION var*& act_Matrix3D__Translate(const _M3d_Act_Fnc__Easy& act, var*& out, var translate_x, var translate_y, var translate_z){
+            return act(out,
+                1,             0,             0,
+                0,             1,             0,
+                0,             0,             1,
+                translate_x,   translate_y,   translate_z,
+                0,0,0,1
+            );
+        }
+
+        __NML__INLINE__M3D_ACTION_FUNCTION var*& act_Matrix3D__Scale (const _M3d_Act_Fnc__Easy& act, var*& out, var scale_x, var scale_y,var scale_z){
+            return act(out, 
+                scale_x,   0,         0,
+                0,         scale_y,   0,
+                0,         0,         scale_z,
+                0,         0,         0,
+                0,0,0,1
+            );
+        }
+
+        __NML__INLINE__M3D_ACTION_FUNCTION var*& act_Matrix3D__Reflect (const _M3d_Act_Fnc__Easy& act, var*& out, var normal_x, var normal_y, var normal_z){
+            var i2xy=-2*normal_x*normal_y,
+                i2xz=-2*normal_x*normal_z,
+                i2yz=-2*normal_y*normal_z;
+            return act(out,
+                1-2*normal_x*normal_x,   i2xy,                    i2xz,
+                i2xy,                    1-2*normal_y*normal_y,   i2yz,
+                i2xz,                    i2yz,                    1-2*normal_z*normal_z,
+                0,                       0,                       0,
+                0,0,0,1
+            );
         }
 
         __NML__INLINE__M3D_ACTION_FUNCTION   var*& act_Matrix3D__Rotate__Quaternion       (const _M3d_Act_Fnc__Easy& act, var*& out, var x, var y, var z, var w){
