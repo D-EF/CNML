@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-20 00:58:11
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-15 09:01:10
+ * @LastEditTime: 2023-06-21 18:37:12
  * @FilePath: \cnml\src\test.cpp
  * @Description: 
  * @
@@ -12,6 +12,7 @@
 #include <chrono>
 #include "NML.hpp"
 #include "NML_Algebra.hpp"
+#include "NML_Bezier.hpp"
 #include "NML_Matrix.hpp"
 #include "NML_Matrix_2D.hpp"
 #include "NML_Matrix_3D.hpp"
@@ -26,7 +27,7 @@ int _test_error_counter=0;
 namespace print__check_Test{void check_Test(bool flag,char* msg="");}
 namespace unprint__check_Test{void check_Test(bool flag,char* msg="");}
 
-namespace Test_Algebra{
+namespace Test_Algebra_Bezier{
     void test_AllFnc();
 }
 namespace Test_Vector{
@@ -52,7 +53,7 @@ int main(int argc, char **argv){
 
     cout<< "start test :"<<endl;
     start_time = high_resolution_clock::now();
-        Test_Algebra::test_AllFnc();
+        Test_Algebra_Bezier::test_AllFnc();
         // Test_Vector::test_AllFnc();
         // Test_Matrix::test_AllFnc();
         // Test_Euler_Angle::test_AllFnc();
@@ -87,8 +88,9 @@ namespace print__check_Test{
 
 
 
-namespace Test_Algebra{
+namespace Test_Algebra_Bezier{
     using namespace Algebra;
+    using namespace Bezier;
     void printf_IntLine(int length,int* val){
         Idx i=0;
         printf("[%d",val[i]);
@@ -98,7 +100,7 @@ namespace Test_Algebra{
         printf("]\n");
     }
     void test_AllFnc(){
-        printf("length=%d,%d,%d,%d,%d\n",get_PascalsTriangleLine(1)->n,get_PascalsTriangleLine(2)->n,get_PascalsTriangleLine(3)->n,get_PascalsTriangleLine(4)->n,get_PascalsTriangleLine(5)->n);
+        printf("\n printf_IntLinelength=%d,%d,%d,%d,%d\n",get_PascalsTriangleLine(1)->n,get_PascalsTriangleLine(2)->n,get_PascalsTriangleLine(3)->n,get_PascalsTriangleLine(4)->n,get_PascalsTriangleLine(5)->n);
         printf_IntLine(1,get_PascalsTriangleLine(1)->data);
         printf_IntLine(2,get_PascalsTriangleLine(2)->data);
         printf_IntLine(3,get_PascalsTriangleLine(3)->data);
@@ -107,8 +109,38 @@ namespace Test_Algebra{
 
         var *org=new var[5]{0, 1.1, 1.2};
         var *d=new var[4];
+        printf("\n clac_Derivative__OneUnitaryRealParameterFunction=");
         clac_Derivative__OneUnitaryRealParameterFunction(d,org,3);
         printf_Vec(d,2);
+
+        printf("\n get_BezierClacMatrix:\n");
+            printf_IntLine(6,get_BezierClacMatrix(2));
+            printf_IntLine(10,get_BezierClacMatrix(3));
+            printf_IntLine(15,get_BezierClacMatrix(4));
+        printf("\n");
+
+        var d1[4]={0,1,2,3};
+        printf_Vec(d1,4);
+        printf_IntLine(4,(int*)d1);
+        std::fill_n(d1,4,0);
+        printf_Vec(d1,4);
+        printf_IntLine(4,(int*)d1);
+
+        var **dd = new var*[4]{
+            new var[2]{2,5},
+            new var[2]{3,3},
+            new var[2]{6,7},
+            new var[2]{4,1},
+        };
+        Points_Iterator__1DList ps1=Points_Iterator__1DList((new var[8]),2,4);
+        Points_Iterator__2DList ps2=Points_Iterator__2DList((dd),2,4);
+        // [2, 3, 6, -7]
+        // [5, -6, 18, -16]
+
+        clac_BezierCoefficients(ps1,ps2);
+
+        printf_Vec((var*)ps1.data,8);
+        
     }
 }
 

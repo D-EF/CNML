@@ -1,7 +1,7 @@
 /*!
  * @Description: 数与代数 运算相关
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-19 20:29:41
+ * @LastEditTime: 2023-06-21 18:34:54
  */
 
 #include "NML_Bezier.hpp"
@@ -54,6 +54,7 @@ namespace NML{
 
             Idx_Algebra idx_new_matrix=0,f=1;
             for(int i=0;i<=matrix_n;++i,move_pascals_triangle_line=move_pascals_triangle_line->next){
+                f=1&i?-1:+1;
                 for(int j=0;j<=i;++j,++idx_new_matrix){
                     new_matrix_data[idx_new_matrix] = move_pascals_triangle_line->data[j] * temp_pascals_triangle_line->data[i] * f;
                     f*=-1;
@@ -65,7 +66,27 @@ namespace NML{
         }
 
 
-        Points_Iterator& clac_BezierCoefficients(Points_Iterator& out, Points_Iterator& points);
+        Points_Iterator& clac_BezierCoefficients(Points_Iterator& out, Points_Iterator& points){
+            Idx_Algebra dimensional=out.dimensional;
+            Idx n=out.points_length-1;
+            int* _bezier_clac_matrix=get_BezierClacMatrix(n);
+            var* editing_target;
+            var temp[dimensional]={0.0};
+            Idx i,j,idx_m;
+            for(i=0;i<=n;++i){
+                var* cnm=points[i];
+                editing_target=out[i];
+                for(j=0;j<=i;++j,++idx_m){
+                    for(Idx_Algebra d=0;d<dimensional;++d){
+                        temp[d]+=_bezier_clac_matrix[idx_m]*points[j][d];
+                    }
+                }
+                std::copy(temp,temp+dimensional,editing_target);
+                std::fill_n(temp,dimensional,0);
+            }
+            return out;
+        }
+
         var*& sample_Bezier__Coefficients(var *&out, Points_Iterator& coefficients);
         var*& setup_Matrix__CutBezierMatrixQ(var*& out, Idx_Algebra n, var t);
         Points_Iterator& calc_BezierCtrlPoints__Coefficients(Points_Iterator& out, Points_Iterator& coefficients);

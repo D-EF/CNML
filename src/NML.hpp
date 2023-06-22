@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-21 03:25:56
+ * @LastEditTime: 2023-06-21 18:25:33
  * @Description: Nittle Math Library 简单数学库
  * 
  * @Copyright (c) 2023 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
@@ -134,47 +134,43 @@ namespace NML{
      */
     class Points_Iterator{
         public:
-        var *data;
+        void *data;
         Idx points_length;
         Idx_Algebra dimensional;
-        Points_Iterator():data(0),points_length(0),dimensional(0){}
-        virtual var* operator [] (int v){return data;}
+        Points_Iterator(){}
+        Points_Iterator(Idx_Algebra dimensional,Idx points_length):points_length(points_length),dimensional(dimensional){}
+        Points_Iterator(void *data, Idx_Algebra dimensional, Idx points_length):data(data),points_length(points_length),dimensional(dimensional){}
+        // virtual var* operator [] (int v){return (var*)data;}
+        virtual var* operator[](int v) = 0; 
         virtual void free_Data (){}
     };
     
-    class Points_Iterator__2DList :public Points_Iterator{
+    class Points_Iterator__2DList :virtual public Points_Iterator{
         public:
-        var **data;
-        Idx points_length;
-        Idx_Algebra dimensional;
-        Points_Iterator__2DList(Idx_Algebra dimensional,Idx points_length):points_length(points_length),dimensional(dimensional){
-            data=new var*[points_length];
+        Points_Iterator__2DList(var** data, Idx_Algebra dimensional,Idx points_length):Points_Iterator(data,dimensional,points_length){}
+        Points_Iterator__2DList(Idx_Algebra dimensional,Idx points_length):Points_Iterator(dimensional,points_length){
+            var** d=new var*[points_length];
             for(int i=0;i<points_length;++i){
-                data[i]=new var[dimensional];
+                d[i]=new var[dimensional];
             }
+            data=d;
         }
         void free_Data(){
             for(int i=0;i<points_length;++i){
-                delete data[i];
+                delete ((var**)data)[i];
             }
             delete data;
             data=0;
         }
-        Points_Iterator__2DList(var **&data, Idx_Algebra dimensional, Idx points_length):data(data),points_length(points_length),dimensional(dimensional){}
-        
-        inline var* operator [] (Idx v){return data[v];}
+        var* operator[](int v) override{return ((var**)data)[v];}
     };
 
-    class Points_Iterator__1DList :public Points_Iterator{
+    class Points_Iterator__1DList :virtual public Points_Iterator{
         public:
-        var *data;
-        Idx points_length;
-        Idx_Algebra dimensional;
-        
-        Points_Iterator__1DList(Idx_Algebra dimensional, Idx points_length)               : points_length(points_length)   , dimensional(dimensional)   , data(new var[dimensional*points_length]){}
-        Points_Iterator__1DList(var *&data, Idx_Algebra dimensional, Idx points_length)   : data(data)                     , dimensional(dimensional)   , points_length(points_length){}
+        Points_Iterator__1DList(var* data, Idx_Algebra dimensional,Idx points_length):Points_Iterator(data,dimensional,points_length){}
+        Points_Iterator__1DList(Idx_Algebra dimensional, Idx points_length):Points_Iterator(new var[dimensional*points_length],dimensional,points_length){}
         void free_Data(){delete data;}
-        inline var* operator [] (Idx v){return data+v*dimensional;}
+        var* operator[](int v) override{return ((var*)data)+(v*dimensional);}
     };
 
     void clone_To(var* to, const var* val, Idx length);

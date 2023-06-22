@@ -1,7 +1,7 @@
 /*!
  * @Description: 数与代数 运算相关
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-21 02:56:35
+ * @LastEditTime: 2023-06-21 11:33:23
  */
 
 #ifndef __NML_BEZIER__
@@ -27,7 +27,7 @@ namespace NML{
         /**
          * @brief 获取 贝塞尔曲线计算矩阵
          * @param n 表示n阶贝塞尔曲线 (n=控制点个数-1)
-         * @return 返回一个行优先展开的整形下三角矩阵
+         * @return 返回一个行优先展开的整形下三角矩阵 长度为 (n+1)*(n+2)/2
          */
         int* get_BezierClacMatrix(Idx_Algebra n);
 
