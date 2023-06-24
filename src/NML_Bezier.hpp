@@ -1,7 +1,7 @@
 /*!
  * @Description: 数与代数 运算相关
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-21 11:33:23
+ * @LastEditTime: 2023-06-24 15:35:57
  */
 
 #ifndef __NML_BEZIER__
@@ -42,25 +42,26 @@ namespace NML{
 
         /** 
          * 采样贝塞尔曲线 使用各次幂的系数
-         * @param out               输出对象, 采样点, 长度为 dimensional
-         * @param coefficients      贝塞尔曲线各次幂系数 ( 使用 clac_BezierCoefficients 计算 )
+         * @param out            输出对象, 采样点, 长度为 dimensional
+         * @param coefficients   贝塞尔曲线各次幂系数 ( 使用 clac_BezierCoefficients 计算 )
+         * @param t              时间参数t
          * @return 修改并返回 out (采样点)
          */
-        var*& sample_Bezier__Coefficients(var *&out, Points_Iterator& coefficients);
+        var*& sample_Bezier__Coefficients(var *&out, Points_Iterator& coefficients, var t);
 
 
         /**
          * 计算贝塞尔曲线分割矩阵q
          * @param out 输出对象; 行优先展开的 下三角矩阵 长度为 (1+2+3+...+(n+1))
          * @param n   表示n阶贝塞尔曲线 (n=控制点个数-1)
-         * @param t   时间参数t
+         * @param t   时间参数t, 表示在原曲线的 p(t) 点分割
          * @return 修改out并返回
          */
         var*& setup_Matrix__CutBezierMatrixQ(var*& out, Idx_Algebra n, var t);
 
         
-        /** 通过系数创建贝塞尔曲线控制点
-         * @param out               输出采样点; 一维数组, 长度为dimensional*points_length
+        /** 通过系数计算贝塞尔曲线控制点
+         * @param out               输出对象, 控制点数据 规模与 coefficients 相同;
          * @param coefficients      贝塞尔曲线各次幂系数 ( 使用 clac_BezierCoefficients 计算 )
          * @return 修改 out 一维数组的内容 并返回 
          */
@@ -73,7 +74,7 @@ namespace NML{
          */
         inline var calc_K__BezierToCyles(var angle){return FOUR_OVER_THREE*tan(angle*0.25);}
         /** @brief 贝塞尔曲线拟合四分之一圆 的 k 值 */
-        const var BEZIER_TO_CYCLES_K__1D4=0.551784777779014;
+        extern const var BEZIER_TO_CYCLES_K__1D4;
         // 三阶二维贝塞尔曲线拟合圆弧公式
         // 单位圆且起点角度为0   示例
         // p1=起点    //(1,0)

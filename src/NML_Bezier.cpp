@@ -1,7 +1,7 @@
 /*!
  * @Description: 数与代数 运算相关
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-21 18:34:54
+ * @LastEditTime: 2023-06-24 15:35:06
  */
 
 #include "NML_Bezier.hpp"
@@ -87,10 +87,30 @@ namespace NML{
             return out;
         }
 
-        var*& sample_Bezier__Coefficients(var *&out, Points_Iterator& coefficients);
-        var*& setup_Matrix__CutBezierMatrixQ(var*& out, Idx_Algebra n, var t);
-        Points_Iterator& calc_BezierCtrlPoints__Coefficients(Points_Iterator& out, Points_Iterator& coefficients);
+        var*& sample_Bezier__Coefficients(var *&out, Points_Iterator& coefficients, var t){
+            Idx_Algebra dimensional=coefficients.dimensional;
+            std::fill_n(out,dimensional,0);
+            var temp;
+            for(Idx i=0;i<coefficients.points_length;++i){
+                var* line=coefficients[i];
+                temp=pow(t,i);
+                for(Idx_Algebra d=0;d<dimensional;++d){
+                    out[d]+=temp*line[d];
+                }
+            }
+            return out;
+        }
 
-        
+        var*& setup_Matrix__CutBezierMatrixQ(var*& out, Idx_Algebra n, var t){
+            // todo
+            return out;
+        }
+
+        Points_Iterator& calc_BezierCtrlPoints__Coefficients(Points_Iterator& out, Points_Iterator& coefficients){
+            // todo
+            return out;
+        }
+
+        const var BEZIER_TO_CYCLES_K__1D4=0.551784777779014;
     }
 }

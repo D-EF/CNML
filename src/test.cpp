@@ -2,8 +2,8 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-20 00:58:11
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-21 18:37:12
- * @FilePath: \cnml\src\test.cpp
+ * @LastEditTime: 2023-06-24 15:19:55
+ * @FilePath: \CNML\src\test.cpp
  * @Description: 
  * @
  * @Copyright (c) 2023 by ${git_name} ${git_email}, All Rights Reserved. 
@@ -140,7 +140,14 @@ namespace Test_Algebra_Bezier{
         clac_BezierCoefficients(ps1,ps2);
 
         printf_Vec((var*)ps1.data,8);
+
+        var test_vec_d[2]={0};
+        var *test_vec=test_vec_d;
+        sample_Bezier__Coefficients(test_vec,ps1,0.456); // {x: 3.9518842880000005, y: 4.489746944}
         
+        printf_Vec(test_vec,2);
+        check_Test( check_Equal(test_vec[0],3.951884288)&&check_Equal(test_vec[1],4.489746944), "sample_Bezier__Coefficients {2,5},{3,3},{6,7},{4,1} 0.456");
+
     }
 }
 
