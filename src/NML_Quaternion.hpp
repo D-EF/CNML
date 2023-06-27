@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-05-23 13:48:47
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-13 16:54:31
+ * @LastEditTime: 2023-06-26 16:46:56
  * @FilePath: \cnml\src\NML_Quaternion.hpp
  * @Description: 四元数相关计算.  注: 如无特殊标明,这些函数的参数中的四元数都默认需要单位向量
  */
@@ -150,7 +150,7 @@ namespace NML{
          * @return 修改并返回 out
          */
         inline var*& calc_Axis__GetQuaternion (var*& out,var*& quat){
-            var k=1/sqrt(1.0-quat[qw]*quat[qw]);
+            var k=check_Equal(1,quat[qw])? 1 : 1/sqrt(1.0-quat[qw]*quat[qw]);
             out[qx]=quat[qx]*k;
             out[qy]=quat[qy]*k;
             out[qz]=quat[qz]*k;

@@ -12,10 +12,10 @@ namespace NML{
         /**
          * @brief 最后一次演算的一层帕斯卡三角数组; next 指向第零层(_G_PASCALS_TRIANGLE)
          */
-        Pascals_Triangle_Line *_last_clac_pascals_triangle=&_G_PASCALS_TRIANGLE;
+        Pascals_Triangle_Line *_last_calc_pascals_triangle=&_G_PASCALS_TRIANGLE;
         
         Pascals_Triangle_Line *_calc_PascalsTriangle(Idx_Algebra n){
-            Pascals_Triangle_Line *&rtn=_last_clac_pascals_triangle;
+            Pascals_Triangle_Line *&rtn=_last_calc_pascals_triangle;
             while(rtn->n<n){
                 Idx_Algebra length__next=rtn->n+1;
                 rtn->next=new Pascals_Triangle_Line{&_G_PASCALS_TRIANGLE, length__next, new int[length__next+3]+1};
@@ -34,7 +34,7 @@ namespace NML{
         
         Pascals_Triangle_Line *get_PascalsTriangleLine(Idx_Algebra n){
             if(n<0)return 0;
-            Pascals_Triangle_Line *rtn=_last_clac_pascals_triangle;
+            Pascals_Triangle_Line *rtn=_last_calc_pascals_triangle;
             if(rtn->n<n) rtn=_calc_PascalsTriangle(n);
             while(rtn->n!=n){
                 rtn=rtn->next;
@@ -43,7 +43,7 @@ namespace NML{
         }
 
 
-        var*& clac_Derivative__OneUnitaryRealParameterFunction(var *&out,var *coefficients,Idx_Algebra length_coefficients){
+        var*& calc_Derivative__OneUnitaryRealParameterFunction(var *&out,var *coefficients,Idx_Algebra length_coefficients){
             Idx_Algebra l=length_coefficients-1,i;
             for(i=1;i<=l;++i){
                 out[i-1]=coefficients[i]*i;
@@ -51,12 +51,24 @@ namespace NML{
             return out;
         }
 
-
-
-        var _clac_CubeRoot(var value){
+        var _calc_CubeRoot(var value){
             return value < 0?-pow(-value, ONE_OVER_THREE) : pow(value, ONE_OVER_THREE);
         }
 
+        Idx_Algebra calc_RootsOfSquare(var *&out, var z1, var o1, var z2, var o2, var z3, var o3, var z4, var o4){
+            var pd=(o1*o4 - o2*o3);
+            if(check_Zero(pd)){
+                if((z1-z2)*o2==(z3-z4)*o4){
+                    return '\2';
+                }else{
+                    return '\1';
+                }
+            }
+            out[0]= (z2*o4 + o2*z3 - z4*o2 - z1*o4) / pd;
+            out[1]= (z2*o3 + z3*o1 - z4*o1 - z1*o3) / pd;
+            // out[1]=(z3 + o3*out[0] - z4) / o4;   // o4 可能为0所以不能用
+            return '\0';
+        }
         
         Idx_Algebra calc_RootsOfCubic(var*& out, var*& coefficients){
             var a=coefficients[2]||0,
@@ -111,7 +123,7 @@ namespace NML{
                     t = -q / (2 * r),
                     cosphi = t < -1 ? -1 : t > 1 ? 1 : t,
                     phi = acos(cosphi),
-                    crtr = _clac_CubeRoot(r),
+                    crtr = _calc_CubeRoot(r),
                     t1 = 2 * crtr;
                 out[0] = t1 * cos(phi * ONE_OVER_THREE) - a * ONE_OVER_THREE;
                 out[1] = t1 * cos((phi + 2 * PI) * ONE_OVER_THREE) - a * ONE_OVER_THREE;
@@ -121,7 +133,7 @@ namespace NML{
 
             // three real roots, but two of them are equal:
             if (discriminant == 0) {
-                u1 = q2 < 0 ? _clac_CubeRoot(-q2) : -_clac_CubeRoot(q2);
+                u1 = q2 < 0 ? _calc_CubeRoot(-q2) : -_calc_CubeRoot(q2);
                 out[0] = 2 * u1 - a * ONE_OVER_THREE;
                 out[1] = -u1 - a * ONE_OVER_THREE;
                 return 2;
@@ -129,8 +141,8 @@ namespace NML{
 
             // one real root, two complex roots
             var sd = sqrt(discriminant);
-            u1 = _clac_CubeRoot(sd - q2);
-            v1 = _clac_CubeRoot(sd + q2);
+            u1 = _calc_CubeRoot(sd - q2);
+            v1 = _calc_CubeRoot(sd + q2);
             out[0] = u1 - v1 - a * ONE_OVER_THREE;
             return 1;
         }

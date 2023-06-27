@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-20 00:58:11
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-24 15:19:55
+ * @LastEditTime: 2023-06-28 04:06:37
  * @FilePath: \CNML\src\test.cpp
  * @Description: 
  * @
@@ -109,14 +109,14 @@ namespace Test_Algebra_Bezier{
 
         var *org=new var[5]{0, 1.1, 1.2};
         var *d=new var[4];
-        printf("\n clac_Derivative__OneUnitaryRealParameterFunction=");
-        clac_Derivative__OneUnitaryRealParameterFunction(d,org,3);
+        printf("\n calc_Derivative__OneUnitaryRealParameterFunction=");
+        calc_Derivative__OneUnitaryRealParameterFunction(d,org,3);
         printf_Vec(d,2);
 
-        printf("\n get_BezierClacMatrix:\n");
-            printf_IntLine(6,get_BezierClacMatrix(2));
-            printf_IntLine(10,get_BezierClacMatrix(3));
-            printf_IntLine(15,get_BezierClacMatrix(4));
+        printf("\n get_BezierCalcMatrix:\n");
+            printf_IntLine(6,get_BezierCalcMatrix(2));
+            printf_IntLine(10,get_BezierCalcMatrix(3));
+            printf_IntLine(15,get_BezierCalcMatrix(4));
         printf("\n");
 
         var d1[4]={0,1,2,3};
@@ -137,9 +137,12 @@ namespace Test_Algebra_Bezier{
         // [2, 3, 6, -7]
         // [5, -6, 18, -16]
 
-        clac_BezierCoefficients(ps1,ps2);
+        calc_BezierCoefficients(ps1,ps2);
 
-        printf_Vec((var*)ps1.data,8);
+        // printf_Vec((var*)ps1.data,8);
+        printf("\n");
+        printf_Points(ps1);
+        printf("\n");
 
         var test_vec_d[2]={0};
         var *test_vec=test_vec_d;
@@ -147,6 +150,21 @@ namespace Test_Algebra_Bezier{
         
         printf_Vec(test_vec,2);
         check_Test( check_Equal(test_vec[0],3.951884288)&&check_Equal(test_vec[1],4.489746944), "sample_Bezier__Coefficients {2,5},{3,3},{6,7},{4,1} 0.456");
+
+        var *cut_bezier_matrix_q = new var[10];
+        calc_CutBezierMatrixQ(cut_bezier_matrix_q,3,0.456);
+        printf_Vec(cut_bezier_matrix_q,10);
+
+        Points_Iterator__1DList cut_o1=Points_Iterator__1DList((new var[8]),2,4);
+        Points_Iterator__1DList cut_o2=Points_Iterator__1DList((new var[8]),2,4);
+
+        cut_Bezier__ByMatrix(cut_o1,cut_o2,ps2,cut_bezier_matrix_q);
+        
+        printf_Points(cut_o1);
+        printf_Points(cut_o2);
+
+        calc_BezierCtrlPoints__Coefficients(cut_o1,ps1);
+        printf_Points(cut_o1);
 
     }
 }
@@ -242,7 +260,6 @@ namespace Test_Vector{
         delete temp1;
         delete vec_zero;
         delete vec_zero__f;
-
     }
 }
 

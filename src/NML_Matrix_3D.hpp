@@ -429,7 +429,7 @@ namespace NML{
         
         var*& act_Matrix3D__Reflect__Collinear (const _M3d_Act_Fnc__Easy& act, var*& out, var normal_x, var normal_y, var normal_z){
             var m=normal_x*normal_x+normal_y*normal_y+normal_z*normal_z;
-            if(!check_Equal(1,m)){
+            if(!(check_Equal(1,m)||check_Zero(m))){
                 m=1/sqrt(m);
                 return act_Matrix3D__Reflect(act,out,normal_x*m,normal_y*m,normal_z*m);
             }

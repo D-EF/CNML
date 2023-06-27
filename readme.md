@@ -33,44 +33,109 @@
 
 ---
 
-## 部分命名解释和缩写
+## 部分命名解释和缩写规范
+
 ### 名词
-  * NML     : 库的名字( Nittle Math Library )
-  * vec     : 向量 ( vector )
-  * mat     : 矩阵 ( matrix )
-  * m2d     : 2D矩阵 ( matrix two dimensional )
-  * m3d     : 3D矩阵 ( matrix three dimensional )
-  * det     : 行列式 ( determinant )
-  * u       : u 坐标 (水平坐标)
-  * v       : v 坐标 (垂直坐标)
-  * quat    : 四元数 ( quaternion )
+* NML      : 库的名字( Nittle Math Library )
+* idx      : 索引/下标 ( index )
+* vec      : 向量 ( vector )
+* mat      : 矩阵 ( matrix )
+* m2d      : 2D矩阵 ( matrix two dimensional )
+* m3d      : 3D矩阵 ( matrix three dimensional )
+* det      : 行列式 ( determinant )
+* u        : u 坐标 (水平坐标)
+* v        : v 坐标 (垂直坐标)
+* quat     : 四元数 ( quaternion )
+* square   : 平方, 平方曲线(抛物线), 2阶贝塞尔曲线
+* cubic    : 立方, 立方曲线, 3阶贝塞尔曲线
 
 ### 动词和动词短语
-  * get              : 获取属性
-  * dot              : 在向量运算中表示向量点乘
-  * cross            : 在向量运算中表示叉乘
-  * mapping          : 映射为
-  * clac             : 计算求值
-  * setup            : 执行装载操作 (初始化为)
-  * transformation   : 矩阵基本变换
-  * transform        : 矩阵线性变换
+* get              : 获取属性
+* dot              : 在向量运算中表示向量点乘
+* cross            : 2d/3d向量叉乘, 四元数乘法
+* mapping          : 映射为
+* calc             : 计算求值
+* setup            : 执行装载操作 (初始化为)
+* transformation   : 矩阵基本变换 
+* transform        : 矩阵线性变换 
+* sample           : 采样点 
 
+### 函数形参中的特殊名词
+* out     : 输出对象, 作为复杂数据的输出
+* t       : 插值/采样点 时 使用的抽象单位时间参数 取值范围为 \[0~1\]
+
+### 函数形参和实参
+* 函数形参名前带下划线表示该参数为可选参数
+* 所有函数禁止使用和其他参数相同指向的 **out**
+  
 ---
 
 ## 部分数据结构说明
 * 绝大部分数据结构都使用线性结构的数组表示
+
   ### 数值类型
-  * 宏 **\_\_NML_VALUE_TYPE\_\_** 定义了全局中使用的基本类型,默认为单浮点(float);   
-  命名空间 NML 中所有数值的类型都使用 **var** 表示
-    ```c++
-    #ifndef __NML_VALUE_TYPE__
-        #define __NML_VALUE_TYPE__ float
-    #endif
-    
-    namespace NML{
-      typedef __NML_VALUE_TYPE__ var;
-    }
-    ```
+    * 宏 **\_\_NML_VALUE_TYPE\_\_** 定义了全局中使用的基本类型,默认为单浮点(float);   
+
+    * 命名空间 NML 中所有数值的类型都使用 **var** 表示
+    * 命名空间 NML 中的 通用下标类型为 **Idx**
+    * 命名空间 NML::Matrix_3D 和 NML::Matrix_2D 中下标类型为 **Idx_VM**
+    * 命名空间 NML 中的 表示曲线为n阶, 帕斯卡三角第n层, n维度 使用 **Idx_Algebra**
+        ```c++
+
+        #ifndef __NML_VALUE_TYPE__
+            /** @brief NML使用的基本数据类型 */
+            #define __NML_VALUE_TYPE__ float
+        #endif
+
+        #ifndef __NML_VECTOR_INDEX_TYPE__
+            /** @brief NML使用的向量和矩阵下标类型 */
+            #define __NML_VECTOR_MATRIX_INDEX_TYPE__ char
+        #endif
+
+        #ifndef __NML_INDEX_TYPE__
+            /** @brief 通用下标类型 */
+            #define __NML_INDEX_TYPE__ int
+        #endif
+
+        #ifndef __NML_ALGEBRA_INDEX_TYPE__
+            /** @brief 算数下标类型 */
+            #define __NML_ALGEBRA_INDEX_TYPE__ char
+        #endif
+
+        namespace NML{
+            /** @brief 基本数据类型 */
+            typedef __NML_VALUE_TYPE__ var;
+            /** @brief 通用下标类型 */
+            typedef __NML_INDEX_TYPE__ Idx;
+            /** @brief 向量和矩阵的下标类型 */
+            typedef __NML_VECTOR_MATRIX_INDEX_TYPE__ Idx_VM;
+            /** @brief 算数下标类型 */
+            typedef __NML_ALGEBRA_INDEX_TYPE__ Idx_Algebra;
+        }
+        ```
+
+
+  ### 点云
+    * points 点云的坐标集合; 可选使用一维数组和二维数组存储;
+    * 点云迭代器基类
+        ``` cpp
+            /**
+             * @brief 点迭代器
+             */
+            class Points_Iterator{
+                public:
+                void *data;
+                Idx points_length;
+                Idx_Algebra dimensional;
+                Points_Iterator(){}
+                Points_Iterator(Idx_Algebra dimensional, Idx points_length):points_length(points_length), dimensional(dimensional){}
+                Points_Iterator(void *data, Idx_Algebra dimensional, Idx points_length):data(data), points_length(points_length), dimensional(dimensional){}
+                // virtual var* operator [] (int v){return (var*)data;}
+                virtual var* operator[](int v) = 0; 
+                virtual void free_Data (){}
+            };
+        ```
+    * 使用两种迭代器类 Points_Iterator__1DList, Points_Iterator__2DList 对一维数组或二维数组的点云数据进行操作
 
   ### 矩阵
   * *矩阵使用行优先展开的数值数组*

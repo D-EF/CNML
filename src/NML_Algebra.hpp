@@ -1,7 +1,7 @@
 /*!
  * @Description: 数与代数 运算相关
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-21 02:54:37
+ * @LastEditTime: 2023-06-26 15:54:42
  */
 
 #ifndef __NML_ALGEBRA__
@@ -23,18 +23,18 @@ namespace NML{
         /**
          * @brief 最后一次演算的一层帕斯卡三角数组; next 指向第零层(_G_PASCALS_TRIANGLE)
          */
-        extern Pascals_Triangle_Line *_last_clac_pascals_triangle;
+        extern Pascals_Triangle_Line *_last_calc_pascals_triangle;
 
         /**
          * @brief 演算帕斯卡三角
          * @param n 目标演算到第几层
-         * @return 最后一次演算结果将保存到 _last_clac_pascals_triangle 上;
+         * @return 最后一次演算结果将保存到 _last_calc_pascals_triangle 上;
          */
         Pascals_Triangle_Line *_calc_PascalsTriangle(Idx_Algebra n);
 
         /**
          * @brief 获取帕斯卡三角的一行数据
-         * @param n 第n阶帕斯卡三角的一行数据 (数据长度为n的一行帕斯卡三角)
+         * @param n 第n行帕斯卡三角的一行数据 (数据长度为n+1的一行帕斯卡三角)
          * @return 返回数据长度为n的帕斯卡三角的一行数据
          */
         Pascals_Triangle_Line* get_PascalsTriangleLine(Idx_Algebra n);
@@ -46,7 +46,7 @@ namespace NML{
          * @param length_coefficients coefficients 的长度
          * @return 返回导数的各次幂的系数 [1, dt^1, dt^2, dt^3, ...] 长度会比形参少 1
          */
-        var*& clac_Derivative__OneUnitaryRealParameterFunction(var *&out,var *coefficients,Idx_Algebra length_coefficients);
+        var*& calc_Derivative__OneUnitaryRealParameterFunction(var *&out,var *coefficients,Idx_Algebra length_coefficients);
             // 一元多次函数:
             //         coefficients.length
             //  F(t) = ∑ t^i*c[i]
@@ -56,14 +56,10 @@ namespace NML{
          * @brief 解2元一次方程   
          *  z1 + o1*x = z2 + o2*y;   
          *  z3 + o3*x = z4 + o4*y;   
-         * @param  out { x , y }
-         * @return 修改并返回 out
+         * @param  out 输出对象{ x , y }
+         * @return 返回计算状态:{ 0: 正常相交, 1:无解(平行), 2无限解(重合) } 
          */
-        inline var *&calc_RootsOfSquare(var *&out, var z1, var o1, var z2, var o2, var z3, var o3, var z4, var o4){
-            out[0]=(z2*o4 + o2*z3 - z4*o2 - z1*o4) / (o1*o4 - o2*o3);
-            out[1]=(z3 + o3*out[0] - z4) / o4;
-            return out;
-        }
+        Idx_Algebra calc_RootsOfSquare(var *&out, var z1, var o1, var z2, var o2, var z3, var o3, var z4, var o4);
 
         /** 
          * @brief 解一元三次方程, ax^3+bx^2+cx+d=0

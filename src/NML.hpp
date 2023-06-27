@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-21 18:25:33
+ * @LastEditTime: 2023-06-28 03:39:42
  * @Description: Nittle Math Library 简单数学库
  * 
  * @Copyright (c) 2023 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
@@ -56,7 +56,7 @@ namespace NML{
     typedef __NML_VECTOR_MATRIX_INDEX_TYPE__ Idx_VM;
     /** @brief 算数下标类型 */
     typedef __NML_ALGEBRA_INDEX_TYPE__ Idx_Algebra;
-
+    /** @brief 默认容差 */
     extern const var NML_TOLERANCE;
     
     /** 三个坐标轴 */
@@ -130,7 +130,7 @@ namespace NML{
     };
 
     /**
-     * 点迭代器
+     * @brief 点云数据访问器
      */
     class Points_Iterator{
         public:
@@ -138,8 +138,8 @@ namespace NML{
         Idx points_length;
         Idx_Algebra dimensional;
         Points_Iterator(){}
-        Points_Iterator(Idx_Algebra dimensional,Idx points_length):points_length(points_length),dimensional(dimensional){}
-        Points_Iterator(void *data, Idx_Algebra dimensional, Idx points_length):data(data),points_length(points_length),dimensional(dimensional){}
+        Points_Iterator(Idx_Algebra dimensional, Idx points_length):points_length(points_length), dimensional(dimensional){}
+        Points_Iterator(void *data, Idx_Algebra dimensional, Idx points_length):data(data), points_length(points_length), dimensional(dimensional){}
         // virtual var* operator [] (int v){return (var*)data;}
         virtual var* operator[](int v) = 0; 
         virtual void free_Data (){}
@@ -147,8 +147,8 @@ namespace NML{
     
     class Points_Iterator__2DList :virtual public Points_Iterator{
         public:
-        Points_Iterator__2DList(var** data, Idx_Algebra dimensional,Idx points_length):Points_Iterator(data,dimensional,points_length){}
-        Points_Iterator__2DList(Idx_Algebra dimensional,Idx points_length):Points_Iterator(dimensional,points_length){
+        Points_Iterator__2DList(var** data, Idx_Algebra dimensional, Idx points_length):Points_Iterator(data, dimensional, points_length){}
+        Points_Iterator__2DList(Idx_Algebra dimensional, Idx points_length):Points_Iterator(dimensional, points_length){
             var** d=new var*[points_length];
             for(int i=0;i<points_length;++i){
                 d[i]=new var[dimensional];
@@ -159,7 +159,7 @@ namespace NML{
             for(int i=0;i<points_length;++i){
                 delete ((var**)data)[i];
             }
-            delete data;
+            delete (var**)data;
             data=0;
         }
         var* operator[](int v) override{return ((var**)data)[v];}
@@ -167,9 +167,9 @@ namespace NML{
 
     class Points_Iterator__1DList :virtual public Points_Iterator{
         public:
-        Points_Iterator__1DList(var* data, Idx_Algebra dimensional,Idx points_length):Points_Iterator(data,dimensional,points_length){}
-        Points_Iterator__1DList(Idx_Algebra dimensional, Idx points_length):Points_Iterator(new var[dimensional*points_length],dimensional,points_length){}
-        void free_Data(){delete data;}
+        Points_Iterator__1DList(var* data, Idx_Algebra dimensional, Idx points_length):Points_Iterator(data, dimensional, points_length){}
+        Points_Iterator__1DList(Idx_Algebra dimensional, Idx points_length):Points_Iterator(new var[dimensional*points_length], dimensional, points_length){}
+        void free_Data(){delete (var*)data;}
         var* operator[](int v) override{return ((var*)data)+(v*dimensional);}
     };
 
@@ -194,6 +194,13 @@ namespace NML{
      */
     void printf_Vec(const var* val, Idx length);
     inline void printf_Vec(const Values val){printf_Vec(val.data,val.length);}
+
+    /**
+     * @brief 打印点云数据
+     * @param points    点云数据访问器
+     */
+    void printf_Points(Points_Iterator &points);
+
 
     /**
      * @brief 判断值是否相等(容差)
@@ -246,6 +253,8 @@ namespace NML{
      * @param val_right     右侧数据
      */
     void sum(var*& out, Idx length, var*& val_left, var*& val_right);
+
+    var sum(var* start,Idx length);
     
     /**
      * @brief 数据数值 差

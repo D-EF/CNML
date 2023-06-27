@@ -47,6 +47,14 @@ namespace NML{
         printf("]\n");
     }
 
+    void printf_Points(Points_Iterator &points){
+        printf("{\n");
+        for(Idx i=0;i<points.points_length;i++){
+            printf_Vec(points[i],points.dimensional);
+        }
+        printf("}\n");
+    }
+
     bool check_Equal(Idx length, var*& val_left, var*& val_right, var _tolerance){
         for(Idx i=0;i<length;++i){
             if(!check_Equal(val_left[i], val_right[i], _tolerance))return false;
@@ -66,6 +74,14 @@ namespace NML{
         for(Idx i=0;i<length;++i){
             out[i]=val_left[i]+val_left[i];
         }
+    }
+
+    var sum(var* start,Idx length){
+        var rtn=0;
+        for(int i=0;i<length;++i){
+            rtn+=start[i];
+        }
+        return rtn;
     }
 
     void dif(var*& out, Idx length, var*& val_left, var*& val_right){

@@ -286,7 +286,7 @@ namespace NML{
 
         var*& act_Matrix2D__Reflect__Collinear(const _M2d_Act_Fnc& act, var*& out, var normal_x, var normal_y){
             var m=normal_x*normal_x+normal_y*normal_y;
-            if(!check_Equal(1,m)){
+            if(!(check_Equal(1,m)||check_Zero(m))){
                 m=1/sqrt(m);
                 return act_Matrix2D__Reflect(act,out,normal_x*m,normal_y*m);
             }
@@ -295,7 +295,7 @@ namespace NML{
 
         var*& act_Matrix2D__Shear__Collinear(const _M2d_Act_Fnc& act, var*& out, var axis_x, var axis_y, var k){
             var m=axis_x*axis_x+axis_y*axis_y;
-            if(!check_Equal(1,m)){
+            if(!(check_Equal(1,m)||check_Zero(m))){
                 m=1/sqrt(m);
                 return act_Matrix2D__Shear(act,out,axis_x*m,axis_y*m,k);
             }
