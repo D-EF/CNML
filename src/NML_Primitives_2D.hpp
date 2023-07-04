@@ -1,7 +1,7 @@
 /*!
  * @Description: 2D 图元 相关内容
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-07-05 03:44:16
+ * @LastEditTime: 2023-07-05 03:49:40
  */
 
 #ifndef __NML_PRIMITIVES_2D__
@@ -48,6 +48,7 @@ namespace NML{
                 var axis_x; var axis_y; var k;
                 var*& transform(var*& out){ return Matrix_2D::transform_Matrix2D__Shear (out, axis_x, axis_y, k); }
         };
+        
 
         /** @brief 一条线段图元数据 */
         typedef struct Line_Data {
@@ -89,17 +90,10 @@ namespace NML{
             var cx;
             /** @brief 圆心 y 坐标 */
             var cy;
-            /** @brief 主要半径计算参数 */
-            var r;
-            /** @brief 附加的半径计算参数 */
-            var r_ex;
-
-            var &rx=r;
-            var &ry=r_ex;
-            
-            var &ry=r_ex;
-            var &ry=r_ex;
-            
+            /** @brief 局部水平方向半径 */
+            var rx;
+            /** @brief 局部垂直方向半径 */
+            var ry;
             /** @brief 弧线的端点 0 相对圆心的向量 与 x 正方向 的夹角弧度 */
             var theta_0;
             /** @brief 弧线的端点 1 相对圆心的向量 与 x 正方向 的夹角弧度 */
@@ -193,7 +187,6 @@ namespace NML{
              * @return 修改 out 并返回
              */
             virtual Points_Iterator*& load_Polyon(Points_Iterator *&out) = 0;
-
 
         };
 
