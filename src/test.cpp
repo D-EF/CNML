@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-20 00:58:11
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-28 04:06:37
+ * @LastEditTime: 2023-06-29 09:53:58
  * @FilePath: \CNML\src\test.cpp
  * @Description: 
  * @
@@ -165,6 +165,7 @@ namespace Test_Algebra_Bezier{
 
         calc_BezierCtrlPoints__Coefficients(cut_o1,ps1);
         printf_Points(cut_o1);
+        
 
     }
 }
@@ -933,5 +934,21 @@ namespace Test_Quaternion{
         printf_M3dCss(demo_m3d_euler_q_tgt);
         printf("transform: rotate3d(%f, %f, %f, %frad);", axis[0], axis[1], axis[2], angle);
 
+        delete test_quat1;
+        delete test_quat2;
+        delete test_quat3;
+        delete test_quat4;
+        delete test_quat5;
+        delete test_quat6;
+        delete test_quat7;
+        delete test_quat8;
+        delete test_quat9;
+        delete vec_routate_axis;
+        delete demo_euler;
+        delete test_euler;
+        delete demo_m3d_euler;
+        delete demo_quat1;
+        delete demo_quat2;
+        delete unit__quat;
     }
 }

@@ -222,7 +222,6 @@ namespace NML{
         // end  * transform * end 
 
 
-        
         void set_NMLConfig__using_m2d_type(M2D_Type type){
             if(_using_m2d_type==type)return;
             _using_m2d_type=type;
@@ -343,7 +342,6 @@ namespace NML{
                      0,    0
                 );
         }
-
 
         __NML__INLINE__M2D_ACTION_FUNCTION var*& act_Matrix2D__Reflect(const _M2d_Act_Fnc& act, var*& out, var normal_x, var normal_y){
             return act(out,

@@ -1,7 +1,7 @@
 /*!
  * @Description: 数与代数 运算相关
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-28 04:22:09
+ * @LastEditTime: 2023-06-28 10:31:13
  */
 
 #include "NML_Bezier.hpp"
@@ -88,6 +88,7 @@ namespace NML{
             delete temp;
             return out;
         }
+        
 
         var*& sample_Bezier__Coefficients(var *&out, Points_Iterator& coefficients, var t){
             Idx_Algebra &dimensional=coefficients.dimensional;
@@ -102,6 +103,7 @@ namespace NML{
             }
             return out;
         }
+
 
         var*& calc_CutBezierMatrixQ(var*& out, Idx_Algebra n, var t){
             if(Algebra::_last_calc_pascals_triangle->n<n){
@@ -152,10 +154,12 @@ namespace NML{
             return out;
         }
 
+
         void cut_Bezier__ByMatrix(Points_Iterator& out0, Points_Iterator& out1, Points_Iterator& points, var*& cut_matrix_q){
             cut_Bezier__ByMatrix__p0pt(out0,points,cut_matrix_q);
             cut_Bezier__ByMatrix__ptp1(out1,points,cut_matrix_q);
         }
+
         
         Points_Iterator& cut_Bezier__ByMatrix__p0pt(Points_Iterator& out, Points_Iterator& points, var*& cut_matrix_q){
             Idx_Algebra &dimensional=points.dimensional;
@@ -175,6 +179,7 @@ namespace NML{
             }
             return out;
         }
+
 
         Points_Iterator& cut_Bezier__ByMatrix__ptp1(Points_Iterator& out, Points_Iterator& points, var*& cut_matrix_q){
             Idx_Algebra &dimensional=points.dimensional;
@@ -199,26 +204,25 @@ namespace NML{
             return out;
         }
 
+
         Points_Iterator& calc_BezierCtrlPoints__Coefficients(Points_Iterator& out, Points_Iterator& coefficients){
             Idx &length=coefficients.points_length;
             Idx_Algebra &dimensional=coefficients.dimensional;
             int *m=get_BezierCalcMatrix(length-1);
-            var *temp=new var[dimensional], *cacling_tgt;
+            var *temp=new var[dimensional], *calcing_tgt;
             Idx index_m=0;
-            for(Idx i=0;i<length;++i){
-                std::fill_n(temp,dimensional,0);
+            for(Idx i=0;i<length;++i,++index_m){
+                std::copy(coefficients[i],coefficients[i]+dimensional,temp);
                 for(var j=0;j<i;++j,++index_m){
-                    cacling_tgt=coefficients[j];
+                    calcing_tgt=out[j];
                     for(Idx_Algebra d=0;d<dimensional;++d){
-                        temp[d]-=cacling_tgt[d]*m[index_m];
+                        temp[d]-=calcing_tgt[d]*m[index_m];
                     }
                 }
-                var *line=out[i];
+                var *calcing_tgt=out[i];
                 for(Idx_Algebra d=0;d<dimensional;++d){
-                    line[d]-=cacling_tgt[d]*m[index_m];
+                    calcing_tgt[d]=temp[d]/m[index_m];
                 }
-                // todo
-                // std::copy(temp,temp+dimensional,out[i]);
             }
             return out;
         }
