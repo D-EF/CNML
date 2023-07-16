@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-29 20:39:03
+ * @LastEditTime: 2023-07-05 20:00:35
  * @Description: Nittle Math Library 简单数学库
  * 
  * @Copyright (c) 2023 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
@@ -139,16 +139,22 @@ namespace NML{
         Idx_Algebra dimensional;
         Points_Iterator(){}
         Points_Iterator(Idx_Algebra dimensional, Idx points_length):points_length(points_length), dimensional(dimensional){}
-        Points_Iterator(void *data, Idx_Algebra dimensional, Idx points_length):data(data), points_length(points_length), dimensional(dimensional){}
-        // virtual var* operator [] (int v){return (var*)data;}
+        Points_Iterator(void *data, Idx_Algebra dimensional, Idx points_length):data(data), points_length(points_length), dimensional(dimensional){
+            install_Data(dimensional,points_length); 
+        }
+        /** @brief 用下标 取点 */
         virtual var* operator[](int v) = 0; 
-        virtual void free_Data (){}
+        /** @brief 装配 new data */
+        virtual void install_Data(Idx_Algebra dimensional, Idx points_length) = 0; 
+        /** @brief 释放data数据 */
+        virtual void free_Data () = 0;
     };
     
     class Points_Iterator__2DList :virtual public Points_Iterator{
         public:
         Points_Iterator__2DList(var** data, Idx_Algebra dimensional, Idx points_length):Points_Iterator(data, dimensional, points_length){}
-        Points_Iterator__2DList(Idx_Algebra dimensional, Idx points_length):Points_Iterator(dimensional, points_length){
+        Points_Iterator__2DList(Idx_Algebra dimensional, Idx points_length):Points_Iterator(dimensional, points_length){}
+        void install_Data(Idx_Algebra dimensional, Idx points_length){
             var** d=new var*[points_length];
             for(int i=0;i<points_length;++i){
                 d[i]=new var[dimensional];
@@ -169,7 +175,8 @@ namespace NML{
         public:
         Points_Iterator__1DList(var* data, Idx_Algebra dimensional, Idx points_length):Points_Iterator(data, dimensional, points_length){}
         Points_Iterator__1DList(Idx_Algebra dimensional, Idx points_length):Points_Iterator(new var[dimensional*points_length], dimensional, points_length){}
-        void free_Data(){delete (var*)data;}
+        void install_Data(Idx_Algebra dimensional, Idx points_length){ data=new var[dimensional*points_length]; }
+        void free_Data(){delete (var*)data; data=0;}
         var* operator[](int v) override{return ((var*)data)+(v*dimensional);}
     };
 

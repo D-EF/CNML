@@ -5,8 +5,57 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        body *{
+            position: absolute;
+            transform-style: preserve-3d;
+        }
+        .box{
+            transform:translateX(-50px) translateY(200px);
+        }
+        .box_face{
+            border: 2px #f00 solid;
+            backface-visibility: inherit;
+            width: 100px;
+            height: 100px;
+        }
+
+        .front    {background-color: #f004; transform: translateZ(50px);}
+        .back     {background-color: #0f04; transform: rotateY(180deg) translateZ(50px);}
+        .right    {background-color: #00f4; transform: rotateY(90deg) translateZ(50px);}
+        .left     {background-color: #ff04; transform: rotateY(-90deg) translateZ(50px);}
+        .top      {background-color: #0ff4; transform: rotateX(90deg) translateZ(50px);}
+        .bottom   {background-color: #f0f4; transform: rotateX(-90deg) translateZ(50px);}
+
+        .camera{
+            perspective-origin:0 0;
+            left: 50%;
+            top: 50%;
+        }
+        .viewport{
+            width: 100%;
+            height: 100%;
+            perspective: 500px;
+        }
+        .target{
+            transform: rotateX(0deg) translateZ(-600px) rotateY(15deg);
+        }
+    </style>
 </head>
 <body>
-    
+    <div class="viewport">
+        <div class="camera">
+            <div class="target">
+                <div class="box">
+                    <div class="box_face front "></div>
+                    <div class="box_face back  "></div>
+                    <div class="box_face right "></div>
+                    <div class="box_face left  "></div>
+                    <div class="box_face top   "></div>
+                    <div class="box_face bottom"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
