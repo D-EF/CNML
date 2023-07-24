@@ -1,7 +1,7 @@
 # CNML 
 * **Nittle Math Library 的 c++ 实现**   
 开发中   
-文档最后编辑于 2023-05-06
+文档最后编辑于 2023-07-06
 ---
 
 ## 命名规范
@@ -25,6 +25,10 @@
     ```
     index_mat__uv //矩阵对应uv坐标的物理下标
     ```
+  * 私有成员, 可选参数; 以下划线开始
+    ```
+    bool check_Equal(var v1, var v2, var _tolerance=NML_TOLERANCE);
+    ```
 ### 函数
   * 小驼峰的动词单词动词短语 + 下划线 + 大驼峰
     ```
@@ -36,29 +40,44 @@
 ## 部分命名解释和缩写规范
 
 ### 名词
-* NML      : 库的名字( Nittle Math Library )
-* idx      : 索引/下标 ( index )
-* vec      : 向量 ( vector )
-* mat      : 矩阵 ( matrix )
-* m2d      : 2D矩阵 ( matrix two dimensional )
-* m3d      : 3D矩阵 ( matrix three dimensional )
-* det      : 行列式 ( determinant )
-* u        : u 坐标 (水平坐标)
-* v        : v 坐标 (垂直坐标)
-* quat     : 四元数 ( quaternion )
-* square   : 平方, 平方曲线(抛物线), 2阶贝塞尔曲线
-* cubic    : 立方, 立方曲线, 3阶贝塞尔曲线
+* NML            : 库的名字( Nittle Math Library )
+* idx            : 索引/下标 ( index )
+* vec            : 向量 ( vector )
+* mat            : 矩阵 ( matrix )
+* m2d            : 2D矩阵 ( matrix two dimensional )
+* m3d            : 3D矩阵 ( matrix three dimensional )
+* det            : 行列式 ( determinant )
+* u              : u 坐标 (水平坐标)
+* v              : v 坐标 (垂直坐标)
+* quat           : 四元数 ( quaternion )
+* square         : 平方, 平方曲线(抛物线), 2阶贝塞尔曲线
+* cubic          : 立方, 立方曲线, 3阶贝塞尔曲线
+* girth          : 周长
+* polygon        : 多边形
+* sample size    : 采样点个数 (采样次数)
+* line           : 线段
+* race           : 矩形
+* arc            : 圆弧
+* ellipse arc    : 椭圆弧
+* bezier         : 贝塞尔曲线
+* AABB           : 轴对齐包围盒 ( Axis-aligned bounding box )
+* intersection   : 交点
+* inside         : 表示状态  - 在内部
+* had            : 表示状态  - 有可用的缓存值
 
 ### 动词和动词短语
-* get              : 获取属性
-* dot              : 在向量运算中表示向量点乘
-* cross            : 2d/3d向量叉乘, 四元数乘法
-* mapping          : 映射为
-* calc             : 计算求值
-* setup            : 执行装载操作 (初始化为)
-* transformation   : 矩阵基本变换 
-* transform        : 矩阵线性变换 
-* sample           : 采样点 
+* get                : 获取属性
+* dot                : 在向量运算中表示向量点乘
+* cross              : 2d/3d向量叉乘, 四元数乘法
+* mapping            : 映射为
+* calc               : 计算求值
+* setup              : 执行装载操作 (初始化为)
+* transformation     : 矩阵基本变换 
+* transform          : 矩阵线性变换 
+* sample             : 采样点 
+* check              : 检查 
+* load               : 加载 (计算值保存到成员变量上)
+* give up            : 淘汰 (淘汰缓存)
 
 ### 函数形参中的特殊名词
 * out     : 输出对象, 作为复杂数据的输出
@@ -117,11 +136,11 @@
 
   ### 点云
     * points 点云的坐标集合; 可选使用一维数组和二维数组存储;
-    * 点云迭代器基类
+    * 点云访问器基类
         ``` cpp
             /**
-             * @brief 点迭代器
-             */
+            * @brief 点云数据访问器
+            */
             class Points_Iterator{
                 public:
                 void *data;
@@ -129,10 +148,15 @@
                 Idx_Algebra dimensional;
                 Points_Iterator(){}
                 Points_Iterator(Idx_Algebra dimensional, Idx points_length):points_length(points_length), dimensional(dimensional){}
-                Points_Iterator(void *data, Idx_Algebra dimensional, Idx points_length):data(data), points_length(points_length), dimensional(dimensional){}
-                // virtual var* operator [] (int v){return (var*)data;}
+                Points_Iterator(void *data, Idx_Algebra dimensional, Idx points_length):data(data), points_length(points_length), dimensional(dimensional){
+                    install_Data(dimensional,points_length); 
+                }
+                /** @brief 用下标 取点 */
                 virtual var* operator[](int v) = 0; 
-                virtual void free_Data (){}
+                /** @brief 装配 new data */
+                virtual void install_Data(Idx_Algebra dimensional, Idx points_length) = 0; 
+                /** @brief 释放data数据 */
+                virtual void free_Data () = 0;
             };
         ```
     * 使用两种迭代器类 Points_Iterator__1DList, Points_Iterator__2DList 对一维数组或二维数组的点云数据进行操作

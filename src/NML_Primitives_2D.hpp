@@ -1,7 +1,7 @@
 /*!
  * @Description: 2D 图元 相关内容
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-07-05 03:49:40
+ * @LastEditTime: 2023-07-13 19:23:34
  */
 
 #ifndef __NML_PRIMITIVES_2D__
@@ -48,6 +48,9 @@ namespace NML{
                 var axis_x; var axis_y; var k;
                 var*& transform(var*& out){ return Matrix_2D::transform_Matrix2D__Shear (out, axis_x, axis_y, k); }
         };
+
+
+
         
 
         /** @brief 一条线段图元数据 */
@@ -103,71 +106,70 @@ namespace NML{
         } Ellipse_Arc_Data;
 
 
-        // todo
-        class Primitives_2D{
+        /** @brief AABB 轴对齐包围盒 min={x0, y0}; max={x1, y1}; */
+        typedef Line_Data AABB;
 
-            /** 
-             * @brief 局部坐标 to 世界坐标 的 变换矩阵
-             */
+
+
+
+        // todo
+        class Primitive_2D{
+            public:
+            /** @brief 局部坐标 to 世界坐标 的 变换矩阵 */
             var *transform_matrix;
 
-            /** 
-             * @brief 缓存的周长
-             */
+            /** @brief 缓存的周长 */
             var _girth;
 
-            /** 
-             * @brief 缓存的 aabb 数据; min={x0, y0}; max={x1, y1};
-             */
-            Line_Data aabb;
+            /** @brief 缓存的 aabb 数据; */
+            AABB loc_aabb;
+
+            /** @brief 缓存的图元生成的多边形, points_length 将作为采样次数 */
+            Points_Iterator *polygon;
 
 
-            /**
-             * @brief 表示缓存的 aabb 是否可用
-             */
-            bool had_aabb;
+            /** @brief 表示缓存的 aabb 是否可用 */
+            bool had__loc_aabb;
 
-            /**
-             * @brief 表示缓存的 周长 是否可用
-             */
-            bool had_girth;
+            /** @brief 表示缓存的 周长 是否可用 */
+            bool had__girth;
 
+            /** @brief 表示缓存的 多边形 是否可用 */
+            bool had__polygon;
 
-
-            /**
-             * @brief 淘汰缓存值, 使缓存数据标志置否
-             */
-            void giveUp_Cache(){
-                had_aabb    = false;
-                had_girth   = false;
-            }
+            /** @brief 表示缓存的 三角面 是否可用 */
+            bool had__triangles_mesh;
 
 
-            /** 
-             * @brief 获取周长
-             * @return 缓存可用则返回缓存值, 不可用则重新计算
-             */
-            var get_Girth(){
-                if(!had_girth){
-                    _girth= calc_Girth();
-                    had_girth = true;
-                }
-                return _girth;
+            /** @brief 淘汰所有缓存值, 使缓存数据标志置否 */
+            void giveUp_AllCache(){
+                had__loc_aabb   =false;
+                had__girth      =false;
+                had__polygon    =false;
+                had__triangles_mesh  =false;
             }
 
             
-            /** 
-             * @brief 获取局部坐标的 aabb 包围盒数据
-             * @return 缓存可用则返回缓存值, 不可用则重新计算
+            /**
+             * @brief 设置生成多边形时的采样次数, 值越高表示精度越高
              */
-            Line_Data get_LocalAABB(){
-                if(!had_girth){
-                    aabb = calc_LocalAABB();
-                    had_aabb = true;
-                }
-                return aabb;
+            Idx set_SampleSize(Idx size){
+                had__polygon=false;
+                polygon->free_Data();
+                polygon->install_Data(2,size);
             }
 
+            /** 
+             * @brief 获取周长
+             * @return 返回获取周长; 缓存可用则返回缓存值, 不可用则重新计算
+             */
+            var get_Girth();
+            
+            /** 
+             * @brief 获取局部坐标的 AABB 包围盒数据
+             * @return 返回获取局部坐标的 AABB; 缓存可用则返回缓存值, 不可用则重新计算
+             */
+            AABB get_LocalAABB();
 
             /** 
              * @brief 计算周长
@@ -176,18 +178,34 @@ namespace NML{
             virtual var calc_Girth() = 0;
 
             /** 
-             * @brief 计算 aabb 包围盒
-             * @return 返回计算的aabb盒子
+             * @brief 计算局部坐标系的 aabb 包围盒
+             * @return 返回计算的aabb盒
              */
-            virtual Line_Data calc_LocalAABB() = 0;
+            virtual AABB calc_LocalAABB() = 0;
             
             /** 
-             * @brief 加载多边形
-             * @param out   数据输出对象: 多边形的顶点的访问器, 采样次数 = Points_Iterator->points_length
-             * @return 修改 out 并返回
+             * @brief 计算多边形, 修改成员变量 polygon 的内容
+             * @return 返回成员变量 polygon 的引用
              */
-            virtual Points_Iterator*& load_Polyon(Points_Iterator *&out) = 0;
+            virtual Points_Iterator*& load_Polyon() = 0;
 
+        };
+
+
+        class Primitive_2D__Rect: public Primitive_2D{
+
+        };
+        
+        class Primitive_2D__Arc: public Primitive_2D{
+            
+        };
+        
+        class Primitive_2D__Ellipse_Arc: public Primitive_2D{
+            
+        };
+        
+        class Primitive_2D__Polygon: public Primitive_2D{
+            
         };
 
     }

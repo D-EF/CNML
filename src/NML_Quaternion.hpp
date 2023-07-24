@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-05-23 13:48:47
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-26 16:46:56
+ * @LastEditTime: 2023-07-06 20:28:54
  * @FilePath: \cnml\src\NML_Quaternion.hpp
  * @Description: 四元数相关计算.  注: 如无特殊标明,这些函数的参数中的四元数都默认需要单位向量
  */
@@ -158,7 +158,7 @@ namespace NML{
         }
 
         /**
-         * @brief 四元数线性插值采样
+         * @brief 四元数球面线性插值采样
          * @param out         输出对象
          * @param quat_form   初态四元数
          * @param quat_to     终态四元数
