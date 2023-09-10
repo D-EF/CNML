@@ -1,3 +1,14 @@
+/*!
+ * @Author: Darth_Eternalfaith darth_ef@hotmail.com
+ * @Date: 2023-02-28 20:18:33
+ * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
+ * @LastEditTime: 2023-09-09 14:52:40
+ * @FilePath: \cnml\src\NML.cpp
+ * @Description: Nittle Math Library 简单数学库
+ * 
+ * @Copyright (c) 2023 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
+ */
+
 #include "NML.hpp"
 #include <iostream>
 
@@ -104,4 +115,34 @@ namespace NML{
         }
         return out;
     }
+
+
+    
+    // void Points_Iterator::install_Data(Idx_Algebra dimensional, Idx points_length){
+    //     var** d=new var*[points_length];
+    //     for(int i=0;i<points_length;++i){
+    //         d[i]=new var[dimensional];
+    //     }
+    //     data=d;
+    // }
+    
+    // void Points_Iterator::free_Data(){
+    //     for(int i=0;i<points_length;++i){
+    //         delete ((var**)data)[i];
+    //     }
+    //     delete (var**)data;
+    //     data=0;
+    // }
+
+    // var* Points_Iterator::operator[](int v){return ((var**)data)[v];}
+
+
+    // void Points_Iterator__1DList::install_Data(Idx_Algebra dimensional, Idx points_length){ data=new var[dimensional*points_length]; }
+    // void Points_Iterator__1DList::free_Data(){delete (var*)data; data=0;}
+    // var* Points_Iterator__1DList::operator[](int v){return ((var*)data)+(v*dimensional);}
+
+
+    // void Points_Iterator__2DList::install_Data(Idx_Algebra dimensional, Idx points_length){ data=new var[dimensional*points_length]; }
+    // void Points_Iterator__2DList::free_Data(){delete (var*)data; data=0;}
+    // var* Points_Iterator__2DList::operator[](int v) {return ((var*)data)+(v*dimensional);}
 }

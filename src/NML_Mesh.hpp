@@ -1,11 +1,16 @@
 /*!
- * @Description: 2D 图元 相关内容
+ * @Author: Darth_Eternalfaith darth_ef@hotmail.com
+ * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-07-13 21:02:20
+ * @LastEditTime: 2023-09-08 16:42:52
+ * @FilePath: \cnml\src\NML_Mesh.hpp
+ * @Description: 多边形网格
+ * @
+ * @Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
  */
 
-#ifndef __NML_Mesh
-#define __NML_Mesh
+#ifndef __NML_Mesh__
+#define __NML_Mesh__
 
 #include "NML.hpp"
 #include "NML_Matrix_2D.hpp"

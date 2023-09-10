@@ -2,12 +2,13 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-20 00:58:11
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-29 09:53:58
+ * @LastEditTime: 2023-09-09 16:23:20
  * @FilePath: \CNML\src\test.cpp
- * @Description: 
+ * @Description: 单元测试
  * @
  * @Copyright (c) 2023 by ${git_name} ${git_email}, All Rights Reserved. 
  */
+
 #include <iostream>
 #include <chrono>
 #include "NML.hpp"
@@ -134,6 +135,7 @@ namespace Test_Algebra_Bezier{
         };
         Points_Iterator__1DList ps1=Points_Iterator__1DList((new var[8]),2,4);
         Points_Iterator__2DList ps2=Points_Iterator__2DList((dd),2,4);
+        printf_Points(ps2);
         // [2, 3, 6, -7]
         // [5, -6, 18, -16]
 

@@ -1,7 +1,12 @@
 /*!
- * @Description: 向量 Vector 
+ * @Author: Darth_Eternalfaith darth_ef@hotmail.com
+ * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-06 09:50:28
+ * @LastEditTime: 2023-09-08 16:40:23
+ * @FilePath: \cnml\src\NML_Vector.hpp
+ * @Description: 基本向量操作
+ * @
+ * @Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
  */
 
 #ifndef __NML_VECTOR__

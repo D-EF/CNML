@@ -2,7 +2,8 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-07-05 20:00:35
+ * @LastEditTime: 2023-09-09 16:36:34
+ * @FilePath: \cnml\src\NML.hpp
  * @Description: Nittle Math Library 简单数学库
  * 
  * @Copyright (c) 2023 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
@@ -38,10 +39,6 @@
      */
     #define __NML_ALGEBRA_INDEX_TYPE__ char
 #endif
-
-#define __NML__INLINE__M2D_ACTION_FUNCTION inline
-#define __NML__INLINE__M3D_ACTION_FUNCTION inline
-#define __NML__INLINE__QUATERNION_FUNCTION inline
 
 
 #include <Math.h>
@@ -139,9 +136,7 @@ namespace NML{
         Idx_Algebra dimensional;
         Points_Iterator(){}
         Points_Iterator(Idx_Algebra dimensional, Idx points_length):points_length(points_length), dimensional(dimensional){}
-        Points_Iterator(void *data, Idx_Algebra dimensional, Idx points_length):data(data), points_length(points_length), dimensional(dimensional){
-            install_Data(dimensional,points_length); 
-        }
+        Points_Iterator(void *data, Idx_Algebra dimensional, Idx points_length):data(data), points_length(points_length), dimensional(dimensional){}
         /** @brief 用下标 取点 */
         virtual var* operator[](int v) = 0; 
         /** @brief 装配 new data */
@@ -153,7 +148,7 @@ namespace NML{
     class Points_Iterator__2DList :virtual public Points_Iterator{
         public:
         Points_Iterator__2DList(var** data, Idx_Algebra dimensional, Idx points_length):Points_Iterator(data, dimensional, points_length){}
-        Points_Iterator__2DList(Idx_Algebra dimensional, Idx points_length):Points_Iterator(dimensional, points_length){}
+        Points_Iterator__2DList(Idx_Algebra dimensional, Idx points_length):Points_Iterator(dimensional, points_length){install_Data(dimensional,points_length);}
         void install_Data(Idx_Algebra dimensional, Idx points_length){
             var** d=new var*[points_length];
             for(int i=0;i<points_length;++i){

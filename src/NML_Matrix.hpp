@@ -1,7 +1,12 @@
 /*!
- * @Description: 矩阵 Matrix
+ * @Author: Darth_Eternalfaith darth_ef@hotmail.com
+ * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-06-05 17:02:32
+ * @LastEditTime: 2023-09-08 16:40:23
+ * @FilePath: \cnml\src\NML_Matrix.hpp
+ * @Description: 矩阵 Matrix
+ * @
+ * @Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
  */
 
 #ifndef __NML_MATRIX__
