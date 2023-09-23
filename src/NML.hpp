@@ -13,31 +13,28 @@
 #define __NITTLE_MATH_LIBRARY__
 
 #ifndef __NML_VALUE_TYPE__
-    /**
-     * @brief NML使用的基本数据类型
-     */
+    /** @brief NML使用的基本数据类型 */
     #define __NML_VALUE_TYPE__ float
 #endif
 
 #ifndef __NML_VECTOR_INDEX_TYPE__
-    /**
-     * @brief NML使用的向量和矩阵下标类型
-     */
+    /** @brief NML使用的向量和矩阵下标类型 */
     #define __NML_VECTOR_MATRIX_INDEX_TYPE__ char
 #endif
 
 #ifndef __NML_INDEX_TYPE__
-    /**
-     * @brief 通用下标类型
-     */
+    /** @brief 通用下标类型 */
     #define __NML_INDEX_TYPE__ int
 #endif
 
 #ifndef __NML_ALGEBRA_INDEX_TYPE__
-    /**
-     * @brief 算数下标类型
-     */
+    /** @brief 算数下标类型 */
     #define __NML_ALGEBRA_INDEX_TYPE__ char
+#endif
+
+#ifndef __DEFINE_SAMPLE_SIZE_SEED__
+    /** @brief 全局默认采样精度种子 */
+    #define __DEFINE_SAMPLE_SIZE_SEED__ 10
 #endif
 
 
@@ -45,6 +42,7 @@
 #include <iostream>
 
 namespace NML{
+
     /** @brief 基本数据类型 */
     typedef __NML_VALUE_TYPE__ var;
     /** @brief 通用下标类型 */
@@ -76,7 +74,6 @@ namespace NML{
     extern const var &DEG_180;
     extern const var ONE_OVER_THREE;
     extern const var FOUR_OVER_THREE;
-
 
     /**
      * @brief 整形数组链表

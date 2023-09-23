@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-09-08 16:40:23
+ * @LastEditTime: 2023-09-13 18:00:42
  * @FilePath: \cnml\src\NML_Matrix.cpp
  * @Description: 矩阵 Matrix
  * @
@@ -36,7 +36,6 @@ namespace NML{
             }
             return out;
         }
-
 
         var*& setup_Matrix__Resize(var*& out, var*& mat, Idx_VM low_width, Idx_VM new_width, Idx_VM _low_height, Idx_VM _new_height, Idx_VM shift_left, Idx_VM shift_top){
             Idx_VM low_height   = _low_height?_low_height:low_width;
@@ -461,15 +460,6 @@ namespace NML{
                     return setup_Matrix__Inverse__Transformation(out,mat,n);
                 break;
             }
-        }
-
-        var*& transform_Matrix(var*& action_target, Transform_Matrix_Flow*& act_flow_entrance){
-            Transform_Matrix_Flow* doing_act = act_flow_entrance;
-            do{
-                doing_act->act->transform(action_target);
-                doing_act=doing_act->next;
-            }while(doing_act);
-            return action_target;
         }
         
     }

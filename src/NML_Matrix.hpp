@@ -46,6 +46,18 @@ namespace NML{
          * @return 修改并返回 out
          */
         var*& setup_Matrix__Identity(var*& out, Idx_VM width, Idx_VM height);
+        
+        /**
+         * @brief 创建单位矩阵
+         * @param width     矩阵宽度
+         * @param height    矩阵高度
+         * @return 返回一个 new var[width*height]对象
+         */
+        inline var* create_Matrix__Identity(Idx_VM width, Idx_VM height){
+            var* out=new var[width*height];
+            setup_Matrix__Identity(out,width,height);
+            return out;
+        }
 
         /** 
          * @brief 矩阵数据转写   空省位置会保留out原有的内容
@@ -408,39 +420,7 @@ namespace NML{
          * @return 返回是否成功计算逆矩阵
          */
         bool setup_Matrix__Inverse(var*& out, var*& mat, Idx_VM n);
-
-
-
-        // 矩阵变换控制器
         
-        /** @brief 矩阵变换过程的一次动作 */
-        class Transform_Matrix_Action{
-            public:
-            /** 
-             * @brief 对矩阵 进行变换 
-             * @param out 修改的对象
-             * @return 修改并输出 out
-             */
-            virtual var*& transform(var*& out) = 0;
-        };
-
-        /** @brief 矩阵变换的过程 */
-        typedef struct Transform_Matrix_Flow{
-            /** @brief 当前要进行的矩阵变换操作 */
-            Transform_Matrix_Action* act;
-            /** @brief 下一次进行的矩阵变换 */
-            Transform_Matrix_Flow* next;
-        } Transform_Matrix_Flow;
-
-        /** 
-         * @brief 实行矩阵变换
-         * 
-         * @param out  修改的对象
-         * @param act_flow_entrance  矩阵变换过程的入口
-         * @return 修改并返回 out
-         */
-        var*& transform_Matrix(var*& out, Transform_Matrix_Flow*& act_flow_entrance);
-
     }
 }
 
