@@ -4,7 +4,7 @@
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditTime: 2023-09-08 16:40:23
  * @FilePath: \cnml\src\NML_Quaternion.hpp
- * @Description: 四元数相关计算.  注: 如无特殊标明,这些函数的参数中的四元数都默认需要单位向量
+ * @Description: 四元数相关计算.  注: 如无特殊标明, $1些函数的参数中的四元数都默认需要单位向量
  * @
  * @Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
  */
@@ -105,7 +105,7 @@ namespace NML{
          * @param quat 原四元数
          * @return 修改并返回 out
          */
-        var*& setup_Quaternion__Logarithms(var*& out,var*& quat){
+        var*& setup_Quaternion__Logarithms(var*& out, var*& quat){
             var ac=acos(out[qw]);
             out[qx]=quat[qx]*ac;
             out[qy]=quat[qy]*ac;
@@ -121,7 +121,7 @@ namespace NML{
          * @param quat  原四元数
          * @return 修改并返回 out
          */
-        var*& setup_Quaternion__Pow(var*& out,var n,var*& quat);
+        var*& setup_Quaternion__Pow(var*& out, var n, var*& quat);
         
 
         /**
@@ -134,8 +134,8 @@ namespace NML{
         inline var*& setup_Quaternion__Division(var*& out, var*& quat_left, var*& quat_right){
             var temp_data[4];
             var *temp=temp_data;
-            setup_Quaternion__Conjugate(temp,quat_left);
-            return cross_Quat(out,temp,quat_right);
+            setup_Quaternion__Conjugate(temp, quat_left);
+            return cross_Quat(out, temp, quat_right);
         }
 
         /**
@@ -151,8 +151,8 @@ namespace NML{
          * @param quat  标准化的四元数数据
          * @return 修改并返回 out
          */
-        inline var*& calc_Axis__GetQuaternion (var*& out,var*& quat){
-            var k=check_Equal(1,quat[qw])? 1 : 1/sqrt(1.0-quat[qw]*quat[qw]);
+        inline var*& calc_Axis__GetQuaternion (var*& out, var*& quat){
+            var k=check_Equal(1, quat[qw])? 1 : 1/sqrt(1.0-quat[qw]*quat[qw]);
             out[qx]=quat[qx]*k;
             out[qy]=quat[qy]*k;
             out[qz]=quat[qz]*k;
@@ -173,7 +173,7 @@ namespace NML{
          * @brief  计算四元数球面线性插值的缓存数据
          */
         typedef struct SlerpCache{
-            var x,y,z,w,
+            var x, y, z, w,
             omega, one_over__sin_omega;
         } SlerpCache;
         

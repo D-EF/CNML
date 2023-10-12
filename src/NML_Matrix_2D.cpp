@@ -16,7 +16,7 @@ namespace NML{
         //默认使用 3*3 左乘向量 (vector * matrix)
         M2D_Type _using_m2d_type=M2D__3X3_L;
         // 数据类型的数据对应宽高
-            Idx_VM m2d_w=3,m2d_h=3;
+            Idx_VM m2d_w=3, m2d_h=3;
         // 数据类型的数据对应下标
             Idx_VM 
                 mxx=0,   mxy=1,   mxz=2,
@@ -31,28 +31,28 @@ namespace NML{
             _using_m2d_type=type;
             switch (_using_m2d_type){
                 case M2D__2X3:
-                    m2d_w=2,m2d_h=3;
+                    m2d_w=2, m2d_h=3;
                     mxx=0,   mxy=1,    mx_null=0,
                     myx=2,   myy=3,    my_null=0,
                     tx =4,   ty =5,    mi_full=0;
                 break;
 
                 case M2D__3X2:
-                    m2d_w=3,m2d_h=2;
+                    m2d_w=3, m2d_h=2;
                     mxx=0,        myx=1,        tx=2,
                     mxy=3,        myy=4,        ty=5,
                     mx_null =0,   my_null =0,   mi_full=0;
                 break;
 
                 case M2D__3X3_L:
-                    m2d_w=3,m2d_h=3;
+                    m2d_w=3, m2d_h=3;
                     mxx=0,   mxy=1,   mx_null=2,
                     myx=3,   myy=4,   my_null=5,
                     tx =6,   ty =7,   mi_full=8;
                 break;
 
                 case M2D__3X3_R:
-                    m2d_w=3,m2d_h=3;
+                    m2d_w=3, m2d_h=3;
                     mxx=0,        myx=1,        tx=2,
                     mxy=3,        myy=4,        ty=5,
                     mx_null =6,   my_null =7,   mi_full=8;
@@ -89,20 +89,20 @@ namespace NML{
 
         var*& act_Matrix2D__Reflect__Collinear(const _M2d_Act_Fnc& act, var*& out, var normal_x, var normal_y){
             var m=normal_x*normal_x+normal_y*normal_y;
-            if(!(check_Equal(1,m)||check_Zero(m))){
+            if(!(check_Equal(1, m)||check_Zero(m))){
                 m=1/sqrt(m);
-                return act_Matrix2D__Reflect(act,out,normal_x*m,normal_y*m);
+                return act_Matrix2D__Reflect(act, out, normal_x*m, normal_y*m);
             }
-            return act_Matrix2D__Reflect(act,out,normal_x,normal_y);
+            return act_Matrix2D__Reflect(act, out, normal_x, normal_y);
         }
 
         var*& act_Matrix2D__Shear__Collinear(const _M2d_Act_Fnc& act, var*& out, var axis_x, var axis_y, var k){
             var m=axis_x*axis_x+axis_y*axis_y;
-            if(!(check_Equal(1,m)||check_Zero(m))){
+            if(!(check_Equal(1, m)||check_Zero(m))){
                 m=1/sqrt(m);
-                return act_Matrix2D__Shear(act,out,axis_x*m,axis_y*m,k);
+                return act_Matrix2D__Shear(act, out, axis_x*m, axis_y*m, k);
             }
-            return act_Matrix2D__Shear(act,out,axis_x,axis_y,k);
+            return act_Matrix2D__Shear(act, out, axis_x, axis_y, k);
         }
 
 
@@ -131,7 +131,7 @@ namespace NML{
             );
         }
 
-        var*& act_Matrix2D__Scale(const _M2d_Act_Fnc& act, var*& out,var scale_x, var scale_y){
+        var*& act_Matrix2D__Scale(const _M2d_Act_Fnc& act, var*& out, var scale_x, var scale_y){
             return act(out,
                 scale_x,   0,
                 0,         scale_y,
@@ -140,7 +140,7 @@ namespace NML{
         }
 
         var*& act_Matrix2D__Rotate(const _M2d_Act_Fnc& act, var*& out, var theta){
-                var c=cos(theta),s=sin(theta);
+                var c=cos(theta), s=sin(theta);
                 return act(out,
                      c,    s,
                     -s,    c,
@@ -156,7 +156,7 @@ namespace NML{
             );
         }
 
-        var*& act_Matrix2D__Shear(const _M2d_Act_Fnc& act, var*& out,var axis_x, var axis_y, var k){
+        var*& act_Matrix2D__Shear(const _M2d_Act_Fnc& act, var*& out, var axis_x, var axis_y, var k){
             return act(out,
                 1,          k*axis_x,
                 k*axis_y,   1,

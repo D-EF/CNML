@@ -51,13 +51,13 @@ namespace NML{
 
         /** @brief 2D 变换操作 */
         namespace Transform_Action__2D{
-            class Init_Matrix2D : public Matrix::Transform_Matrix_Action{ public: var*& transform(var*& out){ return Matrix_2D::setup_Matrix2D(out,1,0,0,1,0,0); } };
+            class Init_Matrix2D : public Matrix::Transform_Matrix_Action{ public: var*& transform(var*& out){ return Matrix_2D::setup_Matrix2D(out, 1, 0, 0, 1, 0, 0); } };
 
             /** @brief 平移操作 */
             class Translate_Action : public Matrix::Transform_Matrix_Action{ 
                 public: 
                     var translate_x; var translate_y;
-                    Translate_Action(var translate_x=0,var translate_y=0):translate_x(translate_x),translate_y(translate_y){}
+                    Translate_Action(var translate_x=0, var translate_y=0):translate_x(translate_x), translate_y(translate_y){}
                     var*& transform(var*& out){ return Matrix_2D::transform_Matrix2D__Translate (out, translate_x, translate_y); }
             };
 
@@ -81,7 +81,7 @@ namespace NML{
             class Reflect_Action : public Matrix::Transform_Matrix_Action{ 
                 public: 
                     var normal_x; var normal_y;
-                    Reflect_Action(var normal_x=1, var normal_y=0):normal_x(normal_x),normal_y(normal_y){}
+                    Reflect_Action(var normal_x=1, var normal_y=0):normal_x(normal_x), normal_y(normal_y){}
                     var*& transform(var*& out){ return Matrix_2D::transform_Matrix2D__Reflect (out, normal_x, normal_y); }
             };
 
@@ -89,7 +89,7 @@ namespace NML{
             class Shear_Action : public Matrix::Transform_Matrix_Action{ 
                 public: 
                     var axis_x; var axis_y; var k;
-                    Shear_Action(var axis_x, var axis_y, var k):axis_x(axis_x),axis_y(axis_y), k(k){}
+                    Shear_Action(var axis_x, var axis_y, var k):axis_x(axis_x), axis_y(axis_y), k(k){}
                     var*& transform(var*& out){ return Matrix_2D::transform_Matrix2D__Shear (out, axis_x, axis_y, k); }
             };
         }

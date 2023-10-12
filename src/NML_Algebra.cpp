@@ -16,7 +16,7 @@ namespace NML{
         /**
          * @brief 帕斯卡三角数据
         */
-        Pascals_Triangle_Line _G_PASCALS_TRIANGLE={&_G_PASCALS_TRIANGLE,0,new int[3]{0,1,0}+1};
+        Pascals_Triangle_Line _G_PASCALS_TRIANGLE={&_G_PASCALS_TRIANGLE, 0, new int[3]{0, 1, 0}+1};
         Pascals_Triangle_Line *_ROOT__G_PASCALS_TRIANGLE=&_G_PASCALS_TRIANGLE;
 
         /**
@@ -26,8 +26,8 @@ namespace NML{
         
         Pascals_Triangle_Line *_calc_PascalsTriangle(Idx_Algebra n){
             Pascals_Triangle_Line *&rtn=_last_calc_pascals_triangle;
-            while(rtn->n<n){
-                Idx_Algebra length__next=rtn->n+1;
+            while(rtn->size<n){
+                Idx_Algebra length__next=rtn->size+1;
                 rtn->next=new Pascals_Triangle_Line{&_G_PASCALS_TRIANGLE, length__next, new int[length__next+3]+1};
 
                 rtn->next->data[-1]=0;
@@ -45,17 +45,17 @@ namespace NML{
         Pascals_Triangle_Line *get_PascalsTriangleLine(Idx_Algebra n){
             if(n<0)return 0;
             Pascals_Triangle_Line *rtn=_last_calc_pascals_triangle;
-            if(rtn->n<n) rtn=_calc_PascalsTriangle(n);
-            while(rtn->n!=n){
+            if(rtn->size<n) rtn=_calc_PascalsTriangle(n);
+            while(rtn->size!=n){
                 rtn=rtn->next;
             }
             return rtn;
         }
 
 
-        var*& calc_Derivative__OneUnitaryRealParameterFunction(var *&out,var *coefficients,Idx_Algebra length_coefficients){
-            Idx_Algebra l=length_coefficients-1,i;
-            for(i=1;i<=l;++i){
+        var*& calc_Derivative__OneUnitaryRealParameterFunction(var *&out, var *coefficients, Idx_Algebra length_coefficients){
+            Idx_Algebra l=length_coefficients-1, i;
+            for(i=1;  i<=l;  ++i){
                 out[i-1]=coefficients[i]*i;
             }
             return out;

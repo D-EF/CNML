@@ -16,7 +16,7 @@ namespace NML{
         //默认使用 3*3 左乘向量 (vector * matrix)
         M3D_Type _using_m3d_type=M3D__4X4_L;
         // 数据类型的数据对应宽高
-            Idx_VM m3d_w=4,m3d_h=4,m3d_length=16;
+            Idx_VM m3d_w=4, m3d_h=4, m3d_length=16;
         // 数据类型的数据对应下标
             Idx_VM 
                 mxx=0,    mxy=1,    mxz=2,    mxw=3,
@@ -32,7 +32,7 @@ namespace NML{
             _using_m3d_type=type;
             switch (_using_m3d_type){
                 case M3D__3X4:
-                    m3d_w=3,m3d_h=4,m3d_length=12;
+                    m3d_w=3, m3d_h=4, m3d_length=12;
                     mxx=0,   mxy=1,    mxz=2,    mxw=0,
                     myx=3,   myy=4,    myz=5,    myw=0,
                     mzx=6,   mzy=7,    mzz=8,    mzw=0,
@@ -40,7 +40,7 @@ namespace NML{
                 break;
 
                 case M3D__4X3:
-                    m3d_w=4,m3d_h=3,m3d_length=12;
+                    m3d_w=4, m3d_h=3, m3d_length=12;
                     mxx=0,     myx=1,    mzx=2,    tx=3,
                     mxy=4,     myy=5,    mzy=6,    ty=7,
                     mxz=8,     myz=9,    mzz=10,   tz=11,
@@ -48,7 +48,7 @@ namespace NML{
                 break;
 
                 case M3D__4X4_L:
-                    m3d_w=4,m3d_h=4,m3d_length=16;
+                    m3d_w=4, m3d_h=4, m3d_length=16;
                     mxx=0,    mxy=1,    mxz=2,    mxw=3,
                     myx=4,    myy=5,    myz=6,    myw=7,
                     mzx=8,    mzy=9,    mzz=10,   mzw=11,
@@ -56,7 +56,7 @@ namespace NML{
                 break;
 
                 case M3D__4X4_R:
-                    m3d_w=4,m3d_h=4,m3d_length=16;
+                    m3d_w=4, m3d_h=4, m3d_length=16;
                     mxx=0,     myx=1,     mzx=2,     tx=3,
                     mxy=4,     myy=5,     mzy=6,     ty=7,
                     mxz=8,     myz=9,     mzz=10,    tz=11,
@@ -126,42 +126,42 @@ namespace NML{
         
         var*& act_Matrix3D__Reflect__Collinear (const _M3d_Act_Fnc__Easy& act, var*& out, var normal_x, var normal_y, var normal_z){
             var m=normal_x*normal_x+normal_y*normal_y+normal_z*normal_z;
-            if(!(check_Equal(1,m)||check_Zero(m))){
+            if(!(check_Equal(1, m)||check_Zero(m))){
                 m=1/sqrt(m);
-                return act_Matrix3D__Reflect(act,out,normal_x*m,normal_y*m,normal_z*m);
+                return act_Matrix3D__Reflect(act, out, normal_x*m, normal_y*m, normal_z*m);
             }
-            return act_Matrix3D__Reflect(act,out,normal_x,normal_y,normal_z);
+            return act_Matrix3D__Reflect(act, out, normal_x, normal_y, normal_z);
         }
 
         var*& act_Matrix3D__Shear (const _M3d_Act_Fnc__Easy& act, var*& out, Plane_3D plane, var k1, var k2){
             switch (plane){
                 case X:
                     return act(out,
-                        1,k1,k2,
-                        0,1,0,
-                        0,0,1,
-                        0,0,0,
-                        0,0,0,1
+                        1, k1, k2,
+                        0, 1, 0,
+                        0, 0, 1,
+                        0, 0, 0,
+                        0, 0, 0, 1
                     );
                 break;
 
                 case Y:
                     return act(out,
-                        1,0,0,
-                        k2,1,k1,
-                        0,0,1,
-                        0,0,0,
-                        0,0,0,1
+                        1, 0, 0,
+                        k2, 1, k1,
+                        0, 0, 1,
+                        0, 0, 0,
+                        0, 0, 0, 1
                     );
                 break;
 
                 case Z:
                     return act(out,
-                        1,0,0,
-                        0,1,0,
-                        k1,k2,1,
-                        0,0,0,
-                        0,0,0,1
+                        1, 0, 0,
+                        0, 1, 0,
+                        k1, k2, 1,
+                        0, 0, 0,
+                        0, 0, 0, 1
                     );
                 break;
             
@@ -181,7 +181,7 @@ namespace NML{
                         0,   c,    s,
                         0,   -s,   c,
                         0,   0,    0,
-                        0,0,0,1
+                        0, 0, 0, 1
                     );
                 break;
                 
@@ -191,7 +191,7 @@ namespace NML{
                         0,   1,   0,
                         s,   0,   c,
                         0,   0,   0,
-                        0,0,0,1
+                        0, 0, 0, 1
                     );
                 break;
                 
@@ -201,7 +201,7 @@ namespace NML{
                         -s,   c,   0,
                         0,    0,   1,
                         0,    0,   0,
-                        0,0,0,1
+                        0, 0, 0, 1
                     );
                 break;
                 default:
@@ -232,17 +232,17 @@ namespace NML{
                 0,             1,             0,
                 0,             0,             1,
                 translate_x,   translate_y,   translate_z,
-                0,0,0,1
+                0, 0, 0, 1
             );
         }
 
-        var*& act_Matrix3D__Scale (const _M3d_Act_Fnc__Easy& act, var*& out, var scale_x, var scale_y,var scale_z){
+        var*& act_Matrix3D__Scale (const _M3d_Act_Fnc__Easy& act, var*& out, var scale_x, var scale_y, var scale_z){
             return act(out, 
                 scale_x,   0,         0,
                 0,         scale_y,   0,
                 0,         0,         scale_z,
                 0,         0,         0,
-                0,0,0,1
+                0, 0, 0, 1
             );
         }
 
@@ -255,7 +255,7 @@ namespace NML{
                 i2xy,                    1-2*normal_y*normal_y,   i2yz,
                 i2xz,                    i2yz,                    1-2*normal_z*normal_z,
                 0,                       0,                       0,
-                0,0,0,1
+                0, 0, 0, 1
             );
         }
 
@@ -274,19 +274,19 @@ namespace NML{
                 2*(xy-wz),     1-2*(xx+zz),   2*(yz+wx),
                 2*(xz+wy),     2*(yz-wx),     1-2*(xx+yy),
                 0,             0,             0,
-                0,0,0,1
+                0, 0, 0, 1
             );
         }
 
         var*& act_Matrix3D__Rotate__EulerAngles (const _M3d_Act_Fnc__Easy& act, var*& out, var thetas_1, var thetas_2, var thetas_3, Rotation_Order order){
             Axis axis= static_cast<Axis>(order &0b11);
-            act_Matrix3D__Rotate(act,out,thetas_3,axis);
+            act_Matrix3D__Rotate(act, out, thetas_3, axis);
 
             axis= static_cast<Axis>(order>>2 &0b11);
-            transform_Matrix3D__Rotate(out,thetas_2,axis);
+            transform_Matrix3D__Rotate(out, thetas_2, axis);
             
             axis= static_cast<Axis>(order>>4 &0b11);
-            return  transform_Matrix3D__Rotate(out,thetas_1,axis);
+            return  transform_Matrix3D__Rotate(out, thetas_1, axis);
         }
 
         var*& act_Matrix3D__OrthographicProjection (const _M3d_Act_Fnc__Easy& act, var*& out, var normal_x, var normal_y, var normal_z){
@@ -295,7 +295,7 @@ namespace NML{
                 -normal_x*normal_y,    1-normal_y*normal_y,   -normal_y*normal_z,
                 -normal_x*normal_z,    -normal_y*normal_z,    1-normal_z*normal_z,
                 0,                     0,                     0,
-                0,0,0,1
+                0, 0, 0, 1
             );
         }
 

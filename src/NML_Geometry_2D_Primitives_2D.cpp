@@ -47,7 +47,7 @@ namespace NML{
 
                 Points_Iterator*& Primitive_2D__Rect::load_Polygon(){
                     if(!polygon){
-                        polygon=new Points_Iterator__1DList(2,4);
+                        polygon=new Points_Iterator__1DList(2, 4);
                     }
                     AABB_2D aabb=get_LocalAABB();
                         *polygon[0][0]=aabb.x0;   *polygon[0][1]=aabb.y0;
@@ -102,7 +102,7 @@ namespace NML{
                         };
                     }
 
-                    AABB_2D rtn={0,0,0,0};
+                    AABB_2D rtn={0, 0, 0, 0};
                     var& r= data->r;
                     Line_Data_2D chord=get_Chord__Local();
 

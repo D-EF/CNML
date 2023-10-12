@@ -17,7 +17,6 @@
 ### 类、命名空间
   * 大写首字母+下划线命名
     ```
-    Values
     Matrix_3D
     ```
 ### 变量、形参
@@ -49,11 +48,17 @@
 * det            : 行列式 ( determinant )
 * u              : u 坐标 (水平坐标)
 * v              : v 坐标 (垂直坐标)
+* x              : x 坐标
+* y              : y 坐标
+* z              : z 坐标
 * quat           : 四元数 ( quaternion )
 * square         : 平方, 平方曲线(抛物线), 2阶贝塞尔曲线
 * cubic          : 立方, 立方曲线, 3阶贝塞尔曲线
 * girth          : 周长
-* polygon        : 多边形
+* polygon        : 2D多边形
+* mesh           : 3D网格组 (3d多边形)
+* line path      : 首尾相连的多个线段
+* step size      : 步长
 * sample size    : 采样点个数 (采样次数)
 * line           : 线段
 * race           : 矩形
@@ -70,7 +75,7 @@
 * dot                : 在向量运算中表示向量点乘
 * cross              : 2d/3d向量叉乘, 四元数乘法
 * mapping            : 映射为
-* calc               : 计算求值
+* calc               : 计算/求值
 * setup              : 执行装载操作 (初始化为)
 * transformation     : 矩阵基本变换 
 * transform          : 矩阵线性变换 
@@ -85,7 +90,11 @@
 
 ### 函数形参和实参
 * 函数形参名前带下划线表示该参数为可选参数
-* 所有函数禁止使用和其他参数相同指向的 **out**
+* 所有函数都不应该使用和其他参数相同指向的 **out**
+  ``` c++
+    void setup_xxx(var* out, var* param);
+    // out != param
+  ```
   
 ---
 
@@ -149,7 +158,7 @@
                 Points_Iterator(){}
                 Points_Iterator(Idx_Algebra dimensional, Idx points_length):points_length(points_length), dimensional(dimensional){}
                 Points_Iterator(void *data, Idx_Algebra dimensional, Idx points_length):data(data), points_length(points_length), dimensional(dimensional){
-                    install_Data(dimensional,points_length); 
+                    install_Data(dimensional, points_length); 
                 }
                 /** @brief 用下标 取点 */
                 virtual var* operator[](int v) = 0; 
@@ -160,12 +169,31 @@
             };
         ```
     * 使用两种迭代器类 Points_Iterator__1DList, Points_Iterator__2DList 对一维数组或二维数组的点云数据进行操作
+    * 块链存储结构 Points_Iterator__Link ,可以运行中添加空间, 用于mesh或其它需要频繁修改长度的操作
+      * 使用 成员函数 **void append_Block(Idx size)** 进行追加空间的操作, size 为追加块的 **var \*data** 的长度
+      * Points_Iterator__Link 使用循环块链表存储, 其中 data 为尾块的指针
+      * 单块空间大小有最大值和最小值, 使用宏定义 
+        ```c++
+          #define __MIN_LINK_BLOCK_SIZE__ 256
+          #define __MAX_LINK_BLOCK_SIZE__ 65536
+        ```
+      * 点坐标数据存储在每块的data指针处, 多余的空间会被空省
+        ```
+          // 当前块的空间大小为14, 点维度为3
+          [x0, y0, z0]
+          [x1, y1, z1]
+          [x2, y2, z2]
+          [x4, y4, z4]
+          [*,*] // 无用的两个值
+        ```
+      * 成员函数 **Idx calc_MaxPointsLength();** 可以计算当前已有的块空间最多能存放多少个点, 计算值将存储到成员属性 **Idx max_points_length;** 中缓存
+      * 使用 points_iterator\[index\] 获取点时，如果 index >= max_points_length, 将会取到 points_iterator\[index%max_points_length\] 
 
   ### 矩阵
   * *矩阵使用行优先展开的数值数组*
 
   ### 2D/3D 矩阵
-  * 2D变换矩阵可选使用2\*3,3\*2,3\*3矩阵左乘向量,3\*3矩阵右乘向量   
+  * 2D变换矩阵可选使用2\*3, 3\*2, 3\*3矩阵左乘向量, 3\*3矩阵右乘向量   
     ``` c++
     namespace NML{
       namespace Matrix_2D{
@@ -186,7 +214,7 @@
     ```
   * 3D的也和2d类似
     具体矩阵左乘向量还是右乘向量   
-    **注意,3d矩阵不建议使用省略行列的存储, 因为如透视投影矩阵等是需要右(下)侧行(列)的!**
+    **注意, 3d矩阵不建议使用省略行列的存储, 因为如透视投影矩阵等是需要右(下)侧行(列)的!**
     ``` c++
     namespace NML{
       namespace Matrix_3D{
@@ -211,14 +239,14 @@
 
       //线性变换使用 矩阵左乘向量(后缀_L), 即变换时 vec * mat
       //向量是横向量(行向量), 拓展为 
-      [x,y,1]
+      [x, y, 1]
       //变换矩阵的齐次坐标在矩阵下侧
       [
         mat_value_a,   mat_value_b,   0,
         mat_value_c,   mat_value_d,   0,
         translate_x,   translate_y,   1
       ]
-      // 省略右侧列 (0,0,1) 即为 2*3 矩阵
+      // 省略右侧列 (0, 0, 1) 即为 2*3 矩阵
       
 
       //线性变换使用 矩阵右乘向量(后缀_R)时, 即变换时 mat * vec
@@ -234,20 +262,44 @@
         mat_value_b,   mat_value_d,   translate_y,
         0,             0,             1
       ]
-      // 省略下侧行 (0,0,1) 即为 3*2 矩阵
+      // 省略下侧行 (0, 0, 1) 即为 3*2 矩阵
 
     ```
 
   ### 四元数
-  * *四元数结构为 \[x,y,z,w\]*
+  * *四元数结构为 \[x, y, z, w\]*
 
   ### 欧拉角
-  * 欧拉角数值是[r1,r2,r3]三个旋转弧度值, 进行欧拉角相关计算时需要另外追加旋转顺序的参数, 默认顺序为 xyz;   
+  * 欧拉角数值是[r1, r2, r3]三个旋转弧度值, 进行欧拉角相关计算时需要另外追加旋转顺序的参数, 默认顺序为 xyz;   
   定义的十二种顺序   
       ```c++
-      const 
-          XYZ, XYX, XZY, XZX,   
-          YXZ, YXY, YZX, YZY,   
-          ZXY, ZXZ, ZYX, ZYZ;
+        /** 欧拉角旋转顺序 */
+        enum Rotation_Order{
+            XYZ=0b000110,    XYX=0b000100,    XZY=0b001001,    XZX=0b001000,
+            YXZ=0b010010,    YXY=0b010001,    YZX=0b011000,    YZY=0b011001,
+            ZXY=0b100001,    ZXZ=0b100010,    ZYX=0b100100,    ZYZ=0b100110
+        };
       ```
 
+
+
+  ### 贝塞尔曲线
+  * 贝塞尔曲线 以 *点云访问器* 保存;
+  * 方案1 使用各个维度的各次幂系数作为存储格式;
+      ```
+        +------> 第x维度
+        | 
+        | 
+        v
+        y次幂的系数
+      ```
+      
+  * 方案2 保存控制点集合
+      ```
+        +------> 第x维度
+        | 
+        | 
+        v
+        第y个控制点
+      ```
+  

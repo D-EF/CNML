@@ -62,8 +62,8 @@ namespace NML{
             return out;
         }
 
-        var*& setup_Quaternion__Pow(var*& out,var n,var*& quat){
-            if(check_Equal(quat[qw],1)){
+        var*& setup_Quaternion__Pow(var*& out, var n, var*& quat){
+            if(check_Equal(quat[qw], 1)){
                 out[qx]=quat[qx];
                 out[qy]=quat[qy];
                 out[qz]=quat[qz];
@@ -104,13 +104,13 @@ namespace NML{
                 to_w = +quat_to[qw];
             }
 
-            var  k0,k1;
+            var  k0, k1;
             if(cos_omega>0.999){
                 k0=1-t;
                 k1=t;
             }else{
                 var sin_omega = sqrt(1-cos_omega*cos_omega);
-                var omega = atan2(sin_omega,cos_omega);
+                var omega = atan2(sin_omega, cos_omega);
                 var one_over__sin_omega = 1/sin_omega;
                 k0=sin((1-t)*omega) * one_over__sin_omega;
                 k1=sin(t*omega)     * one_over__sin_omega;
@@ -149,7 +149,7 @@ namespace NML{
                 out.one_over__sin_omega=1;
             }else{
                 var sin_omega = sqrt(1-cos_omega*cos_omega);
-                out.omega = atan2(sin_omega,cos_omega);
+                out.omega = atan2(sin_omega, cos_omega);
                 out.one_over__sin_omega = 1/sin_omega;
             }
 

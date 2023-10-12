@@ -62,7 +62,7 @@ namespace NML{
                  */
                 Primitive_2D( Idx sample_size_seed = __DEFINE_SAMPLE_SIZE_SEED__ ):
                     _sample_size_seed(sample_size_seed),
-                    transform_matrix(Matrix::create_Matrix__Identity(Matrix_2D::m2d_w,Matrix_2D::m2d_h)),
+                    transform_matrix(Matrix::create_Matrix__Identity(Matrix_2D::m2d_w, Matrix_2D::m2d_h)),
                     auto_close(0),
                     polygon(0){
                     giveUp_AllCache();
@@ -90,17 +90,17 @@ namespace NML{
 
                 /**
                  * @brief 判断点是否在图元内部
-                 * @param point 点的[x,y]坐标
-                 * @return 返回 {0,1,2} 表示 [ 不在内部, 在内部, 在边上 ]; 如果图元为非闭合图元, 将始终返回0.
+                 * @param point 点的[x, y]坐标
+                 * @return 返回 {0, 1, 2} 表示 [ 不在内部, 在内部, 在边上 ]; 如果图元为非闭合图元, 将始终返回0.
                  */
-                inline char check_Inside__Loc(var *point){return this->check_Inside__Local__P(point[0],point[1]);}
+                inline char check_Inside__Loc(var *point){return this->check_Inside__Local__P(point[0], point[1]);}
                 
                 /**
                  * @brief 判断点是否在图元内部
-                 * @param point 点的[x,y]坐标
-                 * @return 返回 {0,1,2} 表示 [ 不在内部, 在内部, 在边上 ]; 如果图元为非闭合图元, 将始终返回0.
+                 * @param point 点的[x, y]坐标
+                 * @return 返回 {0, 1, 2} 表示 [ 不在内部, 在内部, 在边上 ]; 如果图元为非闭合图元, 将始终返回0.
                  */
-                inline char check_Inside__Loc(var x, var y){return this->check_Inside__Local__P(x,y);}
+                inline char check_Inside__Loc(var x, var y){return this->check_Inside__Local__P(x, y);}
                 
                 /** 
                  * @brief 获取 拟合图元的线段路径
@@ -152,9 +152,9 @@ namespace NML{
                  * @brief 判断点是否在图元内部 ( 继承用 )
                  * @param x 点的x坐标
                  * @param y 点的y坐标
-                 * @return 返回 {0,1,2} 表示 [ 不在内部, 在内部, 在边上 ]; 如果图元为非闭合图元, 将始终返回0.
+                 * @return 返回 {0, 1, 2} 表示 [ 不在内部, 在内部, 在边上 ]; 如果图元为非闭合图元, 将始终返回0.
                  */
-                virtual char check_Inside__Local__P(var x,var y)=0;
+                virtual char check_Inside__Local__P(var x, var y)=0;
 
             };
 
@@ -195,11 +195,11 @@ namespace NML{
                     };
                 }
 
-                inline char check_Inside__Local__P(var x, var y) override { return check_Inside__AABB(get_LocalAABB(),x,y); }
+                inline char check_Inside__Local__P(var x, var y) override { return check_Inside__AABB(get_LocalAABB(), x, y); }
 
                 /**
                  * @brief 生成矩形的多边形代理
-                 * @return 生成 [{min_x,min_y},{max_x,min_y},{max_x,max_y},{min_x,max_y},{min_x,min_y}] 数据，存放到缓存中
+                 * @return 生成 [{min_x, min_y},{max_x, min_y},{max_x, max_y},{min_x, max_y},{min_x, min_y}] 数据，存放到缓存中
                  */
                 Points_Iterator*& load_Polygon();
             };
@@ -256,7 +256,7 @@ namespace NML{
                 inline Idx set_SampleSizeSeed(Idx size=4){
                     had__polygon=false;
                     polygon->free_Data();
-                    polygon->install_Data(2,size);
+                    polygon->install_Data(2, size);
                     return _sample_size_seed=size;
                 }
 
@@ -276,7 +276,7 @@ namespace NML{
                 Idx set_SampleSize(Idx size){
                     had__polygon=false;
                     polygon->free_Data();
-                    polygon->install_Data(2,size+1);
+                    polygon->install_Data(2, size+1);
                     return polygon->points_length;
                 }
             };
@@ -292,7 +292,7 @@ namespace NML{
                 Idx set_SampleSize(Idx size){
                     had__polygon=false;
                     polygon->free_Data();
-                    polygon->install_Data(2,size);
+                    polygon->install_Data(2, size);
                     return size;
                 }
 

@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-09-09 16:36:34
+ * @LastEditTime: 2023-10-11 19:46:13
  * @FilePath: \cnml\src\NML.hpp
  * @Description: Nittle Math Library 简单数学库
  * 
@@ -37,6 +37,16 @@
     #define __DEFINE_SAMPLE_SIZE_SEED__ 10
 #endif
 
+#ifndef __MIN_LINK_BLOCK_SIZE__
+    /** @brief 创建链块存储的单块最小 size */
+    #define __MIN_LINK_BLOCK_SIZE__ 256
+#endif
+
+#ifndef __MAX_LINK_BLOCK_SIZE__
+    /** @brief 创建链块存储的单块最大 size */
+    #define __MAX_LINK_BLOCK_SIZE__ 65536
+#endif
+
 
 #include <Math.h>
 #include <iostream>
@@ -53,7 +63,28 @@ namespace NML{
     typedef __NML_ALGEBRA_INDEX_TYPE__ Idx_Algebra;
     /** @brief 默认容差 */
     extern const var NML_TOLERANCE;
+    /** @brief 默认采样精度种子 */
+    extern const Idx SAMPLE_SIZE_SEED;
+    /** @brief 默认采样精度步长 */
+    extern const var SAMPLE_SIZE_SIZE;
     
+    /** @brief 数值块链节点 */
+    typedef struct Link_Block__Var{
+        var *data;
+        Idx size;
+        Idx max_size;
+        Link_Block__Var* next;
+    }Link_Block__Var;
+    
+    /** @brief 整形块链节点 */
+    typedef struct Link_Block__Int
+    {
+        Link_Block__Int *next;
+        Idx size;
+        int *data;
+    } Link_Block__Int;
+
+
     /** 三个坐标轴 */
     enum Axis{ X=0, Y=1, Z=2 };
     
@@ -76,52 +107,19 @@ namespace NML{
     extern const var FOUR_OVER_THREE;
 
     /**
-     * @brief 整形数组链表
-     */
-    typedef struct Link_List__Int_List
-    {
-        Link_List__Int_List *next;
-        Idx_Algebra n;
-        int *data;
-    } Link_List__Int_List;
-
-
-    /**
      * @brief 提取 Rotation_Order 的旋转轴
      * @param order 欧拉角旋转顺序
-     * @param index 旋转轴下标[0,2], 表示第几次旋转
+     * @param index 旋转轴下标[0, 2], 表示第几次旋转
      * @return 返回当前旋转轴向
      */
-    inline Axis get_Rotation_Order(Rotation_Order order,char index){
+    inline Axis get_Rotation_Order(Rotation_Order order, char index){
         return (Axis)(order>>(2*index) &0b11);
     }
 
-    template <typename value_Type> inline value_Type min(value_Type a,value_Type b){return a>b?b:a;}
+    template <typename value_Type> inline value_Type min(value_Type a, value_Type b){return a>b?b:a;}
     
-    template <typename value_Type> inline value_Type max(value_Type a,value_Type b){return a>b?a:b;}
+    template <typename value_Type> inline value_Type max(value_Type a, value_Type b){return a>b?a:b;}
 
-    class Values{
-        public:
-            Idx length;
-            var* data;
-            Values(const Idx length)    :length(length)       , data(new var[length]()){}
-            Values(const Values &vec)   :length(vec.length)   , data(new var[length]){setup(vec.data);}
-
-            /**
-             * @brief 写入数据
-             * 
-             * @param length   数据长度
-             * @param data     数据数组
-             */
-            void setup (const Idx length, const var* data);
-            inline void setup (const var* data){setup(this->length, data);}
-
-            ~Values(){delete[] this->data;}
-
-            inline var& operator[](Idx index){return data[index];}
-
-            inline Values& operator=(var*& d){setup(d);return *this;}
-    };
 
     /**
      * @brief 点云数据访问器
@@ -129,13 +127,15 @@ namespace NML{
     class Points_Iterator{
         public:
         void *data;
+        /** @brief 点的数量 */
         Idx points_length;
+        /** @brief 点的维度 */
         Idx_Algebra dimensional;
         Points_Iterator(){}
         Points_Iterator(Idx_Algebra dimensional, Idx points_length):points_length(points_length), dimensional(dimensional){}
         Points_Iterator(void *data, Idx_Algebra dimensional, Idx points_length):data(data), points_length(points_length), dimensional(dimensional){}
         /** @brief 用下标 取点 */
-        virtual var* operator[](int v) = 0; 
+        virtual var* operator[](Idx v) = 0; 
         /** @brief 装配 new data */
         virtual void install_Data(Idx_Algebra dimensional, Idx points_length) = 0; 
         /** @brief 释放data数据 */
@@ -145,31 +145,45 @@ namespace NML{
     class Points_Iterator__2DList :virtual public Points_Iterator{
         public:
         Points_Iterator__2DList(var** data, Idx_Algebra dimensional, Idx points_length):Points_Iterator(data, dimensional, points_length){}
-        Points_Iterator__2DList(Idx_Algebra dimensional, Idx points_length):Points_Iterator(dimensional, points_length){install_Data(dimensional,points_length);}
-        void install_Data(Idx_Algebra dimensional, Idx points_length){
-            var** d=new var*[points_length];
-            for(int i=0;i<points_length;++i){
-                d[i]=new var[dimensional];
-            }
-            data=d;
-        }
-        void free_Data(){
-            for(int i=0;i<points_length;++i){
-                delete ((var**)data)[i];
-            }
-            delete (var**)data;
-            data=0;
-        }
-        var* operator[](int v) override{return ((var**)data)[v];}
+        Points_Iterator__2DList(Idx_Algebra dimensional, Idx points_length):Points_Iterator(dimensional, points_length){install_Data(dimensional, points_length);}
+        ~Points_Iterator__2DList(){free_Data();}
+        void install_Data(Idx_Algebra dimensional, Idx points_length);
+        void free_Data();
+        var* operator[](Idx v) override{return ((var**)data)[v];}
     };
 
     class Points_Iterator__1DList :virtual public Points_Iterator{
         public:
         Points_Iterator__1DList(var* data, Idx_Algebra dimensional, Idx points_length):Points_Iterator(data, dimensional, points_length){}
         Points_Iterator__1DList(Idx_Algebra dimensional, Idx points_length):Points_Iterator(new var[dimensional*points_length], dimensional, points_length){}
+        ~Points_Iterator__1DList(){free_Data();}
         void install_Data(Idx_Algebra dimensional, Idx points_length){ data=new var[dimensional*points_length]; }
         void free_Data(){delete (var*)data; data=0;}
-        var* operator[](int v) override{return ((var*)data)+(v*dimensional);}
+        var* operator[](Idx v) override{return ((var*)data)+(v*dimensional);}
+    };
+
+    
+    class Points_Iterator__Link :virtual public Points_Iterator{
+        public:
+        /** @brief 最大存储长度 (缓存 calc_MaxPointsLength()的计算结果) */
+        Idx max_points_length;
+        Idx last_access_head_v;
+        Link_Block__Var* last_access_block;
+        Points_Iterator__Link(Link_Block__Var* data, Idx_Algebra dimensional, Idx points_length): Points_Iterator(data, dimensional, points_length), last_access_head_v(-1), last_access_block(0) {}
+        Points_Iterator__Link(Idx_Algebra dimensional, Idx points_length):Points_Iterator(dimensional, points_length){}
+        ~Points_Iterator__Link(){free_Data();}
+        void install_Data(Idx_Algebra dimensional, Idx points_length){ append_Block(dimensional*points_length); }
+        void free_Data();
+        var* operator[](Idx v) override;
+        
+        /** @brief 计算当前已有空间的最多能存放多少个点数 */
+        Idx calc_MaxPointsLength();
+
+        /** 
+         * @brief 追加一块存储空间
+         * @param 块的大小 ( 实际空间大小= size * sizeof(var) )
+         */
+        void append_Block(Idx size=-1);
     };
 
     void clone_To(var* to, const var* val, Idx length);
@@ -192,7 +206,6 @@ namespace NML{
      * @param length 长度
      */
     void printf_Vec(const var* val, Idx length);
-    inline void printf_Vec(const Values val){printf_Vec(val.data,val.length);}
 
     /**
      * @brief 打印点云数据
@@ -230,7 +243,7 @@ namespace NML{
      * @return  返回是否相等
      */
     bool check_Equal(Idx length, var*& val_left, var*& val_right, var _tolerance=NML_TOLERANCE);
-    inline bool check_Equal(var*& val_left, var*& val_right,Idx length, var _tolerance=NML_TOLERANCE){return check_Equal(length, val_left, val_right, _tolerance);}
+    inline bool check_Equal(var*& val_left, var*& val_right, Idx length, var _tolerance=NML_TOLERANCE){return check_Equal(length, val_left, val_right, _tolerance);}
     
     
     /**
@@ -253,7 +266,7 @@ namespace NML{
      */
     void sum(var*& out, Idx length, var*& val_left, var*& val_right);
 
-    var sum(var* start,Idx length);
+    var sum(var* start, Idx length);
     
     /**
      * @brief 数据数值 差
@@ -274,7 +287,7 @@ namespace NML{
      * @return 输出点乘数量积
      */
     var dot(Idx length, var*& val_left, var*& val_right);
-    inline var dot(var*& val_left, var*& val_right,Idx length){return dot(length,val_left,val_right);}
+    inline var dot(var*& val_left, var*& val_right, Idx length){return dot(length, val_left, val_right);}
 
     /**
      * @brief 标量乘
@@ -284,10 +297,18 @@ namespace NML{
      * @param k             标量
      */
     var*& np(var*& out, Idx length, var k);
-    inline var*& np_v2(var*& out, var k){out[0]*=k;out[1]*=k;                       return out;}
-    inline var*& np_v3(var*& out, var k){out[0]*=k;out[1]*=k;out[2]*=k;             return out;}
-    inline var*& np_v4(var*& out, var k){out[0]*=k;out[1]*=k;out[2]*=k;out[3]*=k;   return out;}
+    inline var*& np_v2(var*& out, var k){out[0]*=k;  out[1]*=k;                           return out;}
+    inline var*& np_v3(var*& out, var k){out[0]*=k;  out[1]*=k;  out[2]*=k;               return out;}
+    inline var*& np_v4(var*& out, var k){out[0]*=k;  out[1]*=k;  out[2]*=k;  out[3]*=k;   return out;}
 
+    /**
+     * @brief 二分法查找显式查找表中离 target 最近的项目
+     * @param target    要查找的目标
+     * @param lut       显式查找表 应为正序排序的 Number 类型数组 (如路径到当前下标指令的长度)
+     * @param length    lut 的长度
+     * @return 返回最离 target 最近的项的下标
+     */
+    Idx select_Lut__Binary(var target, var* lut, Idx length);
 }
 
 #endif

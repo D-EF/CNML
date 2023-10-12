@@ -24,8 +24,8 @@ namespace NML{
         
         /** 打印矩阵*/
         void printf_Matrix(var*& matrix, Idx_VM width, Idx_VM height);
-        inline void printf_Matrix(var*& matrix,Idx_VM n){
-            printf_Matrix(matrix,n,n);
+        inline void printf_Matrix(var*& matrix, Idx_VM n){
+            printf_Matrix(matrix, n, n);
         }
 
         /**
@@ -55,7 +55,7 @@ namespace NML{
          */
         inline var* create_Matrix__Identity(Idx_VM width, Idx_VM height){
             var* out=new var[width*height];
-            setup_Matrix__Identity(out,width,height);
+            setup_Matrix__Identity(out, width, height);
             return out;
         }
 
@@ -130,7 +130,7 @@ namespace NML{
          * @param u2        u坐标2
          */
         void transformation__ExchangeCol(var*& mat, Idx_VM widht, Idx_VM height, Idx_VM u1, Idx_VM u2);
-        void transformation__ExchangeCol(var**& mats,Idx_VM length_g, Idx_VM width,Idx_VM height, Idx_VM u1, Idx_VM u2);
+        void transformation__ExchangeCol(var**& mats, Idx_VM length_g, Idx_VM width, Idx_VM height, Idx_VM u1, Idx_VM u2);
 
         /**
          * @brief 初等变换 行乘标量
@@ -141,7 +141,7 @@ namespace NML{
          * @param k         标量乘值
          */
         void transformation__ScaleRow(var*& mat, Idx_VM width, Idx_VM v, var k);
-        void transformation__ScaleRow(var**& mats,Idx_VM length_g, Idx_VM width, Idx_VM v, var k);
+        void transformation__ScaleRow(var**& mats, Idx_VM length_g, Idx_VM width, Idx_VM v, var k);
 
         /**
          * @brief 初等变换 列乘标量
@@ -152,7 +152,7 @@ namespace NML{
          * @param k         标量乘值
          */
         void transformation__ScaleCol(var*& mat, Idx_VM width, Idx_VM height, Idx_VM u, var k);
-        void transformation__ScaleCol(var**& mats,Idx_VM length_g, Idx_VM width, Idx_VM height, Idx_VM u, var k);
+        void transformation__ScaleCol(var**& mats, Idx_VM length_g, Idx_VM width, Idx_VM height, Idx_VM u, var k);
 
         /** 
          * @brief 将矩阵某个为0的项 通过初等变换的换行操作, 变成非0
@@ -162,7 +162,7 @@ namespace NML{
          * @param  width        矩阵宽度
          * @param  index        当前下标
          * @param  v            当前v坐标(行下标)
-         * @param  step_length  寻址步长,应为  ±width
+         * @param  step_length  寻址步长, $1为  ±width
          * @return 返回是否成功换行
          */
         bool transformation__ExchangeRow_ToUnZero(var*& mat, Idx_VM length, Idx_VM width,  Idx_VM index, Idx_VM v, Idx_VM step_length);
@@ -176,7 +176,7 @@ namespace NML{
          * @param  width        矩阵宽度
          * @param  index        当前下标
          * @param  v            当前v坐标(行下标)
-         * @param  step_length  寻址步长,应为  ±width
+         * @param  step_length  寻址步长, $1为  ±width
          * @param  _index_m     传入多个矩阵时使用哪个矩阵的值 默认0
          * @return 返回是否成功换行
          */
@@ -191,7 +191,7 @@ namespace NML{
          * @param  width        矩阵宽度
          * @param  index        当前下标
          * @param  v            当前v坐标(行下标)
-         * @param  step_length  寻址步长,应为  ±width
+         * @param  step_length  寻址步长, $1为  ±width
          * @return 返回是否成功换行
          */
         bool transformation__ExchangeRow_PivotToMax(var*& mat, Idx_VM length, Idx_VM width,  Idx_VM index, Idx_VM v, Idx_VM step_length);
@@ -205,7 +205,7 @@ namespace NML{
          * @param  width        矩阵宽度
          * @param  index        当前下标
          * @param  v            当前v坐标(行下标)
-         * @param  step_length  寻址步长,应为  ±width
+         * @param  step_length  寻址步长, $1为  ±width
          * @param  _index_m     传入多个矩阵时使用哪个矩阵的值 默认0
          * @return 返回是否成功换行
          */
@@ -241,7 +241,7 @@ namespace NML{
          * @param n             表示这个矩阵是n*n方阵
          * @return 返回矩阵是否正交
          */
-        bool check_Orthogonal(var*& mat,Idx_VM n);
+        bool check_Orthogonal(var*& mat, Idx_VM n);
 
         /**
          * @brief 方阵转置
@@ -267,7 +267,7 @@ namespace NML{
          * @param temp  传一个temp变量引用以节约开销
          */
         inline var*& transpose_2(var*& mat){
-            std::swap(mat[1],mat[2]);
+            std::swap(mat[1], mat[2]);
             return mat;
         }
         
@@ -277,9 +277,9 @@ namespace NML{
          * @param temp  传一个temp变量引用以节约开销
          */
         inline var*& transpose_3(var*& mat){
-            std::swap(mat[1],mat[3]);
-            std::swap(mat[2],mat[6]);
-            std::swap(mat[5],mat[7]);
+            std::swap(mat[1], mat[3]);
+            std::swap(mat[2], mat[6]);
+            std::swap(mat[5], mat[7]);
             return mat;
         }
         /**
@@ -288,12 +288,12 @@ namespace NML{
          * @param temp  传一个temp变量引用以节约开销
          */
         inline var*& transpose_4(var*& mat){
-            std::swap(mat[1],mat[4]);
-            std::swap(mat[2],mat[8]);
-            std::swap(mat[3],mat[12]);
-            std::swap(mat[6],mat[9]);
-            std::swap(mat[7],mat[13]);
-            std::swap(mat[11],mat[14]);
+            std::swap(mat[1], mat[4]);
+            std::swap(mat[2], mat[8]);
+            std::swap(mat[3], mat[12]);
+            std::swap(mat[6], mat[9]);
+            std::swap(mat[7], mat[13]);
+            std::swap(mat[11], mat[14]);
             return mat;
         }
 
@@ -305,7 +305,7 @@ namespace NML{
          * @param n         表示这个矩阵是n*n方矩阵
          * @return 返回计算的行列式值 
          */
-        var calc_Det__Transformation(var*& mat,Idx_VM n);
+        var calc_Det__Transformation(var*& mat, Idx_VM n);
 
         // open * 1-4阶矩阵行列式内联函数 * open
             /**
@@ -367,7 +367,7 @@ namespace NML{
          * @param n         表示这个矩阵是n*n方阵
          * @return 返回计算的行列式值
          */
-        var calc_Det(var*& mat,Idx_VM n);
+        var calc_Det(var*& mat, Idx_VM n);
 
         /**
          * @brief 矩阵求逆 使用初等变换法(高斯乔丹消元法)

@@ -16,7 +16,7 @@
 namespace NML{
     namespace Algebra{
 
-        typedef Link_List__Int_List Pascals_Triangle_Line;
+        typedef Link_Block__Int Pascals_Triangle_Line;
         
         /**
          * @brief 帕斯卡三角数据
@@ -50,7 +50,7 @@ namespace NML{
          * @param length_coefficients coefficients 的长度
          * @return 返回导数的各次幂的系数 [1, dt^1, dt^2, dt^3, ...] 长度会比形参少 1
          */
-        var*& calc_Derivative__OneUnitaryRealParameterFunction(var *&out,var *coefficients,Idx_Algebra length_coefficients);
+        var*& calc_Derivative__OneUnitaryRealParameterFunction(var *&out, var *coefficients, Idx_Algebra length_coefficients);
             // 一元多次函数:
             //         coefficients.length
             //  F(t) = ∑ t^i*c[i]

@@ -29,8 +29,8 @@ namespace NML{
          * @param _tolerance    容差 默认 1e-6
          * @return 返回是否为单位向量 
          */
-        inline bool is_Unit(Idx_VM length, var*& vec, var _tolerance=NML_TOLERANCE){return check_Equal(1,dot(length, vec, vec),_tolerance);}
-        inline bool is_Unit(var*& vec, Idx_VM length, var _tolerance=NML_TOLERANCE){return check_Equal(1,dot(length, vec, vec),_tolerance);}
+        inline bool is_Unit(Idx_VM length, var*& vec, var _tolerance=NML_TOLERANCE){return check_Equal(1, dot(length, vec, vec), _tolerance);}
+        inline bool is_Unit(var*& vec, Idx_VM length, var _tolerance=NML_TOLERANCE){return check_Equal(1, dot(length, vec, vec), _tolerance);}
         
         /**
          * @brief 判断2d向量象限 (+x=right, +y=up)
@@ -49,17 +49,17 @@ namespace NML{
          * @return 返回向量模长
          */
         var mag(Idx_VM length, var*& vec);
-        inline var mag(var*& vec,Idx_VM length){return mag(length,vec);}
+        inline var mag(var*& vec, Idx_VM length){return mag(length, vec);}
 
         /**
-         * @brief 判断向量是不是零向量     (严格的,不考虑浮点数误差)
+         * @brief 判断向量是不是零向量     (严格的, $1考虑浮点数误差)
          * 
          * @param length                   向量数组长度
          * @param vec                      数组表示的向量数据
          * @return 返回向量是不是零向量 
          */
         bool is_Zero__Strict(Idx_VM length, var*& vec);
-        inline bool is_Zero__Strict(var*& vec,Idx_VM length){return is_Zero__Strict(length,vec);}
+        inline bool is_Zero__Strict(var*& vec, Idx_VM length){return is_Zero__Strict(length, vec);}
 
         /**
          * @brief 判断向量是不是零向量     
@@ -69,7 +69,7 @@ namespace NML{
          * @return 返回向量是不是零向量 
          */
         bool is_Zero(Idx_VM length, var*& vec, var _tolerance=NML_TOLERANCE);
-        inline bool is_Zero(var*& vec,Idx_VM length, var _tolerance=NML_TOLERANCE){return is_Zero(length,vec,_tolerance);};
+        inline bool is_Zero(var*& vec, Idx_VM length, var _tolerance=NML_TOLERANCE){return is_Zero(length, vec, _tolerance);};
 
         /**
          * @brief 标准化向量
@@ -78,7 +78,7 @@ namespace NML{
          * @param vec       数组表示的向量数据 将会被函数修改
          */
         var*& normalize(Idx_VM length, var*& vec);
-        inline var*& normalize(var*& vec,Idx_VM length){return normalize(length,vec);}
+        inline var*& normalize(var*& vec, Idx_VM length){return normalize(length, vec);}
         
         /**
          * @brief 向量取反
@@ -87,7 +87,7 @@ namespace NML{
          * @param vec       数组表示的向量数据 将会被函数修改
          */
         var*& instead(Idx_VM length, var*& vec);
-        inline var*& instead(var*& vec, Idx_VM length){return instead(length,vec);}
+        inline var*& instead(var*& vec, Idx_VM length){return instead(length, vec);}
         
         /**
          * @brief 3d叉乘 数据长度固定为3
