@@ -290,10 +290,13 @@ namespace NML{
         }
 
         var*& act_Matrix3D__OrthographicProjection (const _M3d_Act_Fnc__Easy& act, var*& out, var normal_x, var normal_y, var normal_z){
+            var xy=normal_x*normal_y,
+                xz=normal_x*normal_z,
+                yz=normal_z*normal_y;
             return act(out,
-                1-normal_x*normal_x,   -normal_x*normal_y,    -normal_x*normal_z,
-                -normal_x*normal_y,    1-normal_y*normal_y,   -normal_y*normal_z,
-                -normal_x*normal_z,    -normal_y*normal_z,    1-normal_z*normal_z,
+                1-normal_x*normal_x,   -xy,                   -xz,
+                -xy,                   1-normal_y*normal_y,   -yz,
+                -xz,                   -yz,                   1-normal_z*normal_z,
                 0,                     0,                     0,
                 0, 0, 0, 1
             );

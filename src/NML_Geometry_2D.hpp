@@ -95,6 +95,59 @@ namespace NML{
                 var rotate;
             } Ellipse_Arc_Data;
 
+            /** 
+             * @brief 计算椭圆的焦距
+             * @param rx x方向上的半径
+             * @param ry y方向上的半径
+             * @return 返回椭圆的焦距
+             */
+            inline var calc_EllipseFocalLength(var rx, var ry){
+                // todo
+            }
+
+            /** 
+             * @brief 计算椭圆的缩放比
+             * @param rx x方向上的半径
+             * @param ry y方向上的半径
+             * @return 返回椭圆的缩放比
+             */
+            inline var calc_EllipseScaleValue(var rx, var ry){
+                // todo
+            }
+            
+            /** 
+             * @brief 计算椭圆的焦点
+             * @param rx     x方向上的半径
+             * @param ry     y方向上的半径
+             * @param rotate 椭圆的旋转偏移量
+             * @return 返回椭圆的焦点
+             */
+            inline Line_Data_2D calc_EllipseFocus(var rx, var ry,var rotate){
+                // todo
+            }
+            
+            /** 
+             * @brief 计算椭圆的焦距
+             * @param ellipse_arc_data 椭圆的数据
+             * @return 返回椭圆的焦距
+             */
+            inline var calc_EllipseFocalLength(Ellipse_Arc_Data ellipse_arc_data){return calc_EllipseFocalLength(ellipse_arc_data.rx,ellipse_arc_data.ry);}
+
+            /** 
+             * @brief 计算椭圆的缩放比
+             * @param ellipse_arc_data 椭圆的数据
+             * @return 返回椭圆的缩放比
+             */
+            inline var calc_EllipseScaleValue(Ellipse_Arc_Data ellipse_arc_data){return calc_EllipseScaleValue(ellipse_arc_data.rx,ellipse_arc_data.ry);}
+
+            /** 
+             * @brief 计算椭圆的焦点
+             * @param ellipse_arc_data 椭圆的数据
+             * @return 返回椭圆的焦点
+             */
+            inline Line_Data_2D calc_EllipseFocus(Ellipse_Arc_Data ellipse_arc_data){return calc_EllipseFocus(ellipse_arc_data.rx,ellipse_arc_data.ry,ellipse_arc_data.rotate);}
+
+
 
             /** @brief AABB 轴对齐包围盒 min={x0, y0}; max={x1, y1}; */
             typedef Line_Data_2D AABB_2D;
@@ -144,7 +197,7 @@ namespace NML{
          * @param y 向量 y 坐标
          * @return 返回计算的弧度值
          */
-        inline var get_Angle(var x, var y){return atan2(y, x);}
+        inline var get_VectorAngle(var x, var y){return atan2(y, x);}
 
         
         /** 
@@ -356,7 +409,7 @@ namespace NML{
              * @param v 坐标
              * @return 返回计算的弧度值
              */
-            inline var get_Angle(var* v){return atan2(v[1], v[0]);}
+            inline var get_VectorAngle(var* v){return atan2(v[1], v[0]);}
             
         // end  * 不同参数调用原函数的重载函数 * end 
     }

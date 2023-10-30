@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-09-09 15:45:34
+ * @LastEditTime: 2023-10-26 09:48:32
  * @FilePath: \cnml\src\NML_Matrix.hpp
  * @Description: 3D 变换矩阵
  * @
@@ -112,7 +112,7 @@ namespace NML{
         );
 
 
-        /** 用于选择使用 setup 或 transform 的函数指针*/
+        /**  setup or transform */
         typedef var*& (*_M3d_Act_Fnc__Easy)(var*&,
             var value_mxx,   var value_mxy,   var value_mxz,
             var value_myx,   var value_myy,   var value_myz,
@@ -148,90 +148,113 @@ namespace NML{
              * @param translate_z   z方向平移量
              * @return 修改 out 并输出
              */
-            inline var*& setup_Matrix3D__Translate             (var*& out, var translate_x, var translate_y=0, var translate_z=0)                {return act_Matrix3D__Translate             (setup_Matrix3D__Easy, out, translate_x, translate_y, translate_z);}
+            inline var*& setup_Matrix3D__Translate(var*& out, var translate_x, var translate_y=0, var translate_z=0)
+            {return act_Matrix3D__Translate(setup_Matrix3D__Easy, out, translate_x, translate_y, translate_z);}
             /**
              * @brief 设置 平移矩阵
-             * @param out           输出对象
+             * @param out                输出对象
              * @param translate_vector   平移向量
              * @return 修改 out 并输出
              */
-            inline var*& setup_Matrix3D__Translate             (var*& out, var*& translate_vector)                                               {return act_Matrix3D__Translate             (setup_Matrix3D__Easy, out, translate_vector[0], translate_vector[1], translate_vector[2]);}
+            inline var*& setup_Matrix3D__Translate(var*& out, var*& translate_vector)
+            {return act_Matrix3D__Translate(setup_Matrix3D__Easy, out, translate_vector[0], translate_vector[1], translate_vector[2]);}
             /**
              * @brief 设置 缩放矩阵
-             * @param out           输出对象
-             * @param scale_x       x 方向缩放值
-             * @param scale_y       y 方向缩放值
-             * @param scale_z       z 方向缩放值
+             * @param out       输出对象
+             * @param scale_x   x 方向缩放值
+             * @param scale_y   y 方向缩放值
+             * @param scale_z   z 方向缩放值
              * @return 修改 out 并输出
              */
-            inline var*& setup_Matrix3D__Scale                 (var*& out, var scale_x, var scale_y, var scale_z)                                 {return act_Matrix3D__Scale                 (setup_Matrix3D__Easy, out, scale_x, scale_y, scale_z);}
+            inline var*& setup_Matrix3D__Scale(var*& out, var scale_x, var scale_y, var scale_z)
+            {return act_Matrix3D__Scale(setup_Matrix3D__Easy, out, scale_x, scale_y, scale_z);}
             /**
              * @brief 矩阵 进行 缩放 变换
-             * @param out           输出对象
-             * @param scale         缩放值
+             * @param out     输出对象
+             * @param scale   缩放值
              * @return 修改 out 并输出
              */
-            inline var*& setup_Matrix3D__Scale                 (var*& out, var scale_value)                                                      {return act_Matrix3D__Scale                 (setup_Matrix3D__Easy, out, scale_value, scale_value, scale_value);}
+            inline var*& setup_Matrix3D__Scale(var*& out, var scale_value)
+            {return act_Matrix3D__Scale(setup_Matrix3D__Easy, out, scale_value, scale_value, scale_value);}
             /**
              * @brief 设置 镜像矩阵
-             * @param out           输出对象
-             * @param normal_x      镜像面的法向的 x 坐标
-             * @param normal_y      镜像面的法向的 y 坐标
-             * @param normal_z      镜像面的法向的 z 坐标
+             * @param out        输出对象
+             * @param normal_x   镜像面的法向的 x 坐标
+             * @param normal_y   镜像面的法向的 y 坐标
+             * @param normal_z   镜像面的法向的 z 坐标
              * @return 修改 out 并输出
              */
-            inline var*& setup_Matrix3D__Reflect               (var*& out, var normal_x, var normal_y, var normal_z)                             {return act_Matrix3D__Reflect               (setup_Matrix3D__Easy, out, normal_x, normal_y, normal_z);}
+            inline var*& setup_Matrix3D__Reflect(var*& out, var normal_x, var normal_y, var normal_z)
+            {return act_Matrix3D__Reflect(setup_Matrix3D__Easy, out, normal_x, normal_y, normal_z);}
             /**
              * @brief 设置 镜像矩阵
-             * @param out           输出对象
-             * @param normal_x      镜像轴法线方向上的 x 坐标
-             * @param normal_y      镜像轴法线方向上的 y 坐标
-             * @param normal_z      镜像轴法线方向上的 z 坐标
+             * @param out        输出对象
+             * @param normal_x   镜像轴法线方向上的 x 坐标
+             * @param normal_y   镜像轴法线方向上的 y 坐标
+             * @param normal_z   镜像轴法线方向上的 z 坐标
              * @return 修改 out 并输出
              */
-            inline var*& setup_Matrix3D__Reflect__Collinear    (var*& out, var normal_x, var normal_y, var normal_z)                             {return act_Matrix3D__Reflect__Collinear    (setup_Matrix3D__Easy, out, normal_x, normal_y, normal_z);}
+            inline var*& setup_Matrix3D__Reflect__Collinear(var*& out, var normal_x, var normal_y, var normal_z)
+            {return act_Matrix3D__Reflect__Collinear(setup_Matrix3D__Easy, out, normal_x, normal_y, normal_z);}
             /**
              * @brief 设置 切变矩阵
-             * @param out           输出对象
-             * @param axis          切变方向轴
-             * @param k             切变系数
+             * @param out    输出对象
+             * @param axis   切变方向轴
+             * @param k      切变系数
              * @return 修改 out 并输出
              */
-            inline var*& setup_Matrix3D__Shear                 (var*& out, Plane_3D plane, var k1, var k2)                                       {return act_Matrix3D__Shear                 (setup_Matrix3D__Easy, out, plane, k1, k2);}
+            inline var*& setup_Matrix3D__Shear(var*& out, Plane_3D plane, var k1, var k2)
+            {return act_Matrix3D__Shear(setup_Matrix3D__Easy, out, plane, k1, k2);}
             /**
              * @brief 设置 旋转矩阵  (使用旋转轴)
-             * @param out           输出对象
-             * @param theta         旋转量
-             * @param axis          旋转轴
+             * @param out     输出对象
+             * @param theta   旋转量
+             * @param axis    旋转轴
              * @return 修改 out 并输出
              */
-            inline var*& setup_Matrix3D__Rotate                (var*& out, var theta, Axis axis=X)                                               {return act_Matrix3D__Rotate                (setup_Matrix3D__Easy, out, theta, axis);}
+            inline var*& setup_Matrix3D__Rotate(var*& out, var theta, Axis axis=X)
+            {return act_Matrix3D__Rotate(setup_Matrix3D__Easy, out, theta, axis);}
             /**
              * @brief 设置 旋转矩阵  (使用四元数)
-             * @param out           输出对象
-             * @param quat          四元数
+             * @param out    输出对象
+             * @param quat   四元数
              * @return 修改 out 并输出
              */
-            inline var*& setup_Matrix3D__Rotate__Quaternion     (var*& out, var*& quat)                                                           {return act_Matrix3D__Rotate__Quaternion    (setup_Matrix3D__Easy, out, quat);}
-            inline var*& setup_Matrix3D__Rotate__Quaternion     (var*& out, var x, var y, var z, var w)                                           {return act_Matrix3D__Rotate__Quaternion    (setup_Matrix3D__Easy, out, x, y, z, w);}
+            inline var*& setup_Matrix3D__Rotate__Quaternion(var*& out, var*& quat)
+            {return act_Matrix3D__Rotate__Quaternion(setup_Matrix3D__Easy, out, quat);}
+            inline var*& setup_Matrix3D__Rotate__Quaternion(var*& out, var x, var y, var z, var w)
+            {return act_Matrix3D__Rotate__Quaternion(setup_Matrix3D__Easy, out, x, y, z, w);}
             /**
              * @brief 设置 旋转矩阵  (使用欧拉角)
-             * @param out           输出对象      
-             * @param thetas_1      第1次旋转量
-             * @param thetas_2      第2次旋转量
-             * @param thetas_3      第3次旋转量
-             * @param order         旋转轴顺序
+             * @param out        输出对象      
+             * @param thetas_1   第1次旋转量
+             * @param thetas_2   第2次旋转量
+             * @param thetas_3   第3次旋转量
+             * @param order      旋转轴顺序
              * @return 修改 out 并输出
              */
-            inline var*& setup_Matrix3D__Rotate__EulerAngles   (var*& out, var thetas_1, var thetas_2, var thetas_3, Rotation_Order order=XYZ)   {return act_Matrix3D__Rotate__EulerAngles   (setup_Matrix3D__Easy, out, thetas_1, thetas_2, thetas_3, order);}
+            inline var*& setup_Matrix3D__Rotate__EulerAngles(var*& out, var thetas_1, var thetas_2, var thetas_3, Rotation_Order order=XYZ)
+            {return act_Matrix3D__Rotate__EulerAngles(setup_Matrix3D__Easy, out, thetas_1, thetas_2, thetas_3, order);}
             /**
              * @brief 设置 旋转矩阵 (使用欧拉角)
-             * @param out           输出对象
-             * @param thetas        按顺序的旋转量
-             * @param order         旋转轴顺序
+             * @param out      输出对象
+             * @param thetas   按顺序的旋转量
+             * @param order    旋转轴顺序
              * @return 修改 out 并输出
              */
-            inline var*& setup_Matrix3D__Rotate__EulerAngles   (var*& out, var*& thetas, Rotation_Order order=XYZ)                               {return act_Matrix3D__Rotate__EulerAngles   (setup_Matrix3D__Easy, out, thetas[0], thetas[1], thetas[2], order);}
+            inline var*& setup_Matrix3D__Rotate__EulerAngles(var*& out, var*& thetas, Rotation_Order order=XYZ)
+            {return act_Matrix3D__Rotate__EulerAngles(setup_Matrix3D__Easy, out, thetas[0], thetas[1], thetas[2], order);}
+        
+            /**
+             * @brief 设置 缩投(正交投影/平行投影)矩阵
+             * @param out        输出对象
+             * @param normal_x   投影面法线的x坐标
+             * @param normal_y   投影面法线的y坐标
+             * @param normal_z   投影面法线的z坐标
+             * @return 修改 out 并输出
+             */
+            inline var*& setup_Matrix3D__OrthographicProjection(var*& out, var normal_x, var normal_y, var normal_z)
+            {return act_Matrix3D__OrthographicProjection (setup_Matrix3D__Easy, out, normal_x, normal_y, normal_z);}
         
         // end  * setup * end  
 
@@ -246,91 +269,121 @@ namespace NML{
              * @param translate_z   z方向平移量
              * @return 修改 out 并输出
              */
-            inline var*& transform_Matrix3D__Translate             (var*& out, var translate_x, var translate_y=0, var translate_z=0)                {return act_Matrix3D__Translate             (transform_Matrix3D__Easy, out, translate_x, translate_y, translate_z);}
+            inline var*& transform_Matrix3D__Translate(var*& out, var translate_x, var translate_y=0, var translate_z=0)
+            {return act_Matrix3D__Translate(transform_Matrix3D__Easy, out, translate_x, translate_y, translate_z);}
             /**
              * @brief 设置 平移矩阵
-             * @param out           输出对象
+             * @param out                输出对象
              * @param translate_vector   平移向量
              * @return 修改 out 并输出
              */
-            inline var*& transform_Matrix3D__Translate             (var*& out, var*& translate_vector)                                               {return act_Matrix3D__Translate             (transform_Matrix3D__Easy, out, translate_vector[0], translate_vector[1], translate_vector[2]);}
+            inline var*& transform_Matrix3D__Translate(var*& out, var*& translate_vector)
+            {return act_Matrix3D__Translate(transform_Matrix3D__Easy, out, translate_vector[0], translate_vector[1], translate_vector[2]);}
             /**
              * @brief 矩阵 进行 缩放 变换
-             * @param out           输出对象
-             * @param scale_x       x 方向缩放值
-             * @param scale_y       y 方向缩放值
-             * @param scale_z       z 方向缩放值
+             * @param out       输出对象
+             * @param scale_x   x 方向缩放值
+             * @param scale_y   y 方向缩放值
+             * @param scale_z   z 方向缩放值
              * @return 修改 out 并输出
              */
-            inline var*& transform_Matrix3D__Scale                 (var*& out, var scale_x, var scale_y, var scale_z)                                 {return act_Matrix3D__Scale                 (transform_Matrix3D__Easy, out, scale_x, scale_y, scale_z);}
+            inline var*& transform_Matrix3D__Scale(var*& out, var scale_x, var scale_y, var scale_z)
+            {return act_Matrix3D__Scale(transform_Matrix3D__Easy, out, scale_x, scale_y, scale_z);}
             /**
              * @brief 矩阵 进行 缩放 变换
-             * @param out           输出对象
-             * @param scale         缩放值
+             * @param out     输出对象
+             * @param scale   缩放值
              * @return 修改 out 并输出
              */
-            inline var*& transform_Matrix3D__Scale                 (var*& out, var scale_value)                                                      {return act_Matrix3D__Scale                 (transform_Matrix3D__Easy, out, scale_value, scale_value, scale_value);}
+            inline var*& transform_Matrix3D__Scale(var*& out, var scale_value)
+            {return act_Matrix3D__Scale(transform_Matrix3D__Easy, out, scale_value, scale_value, scale_value);}
             /**
              * @brief 矩阵 进行 镜像 变换
-             * @param out           输出对象
-             * @param normal_x      镜像面的法向的 x 坐标
-             * @param normal_y      镜像面的法向的 y 坐标
-             * @param normal_z      镜像面的法向的 z 坐标
+             * @param out        输出对象
+             * @param normal_x   镜像面的法向的 x 坐标
+             * @param normal_y   镜像面的法向的 y 坐标
+             * @param normal_z   镜像面的法向的 z 坐标
              * @return 修改 out 并输出
              */
-            inline var*& transform_Matrix3D__Reflect               (var*& out, var normal_x, var normal_y, var normal_z)                             {return act_Matrix3D__Reflect               (transform_Matrix3D__Easy, out, normal_x, normal_y, normal_z);}
+            inline var*& transform_Matrix3D__Reflect(var*& out, var normal_x, var normal_y, var normal_z)
+            {return act_Matrix3D__Reflect(transform_Matrix3D__Easy, out, normal_x, normal_y, normal_z);}
             /**
              * @brief 矩阵 进行 镜像 变换
-             * @param out           输出对象
-             * @param normal_x      镜像轴法线方向上的 x 坐标
-             * @param normal_y      镜像轴法线方向上的 y 坐标
-             * @param normal_z      镜像轴法线方向上的 z 坐标
+             * @param out        输出对象
+             * @param normal_x   镜像轴法线方向上的 x 坐标
+             * @param normal_y   镜像轴法线方向上的 y 坐标
+             * @param normal_z   镜像轴法线方向上的 z 坐标
              * @return 修改 out 并输出
              */
-            inline var*& transform_Matrix3D__Reflect__Collinear    (var*& out, var normal_x, var normal_y, var normal_z)                             {return act_Matrix3D__Reflect__Collinear    (transform_Matrix3D__Easy, out, normal_x, normal_y, normal_z);}
+            inline var*& transform_Matrix3D__Reflect__Collinear(var*& out, var normal_x, var normal_y, var normal_z)
+            {return act_Matrix3D__Reflect__Collinear(transform_Matrix3D__Easy, out, normal_x, normal_y, normal_z);}
             /**
              * @brief 矩阵 进行 切变 变换
-             * @param out           输出对象
-             * @param axis          切变方向
-             * @param k             切变系数
+             * @param out    输出对象
+             * @param axis   切变方向
+             * @param k      切变系数
              * @return 修改 out 并输出
              */
-            inline var*& transform_Matrix3D__Shear                 (var*& out, Plane_3D plane, var k1, var k2)                                       {return act_Matrix3D__Shear                 (transform_Matrix3D__Easy, out, plane, k1, k2);}
+            inline var*& transform_Matrix3D__Shear(var*& out, Plane_3D plane, var k1, var k2)
+            {return act_Matrix3D__Shear(transform_Matrix3D__Easy, out, plane, k1, k2);}
             /**
              * @brief 矩阵 进行 旋转 变换  (使用旋转轴)
-             * @param out           输出对象
-             * @param theta         旋转量
-             * @param axis          旋转轴
+             * @param out     输出对象
+             * @param theta   旋转量
+             * @param axis    旋转轴
              * @return 修改 out 并输出
              */
-            inline var*& transform_Matrix3D__Rotate                (var*& out, var theta, Axis axis=X)                                               {return act_Matrix3D__Rotate                (transform_Matrix3D__Easy, out, theta, axis);}
+            inline var*& transform_Matrix3D__Rotate(var*& out, var theta, Axis axis=X)
+            {return act_Matrix3D__Rotate(transform_Matrix3D__Easy, out, theta, axis);}
             /**
              * @brief 矩阵 进行 旋转 变换  (使用四元数)
-             * @param out           输出对象
-             * @param quat          四元数
+             * @param out    输出对象
+             * @param quat   四元数
              * @return 修改 out 并输出
              */
-            inline var*& transform_Matrix3D__Rotate_Quaternion     (var*& out, var*& quat)                                                           {return act_Matrix3D__Rotate__Quaternion    (transform_Matrix3D__Easy, out, quat);}
-            inline var*& transform_Matrix3D__Rotate_Quaternion     (var*& out, var x, var y, var z, var w)                                           {return act_Matrix3D__Rotate__Quaternion    (transform_Matrix3D__Easy, out, x, y, z, w);}
+            inline var*& transform_Matrix3D__Rotate_Quaternion(var*& out, var*& quat)
+            {return act_Matrix3D__Rotate__Quaternion(transform_Matrix3D__Easy, out, quat);}
+            /**
+             * @brief 矩阵 进行 旋转 变换  (使用四元数)
+             * @param out   输出对象
+             * @param x     四元数的x参数
+             * @param y     四元数的y参数
+             * @param z     四元数的z参数
+             * @param w     四元数的w参数
+             * @return 修改 out 并输出
+             */
+            inline var*& transform_Matrix3D__Rotate_Quaternion(var*& out, var x, var y, var z, var w)
+            {return act_Matrix3D__Rotate__Quaternion(transform_Matrix3D__Easy, out, x, y, z, w);}
             /**
              * @brief 矩阵 进行 旋转 变换  (使用欧拉角)
-             * @param out           输出对象
-             * @param thetas_1      第1次旋转量
-             * @param thetas_2      第2次旋转量
-             * @param thetas_3      第3次旋转量
-             * @param order         旋转轴顺序
+             * @param out        输出对象
+             * @param thetas_1   第1次旋转量
+             * @param thetas_2   第2次旋转量
+             * @param thetas_3   第3次旋转量
+             * @param order      旋转轴顺序
              * @return 修改 out 并输出
              */
-            inline var*& transform_Matrix3D__Rotate__EulerAngles   (var*& out, var thetas_1, var thetas_2, var thetas_3, Rotation_Order order=XYZ)   {return act_Matrix3D__Rotate__EulerAngles   (transform_Matrix3D__Easy, out, thetas_1, thetas_2, thetas_3, order);}
+            inline var*& transform_Matrix3D__Rotate__EulerAngles(var*& out, var thetas_1, var thetas_2, var thetas_3, Rotation_Order order=XYZ)
+            {return act_Matrix3D__Rotate__EulerAngles(transform_Matrix3D__Easy, out, thetas_1, thetas_2, thetas_3, order);}
             /**
              * @brief 矩阵 进行 旋转 变换 (使用欧拉角)
-             * @param out           输出对象
-             * @param thetas        按顺序的旋转量
-             * @param order         旋转轴顺序
+             * @param out      输出对象
+             * @param thetas   按顺序的旋转量
+             * @param order    旋转轴顺序
              * @return 修改 out 并输出
              */
-            inline var*& transform_Matrix3D__Rotate__EulerAngles   (var*& out, var*& thetas, Rotation_Order order=XYZ)                               {return act_Matrix3D__Rotate__EulerAngles   (transform_Matrix3D__Easy, out, thetas[0], thetas[1], thetas[2], order);}
-        
+            inline var*& transform_Matrix3D__Rotate__EulerAngles(var*& out, var*& thetas, Rotation_Order order=XYZ)
+            {return act_Matrix3D__Rotate__EulerAngles(transform_Matrix3D__Easy, out, thetas[0], thetas[1], thetas[2], order);}
+            /**
+             * @brief 设置 缩投(正交投影/平行投影)矩阵
+             * @param out        输出对象
+             * @param normal_x   投影面法线的x坐标
+             * @param normal_y   投影面法线的y坐标
+             * @param normal_z   投影面法线的z坐标
+             * @return 修改 out 并输出
+             */
+            inline var*& transform_Matrix3D__OrthographicProjection(var*& out, var normal_x, var normal_y, var normal_z)
+            {return act_Matrix3D__OrthographicProjection (transform_Matrix3D__Easy, out, normal_x, normal_y, normal_z);}
         // end  * transform * end 
 
     }

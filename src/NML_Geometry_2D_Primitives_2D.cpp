@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-09-19 18:10:45
+ * @LastEditTime: 2023-10-30 10:16:52
  * @FilePath: \CNML\src\NML_Geometry_2D_Primitives.cpp
  * @Description: 2D 图元 相关内容
  * @
@@ -62,30 +62,45 @@ namespace NML{
             // open * 弧形图元 * open
 
                 var Primitive_2D__Arc::calc_Girth(){
-                    // todo
-                    return 0;
+                    switch(auto_close){
+                        case 2:    return data->r*DEG_360;                     break;
+                        case 1:    return get_ArcLength()+get_ChordLength();   break;
+                        default:   return get_ArcLength();                     break;
+                    }
+                }
+
+                var Primitive_2D__Arc::get_ArcLength(){ 
+                    if(arc_length<0){
+                        arc_length=calc_ArcLength();
+                    }
+                    return arc_length;
+                }
+                var Primitive_2D__Arc::get_ChordLength(){ 
+                    if(chord_length<0){
+                        chord_length=calc_ChordLength();
+                    }
+                    return chord_length;
                 }
 
                 var Primitive_2D__Arc::calc_ArcLength(){
-                    // todo
-                    return 0;
+                    return data->r*abs(data->theta_0 - data->theta_1);
                 }
 
                 var Primitive_2D__Arc::calc_ChordLength(){
-                    // get_Chord__Local();
-                    return 0;
+                    return calc_LineLength(get_local_chord());
                 }
 
-                Line_Data_2D Primitive_2D__Arc::get_Chord__Local(){
-                    if(!had__chord__local){
-                        chord__local= load_Chord__Local();
-                        had__chord__local = true;
+                Line_Data_2D Primitive_2D__Arc::get_local_chord(){
+                    if(!had__local_chord){
+                        local_chord= calc_local_chord();
+                        had__local_chord = true;
                     }
-                    return chord__local;
+                    return local_chord;
                 }
 
-                Line_Data_2D Primitive_2D__Arc::load_Chord__Local(){
+                Line_Data_2D Primitive_2D__Arc::calc_local_chord(){
                     Line_Data_2D rtn;
+                    normalize_ArcData(data);
                     var& r=data->r;
                     return {
                         x0: cos(data->theta_0)*r,   y0: sin(data->theta_0)*r,
@@ -104,7 +119,7 @@ namespace NML{
 
                     AABB_2D rtn={0, 0, 0, 0};
                     var& r= data->r;
-                    Line_Data_2D chord=get_Chord__Local();
+                    Line_Data_2D chord=get_local_chord();
 
                     bool f = angle>DEG_180,
                         f1 = chord.x0>=0,   f2 = chord.y0>=0,

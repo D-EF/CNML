@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-09-23 09:22:21
+ * @LastEditTime: 2023-10-30 10:23:12
  * @FilePath: \CNML\src\NML_Geometry_2D_Primitives_2D.hpp
  * @Description: 2D 图元 相关内容
  * @
@@ -38,7 +38,10 @@ namespace NML{
                 /** @brief 缓存的图元生成的多边形, points_length 将作为采样次数 */
                 Points_Iterator *polygon;
 
-                /** 自动闭合图元路径, 在不同类型图元内可能有不同处理方式, 矩形 */
+                /** 自动闭合图元路径, 在不同类型图元内可能有不同处理方式
+                 * @p 矩形: 常闭合的
+                 * @p 弧形: [ 0:不自动闭合, 1:使用弦闭合, 2:作为整圆 ]
+                 */
                 char auto_close;
 
                 /** @brief 表示缓存的 aabb 是否可用 */
@@ -208,9 +211,42 @@ namespace NML{
             // todo
             /** 弧形 图元对象, 旋转量大于整圆将认作为整圆 */
             class Primitive_2D__Arc: public Primitive_2D{
+                /** @brief 椭圆的数据 */
                 Arc_Data *data;
+                /** @brief 椭圆的弧长, <0 表示未计算 */
+                var arc_length;
+                /** @brief 椭圆的弦长, <0 表示未计算 */
+                var chord_length;
 
-                Primitive_2D__Arc(Arc_Data *data=0):data(data){}
+                Primitive_2D__Arc(Arc_Data *data=0):data(data),arc_length(-1),chord_length(-1){}
+
+                /** 获取 弧形弧长 */
+                var get_ArcLength();
+                
+                /** 获取 弧形弦长 */
+                var get_ChordLength();
+                
+                /** 弧形是否闭合: 检查是弧形旋转量是否大于整圆 */
+                inline bool check_Close(){return fabs(data->theta_0-data->theta_1)>CYCLES;}
+                
+                /** 获取局部坐标的弧形的弦信息(端点相对于圆心的位置)*/
+                Line_Data_2D get_local_chord();
+
+                /** 计算局部坐标的弧形的弦信息(端点相对于圆心的位置)*/
+                Line_Data_2D calc_local_chord();
+
+                /** 局部坐标的弧形的弦信息(端点相对于圆心的位置)*/
+                Line_Data_2D local_chord;
+
+                /** local_chord 是否可用*/
+                bool had__local_chord;
+
+                Primitive_2D__Arc():had__local_chord(false){}
+
+                inline void giveUp_AllCache(){
+                    had__local_chord=false;
+                    Primitive_2D::giveUp_AllCache();
+                }
 
                 /** @brief 计算弧形周长  */
                 var calc_Girth();
@@ -220,28 +256,6 @@ namespace NML{
                 
                 /** @brief 计算弧形弦长  */
                 var calc_ChordLength();
-                
-                /** 弧形是否闭合: 检查是弧形旋转量是否大于整圆 */
-                inline bool check_Close(){return fabs(data->theta_0-data->theta_1)>CYCLES;}
-                
-                /** 获取局部坐标的弧形的弦信息(端点相对于圆心的位置)*/
-                Line_Data_2D get_Chord__Local();
-
-                /** 计算局部坐标的弧形的弦信息(端点相对于圆心的位置)*/
-                Line_Data_2D load_Chord__Local();
-
-                /** 局部坐标的弧形的弦信息(端点相对于圆心的位置)*/
-                Line_Data_2D chord__local;
-
-                /** chord__local 是否可用*/
-                bool had__chord__local;
-
-                Primitive_2D__Arc():had__chord__local(false){}
-
-                inline void giveUp_AllCache(){
-                    had__chord__local=false;
-                    Primitive_2D::giveUp_AllCache();
-                }
 
                 /**
                  * @brief 获取采样次数(多边形代理的可用长度)
@@ -261,17 +275,25 @@ namespace NML{
                 }
 
                 AABB_2D calc_LocalAABB();
-
             };
-            
-// todo
+
+            // todo
             /** 椭圆弧线 图元对象, 旋转量大于整圆将认作为整圆 */
             class Primitive_2D__Ellipse_Arc: public Primitive_2D{
+                /** @brief 椭圆的数据 */
                 Ellipse_Arc_Data *data;
-                
+                /** @brief 椭圆的焦点 */
+                Line_Data_2D focus;
+                /** @brief 椭圆的焦距 */
+                var focal_length;
+                /** @brief 椭圆的缩放比 */
+                var scale_value;
+
+                AABB_2D calc_LocalAABB();
+
                 /**
                  * @brief 设置生成 拟合椭圆弧线图元的线段路径时的采样次数, 值越高表示精度越高
-                 * @param size size+1 将作为采样次数 (多出的点用于自动闭合路径)
+                 * @param size size+1 将作为最大采样次数 (多出的点用于自动闭合路径)
                  */
                 Idx set_SampleSize(Idx size){
                     had__polygon=false;

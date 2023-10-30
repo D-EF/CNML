@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-10-11 19:46:13
+ * @LastEditTime: 2023-10-28 18:06:15
  * @FilePath: \cnml\src\NML.hpp
  * @Description: Nittle Math Library 简单数学库
  * 
@@ -103,6 +103,7 @@ namespace NML{
     
     extern const var PI, DEG, DEG_90, CYCLES;
     extern const var &DEG_180;
+    extern const var &DEG_360;
     extern const var ONE_OVER_THREE;
     extern const var FOUR_OVER_THREE;
 
