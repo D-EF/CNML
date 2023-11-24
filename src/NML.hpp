@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-10-28 18:06:15
+ * @LastEditTime: 2023-11-24 14:14:33
  * @FilePath: \cnml\src\NML.hpp
  * @Description: Nittle Math Library 简单数学库
  * 
@@ -63,6 +63,8 @@ namespace NML{
     typedef __NML_ALGEBRA_INDEX_TYPE__ Idx_Algebra;
     /** @brief 默认容差 */
     extern const var NML_TOLERANCE;
+    /** 1 - 默认容差 */
+    extern const var NML_TOLERANCE_D1;
     /** @brief 默认采样精度种子 */
     extern const Idx SAMPLE_SIZE_SEED;
     /** @brief 默认采样精度步长 */
@@ -212,7 +214,7 @@ namespace NML{
      * @brief 打印点云数据
      * @param points    点云数据访问器
      */
-    void printf_Points(Points_Iterator &points);
+    void printf_Points(Points_Iterator& points);
 
 
     /**

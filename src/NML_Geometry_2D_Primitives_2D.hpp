@@ -96,7 +96,7 @@ namespace NML{
                  * @param point 点的[x, y]坐标
                  * @return 返回 {0, 1, 2} 表示 [ 不在内部, 在内部, 在边上 ]; 如果图元为非闭合图元, 将始终返回0.
                  */
-                inline char check_Inside__Loc(var *point){return this->check_Inside__Local__P(point[0], point[1]);}
+                inline char check_Inside__Loc(var* point){return this->check_Inside__Local__P(point[0], point[1]);}
                 
                 /**
                  * @brief 判断点是否在图元内部
@@ -227,7 +227,7 @@ namespace NML{
                 var get_ChordLength();
                 
                 /** 弧形是否闭合: 检查是弧形旋转量是否大于整圆 */
-                inline bool check_Close(){return fabs(data->theta_0-data->theta_1)>CYCLES;}
+                inline bool check_Close(){return abs(data->theta_0-data->theta_1)>CYCLES;}
                 
                 /** 获取局部坐标的弧形的弦信息(端点相对于圆心的位置)*/
                 Line_Data_2D get_local_chord();

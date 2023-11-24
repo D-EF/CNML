@@ -23,9 +23,9 @@ namespace NML{
 
         class Triangles_Mesh{
             /** @brief 点云数据 */
-            Points_Iterator* point_cloud_data;
+            Points_Iterator *point_cloud_data;
             /** 索引集合 */
-            Idx* id;
+            Idx *id;
         };
     }
 }

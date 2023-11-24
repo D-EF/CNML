@@ -15,7 +15,7 @@ namespace NML{
     namespace Matrix{
         
         var*& transform_Matrix(var*& action_target, Transform_Matrix_Flow*& act_flow_entrance){
-            Transform_Matrix_Flow* doing_act = act_flow_entrance;
+            Transform_Matrix_Flow *doing_act = act_flow_entrance;
             do{
                 doing_act->act->transform(action_target);
                 doing_act=doing_act->next;

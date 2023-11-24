@@ -34,9 +34,9 @@ namespace NML{
         /** @brief 矩阵变换的过程 */
         typedef struct Transform_Matrix_Flow{
             /** @brief 当前要进行的矩阵变换操作 */
-            Transform_Matrix_Action* act;
+            Transform_Matrix_Action *act;
             /** @brief 下一次进行的矩阵变换 */
-            Transform_Matrix_Flow* next;
+            Transform_Matrix_Flow *next;
         } Transform_Matrix_Flow;
 
         /** 

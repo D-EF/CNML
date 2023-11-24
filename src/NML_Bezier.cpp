@@ -14,14 +14,14 @@
 
 namespace NML{
     namespace Bezier{
-        var *&sample_Bezier__DeCasteljau(var *&out, Points_Iterator& points, var t){
+        var *&sample_Bezier__DeCasteljau(var*& out, Points_Iterator& points, var t){
             if(points.points_length>1){
                 Points_Iterator__1DList new_points=Points_Iterator__1DList(points.dimensional, points.points_length-1);
                 var td=1-t;
                 for(int i=0;  i>=0;  --i){
-                    var* temp_point__new=new_points[i];
-                    var* temp_point__low=points[i];
-                    var* temp_point__low1=points[i+1];
+                    var *temp_point__new=new_points[i];
+                    var *temp_point__low=points[i];
+                    var *temp_point__low1=points[i+1];
                     for(int j=0;  j<points.dimensional;  ++j){
                         temp_point__new[j]=td*temp_point__low[j]+t*temp_point__low1[j];
                     }
@@ -42,7 +42,7 @@ namespace NML{
         Bezier_Calc_Matrix* _last_load_bezier_calc_matrix=&_BEZIER_CALC_MATRIX;
 
         int* get_BezierCalcMatrix(Idx_Algebra n){
-            Bezier_Calc_Matrix* ptr__move, *ptr__static;
+            Bezier_Calc_Matrix *ptr__move, *ptr__static;
             ptr__move=ptr__static = _last_load_bezier_calc_matrix;
             while (!(n==ptr__move->size||ptr__move->next==ptr__static)){
                 ptr__move=ptr__move->next;
@@ -74,12 +74,12 @@ namespace NML{
         Points_Iterator& setup_BezierCoefficients(Points_Iterator& out, Points_Iterator& points){
             const Idx n=out.points_length-1;
             Idx_Algebra &dimensional=out.dimensional;
-            int* _bezier_calc_matrix=get_BezierCalcMatrix(n);
-            var* editing_target;
+            int *_bezier_calc_matrix=get_BezierCalcMatrix(n);
+            var *editing_target;
             var *temp=new var[dimensional];
             Idx i, j, idx_m=0;
             for(i=0;  i<=n;  ++i){
-                var* cnm=points[i];
+                var *cnm=points[i];
                 editing_target=out[i];
                 std::fill_n(temp, dimensional, 0);
                 for(j=0;  j<=i;  ++j, ++idx_m){
@@ -95,12 +95,12 @@ namespace NML{
         }
         
 
-        var*& sample_Bezier__Coefficients(var *&out, Points_Iterator& coefficients, var t){
+        var*& sample_Bezier__Coefficients(var*& out, Points_Iterator& coefficients, var t){
             Idx_Algebra &dimensional=coefficients.dimensional;
             std::fill_n(out, dimensional, 0);
             var temp;
             for(Idx i=0;  i<coefficients.points_length;  ++i){
-                var* line=coefficients[i];
+                var *line=coefficients[i];
                 temp=pow(t, i);
                 for(Idx_Algebra d=0;  d<dimensional;  ++d){
                     out[d]+=temp*line[d];

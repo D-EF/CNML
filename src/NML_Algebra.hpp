@@ -50,7 +50,7 @@ namespace NML{
          * @param length_coefficients coefficients 的长度
          * @return 返回导数的各次幂的系数 [1, dt^1, dt^2, dt^3, ...] 长度会比形参少 1
          */
-        var*& calc_Derivative__OneUnitaryRealParameterFunction(var *&out, var *coefficients, Idx_Algebra length_coefficients);
+        var*& calc_Derivative__OneUnitaryRealParameterFunction(var*& out, var* coefficients, Idx_Algebra length_coefficients);
             // 一元多次函数:
             //         coefficients.length
             //  F(t) = ∑ t^i*c[i]
@@ -63,7 +63,7 @@ namespace NML{
          * @param  out 输出对象{ x , y }
          * @return 返回计算状态:{ 0: 正常相交, 1:无解(平行), 2无限解(重合) } 
          */
-        Idx_Algebra calc_RootsOfSquare(var *&out, var z1, var o1, var z2, var o2, var z3, var o3, var z4, var o4);
+        Idx_Algebra calc_RootsOfSquare(var*& out, var z1, var o1, var z2, var o2, var z3, var o3, var z4, var o4);
 
         /** 
          * @brief 解一元三次方程, ax^3+bx^2+cx+d=0

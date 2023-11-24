@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-09-08 16:40:23
+ * @LastEditTime: 2023-11-24 14:18:36
  * @FilePath: \cnml\src\NML_Algebra.cpp
  * @Description: 数与代数 运算相关
  * @
@@ -53,7 +53,7 @@ namespace NML{
         }
 
 
-        var*& calc_Derivative__OneUnitaryRealParameterFunction(var *&out, var *coefficients, Idx_Algebra length_coefficients){
+        var*& calc_Derivative__OneUnitaryRealParameterFunction(var*& out, var* coefficients, Idx_Algebra length_coefficients){
             Idx_Algebra l=length_coefficients-1, i;
             for(i=1;  i<=l;  ++i){
                 out[i-1]=coefficients[i]*i;
@@ -65,7 +65,7 @@ namespace NML{
             return value < 0?-pow(-value, ONE_OVER_THREE) : pow(value, ONE_OVER_THREE);
         }
 
-        Idx_Algebra calc_RootsOfSquare(var *&out, var z1, var o1, var z2, var o2, var z3, var o3, var z4, var o4){
+        Idx_Algebra calc_RootsOfSquare(var*& out, var z1, var o1, var z2, var o2, var z3, var o3, var z4, var o4){
             var pd=(o1*o4 - o2*o3);
             if(check_Zero(pd)){
                 if((z1-z2)*o2==(z3-z4)*o4){

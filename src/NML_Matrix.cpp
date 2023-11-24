@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-09-13 18:00:42
+ * @LastEditTime: 2023-11-24 15:15:14
  * @FilePath: \cnml\src\NML_Matrix.cpp
  * @Description: 矩阵 Matrix
  * @
@@ -298,7 +298,7 @@ namespace NML{
 
         var calc_Det__Transformation(var*& mat, Idx_VM n){
             const Idx_VM length=n*n;
-            var* temp_mat=create_Values__Clone(mat, length);
+            var *temp_mat=create_Values__Clone(mat, length);
             var temp, det=1;
             Idx_VM _n=n-1;
 
@@ -333,13 +333,13 @@ namespace NML{
 
         bool setup_Matrix__Inverse__Transformation(var*& out, var*& mat, Idx_VM n){
             Idx_VM length=n*n;
-            var* temp_mat=create_Values__Clone(mat, length);
+            var *temp_mat=create_Values__Clone(mat, length);
             
             // printf_Matrix(temp_mat, n);
 
             // 初始化 out 为增广矩阵
             setup_Matrix__Identity(out, n, n);
-            var** mats=new var*[2]{temp_mat, out};
+            var **mats=new var*[2]{temp_mat, out};
             
             for(Idx_VM uv=0; uv<n; ++uv){
                 Idx_VM index_v=uv*n;
@@ -351,7 +351,6 @@ namespace NML{
                     delete mats;
                     return false;
                 }
-
                 transformation__ScaleRow(mats, 2, n, uv, 1/mats[0][index_mat__uv]);
 
                 for(Idx_VM i=0, index=0;  i<n;  ++i, index+=n){
@@ -362,7 +361,6 @@ namespace NML{
                         out[index+j]      -= k * out     [index_v+j];
                     }
                 }
-                
             }
 
             delete temp_mat;

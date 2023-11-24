@@ -24,7 +24,7 @@ namespace NML{
          * @param t                 时间参数 t
          * @return 修改并返回 out
          */
-        var *&sample_Bezier__DeCasteljau(var *&out, Points_Iterator& points, var t);
+        var *&sample_Bezier__DeCasteljau(var*& out, Points_Iterator& points, var t);
         
 
         typedef Link_Block__Int Bezier_Calc_Matrix;
@@ -52,7 +52,7 @@ namespace NML{
          * @param t              时间参数t
          * @return 修改并返回 out (采样点)
          */
-        var*& sample_Bezier__Coefficients(var *&out, Points_Iterator& coefficients, var t);
+        var*& sample_Bezier__Coefficients(var*& out, Points_Iterator& coefficients, var t);
 
 
         /**

@@ -54,7 +54,7 @@ namespace NML{
          * @return 返回一个 new var[width*height]对象
          */
         inline var* create_Matrix__Identity(Idx_VM width, Idx_VM height){
-            var* out=new var[width*height];
+            var *out=new var[width*height];
             setup_Matrix__Identity(out, width, height);
             return out;
         }

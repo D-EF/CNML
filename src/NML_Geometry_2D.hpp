@@ -444,7 +444,7 @@ namespace NML{
              * @param point_1 线段端点1 的x坐标
              * @return 返回计算的长度值
              */
-            inline var calc_LineLength(var *point_0, var *point_1){ return calc_LineLength(point_0[0], point_0[1], point_1[0], point_1[1]);}
+            inline var calc_LineLength(var* point_0, var* point_1){ return calc_LineLength(point_0[0], point_0[1], point_1[0], point_1[1]);}
 
             /**
              * @brief 计算线段长度

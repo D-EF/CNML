@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-20 00:58:11
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-09-18 17:00:08
+ * @LastEditTime: 2023-11-24 14:35:07
  * @FilePath: \CNML\src\test.cpp
  * @Description: 2d图元 单元测试
  * @
@@ -49,7 +49,7 @@ int main(){
     test_2d_transform[2]->transform(r->transform_matrix);
     test_2d_transform[3]->transform(r->transform_matrix);
 
-    var* pg=new var[2]{123, 200};
+    var *pg=new var[2]{123, 200};
 
     printf("\n%d%d%d%d%d%d\n",
         r->check_Inside__Loc(pg),

@@ -41,7 +41,7 @@ namespace NML{
 
         bool is_Zero(Idx_VM length, var*& vec, var _tolerance){
             for(Idx_VM i=0; i<length; ++i){
-                if(fabs(vec[i])>_tolerance) return false;
+                if(abs(vec[i])>_tolerance) return false;
             }
             return true;
         }

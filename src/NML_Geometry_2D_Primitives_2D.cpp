@@ -101,7 +101,7 @@ namespace NML{
                 Line_Data_2D Primitive_2D__Arc::calc_local_chord(){
                     Line_Data_2D rtn;
                     normalize_ArcData(data);
-                    var& r=data->r;
+                    var &r=data->r;
                     return {
                         x0: cos(data->theta_0)*r,   y0: sin(data->theta_0)*r,
                         x1: cos(data->theta_1)*r,   y1: sin(data->theta_1)*r
@@ -109,7 +109,7 @@ namespace NML{
                 }
 
                 AABB_2D Primitive_2D__Arc::calc_LocalAABB(){
-                    var angle=fabs(data->theta_1-data->theta_0);
+                    var angle=abs(data->theta_1-data->theta_0);
                     if(angle>=CYCLES){
                         return {
                             x0 : data->cx - data->r,   y0 : data->cy - data->r,
@@ -118,7 +118,7 @@ namespace NML{
                     }
 
                     AABB_2D rtn={0, 0, 0, 0};
-                    var& r= data->r;
+                    var &r= data->r;
                     Line_Data_2D chord=get_local_chord();
 
                     bool f = angle>DEG_180,

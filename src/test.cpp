@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-20 00:58:11
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-10-08 19:58:40
+ * @LastEditTime: 2023-11-24 14:30:41
  * @FilePath: \CNML\src\test.cpp
  * @Description: 单元测试
  * @
@@ -177,20 +177,20 @@ namespace Test_Vector{
     using namespace Vector;
     using namespace NML;
     
-    var* vec1=new var[3]{123.0, 456.0, 789.0};
-    var* vec2=new var[3]{3.0, 2.0, 1.0};
-    var* unit__vec1=new var[3]{0.13375998748853218, 0.49589068532333885,  0.8580213831581455};
-    var* unit__vec2=new var[3]{0.8017837257372732,  0.5345224838248488,   0.2672612419124244};
+    var *vec1=new var[3]{123.0, 456.0, 789.0};
+    var *vec2=new var[3]{3.0, 2.0, 1.0};
+    var *unit__vec1=new var[3]{0.13375998748853218, 0.49589068532333885,  0.8580213831581455};
+    var *unit__vec2=new var[3]{0.8017837257372732,  0.5345224838248488,   0.2672612419124244};
 
     var mag__vec_1=919.5575022803088;
     var mag__vec_2=3.7416573867739413;
 
     void test_AllFnc(){
-        var* vec_zero=new var[3]{0, 0, 0};
-        var* vec_zero__f=create_Values__Clone(unit__vec1, 3);
+        var *vec_zero=new var[3]{0, 0, 0};
+        var *vec_zero__f=create_Values__Clone(unit__vec1, 3);
 
-        var* temp   =new var[3];
-        var* temp1  =new var[3];
+        var *temp   =new var[3];
+        var *temp1  =new var[3];
 
         np(vec_zero__f, 3, NML_TOLERANCE*0.1);
 
@@ -270,23 +270,23 @@ namespace Test_Vector{
 namespace Test_Matrix{
     using namespace Matrix;
     
-    var* m4=new var[16]{
+    var *m4=new var[16]{
         15,   1,    2,   3,   
         4,    10,   5,   6,   
         7,    6,    5,   4,   
         3,    2,    1,   -1
     };
 
-    var* m4_i=new var[16]{
+    var *m4_i=new var[16]{
         0.07547169811320754,    0.012006861063464836,   -0.05660377358490566,   0.07204116638078903,
         0.018867924528301886,   0.20754716981132076,    -0.2641509433962264,    0.24528301886792453,
         -0.18867924528301888,   -0.3481989708404803,    0.6415094339622641,     -0.08919382504288165,
         0.07547169811320754,    0.10291595197255575,    -0.05660377358490566,   -0.38250428816466553
     };
 
-    var* m3=new var[9]{9, 8, 7, 6, 5, 4, 3, 2, 1};
+    var *m3=new var[9]{9, 8, 7, 6, 5, 4, 3, 2, 1};
 
-    var* m2=new var[4]{1, 2, 3, 4};
+    var *m2=new var[4]{1, 2, 3, 4};
 
 
     void test_AllFnc__Matrix();
@@ -299,49 +299,49 @@ namespace Test_Matrix{
     }
     void test_AllFnc__Matrix(){
         printf("\n\n start testing NML_Matrix's function.\n");
-        var* temp_m3=new var[9];
-        var* temp_m3_1=new var[9];
-        var* temp_m3_i=new var[9]{1, 0, 0, 0, 1, 0, 0, 0, 1};
-        var* m3__m3xm3=new var[9]{
+        var *temp_m3=new var[9];
+        var *temp_m3_1=new var[9];
+        var *temp_m3_i=new var[9]{1, 0, 0, 0, 1, 0, 0, 0, 1};
+        var *m3__m3xm3=new var[9]{
             150,   126,   102,
             96,    81,    66,
             42,    36,    30
         };
-        var* m3__orthogonal=new var[9]{
+        var *m3__orthogonal=new var[9]{
              1,    4,   -5,
             -4,    2,    6,
              5,   -6,    3
         };
-        var* m3__orthogonal_i=new var[9]{
+        var *m3__orthogonal_i=new var[9]{
              1,   -4,    5,
              4,    2,   -6,
             -5,    6,    3
         };
         
-        var* m3__router_x22deg=new var[9]{
+        var *m3__router_x22deg=new var[9]{
              1,    0,           0,
              0,    0.927184,   -0.374607,
              0,    0.374607,    0.927184
         };
         
-        var* m3__router_x22deg_i=new var[9]{
+        var *m3__router_x22deg_i=new var[9]{
              1,    0,           0,
              0,    0.927184,    0.374607,
              0,   -0.374607,    0.927184
         };
-        var* temp_m3__setup_m2_t11=new var[9]{1, 0, 0, 0, 1, 2, 0, 3, 4};
-        var* temp_m2=new var[4];
-        var* temp_m2_i=new var[4]{1, 0, 0, 1};
+        var *temp_m3__setup_m2_t11=new var[9]{1, 0, 0, 0, 1, 2, 0, 3, 4};
+        var *temp_m2=new var[4];
+        var *temp_m2_i=new var[4]{1, 0, 0, 1};
 
-        var** m2x4=new var*[4]{m2, m2, m2, m2};
-        var* temp_m4=new var[16];
-        var* m4__m2_tx_m2=new var[16]{
+        var **m2x4=new var*[4]{m2, m2, m2, m2};
+        var *temp_m4=new var[16];
+        var *m4__m2_tx_m2=new var[16]{
             1,   2,    2,    4,
             3,   4,    6,    8,
             3,   6,    4,    8,
             9,   12,   12,   16
         };
-        var* m4__m2x4=new var[16]{
+        var *m4__m2x4=new var[16]{
             1,   2,   1,   2,
             3,   4,   3,   4,
             1,   2,   1,   2,
@@ -401,10 +401,10 @@ namespace Test_Matrix{
     }
     
     void test_transformation(){
-        var* t_m4=create_Values__Clone(m4, 16);
-        var* t_m4_1=create_Values__Clone(m4, 16);
-        var* t_m4_2=create_Values__Clone(m4, 16);
-        var** m4s=new var*[2]{t_m4_1, t_m4_2};
+        var *t_m4=create_Values__Clone(m4, 16);
+        var *t_m4_1=create_Values__Clone(m4, 16);
+        var *t_m4_2=create_Values__Clone(m4, 16);
+        var **m4s=new var*[2]{t_m4_1, t_m4_2};
 
         auto start_time = high_resolution_clock::now();
 
@@ -433,7 +433,7 @@ namespace Test_Matrix{
         delete m4s;
     }
     
-    var* test_m2d__setup[4]={
+    var *test_m2d__setup[4]={
         new var[9]{1, 2, 0, 3, 4, 0, 5, 6, 1},
         new var[9]{1, 3, 5, 2, 4, 6, 0, 0, 1},
         new var[6]{1, 2, 3, 4, 5, 6},
@@ -441,7 +441,7 @@ namespace Test_Matrix{
     };
 
     
-    var* test_m2d__transform_987654[4]={
+    var *test_m2d__transform_987654[4]={
         new var[9]{23, 20, 0, 55, 48, 0, 92, 80, 1},
         new var[9]{23, 55, 92, 20, 48, 80, 0, 0, 1},
         new var[6]{23, 20, 55, 48, 92, 80},
@@ -462,7 +462,7 @@ namespace Test_Matrix{
         set_NMLConfig__using_m2d_type(type);
         int l=m2d_w*m2d_h;
 
-        var* t_m2d= new var[l];
+        var *t_m2d= new var[l];
         char *ss, *st;
         switch (type)
         {
@@ -492,16 +492,16 @@ namespace Test_Matrix{
         check_Test(check_Equal(l, test_m2d__transform_987654[type], t_m2d), st);
         // printf_Matrix(t_m2d, m2d_w, m2d_h);
         
-        var* s_test_m2d__Translate_123_321    =new var[l];
-        var* s_test_m2d__Scale_1d234_5d678    =new var[l];
-        var* s_test_m2d__Rotate_9d876         =new var[l];
-        var* s_test_m2d__Reflect_4_7       =new var[l];
-        var* s_test_m2d__Shear_2_1_2          =new var[l];
+        var *s_test_m2d__Translate_123_321    =new var[l];
+        var *s_test_m2d__Scale_1d234_5d678    =new var[l];
+        var *s_test_m2d__Rotate_9d876         =new var[l];
+        var *s_test_m2d__Reflect_4_7       =new var[l];
+        var *s_test_m2d__Shear_2_1_2          =new var[l];
 
-        var* s_test_m2d__ts      =new var[l];
-        var* s_test_m2d__tsr     =new var[l];
-        var* s_test_m2d__tsrh    =new var[l];
-        var* s_test_m2d__tsrhs   =new var[l];
+        var *s_test_m2d__ts      =new var[l];
+        var *s_test_m2d__tsr     =new var[l];
+        var *s_test_m2d__tsrh    =new var[l];
+        var *s_test_m2d__tsrhs   =new var[l];
 
         // init test transform matrix
             setup_Matrix2D(s_test_m2d__Translate_123_321,
@@ -598,7 +598,7 @@ namespace Test_Matrix{
     }
 
 
-    var* test_m3d__setup[4]={
+    var *test_m3d__setup[4]={
         new var[16]{
             1,    2,    3,    0,
             4,    5,    6,    0,
@@ -624,7 +624,7 @@ namespace Test_Matrix{
         },
     };
 
-    var* test_m3d__transform_9down[4]={
+    var *test_m3d__transform_9down[4]={
         new var[16]{
             30,    24,    18,    0,
             84,    69,    54,    0,
@@ -688,7 +688,7 @@ namespace Test_Matrix{
         using namespace Matrix_3D;
         set_NMLConfig__using_m3d_type(type);
         int l=m3d_w*m3d_h;
-        var* t_m3d= new var[l];
+        var *t_m3d= new var[l];
         char *ss, *st;
         switch (type)
         {
@@ -719,11 +719,11 @@ namespace Test_Matrix{
         // printf_Matrix(test_m3d__transform_9down[type], m3d_w, m3d_h);
         // printf_Matrix(t_m3d, m3d_w, m3d_h);
 
-        var* s_test_m3d__Translate_1d23_4d56_7d89         =new var[l];
-        var* s_test_m3d__Scale_1d234_5d678_9d876          =new var[l];
-        var* s_test_m3d__Rotate_EulerXYZ_1d23_3d45_5d67   =new var[l];
-        var* s_test_m3d__Reflect_1_2_3                    =new var[l];
-        var* s_test_m3d__Shear_X_2                        =new var[l];
+        var *s_test_m3d__Translate_1d23_4d56_7d89         =new var[l];
+        var *s_test_m3d__Scale_1d234_5d678_9d876          =new var[l];
+        var *s_test_m3d__Rotate_EulerXYZ_1d23_3d45_5d67   =new var[l];
+        var *s_test_m3d__Reflect_1_2_3                    =new var[l];
+        var *s_test_m3d__Shear_X_2                        =new var[l];
 
         setup_Matrix3D__Easy(s_test_m3d__Translate_1d23_4d56_7d89,
             1,      0,      0,     
@@ -794,10 +794,10 @@ namespace Test_Euler_Angle{
     }
 
     void test_MatToEulerAngle(){
-        var* m3d_rotate__m=new var[16];
-        var* m3d_rotate__e=new var[16];
-        var* rotate_value=new var[3];
-        var* rotate_value__out=new var[3];
+        var *m3d_rotate__m=new var[16];
+        var *m3d_rotate__e=new var[16];
+        var *rotate_value=new var[3];
+        var *rotate_value__out=new var[3];
         
         rotate_value[0]=30*DEG;   rotate_value[1]=90*DEG;       rotate_value[2]=68*DEG;
         test_Item__MatToEulerAngle(rotate_value__out, rotate_value, m3d_rotate__m, m3d_rotate__e, XYZ,"泰勒布莱顿欧拉角. XYZ 欧拉角万向锁");

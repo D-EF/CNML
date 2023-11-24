@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-10-11 19:25:46
+ * @LastEditTime: 2023-11-24 11:44:56
  * @FilePath: \cnml\src\NML.cpp
  * @Description: Nittle Math Library 简单数学库
  * 
@@ -15,6 +15,7 @@
 namespace NML{
 
     const var NML_TOLERANCE=1e-6;
+    const var NML_TOLERANCE_D1=1-NML_TOLERANCE;
     const Idx SAMPLE_SIZE_SEED=__DEFINE_SAMPLE_SIZE_SEED__;
     const var SAMPLE_SIZE_SIZE=1.0/SAMPLE_SIZE_SEED;
     
@@ -36,7 +37,7 @@ namespace NML{
     }
 
     var* create_Values__Clone(const var* val, Idx length){
-        var* rtn=new var[length];
+        var *rtn=new var[length];
         for(Idx i=0;  i<length;  ++i){
             rtn[i]=val[i];
         }
@@ -52,7 +53,7 @@ namespace NML{
         printf("]\n");
     }
 
-    void printf_Points(Points_Iterator &points){
+    void printf_Points(Points_Iterator& points){
         printf("{\n");
         for(Idx i=0;  i<points.points_length;  i++){
             printf_Vec(points[i], points.dimensional);
@@ -174,7 +175,7 @@ namespace NML{
 
     
     void Points_Iterator__2DList::install_Data(Idx_Algebra dimensional, Idx points_length){
-        var** d=new var*[points_length];
+        var **d=new var*[points_length];
         for(int i=0;  i<points_length;  ++i){
             d[i]=new var[dimensional];
         }
