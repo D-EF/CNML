@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-09-08 16:40:23
+ * @LastEditTime: 2023-11-22 15:11:17
  * @FilePath: \cnml\src\NML_Vector.hpp
  * @Description: 基本向量操作
  * @
@@ -141,6 +141,14 @@ namespace NML{
                 vec[1]*vec[1]
             );
         }
+        
+        /**
+         * @brief 2d向量求模
+         * @param x 向量 x 坐标
+         * @param y 向量 y 坐标
+         * @return 返回2d向量模长
+         */
+        inline var mag_v2(var x, var y){return sqrt(x*x+y*y);}
         
         /**
          * @brief 3d向量求模

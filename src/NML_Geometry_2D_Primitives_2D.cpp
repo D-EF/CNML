@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-10-30 10:16:52
+ * @LastEditTime: 2023-11-24 11:18:06
  * @FilePath: \CNML\src\NML_Geometry_2D_Primitives.cpp
  * @Description: 2D 图元 相关内容
  * @
@@ -26,26 +26,26 @@ namespace NML{
                 }
 
                 AABB_2D Primitive_2D::get_LocalAABB(){
-                    if(!had__girth){
+                    if(!had__loc_aabb){
                         loc_aabb = calc_LocalAABB();
                         had__loc_aabb = true;
                     }
                     return loc_aabb;
                 }
 
-                Points_Iterator*& Primitive_2D::get_Polygon(){
-                    if(!had__girth){
-                        polygon = load_Polygon();
+                Points_Iterator& Primitive_2D::get_Polygon(){
+                    if(!had__polygon){
+                        load_Polygon();
                         had__polygon = true;
                     }
-                    return polygon;
+                    return *polygon;
                 }
 
             // end  * 图元基类 * end 
 
             // open * 矩形图元 * open
 
-                Points_Iterator*& Primitive_2D__Rect::load_Polygon(){
+                Points_Iterator& Primitive_2D__Rect::load_Polygon(){
                     if(!polygon){
                         polygon=new Points_Iterator__1DList(2, 4);
                     }
@@ -54,7 +54,7 @@ namespace NML{
                         *polygon[1][0]=aabb.x1;   *polygon[1][1]=aabb.y0;
                         *polygon[2][0]=aabb.x1;   *polygon[2][1]=aabb.y1;
                         *polygon[3][0]=aabb.x0;   *polygon[3][1]=aabb.y1;
-                    return polygon;
+                    return *polygon;
                 }
 
             // end  * 矩形图元 * end 

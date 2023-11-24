@@ -6,5 +6,6 @@
         "ostream": "cpp",
         "iostream": "cpp",
         "*.tcc": "cpp"
-    }
+    },
+    "cmake.generator": "MinGW Makefiles"
 }

@@ -57,7 +57,7 @@ namespace NML{
             //         i=0
 
         /**
-         * @brief 解2元一次方程   
+         * @brief 解二元一次方程   
          *  z1 + o1*x = z2 + o2*y;   
          *  z3 + o3*x = z4 + o4*y;   
          * @param  out 输出对象{ x , y }

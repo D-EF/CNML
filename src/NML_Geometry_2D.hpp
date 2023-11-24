@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-09-28 17:47:04
+ * @LastEditTime: 2023-11-24 10:32:25
  * @FilePath: \cnml\src\NML_Geometry_2D.hpp
  * @Description: 提供2d基本图元数据结构和部分算法
  * @
@@ -76,6 +76,7 @@ namespace NML{
              * @return 将 (theta_1-theta_0) 变为非负数
              */
             Arc_Data*& normalize_ArcData(Arc_Data*& arc_data);
+            
 
             /** @brief 椭圆弧线 图元数据 */
             typedef struct Ellipse_Arc_Data {
@@ -101,30 +102,24 @@ namespace NML{
              * @param ry y方向上的半径
              * @return 返回椭圆的焦距
              */
-            inline var calc_EllipseFocalLength(var rx, var ry){
-                // todo
-            }
+            inline var calc_EllipseFocalLength(var rx, var ry){return sqrt(abs(rx*rx-ry*ry));}
 
             /** 
-             * @brief 计算椭圆的缩放比
+             * @brief 计算椭圆的缩放比 x/y
              * @param rx x方向上的半径
              * @param ry y方向上的半径
              * @return 返回椭圆的缩放比
              */
-            inline var calc_EllipseScaleValue(var rx, var ry){
-                // todo
-            }
+            inline var calc_EllipseScaleValue(var rx, var ry){return rx/ry;}
             
             /** 
-             * @brief 计算椭圆的焦点
+             * @brief 计算椭圆相对圆心的焦点
              * @param rx     x方向上的半径
              * @param ry     y方向上的半径
              * @param rotate 椭圆的旋转偏移量
              * @return 返回椭圆的焦点
              */
-            inline Line_Data_2D calc_EllipseFocus(var rx, var ry,var rotate){
-                // todo
-            }
+            Line_Data_2D calc_EllipseFocus(var rx, var ry,var rotate);
             
             /** 
              * @brief 计算椭圆的焦距
@@ -254,23 +249,40 @@ namespace NML{
 
         
         // open * 求交函数 * open
+            // todo 求交函数实现
 
             /**
-             * @brief 检查一组 AABB 盒是否重叠
-             * @param box0_p0_x  AABB 0的描述点 0 的 x 坐标
-             * @param box0_p0_y  AABB 0的描述点 0 的 y 坐标
-             * @param box0_p1_x  AABB 0的描述点 1 的 x 坐标
-             * @param box0_p1_y  AABB 0的描述点 1 的 y 坐标
-             * @param box1_p0_x  AABB 1的描述点 0 的 x 坐标
-             * @param box1_p0_y  AABB 1的描述点 0 的 y 坐标
-             * @param box1_p1_x  AABB 1的描述点 1 的 x 坐标
-             * @param box1_p1_y  AABB 1的描述点 1 的 y 坐标
+             * @brief 检查两个 AABB 盒是否有重叠部分
+             * @param box0_p0_x  AABB0 的 描述点0 的 x 坐标
+             * @param box0_p0_y  AABB0 的 描述点0 的 y 坐标
+             * @param box0_p1_x  AABB0 的 描述点1 的 x 坐标
+             * @param box0_p1_y  AABB0 的 描述点1 的 y 坐标
+             * @param box1_p0_x  AABB1 的 描述点0 的 x 坐标
+             * @param box1_p0_y  AABB1 的 描述点0 的 y 坐标
+             * @param box1_p1_x  AABB1 的 描述点1 的 x 坐标
+             * @param box1_p1_y  AABB1 的 描述点1 的 y 坐标
              * @return 返回 AABB 盒是否重叠
              */
-            inline bool check_Overlap__AABB(var box0_p0_x, var box0_p0_y, var box0_p1_x, var box0_p1_y, var box1_p0_x, var box1_p0_y, var box1_p1_x, var box1_p1_y){
-                return  (((box0_p0_x>box1_p0_x)!=(box0_p0_x>box1_p1_x))||((box0_p1_x>box1_p0_x)!=(box0_p1_x>box1_p1_x))||((box1_p0_x>box0_p0_x)!=(box1_p0_x>box0_p1_x))||((box1_p1_x>box0_p0_x)!=(box1_p1_x>box0_p1_x)))&&
-                        (((box0_p0_y>box1_p0_y)!=(box0_p0_y>box1_p1_y))||((box0_p1_y>box1_p0_y)!=(box0_p1_y>box1_p1_y))||((box1_p0_y>box0_p0_y)!=(box1_p0_y>box0_p1_y))||((box1_p1_y>box0_p0_y)!=(box1_p1_y>box0_p1_y)));
+            inline bool check_Overlap__AABB_AABB(var box0_p0_x, var box0_p0_y, var box0_p1_x, var box0_p1_y, var box1_p0_x, var box1_p0_y, var box1_p1_x, var box1_p1_y){
+                return  (
+                    ((box0_p0_x>box1_p0_x)!=(box0_p0_x>box1_p1_x))||
+                    ((box0_p1_x>box1_p0_x)!=(box0_p1_x>box1_p1_x))||
+                    ((box1_p0_x>box0_p0_x)!=(box1_p0_x>box0_p1_x))||
+                    ((box1_p1_x>box0_p0_x)!=(box1_p1_x>box0_p1_x))
+                )&&(
+                    ((box0_p0_y>box1_p0_y)!=(box0_p0_y>box1_p1_y))||
+                    ((box0_p1_y>box1_p0_y)!=(box0_p1_y>box1_p1_y))||
+                    ((box1_p0_y>box0_p0_y)!=(box1_p0_y>box0_p1_y))||
+                    ((box1_p1_y>box0_p0_y)!=(box1_p1_y>box0_p1_y))
+                );
             }
+
+
+            /**
+             * 计算相对于点 line0_p0 的 line0_p1 与line1两点的叉积的乘积
+             * 用于跨立检查, 检查线段 line1 两点是否跨过直线 line0 两边, 当两次叉积异号时(跨立) 值应小于 0 或 容差
+             */
+            var calc_cross__Line_Line(var line0_p0_x, var line0_p0_y, var line0_p1_x, var line0_p1_y, var line1_p0_x, var line1_p0_y, var line1_p1_x, var line1_p1_y);
 
             /**
              * @brief 检查两条线段相交情况
@@ -282,9 +294,27 @@ namespace NML{
              * @param line1_p0_y    线段 1 的 起点 的 y 坐标
              * @param line1_p1_x    线段 1 的 终点 的 x 坐标
              * @param line1_p1_y    线段 1 的 终点 的 y 坐标
+             * @return 返回两个线段是否相交
+             */
+            inline bool check_Intersection__Line_Line(var line0_p0_x, var line0_p0_y, var line0_p1_x, var line0_p1_y, var line1_p0_x, var line1_p0_y, var line1_p1_x, var line1_p1_y){
+                // 两次跨立检查即可判断是否相交
+                return 
+                    (calc_cross__Line_Line(line0_p0_x,line0_p0_y,line0_p1_x,line0_p1_y, line1_p0_x,line1_p0_y,line1_p1_x,line1_p1_y) < NML_TOLERANCE) &&
+                    (calc_cross__Line_Line(line1_p0_x,line1_p0_y,line1_p1_x,line1_p1_y, line0_p0_x,line0_p0_y,line0_p1_x,line0_p1_y) < NML_TOLERANCE) ;
+            }
+            /**
+             * @brief 检查两条线段相交情况 (可以检查是否有点正好落在线上)
+             * @param line0_p0_x    线段 0 的 起点 的 x 坐标
+             * @param line0_p0_y    线段 0 的 起点 的 y 坐标
+             * @param line0_p1_x    线段 0 的 终点 的 x 坐标
+             * @param line0_p1_y    线段 0 的 终点 的 y 坐标
+             * @param line1_p0_x    线段 1 的 起点 的 x 坐标
+             * @param line1_p0_y    线段 1 的 起点 的 y 坐标
+             * @param line1_p1_x    线段 1 的 终点 的 x 坐标
+             * @param line1_p1_y    线段 1 的 终点 的 y 坐标
              * @return 返回 1 表示正常相交; 0 表示没有相交; -1 表示 l1 终点在 l2 上, 或者 l2 起点在 l1 上; 2 表示 l2 终点在 l1 上, 或者 l1 起点在 l2 上; 
              */
-            char check_Intersection__Line_Line(var line0_p0_x, var line0_p0_y, var line0_p1_x, var line0_p1_y, var line1_p0_x, var line1_p0_y, var line1_p1_x, var line1_p1_y);
+            char check_Intersection__Line_Line__V2(var line0_p0_x, var line0_p0_y, var line0_p1_x, var line0_p1_y, var line1_p0_x, var line1_p0_y, var line1_p1_x, var line1_p1_y);
 
             /**
              * @brief 求两线段交点
@@ -297,12 +327,12 @@ namespace NML{
              * @param line1_p0_y    线段 1 的 起点 的 y 坐标
              * @param line1_p1_x    线段 1 的 终点 的 x 坐标
              * @param line1_p1_y    线段 1 的 终点 的 y 坐标
-             * @return 修改并返回 out ; 如果out内容为 Infinity 或 -Infinity 则为未相交
+             * @return 修改并返回 out ; 如果 out 内容为 INFINITY 则表示找不到交点
              */
             var*& calc_Intersection__Line_Line(var*& out , var line0_p0_x, var line0_p0_y, var line0_p1_x, var line0_p1_y, var line1_p0_x, var line1_p0_y, var line1_p1_x, var line1_p1_y);
 
             /**
-             * @brief 检查两圆是否相交
+             * @brief 检查两圆是否相交 ( 仅检查圆的边是否有相交, 无视一个圆完全被另一个圆覆盖的情况 )
              * @param cx0   圆0 的圆心 x 坐标
              * @param cy0   圆0 的圆心 y 坐标
              * @param r0    圆0 的半径
@@ -311,11 +341,29 @@ namespace NML{
              * @param r1    圆1 的半径
              * @return 返回是否相交
              */
-            bool check_Intersection__Circle_Circle(var cx0, var cy0, var r0, var cx1, var cy1, var r1);
+            inline bool check_Intersection__Circle_Circle(var cx0, var cy0, var r0, var cx1, var cy1, var r1){
+                var l=Vector::mag_v2( cx1-cx0 , cy1-cy0 );
+                return !( l>r1+r0 || l<abs(r1-r0) );
+            }
+
+            /** 
+             * @brief 检查两个圆形是否有重叠部分
+             * @param cx0   圆0 的圆心 x 坐标
+             * @param cy0   圆0 的圆心 y 坐标
+             * @param r0    圆0 的半径
+             * @param cx1   圆1 的圆心 x 坐标
+             * @param cy1   圆1 的圆心 y 坐标
+             * @param r1    圆1 的半径
+             * @return 返回是否有重叠部分
+             */
+            inline bool check_Overlap__Circle_Circle(var cx0, var cy0, var r0, var cx1, var cy1, var r1){
+                var l=Vector::mag_v2( cx1-cx0 , cy1-cy0 );
+                return !(l>r1+r0);
+            }
 
             /**
              * @brief 两圆求交点
-             * @param out   输出对象, 点长度应大于等于2
+             * @param out   输出对象, 点数量应大于等于2
              * @param cx0   圆0 的圆心 x 坐标
              * @param cy0   圆0 的圆心 y 坐标
              * @param r0    圆0 的半径
@@ -324,27 +372,28 @@ namespace NML{
              * @param r1    圆1 的半径
              * @return 输出交点数量, 如果两个圆重合，将输出-1
              */
-            char calc_Intersection__Circle_Circle(Points_Iterator*& out, var cx0, var cy0, var r0, var cx1, var cy1, var r1);
+            char calc_Intersection__Circle_Circle(Points_Iterator& out, var cx0, var cy0, var r0, var cx1, var cy1, var r1);
 
             /**
-             * @brief 检查两弧形是否相交
+             * @brief 求两弧形交点
+             * @param out         输出对象, 点数量应大于等于2, 存储弧形相同半径的同心圆的交点
              * @param cx0         弧形0 的圆心 x 坐标
              * @param cy0         弧形0 的圆心 y 坐标
              * @param r0          弧形0 的半径
-             * @param theta_0_0   弧形0 的端点弧度
-             * @param theta_0_1   弧形0 的端点弧度
+             * @param theta_0_0   弧形0 的端点 0 弧度
+             * @param theta_0_1   弧形0 的端点 1 弧度
              * @param cx1         弧形1 的圆心 x 坐标
              * @param cy1         弧形1 的圆心 y 坐标
              * @param r1          弧形1 的半径
-             * @param theta_1_0   弧形1 的端点弧度
-             * @param theta_1_1   弧形1 的端点弧度
-             * @return 返回是否相交
+             * @param theta_1_0   弧形1 的端点 0 弧度
+             * @param theta_1_1   弧形1 的端点 1 弧度
+             * @return 返回 0:无相交; 1: [out[0]]; 2:[out[1]]; 3:[out[0],out[1]]; -1:弧线有重合部分;
              */
-            bool check_Intersection__Arc_Arc(var cx0, var cy0, var r0, var theta_0_0, var theta_0_1, var cx1, var cy1, var r1, var theta_1_0, var theta_1_1);
+            char calc_Intersection__Arc_Arc(Points_Iterator& out, var cx0, var cy0, var r0, var theta_0_0, var theta_0_1, var cx1, var cy1, var r1, var theta_1_0, var theta_1_1);
 
             /**
              * @brief 求圆与线段的交点
-             * @param out   输出对象, 点长度应大于等于2
+             * @param out   输出对象, 点数量应大于等于2
              * @param cx0   圆0 的圆心 x 坐标
              * @param cy0   圆0 的圆心 y 坐标
              * @param r0    圆0 的半径
@@ -354,11 +403,11 @@ namespace NML{
              * @param line_p1_y    线段 的 终点 的 y 坐标
              * @return 输出有多少交点
              */
-            char calc_Intersection__Circle_Line(Points_Iterator*& out, var cx0, var cy0, var r0, var line_p0_x, var line_p0_y, var line_p1_x, var line_p1_y);
+            char calc_Intersection__Circle_Line(Points_Iterator& out, var cx0, var cy0, var r0, var line_p0_x, var line_p0_y, var line_p1_x, var line_p1_y);
 
             /**
              * @brief 求弧形与线段的相交情况
-             * @param out   输出对象, 点长度应大于等于2
+             * @param out   输出对象, 点数量应大于等于2
              * @param cx0   圆0 的圆心 x 坐标
              * @param cy0   圆0 的圆心 y 坐标
              * @param r0    圆0 的半径
@@ -372,7 +421,7 @@ namespace NML{
 
             /**
              * @brief 求圆与线段的交点
-             * @param out   输出对象, 点长度应大于等于2
+             * @param out   输出对象, 点数量应大于等于2
              * @param cx0   圆0 的圆心 x 坐标
              * @param cy0   圆0 的圆心 y 坐标
              * @param r0    圆0 的半径
@@ -382,7 +431,7 @@ namespace NML{
              * @param line_p1_y    线段 的 终点 的 y 坐标
              * @return 输出有多少交点
              */
-            char calc_Intersection__Arc_Line(Points_Iterator*& out, var cx0, var cy0, var r0, var line_p0_x, var line_p0_y, var line_p1_x, var line_p1_y);
+            char calc_Intersection__Arc_Line(Points_Iterator& out, var cx0, var cy0, var r0, var line_p0_x, var line_p0_y, var line_p1_x, var line_p1_y);
 
         // end  * 求交函数 * end 
 

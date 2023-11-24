@@ -5,6 +5,12 @@
 		}
 	],
 	"settings": {
+        "editor.quickSuggestions": {
+            "comments": "off",
+            "strings": "off",
+            "other": "off"
+        },
+        "editor.suggestOnTriggerCharacters": false,
 		"files.associations": {
             "*.wpy": "vue",
             "*.wxss": "css",

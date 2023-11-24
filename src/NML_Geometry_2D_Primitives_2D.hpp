@@ -108,7 +108,7 @@ namespace NML{
                 /** 
                  * @brief 获取 拟合图元的线段路径
                  */
-                Points_Iterator*& get_Polygon();
+                Points_Iterator& get_Polygon();
 
 
                 /** 
@@ -127,7 +127,7 @@ namespace NML{
                  * @brief 计算 拟合图元的线段路径, 修改成员变量 polygon 的内容
                  * @return 返回成员变量 polygon 的引用
                  */
-                virtual Points_Iterator*& load_Polygon() = 0;
+                virtual Points_Iterator& load_Polygon() = 0;
 
                 /** 
                  * @brief 设置生成 拟合图元的线段路径时的采样次数, 值越高表示精度越高
@@ -204,7 +204,7 @@ namespace NML{
                  * @brief 生成矩形的多边形代理
                  * @return 生成 [{min_x, min_y},{max_x, min_y},{max_x, max_y},{min_x, max_y},{min_x, min_y}] 数据，存放到缓存中
                  */
-                Points_Iterator*& load_Polygon();
+                Points_Iterator& load_Polygon();
             };
             
             
@@ -346,7 +346,7 @@ namespace NML{
                  * @brief 计算多边形, 修改成员变量 polygon 的内容
                  * @return 返回成员变量 polygon 的引用
                  */
-                virtual Points_Iterator*& load_Polyon() = 0;
+                virtual Points_Iterator& load_Polyon() = 0;
 
             };
 

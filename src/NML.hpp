@@ -223,7 +223,7 @@ namespace NML{
      * @param _tolerance    容差
      * @return  返回是否近似相等
      */
-    inline bool check_Equal(var v1, var v2, var _tolerance=NML_TOLERANCE){return fabs(v1-v2)<_tolerance;}
+    inline bool check_Equal(var v1, var v2, var _tolerance=NML_TOLERANCE){return abs(v1-v2)<_tolerance;}
 
     /**
      * @brief 判断是否趋近零
@@ -232,7 +232,7 @@ namespace NML{
      * @param _tolerance    容差
      * @return 返回数值是否趋近0
      */
-    inline bool check_Zero(var value, var _tolerance=NML_TOLERANCE){return fabs(value)<_tolerance;}
+    inline bool check_Zero(var value, var _tolerance=NML_TOLERANCE){return abs(value)<_tolerance;}
 
     /**
      * @brief 判断数据是否相等(容差)
