@@ -1,10 +1,12 @@
 {
+    
 	"folders": [
 		{
 			"path": "."
 		}
 	],
 	"settings": {
+        "window.title": "NML",
         "editor.quickSuggestions": {
             "comments": "off",
             "strings": "off",
