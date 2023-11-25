@@ -1,7 +1,7 @@
 # CNML 
 * **Nittle Math Library 的 c++ 实现**   
 开发中   
-文档最后编辑于 2023-10-31   
+文档最后编辑于 2023-11-24   
 ---
 其它文档 todo   
   * [简单的2D内容](./doc/2D.md)
@@ -9,6 +9,39 @@
   * [简单的bezier曲线](./doc/bezier.md)
 
 ---
+
+## 编码规范
+  * 左花括号不换行, 右花括号要换行;
+  * 指针(引用)符号(*&) 在函数、形参的类型中往类型名靠; 在变量声明时往变量名靠;
+    ``` cpp
+      int* fnc(int* list, int length){
+        int *rtn=list;
+        for(int i=0; i<length; ++i){
+          if(i%2){
+            rtn+=list[i];
+          }else{
+            rtn-=list[i];
+          }
+        }
+        return rtn;
+      }
+    ```
+  * 矩阵参数编辑时应该对齐
+    ``` cpp
+      // 此处使用了 Visual Studio Code 的插件 align-text-like-table 进行对齐
+      float mat_3x3__scale[9]={
+          scale_x,   0,         0,
+          0,         scale_y,   0,
+          0,         0,         scale_z,
+      };
+    ```
+  * 运算符的空格(较宽松的规则)
+    * 作为整体时应该避免空格 作为两个部分间的操作应该增加空格
+      ```
+        123*DEG + 456*DEG;
+        (a0>value) != (a1>value);
+      ```
+
 
 ## 命名规范
   * 一般命名为基本命名+双下划线+追加说明
@@ -46,6 +79,8 @@
 
 ### 名词
 * NML            : 库的名字( Nittle Math Library )
+* i(j/k)         : 迭代器(iterator)
+* l              : 长度(length)
 * idx            : 索引/下标 ( index )
 * vec            : 向量 ( vector )
 * mat            : 矩阵 ( matrix )
@@ -83,6 +118,7 @@
 * mapping            : 映射为
 * calc               : 计算/求值
 * setup              : 执行装载操作 (初始化为)
+* create             : 创建 (需要手动 delete/free )
 * transformation     : 矩阵基本变换 
 * transform          : 矩阵线性变换 
 * sample             : 采样点 

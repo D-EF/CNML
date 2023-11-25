@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-11-24 14:18:36
+ * @LastEditTime: 2023-11-25 19:19:18
  * @FilePath: \cnml\src\NML_Algebra.cpp
  * @Description: 数与代数 运算相关
  * @
@@ -157,7 +157,12 @@ namespace NML{
             return 1;
         }
 
-
+        var normalize_Radians(var theta){
+            while(theta>PI)    { theta+=DEG_360_I; }
+            while(theta<PI_I)  { theta+=DEG_360;   }
+            return theta;
+        }
+        
 
     }
 }

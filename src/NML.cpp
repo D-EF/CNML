@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-11-24 11:44:56
+ * @LastEditTime: 2023-11-24 17:14:04
  * @FilePath: \cnml\src\NML.cpp
  * @Description: Nittle Math Library 简单数学库
  * 
@@ -20,15 +20,21 @@ namespace NML{
     const var SAMPLE_SIZE_SIZE=1.0/SAMPLE_SIZE_SEED;
     
     const var 
-        PI      = 3.14159265358979323846,
-        DEG     = 0.01745329251994329576,
-        DEG_90  = 1.57079632679489661923,
-        CYCLES  = 6.28318530717958647692;
-    const var &DEG_180 = PI;
-    const var &DEG_360 = CYCLES;
+        PI       = 3.14159265358979323846,
+        DEG      = 0.01745329251994329576,
+        DEG_90   = 1.57079632679489661923,
+        CYCLES   = 6.28318530717958647692,
+        PI_I     = -3.14159265358979323846,
+        DEG_90_I = -1.57079632679489661923,
+        CYCLES_I = -6.28318530717958647692;
 
-    const var ONE_OVER_THREE= 1.0/3;
-    const var FOUR_OVER_THREE= 4.0/3;
+    const var &DEG_180_I = PI_I,
+              &DEG_360_I = CYCLES_I,
+              &DEG_180   = PI,
+              &DEG_360   = CYCLES;
+
+    const var ONE_OVER_THREE  = 1.0/3;
+    const var FOUR_OVER_THREE = 4.0/3;
 
     void clone_To(var* to, const var* val, Idx length){
         for(Idx i=0;  i<length;  ++i){

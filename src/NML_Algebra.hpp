@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-09-08 16:40:23
+ * @LastEditTime: 2023-11-25 19:41:42
  * @FilePath: \cnml\src\NML_Algebra.hpp
  * @Description: 数与代数 运算相关
  * @
@@ -72,6 +72,13 @@ namespace NML{
          * @return 返回计算后得到了几个根
          */
         Idx_Algebra calc_RootsOfCubic(var*& out, var*& coefficients);
+
+        /** 
+         * 求拥有参数弧度相同射线并且取值范围在 ±π 内的弧度
+         * @param theta 参数弧度
+         * @return 返回范围在 ±π 的弧度
+         */
+        var normalize_Radians(var theta);
 
     }
 }

@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-11-24 14:14:33
+ * @LastEditTime: 2023-11-24 17:16:04
  * @FilePath: \cnml\src\NML.hpp
  * @Description: Nittle Math Library 简单数学库
  * 
@@ -103,9 +103,19 @@ namespace NML{
         ZXY=0b100001,    ZXZ=0b100010,    ZYX=0b100100,    ZYZ=0b100110
     };
     
-    extern const var PI, DEG, DEG_90, CYCLES;
-    extern const var &DEG_180;
-    extern const var &DEG_360;
+    extern const var PI,
+                     DEG, 
+                     DEG_90, 
+                     CYCLES, 
+                     PI_I, 
+                     DEG_90_I, 
+                     CYCLES_I;
+
+    extern const var &DEG_180_I,
+                     &DEG_180,
+                     &DEG_360_I,
+                     &DEG_360;
+                     
     extern const var ONE_OVER_THREE;
     extern const var FOUR_OVER_THREE;
 
@@ -312,6 +322,23 @@ namespace NML{
      * @return 返回最离 target 最近的项的下标
      */
     Idx select_Lut__Binary(var target, var* lut, Idx length);
+
+    /**
+     * 判断值是否在取值范围内
+     */
+    inline bool check_Inside__Range(var a0, var a1, var value){ return ( (a0>value) != (a1>value) ); }
+
+    /**
+     * 判断两个取值范围是否有交集
+     */
+    inline bool check_Intersection__Range(var a0, var a1, var b0, var b1){
+        return (
+            ( (a0>b0) != (a0>b1) )||
+            ( (a1>b0) != (a1>b1) )||
+            ( (b0>a0) != (b0>a1) )||
+            ( (b1>a0) != (b1>a1) )  
+        );
+    }
 }
 
 #endif

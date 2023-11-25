@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-11-24 11:04:15
+ * @LastEditTime: 2023-11-25 19:42:50
  * @FilePath: \cnml\src\NML_Geometry_2D.cpp
  * @Description: 2d 几何; 提供基本图元数据结构和部分算法
  * @
@@ -16,22 +16,39 @@ namespace NML{
     
     namespace Geometry_2D{
         
-        Rect_Data*& normalize_RectData(Rect_Data*& rect_data){
-            if(rect_data->w<0){
-                rect_data->x+=rect_data->w;
-                rect_data->w=-rect_data->w;
+        Rect_Data& normalize_RectData(Rect_Data& rect_data){
+            if(rect_data.w<0){
+                rect_data.x+=rect_data.w;
+                rect_data.w=-rect_data.w;
             }
-            if(rect_data->h<0){
-                rect_data->y+=rect_data->h;
-                rect_data->h=-rect_data->h;
+            if(rect_data.h<0){
+                rect_data.y+=rect_data.h;
+                rect_data.h=-rect_data.h;
             }
             return rect_data;
         }
 
 
-        Arc_Data*& normalize_ArcData(Arc_Data*& arc_data){
-            if(arc_data->theta_0>arc_data->theta_1){
-                std::swap(arc_data->theta_0, arc_data->theta_1);
+        Arc_Data& normalize_ArcData(Arc_Data& arc_data){
+            // 弧度差超过整圆, 直接使用 ±π
+            if( abs(arc_data.theta_0-arc_data.theta_1) > DEG_360){
+                arc_data.theta_0=PI_I;
+                arc_data.theta_1=PI;
+                return arc_data;
+            }
+
+            while(arc_data.theta_0>DEG_360){
+                arc_data.theta_0+=DEG_360_I;
+                arc_data.theta_1+=DEG_360_I;
+            }
+            
+            while(arc_data.theta_0<DEG_360_I){
+                arc_data.theta_0+=DEG_360;
+                arc_data.theta_1+=DEG_360;
+            }
+
+            if(arc_data.theta_0>arc_data.theta_1){
+                std::swap(arc_data.theta_0, arc_data.theta_1);
             }
             return arc_data;
         }
@@ -163,19 +180,22 @@ namespace NML{
         char calc_Intersection__Arc_Arc(Points_Iterator& out, var cx0, var cy0, var r0, var theta_0_0, var theta_0_1, var cx1, var cy1, var r1, var theta_1_0, var theta_1_1){
             char flag = calc_Intersection__Circle_Circle(out,cx0,cy0,r0,cx1,cy1,r1);
             if(!flag) return flag;
+            if(flag==-1){
+                // 两圆重合, 判断弧度
+                if((abs(theta_0_0-theta_0_1) + abs(theta_1_0-theta_1_1)) > DEG_360){
+                    return -1;
+                }
+                // 弧度取值范围控制在 ±2π内
+                while(theta_0_0<DEG_360_I){   theta_0_0+=DEG_360;     theta_0_1+=DEG_360;     }
+                while(theta_0_0>DEG_360)  {   theta_0_0+=DEG_360_I;   theta_0_1+=DEG_360_I;   }
+                while(theta_1_0>DEG_360)  {   theta_1_0+=DEG_360_I;   theta_1_1+=DEG_360_I;   }
+                while(theta_1_0>DEG_360)  {   theta_1_0+=DEG_360_I;   theta_1_1+=DEG_360_I;   }
+                return check_Intersection__Range(theta_0_0,theta_0_1,theta_1_0,theta_1_1);
+            }
             get_VectorAngle(out[0]);
-
+            
             return 0;
         }
 
-
-        char d(Points_Iterator& const asd){
-            var *t = asd[0];
-            return 0;
-        }
-        char c(){
-            Points_Iterator__1DList *dd=new Points_Iterator__1DList(2,2);
-            d(*dd);
-        }
     }
 }

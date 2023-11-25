@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-11-24 10:32:25
+ * @LastEditTime: 2023-11-25 18:27:11
  * @FilePath: \cnml\src\NML_Geometry_2D.hpp
  * @Description: 提供2d基本图元数据结构和部分算法
  * @
@@ -53,7 +53,7 @@ namespace NML{
              * @param rect_data 原矩形数据
              * @return 将 w 和 h 变为非负数 后返回 rect_data
              */
-            Rect_Data*& normalize_RectData(Rect_Data*& rect_data);
+            Rect_Data& normalize_RectData(Rect_Data& rect_data);
 
 
             /** @brief 圆弧 图元数据 */
@@ -73,9 +73,11 @@ namespace NML{
             /**
              * @brief 标准化弧形数据
              * @param arc_data 原矩形数据
-             * @return 将 (theta_1-theta_0) 变为非负数
+             * @return  将 theta_1,theta_0限制在 ±2π 内(±360deg); 
+             *          将 (theta_1-theta_0) 变为非负数; 
+             *          如果 abs(theta_1-theta_0)>2π 将直接赋值为 ±π
              */
-            Arc_Data*& normalize_ArcData(Arc_Data*& arc_data);
+            Arc_Data& normalize_ArcData(Arc_Data& arc_data);
             
 
             /** @brief 椭圆弧线 图元数据 */
@@ -392,6 +394,20 @@ namespace NML{
             char calc_Intersection__Arc_Arc(Points_Iterator& out, var cx0, var cy0, var r0, var theta_0_0, var theta_0_1, var cx1, var cy1, var r1, var theta_1_0, var theta_1_1);
 
             /**
+             * @brief 求圆形与线段的相交情况
+             * @param out   输出对象, 点数量应大于等于2
+             * @param cx0   圆0 的圆心 x 坐标
+             * @param cy0   圆0 的圆心 y 坐标
+             * @param r0    圆0 的半径
+             * @param line_p0_x    线段 的 起点 的 x 坐标
+             * @param line_p0_y    线段 的 起点 的 y 坐标
+             * @param line_p1_x    线段 的 终点 的 x 坐标
+             * @param line_p1_y    线段 的 终点 的 y 坐标
+             * @return 输出有多少交点
+             */
+            char check_Intersection__Circle_Line(var cx0, var cy0, var r0, var line_p0_x, var line_p0_y, var line_p1_x, var line_p1_y);
+
+            /**
              * @brief 求圆与线段的交点
              * @param out   输出对象, 点数量应大于等于2
              * @param cx0   圆0 的圆心 x 坐标
@@ -404,20 +420,6 @@ namespace NML{
              * @return 输出有多少交点
              */
             char calc_Intersection__Circle_Line(Points_Iterator& out, var cx0, var cy0, var r0, var line_p0_x, var line_p0_y, var line_p1_x, var line_p1_y);
-
-            /**
-             * @brief 求弧形与线段的相交情况
-             * @param out   输出对象, 点数量应大于等于2
-             * @param cx0   圆0 的圆心 x 坐标
-             * @param cy0   圆0 的圆心 y 坐标
-             * @param r0    圆0 的半径
-             * @param line_p0_x    线段 的 起点 的 x 坐标
-             * @param line_p0_y    线段 的 起点 的 y 坐标
-             * @param line_p1_x    线段 的 终点 的 x 坐标
-             * @param line_p1_y    线段 的 终点 的 y 坐标
-             * @return 输出有多少交点
-             */
-            char check_Intersection__Arc_Line(var cx0, var cy0, var r0, var line_p0_x, var line_p0_y, var line_p1_x, var line_p1_y);
 
             /**
              * @brief 求圆与线段的交点
