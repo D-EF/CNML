@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-11-24 17:16:04
+ * @LastEditTime: 2023-11-26 12:00:57
  * @FilePath: \cnml\src\NML.hpp
  * @Description: Nittle Math Library 简单数学库
  * 
@@ -272,7 +272,7 @@ namespace NML{
     /**
      * @brief 数据数值 和
      * 
-     * @param out           输出对象
+     * @param out           输出目标
      * @param length        数据长度
      * @param val_left      左侧数据
      * @param val_right     右侧数据
@@ -284,7 +284,7 @@ namespace NML{
     /**
      * @brief 数据数值 差
      * 
-     * @param out           输出对象
+     * @param out           输出目标
      * @param length        数据长度
      * @param val_left      左侧数据
      * @param val_right     右侧数据
@@ -305,7 +305,7 @@ namespace NML{
     /**
      * @brief 标量乘
      * 
-     * @param out           输出对象
+     * @param out           输出目标
      * @param val           数组数据
      * @param k             标量
      */
@@ -339,6 +339,20 @@ namespace NML{
             ( (b1>a0) != (b1>a1) )  
         );
     }
+
+    /**
+     * 求两个取值范围的交集
+     * @param out_0 输出目标 0 
+     * @param out_1 输出目标 1 
+     * @param a0  取值范围 a 的参数
+     * @param a1  取值范围 a 的参数
+     * @param b0  取值范围 b 的参数
+     * @param b1  取值范围 b 的参数
+     * @return 返回新的取值范围
+     */
+    void calc_Intersection__Range(var& out_0, var& out_1, var a0, var a1, var b0, var b1);
+
+
 }
 
 #endif

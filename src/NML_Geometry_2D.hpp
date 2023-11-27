@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-11-25 18:27:11
+ * @LastEditTime: 2023-11-26 12:32:50
  * @FilePath: \cnml\src\NML_Geometry_2D.hpp
  * @Description: 提供2d基本图元数据结构和部分算法
  * @
@@ -65,17 +65,17 @@ namespace NML{
                 /** @brief 半径 */
                 var r;
                 /** @brief 弧线的端点 0 相对圆心的向量 与 x 正方向 的夹角弧度 */
-                var theta_0;
+                var theta0;
                 /** @brief 弧线的端点 1 相对圆心的向量 与 x 正方向 的夹角弧度 */
-                var theta_1;
+                var theta1;
             } Arc_Data;
 
             /**
              * @brief 标准化弧形数据
              * @param arc_data 原矩形数据
-             * @return  将 theta_1,theta_0限制在 ±2π 内(±360deg); 
-             *          将 (theta_1-theta_0) 变为非负数; 
-             *          如果 abs(theta_1-theta_0)>2π 将直接赋值为 ±π
+             * @return  将 theta1,theta0限制在 ±2π 内(±360deg); 
+             *          将 (theta1-theta0) 变为非负数; 
+             *          如果 abs(theta1-theta0)>2π 将直接赋值为 ±π
              */
             Arc_Data& normalize_ArcData(Arc_Data& arc_data);
             
@@ -91,9 +91,9 @@ namespace NML{
                 /** @brief 局部垂直方向半径 */
                 var ry;
                 /** @brief 弧线的端点 0 相对圆心的向量 与 x 正方向 的夹角弧度 */
-                var theta_0;
+                var theta0;
                 /** @brief 弧线的端点 1 相对圆心的向量 与 x 正方向 的夹角弧度 */
-                var theta_1;
+                var theta1;
                 /** @brief 旋转偏移量 */
                 var rotate;
             } Ellipse_Arc_Data;
@@ -189,13 +189,23 @@ namespace NML{
         inline var calc_LineLength(var x0, var y0, var x1, var y1){   var x=x0-x1;   var y=y0-y1;   return sqrt(x*x+y*y);  }
 
         /** 
-         * @brief x正方向->向量(x, y) 的弧度
+         * @brief x正方向与向量(x, y) 的夹角弧度
          * @param x 向量 x 坐标
          * @param y 向量 y 坐标
          * @return 返回计算的弧度值
          */
-        inline var get_VectorAngle(var x, var y){return atan2(y, x);}
+        inline var calc_VectorAngle(var x, var y){return atan2(y, x);}
 
+
+        /** 
+         * @brief 求直线(p0->p1)与x正方向的夹角弧度
+         * @param p0_x 点 p0 的 x 坐标
+         * @param p0_y 点 p0 的 y 坐标
+         * @param p1_x 点 p1 的 x 坐标
+         * @param p1_y 点 p1 的 y 坐标
+         * @return 返回计算的弧度值
+         */
+        inline var calc_LineAngle(var p0_x, var p0_y, var p1_x, var p1_y){return atan2(p1_y-p0_y, p1_x-p0_x);}
         
         /** 
          * @brief 获取点在线段上的投影信息
@@ -215,7 +225,7 @@ namespace NML{
 
         /**
          * @brief 从线段上取采样点
-         * @param out    输出对象
+         * @param out    输出目标
          * @param t      时间参数t [0~1]
          * @param p0_x   线段起点 x 坐标
          * @param p0_y   线段起点 y 坐标
@@ -320,7 +330,7 @@ namespace NML{
 
             /**
              * @brief 求两线段交点
-             * @param out           输出对象
+             * @param out           输出目标
              * @param line0_p0_x    线段 0 的 起点 的 x 坐标
              * @param line0_p0_y    线段 0 的 起点 的 y 坐标
              * @param line0_p1_x    线段 0 的 终点 的 x 坐标
@@ -335,69 +345,69 @@ namespace NML{
 
             /**
              * @brief 检查两圆是否相交 ( 仅检查圆的边是否有相交, 无视一个圆完全被另一个圆覆盖的情况 )
-             * @param cx0   圆0 的圆心 x 坐标
-             * @param cy0   圆0 的圆心 y 坐标
+             * @param c0_x   圆0 的圆心 x 坐标
+             * @param c0_y   圆0 的圆心 y 坐标
              * @param r0    圆0 的半径
-             * @param cx1   圆1 的圆心 x 坐标
-             * @param cy1   圆1 的圆心 y 坐标
+             * @param c1_x   圆1 的圆心 x 坐标
+             * @param c1_y   圆1 的圆心 y 坐标
              * @param r1    圆1 的半径
              * @return 返回是否相交
              */
-            inline bool check_Intersection__Circle_Circle(var cx0, var cy0, var r0, var cx1, var cy1, var r1){
-                var l=Vector::mag_v2( cx1-cx0 , cy1-cy0 );
+            inline bool check_Intersection__Circle_Circle(var c0_x, var c0_y, var r0, var c1_x, var c1_y, var r1){
+                var l=Vector::mag_v2( c1_x-c0_x , c1_y-c0_y );
                 return !( l>r1+r0 || l<abs(r1-r0) );
             }
 
             /** 
              * @brief 检查两个圆形是否有重叠部分
-             * @param cx0   圆0 的圆心 x 坐标
-             * @param cy0   圆0 的圆心 y 坐标
+             * @param c0_x   圆0 的圆心 x 坐标
+             * @param c0_y   圆0 的圆心 y 坐标
              * @param r0    圆0 的半径
-             * @param cx1   圆1 的圆心 x 坐标
-             * @param cy1   圆1 的圆心 y 坐标
+             * @param c1_x   圆1 的圆心 x 坐标
+             * @param c1_y   圆1 的圆心 y 坐标
              * @param r1    圆1 的半径
              * @return 返回是否有重叠部分
              */
-            inline bool check_Overlap__Circle_Circle(var cx0, var cy0, var r0, var cx1, var cy1, var r1){
-                var l=Vector::mag_v2( cx1-cx0 , cy1-cy0 );
+            inline bool check_Overlap__Circle_Circle(var c0_x, var c0_y, var r0, var c1_x, var c1_y, var r1){
+                var l=Vector::mag_v2( c1_x-c0_x , c1_y-c0_y );
                 return !(l>r1+r0);
             }
 
             /**
              * @brief 两圆求交点
-             * @param out   输出对象, 点数量应大于等于2
-             * @param cx0   圆0 的圆心 x 坐标
-             * @param cy0   圆0 的圆心 y 坐标
+             * @param out   输出目标, 点数量应大于等于2
+             * @param c0_x   圆0 的圆心 x 坐标
+             * @param c0_y   圆0 的圆心 y 坐标
              * @param r0    圆0 的半径
-             * @param cx1   圆1 的圆心 x 坐标
-             * @param cy1   圆1 的圆心 y 坐标
+             * @param c1_x   圆1 的圆心 x 坐标
+             * @param c1_y   圆1 的圆心 y 坐标
              * @param r1    圆1 的半径
              * @return 输出交点数量, 如果两个圆重合，将输出-1
              */
-            char calc_Intersection__Circle_Circle(Points_Iterator& out, var cx0, var cy0, var r0, var cx1, var cy1, var r1);
+            char calc_Intersection__Circle_Circle(Points_Iterator& out, var c0_x, var c0_y, var r0, var c1_x, var c1_y, var r1);
 
             /**
              * @brief 求两弧形交点
-             * @param out         输出对象, 点数量应大于等于2, 存储弧形相同半径的同心圆的交点
-             * @param cx0         弧形0 的圆心 x 坐标
-             * @param cy0         弧形0 的圆心 y 坐标
-             * @param r0          弧形0 的半径
-             * @param theta_0_0   弧形0 的端点 0 弧度
-             * @param theta_0_1   弧形0 的端点 1 弧度
-             * @param cx1         弧形1 的圆心 x 坐标
-             * @param cy1         弧形1 的圆心 y 坐标
-             * @param r1          弧形1 的半径
-             * @param theta_1_0   弧形1 的端点 0 弧度
-             * @param theta_1_1   弧形1 的端点 1 弧度
+             * @param out        输出目标, 点数量应大于等于2, 存储弧形相同半径的同心圆的交点
+             * @param c0_x       弧形0 的圆心 x 坐标
+             * @param c0_y       弧形0 的圆心 y 坐标
+             * @param r0         弧形0 的半径
+             * @param theta0_0   弧形0 的端点 0 弧度
+             * @param theta0_1   弧形0 的端点 1 弧度
+             * @param c1_x       弧形1 的圆心 x 坐标
+             * @param c1_y       弧形1 的圆心 y 坐标
+             * @param r1         弧形1 的半径
+             * @param theta1_0   弧形1 的端点 0 弧度
+             * @param theta1_1   弧形1 的端点 1 弧度
              * @return 返回 0:无相交; 1: [out[0]]; 2:[out[1]]; 3:[out[0],out[1]]; -1:弧线有重合部分;
              */
-            char calc_Intersection__Arc_Arc(Points_Iterator& out, var cx0, var cy0, var r0, var theta_0_0, var theta_0_1, var cx1, var cy1, var r1, var theta_1_0, var theta_1_1);
+            char calc_Intersection__Arc_Arc(Points_Iterator& out, var c0_x, var c0_y, var r0, var theta0_0, var theta0_1, var c1_x, var c1_y, var r1, var theta1_0, var theta1_1);
 
             /**
              * @brief 求圆形与线段的相交情况
-             * @param out   输出对象, 点数量应大于等于2
-             * @param cx0   圆0 的圆心 x 坐标
-             * @param cy0   圆0 的圆心 y 坐标
+             * @param out   输出目标, 点数量应大于等于2
+             * @param c0_x   圆0 的圆心 x 坐标
+             * @param c0_y   圆0 的圆心 y 坐标
              * @param r0    圆0 的半径
              * @param line_p0_x    线段 的 起点 的 x 坐标
              * @param line_p0_y    线段 的 起点 的 y 坐标
@@ -405,13 +415,13 @@ namespace NML{
              * @param line_p1_y    线段 的 终点 的 y 坐标
              * @return 输出有多少交点
              */
-            char check_Intersection__Circle_Line(var cx0, var cy0, var r0, var line_p0_x, var line_p0_y, var line_p1_x, var line_p1_y);
+            char check_Intersection__Circle_Line(var c0_x, var c0_y, var r0, var line_p0_x, var line_p0_y, var line_p1_x, var line_p1_y);
 
             /**
              * @brief 求圆与线段的交点
-             * @param out   输出对象, 点数量应大于等于2
-             * @param cx0   圆0 的圆心 x 坐标
-             * @param cy0   圆0 的圆心 y 坐标
+             * @param out   输出目标, 点数量应大于等于2
+             * @param c0_x   圆0 的圆心 x 坐标
+             * @param c0_y   圆0 的圆心 y 坐标
              * @param r0    圆0 的半径
              * @param line_p0_x    线段 的 起点 的 x 坐标
              * @param line_p0_y    线段 的 起点 的 y 坐标
@@ -419,13 +429,13 @@ namespace NML{
              * @param line_p1_y    线段 的 终点 的 y 坐标
              * @return 输出有多少交点
              */
-            char calc_Intersection__Circle_Line(Points_Iterator& out, var cx0, var cy0, var r0, var line_p0_x, var line_p0_y, var line_p1_x, var line_p1_y);
+            char calc_Intersection__Circle_Line(Points_Iterator& out, var c0_x, var c0_y, var r0, var line_p0_x, var line_p0_y, var line_p1_x, var line_p1_y);
 
             /**
              * @brief 求圆与线段的交点
-             * @param out   输出对象, 点数量应大于等于2
-             * @param cx0   圆0 的圆心 x 坐标
-             * @param cy0   圆0 的圆心 y 坐标
+             * @param out   输出目标, 点数量应大于等于2
+             * @param c0_x   圆0 的圆心 x 坐标
+             * @param c0_y   圆0 的圆心 y 坐标
              * @param r0    圆0 的半径
              * @param line_p0_x    线段 的 起点 的 x 坐标
              * @param line_p0_y    线段 的 起点 的 y 坐标
@@ -433,7 +443,7 @@ namespace NML{
              * @param line_p1_y    线段 的 终点 的 y 坐标
              * @return 输出有多少交点
              */
-            char calc_Intersection__Arc_Line(Points_Iterator& out, var cx0, var cy0, var r0, var line_p0_x, var line_p0_y, var line_p1_x, var line_p1_y);
+            char calc_Intersection__Arc_Line(Points_Iterator& out, var c0_x, var c0_y, var r0, var line_p0_x, var line_p0_y, var line_p1_x, var line_p1_y);
 
         // end  * 求交函数 * end 
 
@@ -456,11 +466,20 @@ namespace NML{
             inline var calc_LineLength(Line_Data_2D line){ return calc_LineLength(line.x0, line.y0, line.x1, line.y1);}
 
             /** 
-             * @brief 取向量和x正方向的弧度
+             * @brief 取向量和x正方向的夹角弧度
              * @param v 坐标
              * @return 返回计算的弧度值
              */
-            inline var get_VectorAngle(var* v){return atan2(v[1], v[0]);}
+            inline var calc_VectorAngle(var* v){return atan2(v[1], v[0]);}
+            
+            /** 
+             * @brief 求直线与x正方向的夹角弧度
+             * @param p0 点 p0 的坐标
+             * @param p1 点 p1 的坐标
+             * @return 返回计算的弧度值
+             */
+            inline var calc_LineAngle(var* p0, var* p1){return atan2(p1[1]-p0[1], p1[0]-p0[0]);}
+
             
         // end  * 不同参数调用原函数的重载函数 * end 
     }

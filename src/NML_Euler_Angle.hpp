@@ -36,7 +36,7 @@ namespace NML{
         
         /**
          * @brief 使用旋转矩阵生成欧拉角
-         * @param out       输出对象
+         * @param out       输出目标
          * @param mat       数据来源矩阵 需要仅做旋转变换的矩阵
          * @param order     旋转顺序
          * @return 修改 out 并输出
@@ -58,7 +58,7 @@ namespace NML{
         
         /**
          * @brief 使用四元数生成欧拉角
-         * @param out       输出对象
+         * @param out       输出目标
          * @param quat      四元数数据
          * @param order     旋转顺序
          * @return 修改 out 并输出

@@ -191,7 +191,7 @@ namespace NML{
                 inline Idx set_SampleSizeSeed(Idx size=4){return _sample_size_seed=4;}
 
                 inline AABB_2D calc_LocalAABB(){
-                    normalize_RectData(data);
+                    normalize_RectData(*data);
                     return {
                         x0 : data->x,           y0 : data->y,
                         x1 : data->x+data->w,   y1 : data->y+data->h
@@ -227,7 +227,7 @@ namespace NML{
                 var get_ChordLength();
                 
                 /** 弧形是否闭合: 检查是弧形旋转量是否大于整圆 */
-                inline bool check_Close(){return abs(data->theta_0-data->theta_1)>CYCLES;}
+                inline bool check_Close(){return abs(data->theta0-data->theta1)>CYCLES;}
                 
                 /** 获取局部坐标的弧形的弦信息(端点相对于圆心的位置)*/
                 Line_Data_2D get_local_chord();

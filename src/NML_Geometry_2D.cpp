@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-11-25 19:42:50
+ * @LastEditTime: 2023-11-26 12:31:08
  * @FilePath: \cnml\src\NML_Geometry_2D.cpp
  * @Description: 2d 几何; 提供基本图元数据结构和部分算法
  * @
@@ -31,24 +31,24 @@ namespace NML{
 
         Arc_Data& normalize_ArcData(Arc_Data& arc_data){
             // 弧度差超过整圆, 直接使用 ±π
-            if( abs(arc_data.theta_0-arc_data.theta_1) > DEG_360){
-                arc_data.theta_0=PI_I;
-                arc_data.theta_1=PI;
+            if( abs(arc_data.theta0-arc_data.theta1) > DEG_360){
+                arc_data.theta0=PI_I;
+                arc_data.theta1=PI;
                 return arc_data;
             }
 
-            while(arc_data.theta_0>DEG_360){
-                arc_data.theta_0+=DEG_360_I;
-                arc_data.theta_1+=DEG_360_I;
+            while(arc_data.theta0>DEG_360){
+                arc_data.theta0+=DEG_360_I;
+                arc_data.theta1+=DEG_360_I;
             }
             
-            while(arc_data.theta_0<DEG_360_I){
-                arc_data.theta_0+=DEG_360;
-                arc_data.theta_1+=DEG_360;
+            while(arc_data.theta0<DEG_360_I){
+                arc_data.theta0+=DEG_360;
+                arc_data.theta1+=DEG_360;
             }
 
-            if(arc_data.theta_0>arc_data.theta_1){
-                std::swap(arc_data.theta_0, arc_data.theta_1);
+            if(arc_data.theta0>arc_data.theta1){
+                std::swap(arc_data.theta0, arc_data.theta1);
             }
             return arc_data;
         }
@@ -177,24 +177,47 @@ namespace NML{
             return 2;
         }
 
-        char calc_Intersection__Arc_Arc(Points_Iterator& out, var cx0, var cy0, var r0, var theta_0_0, var theta_0_1, var cx1, var cy1, var r1, var theta_1_0, var theta_1_1){
-            char flag = calc_Intersection__Circle_Circle(out,cx0,cy0,r0,cx1,cy1,r1);
+        char calc_Intersection__Arc_Arc(Points_Iterator& out, var c0_x, var c0_y, var r0, var theta0_0, var theta0_1, var c1_x, var c1_y, var r1, var theta1_0, var theta1_1){
+            char rtn=0;
+            char flag = calc_Intersection__Circle_Circle(out,c0_x,c0_y,r0,c1_x,c1_y,r1);
             if(!flag) return flag;
             if(flag==-1){
                 // 两圆重合, 判断弧度
-                if((abs(theta_0_0-theta_0_1) + abs(theta_1_0-theta_1_1)) > DEG_360){
+                if((abs(theta0_0-theta0_1) + abs(theta1_0-theta1_1)) > DEG_360){
                     return -1;
                 }
                 // 弧度取值范围控制在 ±2π内
-                while(theta_0_0<DEG_360_I){   theta_0_0+=DEG_360;     theta_0_1+=DEG_360;     }
-                while(theta_0_0>DEG_360)  {   theta_0_0+=DEG_360_I;   theta_0_1+=DEG_360_I;   }
-                while(theta_1_0>DEG_360)  {   theta_1_0+=DEG_360_I;   theta_1_1+=DEG_360_I;   }
-                while(theta_1_0>DEG_360)  {   theta_1_0+=DEG_360_I;   theta_1_1+=DEG_360_I;   }
-                return check_Intersection__Range(theta_0_0,theta_0_1,theta_1_0,theta_1_1);
+                while(theta0_0<DEG_360_I){   theta0_0+=DEG_360;     theta0_1+=DEG_360;     }
+                while(theta0_0>DEG_360)  {   theta0_0+=DEG_360_I;   theta0_1+=DEG_360_I;   }
+                while(theta1_0>DEG_360)  {   theta1_0+=DEG_360_I;   theta1_1+=DEG_360_I;   }
+                while(theta1_0>DEG_360)  {   theta1_0+=DEG_360_I;   theta1_1+=DEG_360_I;   }
+                return check_Intersection__Range(theta0_0,theta0_1,theta1_0,theta1_1);
             }
-            get_VectorAngle(out[0]);
-            
-            return 0;
+
+            AABB_2D range_theta={
+                theta0_0,theta0_1,
+                theta1_0,theta1_1
+            };
+
+            var ip_x =out[0][0];
+            var ip_y =out[0][1];
+            var theta_i_0=calc_LineAngle(c0_x,c0_y,ip_x,ip_y),theta_i_1=calc_LineAngle(c1_x,c1_y,ip_x,ip_y);
+
+            if(check_Inside__AABB(range_theta, theta_i_0, theta_i_1)){
+                rtn=1;
+            }
+
+            if(flag==1){ // 两圆相切
+                return rtn;
+            }
+
+            ip_x =out[1][0];
+            ip_y =out[1][1];
+            theta_i_0=calc_LineAngle(c0_x,c0_y,ip_x,ip_y),theta_i_1=calc_LineAngle(c1_x,c1_y,ip_x,ip_y);
+            if(check_Inside__AABB(range_theta, theta_i_0, theta_i_1)){
+                rtn+=rtn+1;
+            }
+            return rtn;
         }
 
     }

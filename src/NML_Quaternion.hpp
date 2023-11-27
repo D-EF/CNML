@@ -45,7 +45,7 @@ namespace NML{
 
         /** 
          * @brief 使用旋转轴和旋转弧度生成四元数
-         * @param out       输出对象
+         * @param out       输出目标
          * @param axis_vec  旋转轴向量 (3d单位向量)
          * @param theta     旋转弧度
          * @return 修改并返回 out
@@ -54,7 +54,7 @@ namespace NML{
 
         /**
          * @brief 使用旋转矩阵生成四元数
-         * @param out       输出对象
+         * @param out       输出目标
          * @param mat       数据来源矩阵 需要仅做旋转变换的矩阵
          * @param order     旋转顺序
          * @return 修改 out 并输出
@@ -63,7 +63,7 @@ namespace NML{
         
         /**
          * @brief 使用欧拉角生成四元数
-         * @param out           输出对象
+         * @param out           输出目标
          * @param euler_angle   欧拉角数据
          * @param order         旋转顺序
          * @return 修改 out 并输出
@@ -72,7 +72,7 @@ namespace NML{
         
         /**
          * @brief 四元数的共轭(逆)
-         * @param out   输出对象
+         * @param out   输出目标
          * @param quat  原四元数
          * @return 修改并返回 out
          */
@@ -86,7 +86,7 @@ namespace NML{
         
         /**
          * @brief 四元数叉乘
-         * @param out           输出对象
+         * @param out           输出目标
          * @param quat_left     左侧四元数
          * @param quat_right    右侧四元数
          * @return  修改 out 并输出
@@ -101,7 +101,7 @@ namespace NML{
 
         /**
          * @brief 四元数的对数
-         * @param out 输出对象
+         * @param out 输出目标
          * @param quat 原四元数
          * @return 修改并返回 out
          */
@@ -116,7 +116,7 @@ namespace NML{
 
         /**
          * @brief 四元数求幂
-         * @param out   输出对象
+         * @param out   输出目标
          * @param n     n次幂
          * @param quat  原四元数
          * @return 修改并返回 out
@@ -126,7 +126,7 @@ namespace NML{
 
         /**
          * @brief 四元数除法 (旋转的差) quat_left to quat_right
-         * @param out           输出对象
+         * @param out           输出目标
          * @param quat_left     左侧四元数
          * @param quat_right    右侧四元数
          * @return 修改并返回 out
@@ -147,7 +147,7 @@ namespace NML{
 
         /**
          * @brief 提取四元数旋转轴
-         * @param out   输出对象(3d向量)
+         * @param out   输出目标(3d向量)
          * @param quat  标准化的四元数数据
          * @return 修改并返回 out
          */
@@ -161,7 +161,7 @@ namespace NML{
 
         /**
          * @brief 四元数球面线性插值采样
-         * @param out         输出对象
+         * @param out         输出目标
          * @param quat_form   初态四元数
          * @param quat_to     终态四元数
          * @param t           时间参数t
@@ -179,7 +179,7 @@ namespace NML{
         
         /**
          * @brief 加载四元数球面线性插值的计算缓存
-         * @param out           输出对象
+         * @param out           输出目标
          * @param quat_form     初态四元数
          * @param quat_to       终态四元数
          * @return 修改并返回 out
@@ -188,7 +188,7 @@ namespace NML{
 
         /**
          * @brief 使用缓存计算四元数球面线性插值
-         * @param out           输出对象
+         * @param out           输出目标
          * @param quat_form     初态四元数
          * @param SlerpCache    load_SlerpCache计算的缓存
          * @param t             时间参数t

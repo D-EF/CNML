@@ -40,7 +40,7 @@ namespace NML{
 
         /**
          * @brief 创建单位矩阵
-         * @param out       输出对象
+         * @param out       输出目标
          * @param width     矩阵宽度
          * @param height    矩阵高度
          * @return 修改并返回 out
@@ -62,7 +62,7 @@ namespace NML{
         /** 
          * @brief 矩阵数据转写   空省位置会保留out原有的内容
          * 
-         * @param out            输出对象 (不能与 mat 使用同一地址)
+         * @param out            输出目标 (不能与 mat 使用同一地址)
          * @param mat            数据来源 (不能与 out 使用同一地址)
          * @param low_width      原矩阵宽度
          * @param new_width      新矩阵宽度
@@ -76,7 +76,7 @@ namespace NML{
 
         /**
          * @brief 计算哈达姆积 HadamardProduct
-         * @param  out            输出对象
+         * @param  out            输出目标
          * @param  mat_left       左矩阵
          * @param  mat_right      右矩阵
          * @param  width          矩阵宽度
@@ -87,7 +87,7 @@ namespace NML{
 
         /** 
          * @brief 计算 Kronecker 张量积
-         * @param  out            输出对象
+         * @param  out            输出目标
          * @param  mat_left       左矩阵
          * @param  mat_right      右矩阵
          * @param  width_left     左矩阵的宽度
@@ -100,7 +100,7 @@ namespace NML{
 
         /** 
          * @brief 合并矩阵
-         * @param  out          输出对象 长度应为 width_g * height_g * width_mat * height_mat
+         * @param  out          输出目标 长度应为 width_g * height_g * width_mat * height_mat
          * @param  mats         矩阵集合 长度应为 width_g * height_g
          * @param  width_mat    每个矩阵的宽度
          * @param  height_mat   每个矩阵的高度
@@ -214,7 +214,7 @@ namespace NML{
         /**
          * @brief 矩阵乘法
          * 
-         * @param out                       输出对象
+         * @param out                       输出目标
          * @param mat_left                  左矩阵
          * @param mat_right                 右矩阵
          * @param height_left               左矩阵高度
@@ -227,7 +227,7 @@ namespace NML{
         /**
          * @brief 矩阵乘法 (方阵)
          * 
-         * @param out                       输出对象
+         * @param out                       输出目标
          * @param mat_left                  左矩阵
          * @param mat_right                 右矩阵
          * @param n                         表示这个矩阵是n*n方阵
@@ -252,9 +252,9 @@ namespace NML{
         var*& transpose(var*& mat, Idx_VM n);
 
         /**
-         * @brief 矩阵转置 (注意输出对象不能和输入矩阵使用同一内存)
+         * @brief 矩阵转置 (注意输出目标不能和输入矩阵使用同一内存)
          * 
-         * @param out           输出对象 注意这个输出对象不能和输入矩阵使用同一内存
+         * @param out           输出目标 注意这个输出目标不能和输入矩阵使用同一内存
          * @param mat           矩阵数据
          * @param width_mat     原矩阵宽度
          * @param height_mat    原矩阵高度
@@ -372,7 +372,7 @@ namespace NML{
         /**
          * @brief 矩阵求逆 使用初等变换法(高斯乔丹消元法)
          * 
-         * @param out       输出对象
+         * @param out       输出目标
          * @param mat       矩阵数据 (必须是方阵)
          * @param n         表示这个矩阵是n*n方阵
          * @return 返回是否成功计算逆矩阵
@@ -385,7 +385,7 @@ namespace NML{
             /**
              * @brief 2x2 矩阵求逆
              * 
-             * @param out       输出对象
+             * @param out       输出目标
              * @param mat       矩阵数据 (必须是方阵)
              * @return 返回是否成功计算逆矩阵
              */
@@ -394,7 +394,7 @@ namespace NML{
             /**
              * @brief 3x3 矩阵求逆
              * 
-             * @param out       输出对象
+             * @param out       输出目标
              * @param mat       矩阵数据 (必须是方阵)
              * @return 返回是否成功计算逆矩阵
              */
@@ -403,7 +403,7 @@ namespace NML{
             /**
              * @brief 4x4 矩阵求逆
              * 
-             * @param out       输出对象
+             * @param out       输出目标
              * @param mat       矩阵数据 (必须是方阵)
              * @return 返回是否成功计算逆矩阵
              */
@@ -414,7 +414,7 @@ namespace NML{
         /**
          * @brief 矩阵求逆
          * 
-         * @param out       输出对象
+         * @param out       输出目标
          * @param mat       矩阵数据 (必须是方阵)
          * @param n         表示这个矩阵是n*n方矩阵
          * @return 返回是否成功计算逆矩阵

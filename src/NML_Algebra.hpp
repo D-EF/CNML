@@ -60,14 +60,14 @@ namespace NML{
          * @brief 解二元一次方程   
          *  z1 + o1*x = z2 + o2*y;   
          *  z3 + o3*x = z4 + o4*y;   
-         * @param  out 输出对象{ x , y }
+         * @param  out 输出目标{ x , y }
          * @return 返回计算状态:{ 0: 正常相交, 1:无解(平行), 2无限解(重合) } 
          */
         Idx_Algebra calc_RootsOfSquare(var*& out, var z1, var o1, var z2, var o2, var z3, var o3, var z4, var o4);
 
         /** 
          * @brief 解一元三次方程, ax^3+bx^2+cx+d=0
-         * @param out 计算结果输出对象, 需要3个元素以上的长度
+         * @param out 计算结果输出目标, 需要3个元素以上的长度
          * @param coefficients 系数集合 从低次幂到高次幂 [ x^0, x^1, x^2, x^3 ]
          * @return 返回计算后得到了几个根
          */

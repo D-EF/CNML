@@ -19,7 +19,7 @@ namespace NML{
 
         /**
          * @brief 采样贝塞尔曲线    使用DeCasteljau算法 (不建议使用)
-         * @param out               输出对象, 采样点 长度为 points.dimensional
+         * @param out               输出目标, 采样点 长度为 points.dimensional
          * @param points            贝塞尔曲线控制点集合 长度为 dimensional*points_length
          * @param t                 时间参数 t
          * @return 修改并返回 out
@@ -39,7 +39,7 @@ namespace NML{
         
         /**
          * @brief 求贝塞尔曲线 的 各次幂的系数
-         * @param out      输出对象, 规模为 points 的转置
+         * @param out      输出目标, 规模为 points 的转置
          * @param points   贝塞尔曲线控制点集合
          * @return 修改并返回 out , 输出几个维度的各次幂的系数
          */
@@ -47,7 +47,7 @@ namespace NML{
 
         /** 
          * @brief 采样贝塞尔曲线 使用各次幂的系数
-         * @param out            输出对象, 采样点, 长度为 coefficients.points_length
+         * @param out            输出目标, 采样点, 长度为 coefficients.points_length
          * @param coefficients   贝塞尔曲线各次幂系数 ( 使用 setup_BezierCoefficients 计算 )
          * @param t              时间参数t
          * @return 修改并返回 out (采样点)
@@ -57,7 +57,7 @@ namespace NML{
 
         /**
          * @brief 计算贝塞尔曲线分割矩阵 Q
-         * @param out 输出对象; 行优先展开的 下三角矩阵 长度为 (1+2+3+...+(n+1)) = ((n+1)*(n+2)/2))
+         * @param out 输出目标; 行优先展开的 下三角矩阵 长度为 (1+2+3+...+(n+1)) = ((n+1)*(n+2)/2))
          * @param n   表示n阶贝塞尔曲线 (n=控制点个数-1)
          * @param t   时间参数t, 表示在原曲线的 p(t) 点分割
          * @return 修改out并返回
@@ -71,8 +71,8 @@ namespace NML{
 
         /**
          * @brief 切分贝塞尔曲线 使用分割矩阵Q 
-         * @param out0      输出对象0, 曲线 p(0~t) 的控制点集合
-         * @param out1      输出对象1, 曲线 p(t~1) 的控制点集合
+         * @param out0      输出目标0, 曲线 p(0~t) 的控制点集合
+         * @param out1      输出目标1, 曲线 p(t~1) 的控制点集合
          * @param points    原曲线控制点集合
          * @param cut_matrix_q    曲线分割矩阵 使用 calc_CutBezierMatrixQ 函数计算
          * @return 函数修改了两个 out 对象但无返回, 需要手动取需要的对应 out 对象
@@ -81,7 +81,7 @@ namespace NML{
 
         /**
          * @brief 切分贝塞尔曲线 使用分割矩阵Q 
-         * @param out       输出对象, 曲线 p(0~t) 的控制点集合
+         * @param out       输出目标, 曲线 p(0~t) 的控制点集合
          * @param points    原曲线控制点集合
          * @param cut_matrix_q    曲线分割矩阵 使用 calc_CutBezierMatrixQ 函数计算
          * @return 修改并返回 out
@@ -90,7 +90,7 @@ namespace NML{
 
         /**
          * @brief 切分贝塞尔曲线 使用分割矩阵Q 获取原曲线上的曲线 p(t~1) 的控制点
-         * @param out       输出对象, 曲线 p(t~1) 的控制点集合
+         * @param out       输出目标, 曲线 p(t~1) 的控制点集合
          * @param points    原曲线控制点集合
          * @param cut_matrix_q    曲线分割矩阵 使用 calc_CutBezierMatrixQ 函数计算
          * @return 修改并返回 out
@@ -99,7 +99,7 @@ namespace NML{
 
         /** 
          * @brief 通过系数计算贝塞尔曲线控制点
-         * @param out               输出对象, 控制点数据 规模与 coefficients 相同;
+         * @param out               输出目标, 控制点数据 规模与 coefficients 相同;
          * @param coefficients      贝塞尔曲线各次幂系数 ( 使用 setup_BezierCoefficients 计算 )
          * @return 修改 out 一维数组的内容 并返回 
          */
@@ -137,7 +137,7 @@ namespace NML{
 
         /**
          * @brief 计算拟合贝塞尔曲线的线段路径
-         * @param out               输出对象, 如果有 sample_step_size 参数,则 out 长度应为 ceil(1/sample_step_size)
+         * @param out               输出目标, 如果有 sample_step_size 参数,则 out 长度应为 ceil(1/sample_step_size)
          * @param coefficients      曲线各次幂系数  ( 使用 setup_BezierCoefficients 计算 )
          * @param sample_step_size  默认为 1/out.points_length
          */

@@ -142,7 +142,7 @@ namespace NML{
 
             /**
              * @brief 设置 平移矩阵
-             * @param out           输出对象
+             * @param out           输出目标
              * @param translate_x   x方向平移量
              * @param translate_y   y方向平移量
              * @param translate_z   z方向平移量
@@ -152,7 +152,7 @@ namespace NML{
             {return act_Matrix3D__Translate(setup_Matrix3D__Easy, out, translate_x, translate_y, translate_z);}
             /**
              * @brief 设置 平移矩阵
-             * @param out                输出对象
+             * @param out                输出目标
              * @param translate_vector   平移向量
              * @return 修改 out 并输出
              */
@@ -160,7 +160,7 @@ namespace NML{
             {return act_Matrix3D__Translate(setup_Matrix3D__Easy, out, translate_vector[0], translate_vector[1], translate_vector[2]);}
             /**
              * @brief 设置 缩放矩阵
-             * @param out       输出对象
+             * @param out       输出目标
              * @param scale_x   x 方向缩放值
              * @param scale_y   y 方向缩放值
              * @param scale_z   z 方向缩放值
@@ -170,7 +170,7 @@ namespace NML{
             {return act_Matrix3D__Scale(setup_Matrix3D__Easy, out, scale_x, scale_y, scale_z);}
             /**
              * @brief 矩阵 进行 缩放 变换
-             * @param out     输出对象
+             * @param out     输出目标
              * @param scale   缩放值
              * @return 修改 out 并输出
              */
@@ -178,7 +178,7 @@ namespace NML{
             {return act_Matrix3D__Scale(setup_Matrix3D__Easy, out, scale_value, scale_value, scale_value);}
             /**
              * @brief 设置 镜像矩阵
-             * @param out        输出对象
+             * @param out        输出目标
              * @param normal_x   镜像面的法向的 x 坐标
              * @param normal_y   镜像面的法向的 y 坐标
              * @param normal_z   镜像面的法向的 z 坐标
@@ -188,7 +188,7 @@ namespace NML{
             {return act_Matrix3D__Reflect(setup_Matrix3D__Easy, out, normal_x, normal_y, normal_z);}
             /**
              * @brief 设置 镜像矩阵
-             * @param out        输出对象
+             * @param out        输出目标
              * @param normal_x   镜像轴法线方向上的 x 坐标
              * @param normal_y   镜像轴法线方向上的 y 坐标
              * @param normal_z   镜像轴法线方向上的 z 坐标
@@ -198,7 +198,7 @@ namespace NML{
             {return act_Matrix3D__Reflect__Collinear(setup_Matrix3D__Easy, out, normal_x, normal_y, normal_z);}
             /**
              * @brief 设置 切变矩阵
-             * @param out    输出对象
+             * @param out    输出目标
              * @param axis   切变方向轴
              * @param k      切变系数
              * @return 修改 out 并输出
@@ -207,7 +207,7 @@ namespace NML{
             {return act_Matrix3D__Shear(setup_Matrix3D__Easy, out, plane, k1, k2);}
             /**
              * @brief 设置 旋转矩阵  (使用旋转轴)
-             * @param out     输出对象
+             * @param out     输出目标
              * @param theta   旋转量
              * @param axis    旋转轴
              * @return 修改 out 并输出
@@ -216,7 +216,7 @@ namespace NML{
             {return act_Matrix3D__Rotate(setup_Matrix3D__Easy, out, theta, axis);}
             /**
              * @brief 设置 旋转矩阵  (使用四元数)
-             * @param out    输出对象
+             * @param out    输出目标
              * @param quat   四元数
              * @return 修改 out 并输出
              */
@@ -226,7 +226,7 @@ namespace NML{
             {return act_Matrix3D__Rotate__Quaternion(setup_Matrix3D__Easy, out, x, y, z, w);}
             /**
              * @brief 设置 旋转矩阵  (使用欧拉角)
-             * @param out        输出对象      
+             * @param out        输出目标      
              * @param thetas_1   第1次旋转量
              * @param thetas_2   第2次旋转量
              * @param thetas_3   第3次旋转量
@@ -237,7 +237,7 @@ namespace NML{
             {return act_Matrix3D__Rotate__EulerAngles(setup_Matrix3D__Easy, out, thetas_1, thetas_2, thetas_3, order);}
             /**
              * @brief 设置 旋转矩阵 (使用欧拉角)
-             * @param out      输出对象
+             * @param out      输出目标
              * @param thetas   按顺序的旋转量
              * @param order    旋转轴顺序
              * @return 修改 out 并输出
@@ -247,7 +247,7 @@ namespace NML{
         
             /**
              * @brief 设置 缩投(正交投影/平行投影)矩阵
-             * @param out        输出对象
+             * @param out        输出目标
              * @param normal_x   投影面法线的x坐标
              * @param normal_y   投影面法线的y坐标
              * @param normal_z   投影面法线的z坐标
@@ -263,7 +263,7 @@ namespace NML{
 
             /**
              * @brief 矩阵 进行 平移 变换
-             * @param out           输出对象
+             * @param out           输出目标
              * @param translate_x   x方向平移量
              * @param translate_y   y方向平移量
              * @param translate_z   z方向平移量
@@ -273,7 +273,7 @@ namespace NML{
             {return act_Matrix3D__Translate(transform_Matrix3D__Easy, out, translate_x, translate_y, translate_z);}
             /**
              * @brief 设置 平移矩阵
-             * @param out                输出对象
+             * @param out                输出目标
              * @param translate_vector   平移向量
              * @return 修改 out 并输出
              */
@@ -281,7 +281,7 @@ namespace NML{
             {return act_Matrix3D__Translate(transform_Matrix3D__Easy, out, translate_vector[0], translate_vector[1], translate_vector[2]);}
             /**
              * @brief 矩阵 进行 缩放 变换
-             * @param out       输出对象
+             * @param out       输出目标
              * @param scale_x   x 方向缩放值
              * @param scale_y   y 方向缩放值
              * @param scale_z   z 方向缩放值
@@ -291,7 +291,7 @@ namespace NML{
             {return act_Matrix3D__Scale(transform_Matrix3D__Easy, out, scale_x, scale_y, scale_z);}
             /**
              * @brief 矩阵 进行 缩放 变换
-             * @param out     输出对象
+             * @param out     输出目标
              * @param scale   缩放值
              * @return 修改 out 并输出
              */
@@ -299,7 +299,7 @@ namespace NML{
             {return act_Matrix3D__Scale(transform_Matrix3D__Easy, out, scale_value, scale_value, scale_value);}
             /**
              * @brief 矩阵 进行 镜像 变换
-             * @param out        输出对象
+             * @param out        输出目标
              * @param normal_x   镜像面的法向的 x 坐标
              * @param normal_y   镜像面的法向的 y 坐标
              * @param normal_z   镜像面的法向的 z 坐标
@@ -309,7 +309,7 @@ namespace NML{
             {return act_Matrix3D__Reflect(transform_Matrix3D__Easy, out, normal_x, normal_y, normal_z);}
             /**
              * @brief 矩阵 进行 镜像 变换
-             * @param out        输出对象
+             * @param out        输出目标
              * @param normal_x   镜像轴法线方向上的 x 坐标
              * @param normal_y   镜像轴法线方向上的 y 坐标
              * @param normal_z   镜像轴法线方向上的 z 坐标
@@ -319,7 +319,7 @@ namespace NML{
             {return act_Matrix3D__Reflect__Collinear(transform_Matrix3D__Easy, out, normal_x, normal_y, normal_z);}
             /**
              * @brief 矩阵 进行 切变 变换
-             * @param out    输出对象
+             * @param out    输出目标
              * @param axis   切变方向
              * @param k      切变系数
              * @return 修改 out 并输出
@@ -328,7 +328,7 @@ namespace NML{
             {return act_Matrix3D__Shear(transform_Matrix3D__Easy, out, plane, k1, k2);}
             /**
              * @brief 矩阵 进行 旋转 变换  (使用旋转轴)
-             * @param out     输出对象
+             * @param out     输出目标
              * @param theta   旋转量
              * @param axis    旋转轴
              * @return 修改 out 并输出
@@ -337,7 +337,7 @@ namespace NML{
             {return act_Matrix3D__Rotate(transform_Matrix3D__Easy, out, theta, axis);}
             /**
              * @brief 矩阵 进行 旋转 变换  (使用四元数)
-             * @param out    输出对象
+             * @param out    输出目标
              * @param quat   四元数
              * @return 修改 out 并输出
              */
@@ -345,7 +345,7 @@ namespace NML{
             {return act_Matrix3D__Rotate__Quaternion(transform_Matrix3D__Easy, out, quat);}
             /**
              * @brief 矩阵 进行 旋转 变换  (使用四元数)
-             * @param out   输出对象
+             * @param out   输出目标
              * @param x     四元数的x参数
              * @param y     四元数的y参数
              * @param z     四元数的z参数
@@ -356,7 +356,7 @@ namespace NML{
             {return act_Matrix3D__Rotate__Quaternion(transform_Matrix3D__Easy, out, x, y, z, w);}
             /**
              * @brief 矩阵 进行 旋转 变换  (使用欧拉角)
-             * @param out        输出对象
+             * @param out        输出目标
              * @param thetas_1   第1次旋转量
              * @param thetas_2   第2次旋转量
              * @param thetas_3   第3次旋转量
@@ -367,7 +367,7 @@ namespace NML{
             {return act_Matrix3D__Rotate__EulerAngles(transform_Matrix3D__Easy, out, thetas_1, thetas_2, thetas_3, order);}
             /**
              * @brief 矩阵 进行 旋转 变换 (使用欧拉角)
-             * @param out      输出对象
+             * @param out      输出目标
              * @param thetas   按顺序的旋转量
              * @param order    旋转轴顺序
              * @return 修改 out 并输出
@@ -376,7 +376,7 @@ namespace NML{
             {return act_Matrix3D__Rotate__EulerAngles(transform_Matrix3D__Easy, out, thetas[0], thetas[1], thetas[2], order);}
             /**
              * @brief 设置 缩投(正交投影/平行投影)矩阵
-             * @param out        输出对象
+             * @param out        输出目标
              * @param normal_x   投影面法线的x坐标
              * @param normal_y   投影面法线的y坐标
              * @param normal_z   投影面法线的z坐标

@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-11-24 17:14:04
+ * @LastEditTime: 2023-11-26 12:00:03
  * @FilePath: \cnml\src\NML.cpp
  * @Description: Nittle Math Library 简单数学库
  * 
@@ -206,4 +206,16 @@ namespace NML{
     // void Points_Iterator__2DList::install_Data(Idx_Algebra dimensional, Idx points_length){ data=new var[dimensional*points_length]; }
     // void Points_Iterator__2DList::free_Data(){delete (var*)data; data=0;}
     // var* Points_Iterator__2DList::operator[](int v) {return ((var*)data)+(v*dimensional);}
+
+    void calc_Intersection__Range(var& out_0, var& out_1, var a0, var a1, var b0, var b1){
+        if(a0>a1)std::swap(a0,a1);
+        if(b0>b1)std::swap(b0,b1);
+        out_0=std::max(a0,b0);
+        out_1=std::min(a1,b1);
+        if(out_0>out_1){
+            out_0=0;
+            out_1=0;
+        }
+    }
+
 }

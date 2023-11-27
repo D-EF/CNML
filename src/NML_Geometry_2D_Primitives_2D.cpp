@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-11-24 11:18:06
+ * @LastEditTime: 2023-11-26 12:44:48
  * @FilePath: \CNML\src\NML_Geometry_2D_Primitives.cpp
  * @Description: 2D 图元 相关内容
  * @
@@ -83,7 +83,7 @@ namespace NML{
                 }
 
                 var Primitive_2D__Arc::calc_ArcLength(){
-                    return data->r*abs(data->theta_0 - data->theta_1);
+                    return data->r*abs(data->theta0 - data->theta1);
                 }
 
                 var Primitive_2D__Arc::calc_ChordLength(){
@@ -100,16 +100,16 @@ namespace NML{
 
                 Line_Data_2D Primitive_2D__Arc::calc_local_chord(){
                     Line_Data_2D rtn;
-                    normalize_ArcData(data);
+                    normalize_ArcData(*data);
                     var &r=data->r;
                     return {
-                        x0: cos(data->theta_0)*r,   y0: sin(data->theta_0)*r,
-                        x1: cos(data->theta_1)*r,   y1: sin(data->theta_1)*r
+                        x0: cos(data->theta0)*r,   y0: sin(data->theta0)*r,
+                        x1: cos(data->theta1)*r,   y1: sin(data->theta1)*r
                     };
                 }
 
                 AABB_2D Primitive_2D__Arc::calc_LocalAABB(){
-                    var angle=abs(data->theta_1-data->theta_0);
+                    var angle=abs(data->theta1-data->theta0);
                     if(angle>=CYCLES){
                         return {
                             x0 : data->cx - data->r,   y0 : data->cy - data->r,

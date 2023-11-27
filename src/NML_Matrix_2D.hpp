@@ -54,7 +54,7 @@ namespace NML{
         
         /**
          * @brief 写入矩阵数据
-         * @param out    操作对象           输出对象
+         * @param out    操作对象           输出目标
          * @param value_mxx 2d线性变换矩阵 参数 mxx
          * @param value_myx 2d线性变换矩阵 参数 mxy
          * @param value_mxy 2d线性变换矩阵 参数 myx
@@ -95,7 +95,7 @@ namespace NML{
 
             /**
              * @brief 设置 平移矩阵
-             * @param out           输出对象
+             * @param out           输出目标
              * @param translate_x   x 方向平移量
              * @param translate_y   y 方向平移量
              * @return 修改并返回 out
@@ -104,7 +104,7 @@ namespace NML{
             {return act_Matrix2D__Translate(setup_Matrix2D, out, translate_x, translate_y);}
             /**
              * @brief 设置 缩放矩阵
-             * @param out       输出对象
+             * @param out       输出目标
              * @param scale_x   x 方向缩放值
              * @param scale_y   y 方向缩放值
              * @return 修改并返回 out
@@ -113,7 +113,7 @@ namespace NML{
             {return act_Matrix2D__Scale(setup_Matrix2D, out, scale_x, scale_y);}
             /**
              * @brief 设置 缩放矩阵
-             * @param out           输出对象
+             * @param out           输出目标
              * @param scale_value   缩放值
              * @return 修改并返回 out
              */
@@ -121,7 +121,7 @@ namespace NML{
             {return act_Matrix2D__Scale(setup_Matrix2D, out, scale_value, scale_value);}
             /**
              * @brief 设置 旋转矩阵
-             * @param out     输出对象
+             * @param out     输出目标
              * @param theta   旋转弧度
              * @return 修改并返回 out
              */
@@ -131,7 +131,7 @@ namespace NML{
             {return act_Matrix2D__Rotate__Vector(setup_Matrix2D, out, unit_vec__org, unit_vec__to);}
             /**
              * @brief 设置 镜像矩阵
-             * @param out        输出对象
+             * @param out        输出目标
              * @param normal_x   镜像轴法线方向的标准向量的 x 坐标
              * @param normal_y   镜像轴法线方向的标准向量的 y 坐标
              * @return 修改并返回 out
@@ -140,7 +140,7 @@ namespace NML{
             {return act_Matrix2D__Reflect(setup_Matrix2D, out, normal_x, normal_y);}
             /**
              * @brief 设置 镜像矩阵 (允许法向量为任意向量)
-             * @param out        输出对象
+             * @param out        输出目标
              * @param normal_x   镜像轴法线方向上的 x 坐标
              * @param normal_y   镜像轴法线方向上的 y 坐标
              * @return 修改并返回 out
@@ -149,7 +149,7 @@ namespace NML{
             {return act_Matrix2D__Reflect__Collinear(setup_Matrix2D, out, normal_x, normal_y);}
             /**
              * @brief 设置 切变矩阵
-             * @param out      输出对象
+             * @param out      输出目标
              * @param axis_x   切变轴标准向量的 x 坐标
              * @param axis_y   切变轴标准向量的 y 坐标
              * @param k        切变系数
@@ -159,7 +159,7 @@ namespace NML{
             {return act_Matrix2D__Shear(setup_Matrix2D, out, axis_x, axis_y, k);}
             /**
              * @brief 设置 切变矩阵
-             * @param out      输出对象
+             * @param out      输出目标
              * @param axis_x   切变轴方向上的 x 坐标
              * @param axis_y   切变轴方向上的 y 坐标
              * @param k        切变系数
@@ -175,7 +175,7 @@ namespace NML{
 
             /**
              * @brief 矩阵进行平移变换
-             * @param out           输出对象
+             * @param out           输出目标
              * @param translate_x   x 方向平移量
              * @param translate_y   y 方向平移量
              * @return 修改并返回 out
@@ -184,7 +184,7 @@ namespace NML{
             {return act_Matrix2D__Translate(transform_Matrix2D, out, translate_x, translate_y);}
             /**
              * @brief 矩阵进行缩放变换
-             * @param out       输出对象
+             * @param out       输出目标
              * @param scale_x   x 方向缩放值
              * @param scale_y   y 方向缩放值
              * @return 修改并返回 out
@@ -193,7 +193,7 @@ namespace NML{
             {return act_Matrix2D__Scale(transform_Matrix2D, out, scale_x, scale_y);}
             /**
              * @brief 矩阵进行缩放变换
-             * @param out           输出对象
+             * @param out           输出目标
              * @param scale_value   缩放值
              * @return 修改并返回 out
              */
@@ -201,7 +201,7 @@ namespace NML{
             {return act_Matrix2D__Scale(transform_Matrix2D, out, scale_value, scale_value);}
             /**
              * @brief 矩阵进行旋转变换
-             * @param out     输出对象
+             * @param out     输出目标
              * @param theta   旋转轴
              * @return 修改并返回 out
              */
@@ -211,7 +211,7 @@ namespace NML{
             {return act_Matrix2D__Rotate__Vector(transform_Matrix2D, out, unit_vec__org, unit_vec__to);}
             /**
              * @brief 矩阵进行镜像变换
-             * @param out        输出对象
+             * @param out        输出目标
              * @param normal_x   镜像轴法线方向的标准向量的 x 坐标
              * @param normal_y   镜像轴法线方向的标准向量的 y 坐标
              * @return 修改并返回 out
@@ -220,7 +220,7 @@ namespace NML{
             {return act_Matrix2D__Reflect(transform_Matrix2D, out, normal_x, normal_y);}
             /**
              * @brief 矩阵进行镜像变换 (允许法向量为任意向量)
-             * @param out        输出对象
+             * @param out        输出目标
              * @param normal_x   镜像轴法线方向上的 x 坐标
              * @param normal_y   镜像轴法线方向上的 y 坐标
              * @return 修改并返回 out
@@ -229,7 +229,7 @@ namespace NML{
             {return act_Matrix2D__Reflect__Collinear(transform_Matrix2D, out, normal_x, normal_y);}
             /**
              * @brief 矩阵进行切变变换
-             * @param out      输出对象
+             * @param out      输出目标
              * @param axis_x   切变轴标准向量的 x 坐标
              * @param axis_y   切变轴标准向量的 y 坐标
              * @param k        切变系数
@@ -239,7 +239,7 @@ namespace NML{
             {return act_Matrix2D__Shear(transform_Matrix2D, out, axis_x, axis_y, k);}
             /**
              * @brief 矩阵进行切变变换
-             * @param out      输出对象
+             * @param out      输出目标
              * @param axis_x   切变轴方向上的 x 坐标
              * @param axis_y   切变轴方向上的 y 坐标
              * @param k        切变系数

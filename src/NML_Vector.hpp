@@ -92,7 +92,7 @@ namespace NML{
         /**
          * @brief 3d叉乘 数据长度固定为3
          * 
-         * @param out           输出对象
+         * @param out           输出目标
          * @param vec_left      左侧数据
          * @param vec_right     右侧数据
          */
