@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-11-26 12:00:03
+ * @LastEditTime: 2023-11-27 10:43:08
  * @FilePath: \cnml\src\NML.cpp
  * @Description: Nittle Math Library 简单数学库
  * 
@@ -207,15 +207,13 @@ namespace NML{
     // void Points_Iterator__2DList::free_Data(){delete (var*)data; data=0;}
     // var* Points_Iterator__2DList::operator[](int v) {return ((var*)data)+(v*dimensional);}
 
-    void calc_Intersection__Range(var& out_0, var& out_1, var a0, var a1, var b0, var b1){
-        if(a0>a1)std::swap(a0,a1);
-        if(b0>b1)std::swap(b0,b1);
-        out_0=std::max(a0,b0);
-        out_1=std::min(a1,b1);
-        if(out_0>out_1){
-            out_0=0;
-            out_1=0;
+    bool calc_Intersection__Range(var& out_min,var& out_max, var r0_min, var r0_max, var r1_min, var r1_max){
+        if(r0_min<=r1_max && r1_min<=r0_max){
+            out_min=max(r0_min,r1_min);
+            out_max=min(r0_max,r1_max);
+            return true;
         }
+        return false;
     }
 
 }

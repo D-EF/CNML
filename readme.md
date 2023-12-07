@@ -75,12 +75,14 @@
 
 ---
 
-## 部分命名解释和缩写规范
+## 部分命名解释和缩写
 
 ### 名词
 * NML            : 库的名字( Nittle Math Library )
 * i(j/k)         : 迭代器(iterator)
 * l              : 长度(length)
+* d              : 差(differ)
+* op/ed          : 起始/结束(open/end)
 * idx            : 索引/下标 ( index )
 * vec            : 向量 ( vector )
 * mat            : 矩阵 ( matrix )

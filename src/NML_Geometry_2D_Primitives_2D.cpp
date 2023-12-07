@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-11-26 12:44:48
+ * @LastEditTime: 2023-12-04 14:17:03
  * @FilePath: \CNML\src\NML_Geometry_2D_Primitives.cpp
  * @Description: 2D 图元 相关内容
  * @
@@ -83,14 +83,14 @@ namespace NML{
                 }
 
                 var Primitive_2D__Arc::calc_ArcLength(){
-                    return data->r*abs(data->theta0 - data->theta1);
+                    return data->r*abs(data->theta_op - data->theta_ed);
                 }
 
                 var Primitive_2D__Arc::calc_ChordLength(){
                     return calc_LineLength(get_local_chord());
                 }
 
-                Line_Data_2D Primitive_2D__Arc::get_local_chord(){
+                Line_2D Primitive_2D__Arc::get_local_chord(){
                     if(!had__local_chord){
                         local_chord= calc_local_chord();
                         had__local_chord = true;
@@ -98,18 +98,18 @@ namespace NML{
                     return local_chord;
                 }
 
-                Line_Data_2D Primitive_2D__Arc::calc_local_chord(){
-                    Line_Data_2D rtn;
-                    normalize_ArcData(*data);
+                Line_2D Primitive_2D__Arc::calc_local_chord(){
+                    Line_2D rtn;
+                    normalize_DrawArcData(*data);
                     var &r=data->r;
                     return {
-                        x0: cos(data->theta0)*r,   y0: sin(data->theta0)*r,
-                        x1: cos(data->theta1)*r,   y1: sin(data->theta1)*r
+                        x0: cos(data->theta_op)*r,   y0: sin(data->theta_op)*r,
+                        x1: cos(data->theta_ed)*r,    y1: sin(data->theta_ed)*r
                     };
                 }
 
                 AABB_2D Primitive_2D__Arc::calc_LocalAABB(){
-                    var angle=abs(data->theta1-data->theta0);
+                    var angle=abs(data->theta_ed-data->theta_op);
                     if(angle>=CYCLES){
                         return {
                             x0 : data->cx - data->r,   y0 : data->cy - data->r,
@@ -119,7 +119,7 @@ namespace NML{
 
                     AABB_2D rtn={0, 0, 0, 0};
                     var &r= data->r;
-                    Line_Data_2D chord=get_local_chord();
+                    Line_2D chord=get_local_chord();
 
                     bool f = angle>DEG_180,
                         f1 = chord.x0>=0,   f2 = chord.y0>=0,

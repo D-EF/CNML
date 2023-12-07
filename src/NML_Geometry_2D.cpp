@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-11-26 12:31:08
+ * @LastEditTime: 2023-12-07 18:30:33
  * @FilePath: \cnml\src\NML_Geometry_2D.cpp
  * @Description: 2d 几何; 提供基本图元数据结构和部分算法
  * @
@@ -16,6 +16,7 @@ namespace NML{
     
     namespace Geometry_2D{
         
+        
         Rect_Data& normalize_RectData(Rect_Data& rect_data){
             if(rect_data.w<0){
                 rect_data.x+=rect_data.w;
@@ -28,129 +29,84 @@ namespace NML{
             return rect_data;
         }
 
-
-        Arc_Data& normalize_ArcData(Arc_Data& arc_data){
-            // 弧度差超过整圆, 直接使用 ±π
-            if( abs(arc_data.theta0-arc_data.theta1) > DEG_360){
-                arc_data.theta0=PI_I;
-                arc_data.theta1=PI;
-                return arc_data;
+        void normalize_DrawArcTheta(var& theta_op, var& theta_ed){
+            if(theta_op>theta_ed){
+                std::swap(theta_op,theta_ed);
             }
-
-            while(arc_data.theta0>DEG_360){
-                arc_data.theta0+=DEG_360_I;
-                arc_data.theta1+=DEG_360_I;
+            var theta_offset=theta_ed-theta_op;
+            if(theta_offset>DEG_360){
+                theta_ed  = DEG_180;
+                theta_op = DEG_180_I;
+                return;
             }
-            
-            while(arc_data.theta0<DEG_360_I){
-                arc_data.theta0+=DEG_360;
-                arc_data.theta1+=DEG_360;
+            if(theta_op<DEG_180_I||theta_op>DEG_180){
+                theta_op=atan2(sin(theta_op),cos(theta_op));
+                theta_ed=theta_op+theta_offset;
             }
-
-            if(arc_data.theta0>arc_data.theta1){
-                std::swap(arc_data.theta0, arc_data.theta1);
-            }
-            return arc_data;
         }
+
         
-        char check_Inside__AABB(AABB_2D aabb, var x, var y){
-            if(aabb.x0>x||aabb.x1<x)     return 0;
-            if(aabb.y0>y||aabb.y1<y)     return 0;
-            if(aabb.x0==x||aabb.x1==x)   return 2;
-            if(aabb.y0==y||aabb.y1==y)   return 2;
-            return 1;
-        }
-        
-        
-        Line_Data_2D calc_EllipseFocus(var rx, var ry,var rotate){
+        Point_2D calc_EllipseFocus(var rx, var ry,var rotate){
             if(ry>rx){
                 rotate+=DEG_90;
             }
             var c_focus_length=0.5*calc_EllipseFocalLength(rx, ry);
-            Point_2D item=create_Point2D__Rotate(rotate);
-            return {
-                +c_focus_length*item.x,
-                +c_focus_length*item.y,
-                -c_focus_length*item.x,
-                -c_focus_length*item.y,
-            };
+            Point_2D item=calc_Point2D__Rotate(rotate);
+            return {c_focus_length*item.x, c_focus_length*item.y};
         }
 
-        var calc_cross__Line_Line(var line0_p0_x, var line0_p0_y, var line0_p1_x, var line0_p1_y, var line1_p0_x, var line1_p0_y, var line1_p1_x, var line1_p1_y){
-            var loc_tx = line0_p1_x - line0_p0_x;
-            var loc_0x = line1_p0_x - line0_p0_x;
-            var loc_1x = line1_p1_x - line0_p0_x;
-            var loc_ty = line0_p1_y - line0_p0_y;
-            var loc_0y = line1_p0_y - line0_p0_y;
-            var loc_1y = line1_p1_y - line0_p0_y;
-            return (loc_tx*loc_0y - loc_0x*loc_ty)*(loc_tx*loc_1y - loc_1x*loc_ty);
-        }
-        
-        char check_Intersection__Line_Line__V2(var line0_p0_x, var line0_p0_y, var line0_p1_x, var line0_p1_y, var line1_p0_x, var line1_p0_y, var line1_p1_x, var line1_p1_y){
-            var t0_x=line0_p1_x - line0_p0_x,
-                t0_y=line0_p1_y - line0_p0_y,
-                t0ox=line0_p1_x - line1_p0_x,
-                t0oy=line0_p1_y - line1_p0_y,
-                t0ex=line0_p1_x - line1_p1_x,
-                t0ey=line0_p1_y - line1_p1_y,
-                t1_x=line1_p1_x - line1_p0_x,
-                t1_y=line1_p1_y - line1_p0_y,
-                t1ox=line1_p1_x - line0_p0_x,
-                t1oy=line1_p1_y - line0_p0_y,
-                t1ex=line1_p1_x - line0_p1_x,
-                t1ey=line1_p1_y - line0_p1_y;
-
-            // fx   x是线段号码 (1 or 2)
-            // fx1 是起点的 flag, fx2 是终点的 flag
-            // vec_left[0]*vec_right[1] - vec_left[1]*vec_right[0]
-            var f00=t0_x*t0oy - t0_y*t0ox,   // cross  t0 , t0o
-                f01=t0_x*t0ey - t0_y*t0ex,   // cross  t0 , t0e
-                f10=t1_x*t1oy - t1_y*t1ox,   // cross  t1 , t1o
-                f11=t1_x*t1ey - t1_y*t1ex;   // cross  t1 , t1e
-            if((f00==0)&&((f11>0)!=(f10>0))){
-                // l1 起点在 l2 上
-                return 2;
-            }
-            else if((f01==0)&&((f11>0)!=(f10>0))){
-                // l1 终点在 l2 上
-                return -1;
-            }else if((f10==0)&&((f00>0)!=(f01>0))){
-                // l2 起点在 l1 上
-                return -1;
-            }
-            else if((f11==0)&&((f00>0)!=(f01>0))){
-                // l2 终点在 l1 上
-                return 2;
-            }
-            
-            if((f01>0)!=(f00>0)&&(f11>0)!=(f10>0)){
-                // 两线段相交
+        char calc_Intersection__Theta_Theta(Points_Iterator& out, var theta0_min, var theta0_max, var theta1_min, var theta1_max){
+            char i=0;
+            var *temp_out=out[i];
+            if(theta0_max-theta0_min>=DEG_360){
+                temp_out[0]=theta0_min;
+                temp_out[1]=theta0_max;
+                return 1;
+            }else if(theta1_max-theta1_min>=DEG_360){
+                temp_out[0]=theta1_min;
+                temp_out[1]=theta1_max;
                 return 1;
             }
-            return 0;
+            if(calc_Intersection__Range(temp_out[0],temp_out[1],theta0_min,theta0_max,theta1_min,theta1_max)){
+                ++i;
+                temp_out=out[i];
+            }
+            if(calc_Intersection__Range(temp_out[0],temp_out[1],theta0_min+DEG_360,theta0_max+DEG_360,theta1_min,theta1_max)){
+                ++i;
+                temp_out=out[i];
+            }
+            if(i<=1 && calc_Intersection__Range(temp_out[0],temp_out[1],theta0_min-DEG_360,theta0_max-DEG_360,theta1_min,theta1_max)){
+                ++i;
+                temp_out=out[i];
+            }
+            return i;
         }
 
-        var*& calc_Intersection__Line_Line(var*& out , var line0_p0_x, var line0_p0_y, var line0_p1_x, var line0_p1_y, var line1_p0_x, var line1_p0_y, var line1_p1_x, var line1_p1_y){
-            var bx=line0_p1_x-line0_p0_x,
-                by=line0_p1_y-line0_p0_y,
-                dx=line1_p1_x-line1_p0_x,
-                dy=line1_p1_y-line1_p0_y;
-            var temp_root[2]={0,0};
-            var *p__temp_root=temp_root;
+        var calc_cross__Line_Line(Point_2D& line0_p0, Point_2D& line0_p1, Point_2D& line1_p0, Point_2D& line1_p1){
+            var loc_tx = line0_p1.x - line0_p0.x;
+            var loc_ty = line0_p1.y - line0_p0.y;
+            return  (loc_tx*(line1_p0.y-line0_p0.y) - (line1_p0.x-line0_p0.x)*loc_ty) *
+                    (loc_tx*(line1_p1.y-line0_p0.y) - (line1_p1.x-line0_p0.x)*loc_ty) ;
+        }
+        
+        Point_2D calc_Intersection__Line_Line(Point_2D& line0_p0, Point_2D& line0_p1, Point_2D& line1_p0, Point_2D& line1_p1){
+            Point_2D rtn;
+            var bx=line0_p1.x-line0_p0.x,
+                by=line0_p1.y-line0_p0.y,
+                dx=line1_p1.x-line1_p0.x,
+                dy=line1_p1.y-line1_p0.y;
+            var *rtn_p=(var*)&rtn;
 
-            if(!Algebra::calc_RootsOfSquare(p__temp_root,line0_p0_x,bx,line1_p0_x,dx,line0_p0_y,by,line1_p0_y,dy)){
-                out[0]=out[1]=INFINITY;
+            if(!Algebra::calc_RootsOfSquare(rtn_p,line0_p0.x,bx,line1_p0.x,dx,line0_p0.y,by,line1_p0.y,dy)){
+                rtn.x=rtn.y=INFINITY;
             }
-            if( 
-                p__temp_root[0]<=1 && p__temp_root[0]>=0 &&
-                p__temp_root[1]<=1 && p__temp_root[1]>=0 
-            ){
-                out[0]=p__temp_root[0]*bx+line0_p0_x;
-                out[1]=p__temp_root[0]*by+line0_p0_y;
+            if( rtn.x<=1 && rtn.x>=0 && rtn.y<=1 && rtn.y>=0 ){
+                rtn.x=rtn.x*bx+line0_p0.x;
+                rtn.y=rtn.x*by+line0_p0.y;
             }else{
-                out[0]=out[1]=INFINITY;
+                rtn.x=rtn.y=INFINITY;
             }
-            return out;
+            return rtn;
         }
         
         char calc_Intersection__Circle_Circle(Points_Iterator& out, var c0x, var c0y, var r0, var c1x, var c1y, var r1){
@@ -170,53 +126,81 @@ namespace NML{
             
             out[0][0]=x0-h*(c1y-c0y)/l;
             out[0][1]=y0+h*(c1x-c0x)/l;
-            out[1][0]=x0+h*(c1y-c0y)/l,
-            out[1][1]=y0-h*(c1x-c0x)/l;
             
             if(check_Equal(rr,l)) return 1;
+            
+            out[1][0]=x0+h*(c1y-c0y)/l,
+            out[1][1]=y0-h*(c1x-c0x)/l;
             return 2;
         }
 
-        char calc_Intersection__Arc_Arc(Points_Iterator& out, var c0_x, var c0_y, var r0, var theta0_0, var theta0_1, var c1_x, var c1_y, var r1, var theta1_0, var theta1_1){
-            char rtn=0;
-            char flag = calc_Intersection__Circle_Circle(out,c0_x,c0_y,r0,c1_x,c1_y,r1);
-            if(!flag) return flag;
-            if(flag==-1){
-                // 两圆重合, 判断弧度
-                if((abs(theta0_0-theta0_1) + abs(theta1_0-theta1_1)) > DEG_360){
-                    return -1;
+        
+        char calc_Intersection__Arc_Arc(Points_Iterator& out, var c0_x, var c0_y, var r0, var theta0_op, var theta0_ed, var c1_x, var c1_y, var r1, var theta1_op, var theta1_ed,bool _use_normalize){
+            char flag_il = calc_Intersection__Circle_Circle(out,c0_x,c0_y,r0,c1_x,c1_y,r1);
+
+            if(!flag_il){
+                // 无交点
+                return 0;
+            }
+            if(!_use_normalize && flag_il==-1){
+                // 圆重合
+                return calc_Intersection__Theta_Theta(out,theta0_op,theta0_ed,theta1_op,theta1_ed);
+            }
+            
+            if(theta0_op>theta0_ed){std::swap(theta0_op,theta0_ed);}
+            if(theta1_op>theta1_ed){std::swap(theta1_op,theta1_ed);}
+
+            Point_2D theta0_op_point={sin(theta0_op),cos(theta0_op)};
+            Point_2D theta1_op_point={sin(theta1_op),cos(theta1_op)};
+
+            bool flag_cycles0,flag_cycles1;
+            var theta0_offset=theta0_ed-theta0_op;
+            var theta1_offset=theta1_ed-theta1_op;
+
+            if(flag_cycles0=theta0_offset>=DEG_360){ theta0_ed  = DEG_180; theta0_op = DEG_180_I; theta0_offset=DEG_360; }
+            if(flag_cycles1=theta1_offset>=DEG_360){ theta1_ed  = DEG_180; theta1_op = DEG_180_I; theta1_offset=DEG_360; }
+            
+            if(_use_normalize){
+                if(theta0_op<DEG_180_I||theta0_op>DEG_180){   theta0_op=atan2(theta0_op_point.y,theta0_op_point.x);   theta0_ed=theta0_op+theta0_offset;}
+                if(theta1_op<DEG_180_I||theta1_op>DEG_180){   theta1_op=atan2(theta1_op_point.y,theta1_op_point.x);   theta1_ed=theta1_op+theta1_offset;}
+                if(flag_il==-1){
+                    // 圆重合
+                    return calc_Intersection__Theta_Theta(out,theta0_op,theta0_ed,theta1_op,theta1_ed);
                 }
-                // 弧度取值范围控制在 ±2π内
-                while(theta0_0<DEG_360_I){   theta0_0+=DEG_360;     theta0_1+=DEG_360;     }
-                while(theta0_0>DEG_360)  {   theta0_0+=DEG_360_I;   theta0_1+=DEG_360_I;   }
-                while(theta1_0>DEG_360)  {   theta1_0+=DEG_360_I;   theta1_1+=DEG_360_I;   }
-                while(theta1_0>DEG_360)  {   theta1_0+=DEG_360_I;   theta1_1+=DEG_360_I;   }
-                return check_Intersection__Range(theta0_0,theta0_1,theta1_0,theta1_1);
+            }
+            
+            Point_2D theta0_ed_point={sin(theta0_ed),cos(theta0_ed)};
+            Point_2D theta1_ed_point={sin(theta1_ed),cos(theta1_ed)};
+
+            bool is_theta0_offset_more_than_pi=theta0_offset>DEG_180;
+            bool is_theta1_offset_more_than_pi=theta1_offset>DEG_180;
+
+            char rtn=0;
+            var* temp_out=out[0];
+            Point_2D point__loc0={ temp_out[0]-c0_x, temp_out[1]-c0_y };
+            Point_2D point__loc1={ temp_out[0]-c1_x, temp_out[1]-c1_y };
+
+            if( check_Inside__Angle(theta0_ed_point,theta0_op_point,point__loc0,is_theta0_offset_more_than_pi) && 
+                check_Inside__Angle(theta1_ed_point,theta1_op_point,point__loc1,is_theta1_offset_more_than_pi) 
+            ){
+                ++rtn;
             }
 
-            AABB_2D range_theta={
-                theta0_0,theta0_1,
-                theta1_0,theta1_1
-            };
-
-            var ip_x =out[0][0];
-            var ip_y =out[0][1];
-            var theta_i_0=calc_LineAngle(c0_x,c0_y,ip_x,ip_y),theta_i_1=calc_LineAngle(c1_x,c1_y,ip_x,ip_y);
-
-            if(check_Inside__AABB(range_theta, theta_i_0, theta_i_1)){
-                rtn=1;
-            }
-
-            if(flag==1){ // 两圆相切
+            if(flag_il==1){ // 两圆相切
                 return rtn;
             }
 
-            ip_x =out[1][0];
-            ip_y =out[1][1];
-            theta_i_0=calc_LineAngle(c0_x,c0_y,ip_x,ip_y),theta_i_1=calc_LineAngle(c1_x,c1_y,ip_x,ip_y);
-            if(check_Inside__AABB(range_theta, theta_i_0, theta_i_1)){
-                rtn+=rtn+1;
+            temp_out=out[1];
+            point__loc0={ temp_out[0]-c0_x, temp_out[1]-c0_y };
+            point__loc1={ temp_out[0]-c1_x, temp_out[1]-c1_y };
+            
+            
+            if( check_Inside__Angle(theta0_ed_point,theta0_op_point,point__loc0,is_theta0_offset_more_than_pi) && 
+                check_Inside__Angle(theta1_ed_point,theta1_op_point,point__loc1,is_theta1_offset_more_than_pi) 
+            ){
+                rtn+=2;
             }
+
             return rtn;
         }
 

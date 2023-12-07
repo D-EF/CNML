@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-11-22 15:11:17
+ * @LastEditTime: 2023-11-28 14:49:17
  * @FilePath: \cnml\src\NML_Vector.hpp
  * @Description: 基本向量操作
  * @
@@ -110,6 +110,15 @@ namespace NML{
          * @return 输出2d向量叉积值
          */
         inline var cross_V2(var*& vec_left, var*& vec_right){return vec_left[0]*vec_right[1] - vec_left[1]*vec_right[0];}
+        
+        /**
+         * @brief 2d叉乘 数据长度固定为2
+         * 
+         * @param vec_left      左侧数据
+         * @param vec_right     右侧数据
+         * @return 输出2d向量叉积值
+         */
+        inline var cross_V2(var vec_left_x, var vec_left_y, var vec_right_x, var vec_right_y){return vec_left_x*vec_right_y - vec_left_y*vec_right_x;}
 
         /**
          * @brief 2d向量求点乘

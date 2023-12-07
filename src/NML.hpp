@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-11-26 12:00:57
+ * @LastEditTime: 2023-11-27 10:44:00
  * @FilePath: \cnml\src\NML.hpp
  * @Description: Nittle Math Library 简单数学库
  * 
@@ -326,32 +326,48 @@ namespace NML{
     /**
      * 判断值是否在取值范围内
      */
-    inline bool check_Inside__Range(var a0, var a1, var value){ return ( (a0>value) != (a1>value) ); }
+    inline bool check_Inside__Range(var range0, var range1, var value){ return ( (range0>value) != (range1>value) ); }
 
     /**
-     * 判断两个取值范围是否有交集
+     * 判断两个取值范围是否有交集 
+     * @param r0_min 取值范围 r0 的最小值
+     * @param r0_max 取值范围 r0 的最大值
+     * @param r1_min 取值范围 r1 的最小值
+     * @param r1_max 取值范围 r1 的最大值
+     * @return 返回是否有交集
      */
-    inline bool check_Intersection__Range(var a0, var a1, var b0, var b1){
+    inline bool check_Intersection__Range(var r0_min, var r0_max, var r1_min, var r1_max){
+        return r0_min<=r1_max && r1_min<=r0_max;
+    }
+    
+    /**
+     * 求两个取值范围的交集 
+     * @param out_min   新取值范围的最小值的输出目标
+     * @param out_max   新取值范围的最大值的输出目标
+     * @param r0_min    取值范围 r0 的最小值
+     * @param r0_max    取值范围 r0 的最大值
+     * @param r1_min    取值范围 r1 的最小值
+     * @param r1_max    取值范围 r1 的最大值
+     * @return 返回是否有交集
+     */
+    bool calc_Intersection__Range(var& out_min,var& out_max, var r0_min, var r0_max, var r1_min, var r1_max);
+
+    /**
+     * 判断两个取值范围是否有交集 (无序的)
+     * @param a0 取值范围 a 的端点 0
+     * @param a1 取值范围 a 的端点 1
+     * @param b0 取值范围 b 的端点 0
+     * @param b1 取值范围 b 的端点 1
+     * @return 返回是否有交集
+     */
+    inline bool check_Intersection__Range_Unordered(var a0, var a1, var b0, var b1){
         return (
-            ( (a0>b0) != (a0>b1) )||
-            ( (a1>b0) != (a1>b1) )||
-            ( (b0>a0) != (b0>a1) )||
-            ( (b1>a0) != (b1>a1) )  
+            ( (a0>=b0) != (a0>=b1) )||
+            ( (a1>=b0) != (a1>=b1) )||
+            ( (b0>=a0) != (b0>=a1) )||
+            ( (b1>=a0) != (b1>=a1) )  
         );
     }
-
-    /**
-     * 求两个取值范围的交集
-     * @param out_0 输出目标 0 
-     * @param out_1 输出目标 1 
-     * @param a0  取值范围 a 的参数
-     * @param a1  取值范围 a 的参数
-     * @param b0  取值范围 b 的参数
-     * @param b1  取值范围 b 的参数
-     * @return 返回新的取值范围
-     */
-    void calc_Intersection__Range(var& out_0, var& out_1, var a0, var a1, var b0, var b1);
-
 
 }
 

@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-10-30 10:23:12
+ * @LastEditTime: 2023-12-04 14:17:00
  * @FilePath: \CNML\src\NML_Geometry_2D_Primitives_2D.hpp
  * @Description: 2D 图元 相关内容
  * @
@@ -227,16 +227,16 @@ namespace NML{
                 var get_ChordLength();
                 
                 /** 弧形是否闭合: 检查是弧形旋转量是否大于整圆 */
-                inline bool check_Close(){return abs(data->theta0-data->theta1)>CYCLES;}
+                inline bool check_Close(){return abs(data->theta_op-data->theta_ed)>CYCLES;}
                 
                 /** 获取局部坐标的弧形的弦信息(端点相对于圆心的位置)*/
-                Line_Data_2D get_local_chord();
+                Line_2D get_local_chord();
 
                 /** 计算局部坐标的弧形的弦信息(端点相对于圆心的位置)*/
-                Line_Data_2D calc_local_chord();
+                Line_2D calc_local_chord();
 
                 /** 局部坐标的弧形的弦信息(端点相对于圆心的位置)*/
-                Line_Data_2D local_chord;
+                Line_2D local_chord;
 
                 /** local_chord 是否可用*/
                 bool had__local_chord;
@@ -283,7 +283,7 @@ namespace NML{
                 /** @brief 椭圆的数据 */
                 Ellipse_Arc_Data *data;
                 /** @brief 椭圆的焦点 */
-                Line_Data_2D focus;
+                Line_2D focus;
                 /** @brief 椭圆的焦距 */
                 var focal_length;
                 /** @brief 椭圆的缩放比 */
