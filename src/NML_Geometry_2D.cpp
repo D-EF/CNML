@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-12-07 18:30:33
+ * @LastEditTime: 2023-12-07 18:39:04
  * @FilePath: \cnml\src\NML_Geometry_2D.cpp
  * @Description: 2d 几何; 提供基本图元数据结构和部分算法
  * @
@@ -193,7 +193,6 @@ namespace NML{
             temp_out=out[1];
             point__loc0={ temp_out[0]-c0_x, temp_out[1]-c0_y };
             point__loc1={ temp_out[0]-c1_x, temp_out[1]-c1_y };
-            
             
             if( check_Inside__Angle(theta0_ed_point,theta0_op_point,point__loc0,is_theta0_offset_more_than_pi) && 
                 check_Inside__Angle(theta1_ed_point,theta1_op_point,point__loc1,is_theta1_offset_more_than_pi) 
