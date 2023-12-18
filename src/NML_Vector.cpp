@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-09-08 16:40:23
+ * @LastEditTime: 2023-12-12 16:46:01
  * @FilePath: \cnml\src\NML_Vector.cpp
  * @Description: 基本向量操作
  * @
@@ -23,13 +23,11 @@ namespace NML{
                     else              return '\3';
                 }
         }
-
+        
         var mag(Idx_VM length, var*& vec){
-            var Squares=0;
-            for(Idx_VM i=0; i<length; ++i){
-                Squares+=vec[i]*vec[i];
-            }
-            return sqrt(Squares);
+            var rtn_squares=0;
+            for(Idx_VM i=0; i<length; ++i) rtn_squares+=vec[i]*vec[i];
+            return sqrt(rtn_squares);
         }
 
         bool is_Zero__Strict(Idx_VM length, var*& vec){

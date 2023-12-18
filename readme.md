@@ -1,16 +1,18 @@
 # CNML 
 * **Nittle Math Library 的 c++ 实现**   
 开发中   
-文档最后编辑于 2023-12-07   
+文档最后编辑于 2023-12-12
 ---
 其它文档 todo   
-  * [简单的2D内容](./doc/2D.md)
-  * [简单的3D内容](./doc/3D.md)
+  * [向量,矩阵,简单的线性代数](./doc/linear_algebra.md)
   * [简单的bezier曲线](./doc/bezier.md)
+  * [点,矩形,弧形,多边形,简单的2D内容](./doc/Geometry_2D.md)
+  * [简单的3D内容](./doc/3D.md)
 
 ---
 
 ## 编码规范
+  * 编码时避免用1表示起始下标, 应该使用0;
   * 左花括号不换行, 右花括号要换行;
   * 指针(引用)符号(*&) 在函数、形参的类型中往类型名靠; 在变量声明时往变量名靠;
     ``` cpp
@@ -48,102 +50,102 @@
     ```
     ${name}__${note}
     ```
-### 常量
-  * 全大写+下划线命名
-    ```
-    NML_TOLERANCE
-    ```
-### 类、命名空间
-  * 大写首字母+下划线命名
-    ```
-    Matrix_3D
-    ```
-### 变量、形参
-  * 小写字母下划线命名
-    ```
-    index_mat__uv //矩阵对应uv坐标的物理下标
-    ```
-  * 私有成员, 可选参数; 以下划线开始
-    ```
-    bool check_Equal(var v1, var v2, var _tolerance=NML_TOLERANCE);
-    ```
-### 函数
-  * 小驼峰的动词单词动词短语 + 下划线 + 大驼峰
-    ```
-    calc_Det__Transformation  //使用初等变换消元法计算行列式
-    ```
+  ### 常量
+    * 全大写+下划线命名
+      ```
+      NML_TOLERANCE
+      ```
+  ### 类、命名空间
+    * 大写首字母+下划线命名
+      ```
+      Matrix_3D
+      ```
+  ### 变量、形参
+    * 小写字母下划线命名
+      ```
+      index_mat__uv //矩阵对应uv坐标的物理下标
+      ```
+    * 私有成员, 可选参数; 以下划线开始
+      ```
+      bool check_Equal(var v1, var v2, var _tolerance=NML_TOLERANCE);
+      ```
+  ### 函数
+    * 小驼峰的动词单词动词短语 + 下划线 + 大驼峰
+      ```
+      calc_Det__Transformation  //使用初等变换消元法计算行列式
+      ```
 
 ---
 
 ## 部分命名解释和缩写
 
-### 名词
-* NML            : 库的名字( Nittle Math Library )
-* i(j/k)         : 迭代器(iterator)
-* l              : 长度(length)
-* d              : 差(differ)
-* op/ed          : 起始/结束(open/end)
-* idx            : 索引/下标 ( index )
-* vec            : 向量 ( vector )
-* mat            : 矩阵 ( matrix )
-* m2d            : 2D矩阵 ( matrix two dimensional )
-* m3d            : 3D矩阵 ( matrix three dimensional )
-* det            : 行列式 ( determinant )
-* u              : u 坐标 (水平坐标)
-* v              : v 坐标 (垂直坐标)
-* x              : x 坐标
-* y              : y 坐标
-* z              : z 坐标
-* quat           : 四元数 ( quaternion )
-* square         : 平方, 平方曲线(抛物线), 2阶贝塞尔曲线
-* cubic          : 立方, 立方曲线, 3阶贝塞尔曲线
-* girth          : 周长
-* polygon        : 2D多边形
-* mesh           : 3D网格组 (3d多边形)
-* line path      : 首尾相连的多个线段
-* step size      : 步长
-* sample size    : 采样点个数 (采样次数)
-* line           : 线段
-* race           : 矩形
-* arc            : 圆弧
-* ellipse arc    : 椭圆弧
-* bezier         : 贝塞尔曲线
-* AABB           : 轴对齐包围盒 ( Axis-aligned bounding box )
-* intersection   : 交点
-* inside         : 表示状态  - 在内部
-* had            : 表示状态  - 有可用的缓存值
+  ### 名词
+    * NML            : 库的名字( Nittle Math Library )
+    * i(j/k)         : 迭代器(iterator)
+    * l              : 长度(length)
+    * d              : 差(differ)
+    * op/ed          : 起始/结束(open/end)
+    * idx            : 索引/下标 ( index )
+    * vec            : 向量 ( vector )
+    * mat            : 矩阵 ( matrix )
+    * m2d            : 2D矩阵 ( matrix two dimensional )
+    * m3d            : 3D矩阵 ( matrix three dimensional )
+    * det            : 行列式 ( determinant )
+    * u              : u 坐标 (水平坐标)
+    * v              : v 坐标 (垂直坐标)
+    * x              : x 坐标
+    * y              : y 坐标
+    * z              : z 坐标
+    * quat           : 四元数 ( quaternion )
+    * square         : 平方, 平方曲线(抛物线), 2阶贝塞尔曲线
+    * cubic          : 立方, 立方曲线, 3阶贝塞尔曲线
+    * girth          : 周长
+    * polygon        : 2D多边形
+    * mesh           : 3D网格组 (3d多边形)
+    * line path      : 首尾相连的多个线段
+    * step size      : 步长
+    * sample size    : 采样点个数 (采样次数)
+    * line           : 线段
+    * race           : 矩形
+    * arc            : 圆弧
+    * ellipse arc    : 椭圆弧
+    * bezier         : 贝塞尔曲线
+    * AABB           : 轴对齐包围盒 ( Axis-aligned bounding box )
+    * intersection   : 交点
+    * inside         : 表示状态  - 在内部
+    * had            : 表示状态  - 有可用的缓存值
 
-### 动词和动词短语
-* get                : 获取属性
-* dot                : 在向量运算中表示向量点乘
-* cross              : 2d/3d向量叉乘, 四元数乘法
-* mapping            : 映射为
-* calc               : 计算/求值
-* setup              : 执行装载操作 (初始化为)
-* create             : 创建 (需要手动 delete/free )
-* transformation     : 矩阵基本变换 
-* transform          : 矩阵线性变换 
-* sample             : 采样点 
-* check              : 检查 
-* load               : 加载 (计算值保存到成员变量上)
-* give up            : 淘汰 (淘汰缓存)
+  ### 动词和动词短语
+    * get                : 获取属性
+    * dot                : 在向量运算中表示向量点乘
+    * cross              : 2d/3d向量叉乘, 四元数乘法
+    * mapping            : 映射为
+    * calc               : 计算/求值
+    * setup              : 执行装载操作 (初始化为)
+    * create             : 创建 (需要手动 delete/free )
+    * transformation     : 矩阵基本变换 
+    * transform          : 矩阵线性变换 
+    * sample             : 采样点 
+    * check              : 检查 
+    * load               : 加载 (计算值保存到成员变量上)
+    * give up            : 淘汰 (淘汰缓存)
 
-### 函数形参中的特殊名词
-* out     : 输出对象, 作为复杂数据的输出
-* t       : 插值/采样点 时 使用的抽象单位时间参数 取值范围为 \[0~1\]
+  ### 函数形参中的特殊名词
+    * out     : 输出对象, 作为复杂数据的输出
+    * t       : 插值/采样点 时 使用的抽象单位时间参数 取值范围为 \[0~1\]
 
-### 函数形参和实参
-* 函数形参名前带下划线表示该参数为可选参数
-* 所有函数都不应该使用和其他参数相同指向的 **out**
-  ``` c++
-    void setup_xxx(var* out, var* param);
-    // out != param
-  ```
-  
+  ### 函数形参和实参
+    * 函数形参名前带下划线表示该参数为可选参数
+    * 所有函数都不应该使用和其他参数相同指向的 **out**
+      ``` c++
+        void setup_xxx(var* out, var* param);
+        // out != param
+      ```
+      
 ---
 
 ## 部分数据结构说明
-* 绝大部分数据结构都使用线性结构的数组表示
+  * 绝大部分数据结构都使用线性结构的数组表示
 
   ### 数值类型
     * 宏 **\_\_NML_VALUE_TYPE\_\_** 定义了全局中使用的基本类型,默认为单浮点(float);   
