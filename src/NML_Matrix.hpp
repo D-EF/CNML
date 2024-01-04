@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-09-08 16:40:23
+ * @LastEditTime: 2023-12-29 17:57:29
  * @FilePath: \cnml\src\NML_Matrix.hpp
  * @Description: 矩阵 Matrix
  * @
@@ -123,11 +123,11 @@ namespace NML{
         /**
          * @brief 初等变换 换列
          * 
-         * @param mat       要处理的矩阵
+         * @param mat      要处理的矩阵
          * @param widht    矩阵宽度
-         * @param height    矩阵高度
-         * @param u1        u坐标1
-         * @param u2        u坐标2
+         * @param height   矩阵高度
+         * @param u1       u坐标1
+         * @param u2       u坐标2
          */
         void transformation__ExchangeCol(var*& mat, Idx_VM widht, Idx_VM height, Idx_VM u1, Idx_VM u2);
         void transformation__ExchangeCol(var**& mats, Idx_VM length_g, Idx_VM width, Idx_VM height, Idx_VM u1, Idx_VM u2);
