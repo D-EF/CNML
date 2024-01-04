@@ -4,10 +4,10 @@
 文档最后编辑于 2023-12-12
 ---
 其它文档 todo   
-  * [向量,矩阵,简单的线性代数](./doc/linear_algebra.md)
-  * [简单的bezier曲线](./doc/bezier.md)
+  * [向量,矩阵,简单的线性代数](./doc/Linear_Algebra.md)
+  * [简单的bezier曲线](./doc/Bezier.md)
   * [点,矩形,弧形,多边形,简单的2D内容](./doc/Geometry_2D.md)
-  * [简单的3D内容](./doc/3D.md)
+  <!-- * [简单的3D内容](./doc/3D.md) -->
 
 ---
 
