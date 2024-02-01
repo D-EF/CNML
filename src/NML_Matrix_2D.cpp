@@ -52,10 +52,10 @@ namespace NML{
                 break;
 
                 case M2D__3X3_R:
-                    m2d_w=3, m2d_h=3;
-                    mxx=0,        myx=1,        tx=2,
-                    mxy=3,        myy=4,        ty=5,
-                    mx_null =6,   my_null =7,   mi_full=8;
+                    m2d_w=3,     m2d_h=3;
+                    mxx=0,       myx=1,       tx=2,
+                    mxy=3,       myy=4,       ty=5,
+                    mx_null=6,   my_null=7,   mi_full=8;
                 break;
             }
         }

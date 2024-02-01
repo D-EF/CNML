@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-12-04 14:17:03
+ * @LastEditTime: 2024-01-17 15:21:59
  * @FilePath: \CNML\src\NML_Geometry_2D_Primitives.cpp
  * @Description: 2D 图元 相关内容
  * @
@@ -50,11 +50,19 @@ namespace NML{
                         polygon=new Points_Iterator__1DList(2, 4);
                     }
                     AABB_2D aabb=get_LocalAABB();
-                        *polygon[0][0]=aabb.x0;   *polygon[0][1]=aabb.y0;
-                        *polygon[1][0]=aabb.x1;   *polygon[1][1]=aabb.y0;
-                        *polygon[2][0]=aabb.x1;   *polygon[2][1]=aabb.y1;
-                        *polygon[3][0]=aabb.x0;   *polygon[3][1]=aabb.y1;
+                        *polygon[0][0]=aabb.p0.x;   *polygon[0][1]=aabb.p0.y;
+                        *polygon[1][0]=aabb.p1.x;   *polygon[1][1]=aabb.p0.y;
+                        *polygon[2][0]=aabb.p1.x;   *polygon[2][1]=aabb.p1.y;
+                        *polygon[3][0]=aabb.p0.x;   *polygon[3][1]=aabb.p1.y;
                     return *polygon;
+                }
+                
+                char Primitive_2D__Rect::check_Inside__Local__P(Point_2D& point){ 
+                    if(!had__loc_aabb){
+                        loc_aabb = calc_LocalAABB();
+                        had__loc_aabb = true;
+                    }
+                    return check_Inside__AABB(loc_aabb.p0, loc_aabb.p1, point); 
                 }
 
             // end  * 矩形图元 * end 
@@ -63,7 +71,7 @@ namespace NML{
 
                 var Primitive_2D__Arc::calc_Girth(){
                     switch(auto_close){
-                        case 2:    return data->r*DEG_360;                     break;
+                        case 2:    return data->radius*DEG_360;                break;
                         case 1:    return get_ArcLength()+get_ChordLength();   break;
                         default:   return get_ArcLength();                     break;
                     }
@@ -83,28 +91,32 @@ namespace NML{
                 }
 
                 var Primitive_2D__Arc::calc_ArcLength(){
-                    return data->r*abs(data->theta_op - data->theta_ed);
+                    return data->radius*abs(data->theta_op - data->theta_ed);
                 }
 
                 var Primitive_2D__Arc::calc_ChordLength(){
-                    return calc_LineLength(get_local_chord());
+                    if(!had__loc_chord){
+                        loc_chord = calc_LocalChord();
+                        had__loc_chord = true;
+                    }
+                    return calc_LineLength(loc_chord.p0,loc_chord.p1);
                 }
 
                 Line_2D Primitive_2D__Arc::get_local_chord(){
-                    if(!had__local_chord){
-                        local_chord= calc_local_chord();
-                        had__local_chord = true;
+                    if(!had__loc_chord){
+                        loc_chord= calc_LocalChord();
+                        had__loc_chord = true;
                     }
-                    return local_chord;
+                    return loc_chord;
                 }
 
-                Line_2D Primitive_2D__Arc::calc_local_chord(){
+                Line_2D Primitive_2D__Arc::calc_LocalChord(){
                     Line_2D rtn;
                     normalize_DrawArcData(*data);
-                    var &r=data->r;
+                    var &r=data->radius;
                     return {
-                        x0: cos(data->theta_op)*r,   y0: sin(data->theta_op)*r,
-                        x1: cos(data->theta_ed)*r,    y1: sin(data->theta_ed)*r
+                        p0:{x: cos(data->theta_op)*r,   y: sin(data->theta_op)*r},
+                        p1:{x: cos(data->theta_ed)*r,   y: sin(data->theta_ed)*r} 
                     };
                 }
 
@@ -112,115 +124,115 @@ namespace NML{
                     var angle=abs(data->theta_ed-data->theta_op);
                     if(angle>=CYCLES){
                         return {
-                            x0 : data->cx - data->r,   y0 : data->cy - data->r,
-                            x1 : data->cx + data->r,   y1 : data->cy + data->r
+                            p0:{x : data->centre.x - data->radius,   y : data->centre.y - data->radius},
+                            p1:{x : data->centre.x + data->radius,   y : data->centre.y + data->radius} 
                         };
                     }
 
                     AABB_2D rtn={0, 0, 0, 0};
-                    var &r= data->r;
+                    var &r= data->radius;
                     Line_2D chord=get_local_chord();
 
                     bool f = angle>DEG_180,
-                        f1 = chord.x0>=0,   f2 = chord.y0>=0,
-                        f3 = chord.x1>=0,   f4 = chord.y1>=0,
+                        f1 = chord.p0.x>=0,   f2 = chord.p0.y>=0,
+                        f3 = chord.p1.x>=0,   f4 = chord.p1.y>=0,
                         f5 = f1==f3,        f6 = f2==f4;
 
 
                     if(f5&&f6){// 在同一象限
                         if(f){// 大于半圆
-                            rtn.x0=-r;
-                            rtn.y0=-r;
-                            rtn.x1=r;
-                            rtn.y1=r;
+                            rtn.p0.x=-r;
+                            rtn.p0.y=-r;
+                            rtn.p1.x=r;
+                            rtn.p1.y=r;
                         }else{
-                            rtn.x0=(chord.x0>chord.x1)?(chord.x1):(chord.x0);
-                            rtn.y0=(chord.y0>chord.y1)?(chord.y1):(chord.y0);
-                            rtn.x1=(chord.x0<chord.x1)?(chord.x1):(chord.x0);
-                            rtn.y1=(chord.y0<chord.y1)?(chord.y1):(chord.y0);
+                            rtn.p0.x=(chord.p0.x>chord.p1.x)?(chord.p1.x):(chord.p0.x);
+                            rtn.p0.y=(chord.p0.y>chord.p1.y)?(chord.p1.y):(chord.p0.y);
+                            rtn.p1.x=(chord.p0.x<chord.p1.x)?(chord.p1.x):(chord.p0.x);
+                            rtn.p1.y=(chord.p0.y<chord.p1.y)?(chord.p1.y):(chord.p0.y);
                         }
                     }else if(f2){// a1 || a2
                         if(f1){
                             if((!f3)&&(f4)){// a1 b2
-                                rtn.x0=chord.x1;
-                                rtn.y0=(chord.y0>chord.y1)?(chord.y1):(chord.y0);
-                                rtn.x1=chord.x0;
-                                rtn.y1=r;
+                                rtn.p0.x=chord.p1.x;
+                                rtn.p0.y=(chord.p0.y>chord.p1.y)?(chord.p1.y):(chord.p0.y);
+                                rtn.p1.x=chord.p0.x;
+                                rtn.p1.y=r;
                             }else if((!f3)&&(!f4)){// a1 b3
-                                rtn.x0=-r;
-                                rtn.y0=chord.y1;
-                                rtn.x1=chord.x0;
-                                rtn.y1=r;
+                                rtn.p0.x=-r;
+                                rtn.p0.y=chord.p1.y;
+                                rtn.p1.x=chord.p0.x;
+                                rtn.p1.y=r;
                             }else if((f3)&&(!f4)){// a1 b4
-                                rtn.x0=-r;
-                                rtn.y0=-r;
-                                rtn.x1=(chord.x0<chord.x1)?(chord.x1):(chord.x0);
-                                rtn.y1=r;
+                                rtn.p0.x=-r;
+                                rtn.p0.y=-r;
+                                rtn.p1.x=(chord.p0.x<chord.p1.x)?(chord.p1.x):(chord.p0.x);
+                                rtn.p1.y=r;
                             }
                         }else{//a2
                             if(f3&&f4){// a2 b1
-                                rtn.x0=-r;
-                                rtn.y0=-r;
-                                rtn.x1=r;
-                                rtn.y1=(chord.y0<chord.y1)?(chord.y1):(chord.y0);
+                                rtn.p0.x=-r;
+                                rtn.p0.y=-r;
+                                rtn.p1.x=r;
+                                rtn.p1.y=(chord.p0.y<chord.p1.y)?(chord.p1.y):(chord.p0.y);
                             }else if((!f3)&&(!f4)){// a2 b3
-                                rtn.x0=-r;
-                                rtn.y0=chord.y1;
-                                rtn.x1=(chord.x0<chord.x1)?(chord.x1):(chord.x0);
-                                rtn.y1=chord.y0;
+                                rtn.p0.x=-r;
+                                rtn.p0.y=chord.p1.y;
+                                rtn.p1.x=(chord.p0.x<chord.p1.x)?(chord.p1.x):(chord.p0.x);
+                                rtn.p1.y=chord.p0.y;
                             }else if((f3)&&(!f4)){// a2 b4
-                                rtn.x0=-r;
-                                rtn.y0=-r;
-                                rtn.x1=chord.x1;
-                                rtn.y1=chord.y0;
+                                rtn.p0.x=-r;
+                                rtn.p0.y=-r;
+                                rtn.p1.x=chord.p1.x;
+                                rtn.p1.y=chord.p0.y;
                             }
                         }
                     }else{  // a3 || a4
                         if(!f1){
                             if(f3&&f4){// a3 b1
-                                rtn.x0=-r;
-                                rtn.y0=-r;
-                                rtn.x1=chord.x1;
-                                rtn.y1=chord.y0;
+                                rtn.p0.x=-r;
+                                rtn.p0.y=-r;
+                                rtn.p1.x=chord.p1.x;
+                                rtn.p1.y=chord.p0.y;
                             }if((!f3)&&(f4)){// a3 b2
-                                rtn.x0=(chord.x0>chord.x1)?(chord.x1):(chord.x0);
-                                rtn.y0=-r;
-                                rtn.x1=r;
-                                rtn.y1=r;
+                                rtn.p0.x=(chord.p0.x>chord.p1.x)?(chord.p1.x):(chord.p0.x);
+                                rtn.p0.y=-r;
+                                rtn.p1.x=r;
+                                rtn.p1.y=r;
                             }else if((f3)&&(!f4)){// a3 b4
-                                rtn.x0=chord.x0;
-                                rtn.y0=-r;
-                                rtn.x1=chord.x1;
-                                rtn.y1=(chord.y0<chord.y1)?(chord.y1):(chord.y0);
+                                rtn.p0.x=chord.p0.x;
+                                rtn.p0.y=-r;
+                                rtn.p1.x=chord.p1.x;
+                                rtn.p1.y=(chord.p0.y<chord.p1.y)?(chord.p1.y):(chord.p0.y);
                             }
                         }else{//a4
                             if(f3&&f4){// a4 b1
-                                rtn.x0=(chord.x0>chord.x1)?(chord.x1):(chord.x0);
-                                rtn.y0=chord.y0;
-                                rtn.x1=r;
-                                rtn.y1=chord.y1;
+                                rtn.p0.x=(chord.p0.x>chord.p1.x)?(chord.p1.x):(chord.p0.x);
+                                rtn.p0.y=chord.p0.y;
+                                rtn.p1.x=r;
+                                rtn.p1.y=chord.p1.y;
                             }if((!f3)&&(f4)){// a4 b2
-                                rtn.x0=chord.x1;
-                                rtn.y0=-r;
-                                rtn.x1=r;
-                                rtn.y1=r;
+                                rtn.p0.x=chord.p1.x;
+                                rtn.p0.y=-r;
+                                rtn.p1.x=r;
+                                rtn.p1.y=r;
                             }else if((!f3)&&(!f4)){// a4 b3
-                                rtn.x0=-r;
-                                rtn.y0=chord.y0;
-                                rtn.x1=r;
-                                rtn.y1=r;
+                                rtn.p0.x=-r;
+                                rtn.p0.y=chord.p0.y;
+                                rtn.p1.x=r;
+                                rtn.p1.y=r;
                             }
                         }
                     } 
                     
 
-                    // rtn.y0*=-1;
-                    // rtn.y1*=-1;
+                    // rtn.p0.y*=-1;
+                    // rtn.p1.y*=-1;
 
-                    rtn.x0+=data->cx;
-                    rtn.x1+=data->cx;
-                    rtn.y0+=data->cy;
-                    rtn.y1+=data->cy;
+                    rtn.p0.x+=data->centre.x;
+                    rtn.p1.x+=data->centre.x;
+                    rtn.p0.y+=data->centre.y;
+                    rtn.p1.y+=data->centre.y;
 
                     return rtn;
                 }

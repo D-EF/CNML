@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-10-08 19:40:30
+ * @LastEditTime: 2024-01-31 09:55:58
  * @FilePath: \cnml\src\NML_Bezier.cpp
  * @Description: 贝塞尔曲线
  * @
@@ -16,7 +16,7 @@ namespace NML{
     namespace Bezier{
         var *&sample_Bezier__DeCasteljau(var*& out, Points_Iterator& points, var t){
             if(points.points_length>1){
-                Points_Iterator__1DList new_points=Points_Iterator__1DList(points.dimensional, points.points_length-1);
+                Points_Iterator__1DList new_points(points.dimensional, points.points_length-1);
                 var td=1-t;
                 for(int i=0;  i>=0;  --i){
                     var *temp_point__new=new_points[i];
@@ -37,13 +37,15 @@ namespace NML{
             }
         }
 
-        
+        // 缓存的贝塞尔曲线计算矩阵
         Bezier_Calc_Matrix _BEZIER_CALC_MATRIX={&_BEZIER_CALC_MATRIX, 0, new int[1]{1}};
+        // 最后一次 get 的 贝塞尔曲线计算矩阵 用于加速查找
         Bezier_Calc_Matrix* _last_load_bezier_calc_matrix=&_BEZIER_CALC_MATRIX;
 
         int* get_BezierCalcMatrix(Idx_Algebra n){
             Bezier_Calc_Matrix *ptr__move, *ptr__static;
             ptr__move=ptr__static = _last_load_bezier_calc_matrix;
+            // 查找缓存
             while (!(n==ptr__move->size||ptr__move->next==ptr__static)){
                 ptr__move=ptr__move->next;
             }
@@ -51,8 +53,9 @@ namespace NML{
                 _last_load_bezier_calc_matrix=ptr__move;
                 return ptr__move->data;
             }
-            Link_Block__Int *temp_pascals_triangle_line= Algebra::get_PascalsTriangleLine(n);
-            Link_Block__Int *move_pascals_triangle_line= &Algebra::_G_PASCALS_TRIANGLE;
+            
+            Link_Block<int> *temp_pascals_triangle_line= Algebra::get_PascalsTriangleLine(n);   // 第n行的帕斯卡三角
+            Link_Block<int> *move_pascals_triangle_line= &Algebra::_G_PASCALS_TRIANGLE;         // 从第0行帕斯卡三角开始
             Idx matrix_n=n+1;
             Idx new_length=(matrix_n)*(matrix_n+1)/2;
             int *new_matrix_data=new int[new_length];
@@ -67,6 +70,7 @@ namespace NML{
             }
             Bezier_Calc_Matrix *new_bezier_calc_matrix=new Bezier_Calc_Matrix{ptr__static, n, new_matrix_data};
             ptr__move->next=new_bezier_calc_matrix;
+            _last_load_bezier_calc_matrix=new_bezier_calc_matrix;
             return new_matrix_data;
         }
 
@@ -98,13 +102,13 @@ namespace NML{
         var*& sample_Bezier__Coefficients(var*& out, Points_Iterator& coefficients, var t){
             Idx_Algebra &dimensional=coefficients.dimensional;
             std::fill_n(out, dimensional, 0);
-            var temp;
+            var power_t=1;
             for(Idx i=0;  i<coefficients.points_length;  ++i){
                 var *line=coefficients[i];
-                temp=pow(t, i);
                 for(Idx_Algebra d=0;  d<dimensional;  ++d){
-                    out[d]+=temp*line[d];
+                    out[d]+=power_t*line[d];
                 }
+                power_t*=t;
             }
             return out;
         }
@@ -118,7 +122,7 @@ namespace NML{
             Idx_Algebra u, v;
             Idx index=0;
             // Init matrix of pascals triangle
-            Link_Block__Int *pascals_line = Algebra::get_PascalsTriangleLine(0);
+            Link_Block<int> *pascals_line = Algebra::get_PascalsTriangleLine(0);
             for(v=0;  v<=n;  ++v){
                 for(u=0;  u<=pascals_line->size;  ++u, ++index){
                     out[index]=pascals_line->data[u];
@@ -234,6 +238,31 @@ namespace NML{
 
         const var BEZIER_TO_CYCLES_K__1D4=0.551784777779014;
 
+        
+        var*& setup_Derivatives__BezierPoints(var*& out, var*& ctrl_points,Idx_Algebra length__ctrl_points){
+            // n 指 n阶贝塞尔曲线, 导数的控制点长度为原曲线的控制点个数-1, 导数的 n 为原曲线的控制点个数-2
+            Idx_Algebra n=length__ctrl_points-2, i;
+            for(i=0;  i<=n;  ++i){
+                out[i] = n*(ctrl_points[i+1]-ctrl_points[i]);
+            }
+            return out;
+        }
+
+        Points_Iterator& setup_Derivatives__BezierPoints(Points_Iterator& out, Points_Iterator& ctrl_points){
+            // n 指 n阶贝塞尔曲线, 导数的控制点长度为原曲线的控制点个数-1, 导数的 n 为原曲线的控制点个数-2
+            Idx_Algebra n=out.points_length-1, i, j, d=out.dimensional;
+            for(i=0;i<=n;++i){
+                var* temp_out = out[i];
+                var* temp_0   = ctrl_points[i];
+                var* temp_1   = ctrl_points[i+1];
+                for(j=0;  j<d;  ++j){
+                    temp_out[j] = n*(temp_1[j]-temp_0[j]);
+                }
+            }
+            return out;
+        }
+
+
 
         Points_Iterator& setup_LinePath__FitBezier(Points_Iterator& out, Points_Iterator& coefficients, var sample_step_size){
             if(!sample_step_size) sample_step_size=1/out.points_length;
@@ -250,5 +279,68 @@ namespace NML{
             sample_Bezier__Coefficients(editor_target,coefficients,1);
             return out;
         }
+
+
+        void setup_AABB__Bezier(var*& out_min, var*& out_max, Points_Iterator& coefficients, Points_Iterator* derivatives){
+            bool flag__create_derivatives=false;
+            if(!derivatives){
+                derivatives=new Points_Iterator__1DList(coefficients);
+                Algebra::setup_Derivatives__UnivariatePolynomials(*derivatives,coefficients);
+                flag__create_derivatives=true;
+            }
+
+            Idx idx_derivatives, idx_point, idx_t, l=derivatives->points_length, d=derivatives->dimensional;
+
+            var* derivatives__dimensional     = new var[l];
+            var* coefficients__dimensional   = new var[l+1];
+            var* roots__dimensional          = new var[l+2];
+            Idx_Algebra length__roots;
+            var temp_sample;
+
+            for(idx_derivatives=0;  idx_derivatives<d;  ++idx_derivatives){
+                out_min[idx_derivatives]=+INFINITY;
+                out_max[idx_derivatives]=-INFINITY;
+                for(idx_point=0;  idx_point<l;  ++idx_point){
+                    derivatives__dimensional[idx_point]   = (*derivatives)[idx_point][idx_derivatives];
+                    coefficients__dimensional[idx_point] = coefficients[idx_point][idx_derivatives];
+                }
+                
+                length__roots = Algebra::calc_Roots__UnivariatePolynomials(roots__dimensional, derivatives__dimensional, l) + 2;
+                roots__dimensional[length__roots-2] = 0;
+                roots__dimensional[length__roots-1] = 1;
+
+                for(idx_t=0;  idx_t<length__roots;  ++idx_t){
+                    if(roots__dimensional[idx_t]<0 || roots__dimensional[idx_t]>1) continue;
+                    temp_sample=0;
+                    for(idx_point=0;  idx_point<l;  ++idx_point){
+                        roots__dimensional[idx_point] *= roots__dimensional[idx_point];
+                        temp_sample += roots__dimensional[idx_point]*coefficients__dimensional[idx_point];
+                    }
+                    if(temp_sample < out_min[idx_derivatives])out_min[idx_derivatives]=temp_sample;
+                    if(temp_sample > out_max[idx_derivatives])out_max[idx_derivatives]=temp_sample;
+                }
+            }
+
+            delete derivatives__dimensional;
+            delete roots__dimensional;
+            if(flag__create_derivatives) delete derivatives;
+        }
+
+
+        Idx_Algebra calc_T__BySample_FromBezier(var*& out, var*& coefficients, Idx_Algebra length, var sample){
+            var *_coefficients=new var[length];
+            _coefficients[0]+=sample;
+            std::copy(coefficients,coefficients+length,_coefficients);
+            Algebra::calc_Roots__UnivariatePolynomials(out,_coefficients,length);
+            Idx_Algebra i, idx_root=0;
+            for(i=0;i<length;++i){
+                if(out[i]>=0&&out[i]<=1){
+                    out[idx_root]=out[i];
+                    ++idx_root;
+                }
+            }
+            return idx_root;
+        }
+
     }
 }

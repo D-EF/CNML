@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-11-27 10:43:08
+ * @LastEditTime: 2024-01-29 17:24:27
  * @FilePath: \cnml\src\NML.cpp
  * @Description: Nittle Math Library 简单数学库
  * 
@@ -118,7 +118,7 @@ namespace NML{
     }
 
     void Points_Iterator__Link::free_Data(){
-        Link_Block__Var *temp=((Link_Block__Var*)data), *next;
+        Link_Block<var> *temp=((Link_Block<var>*)data), *next;
         while(temp!=data){
             delete temp->data;
             next=temp->next;
@@ -128,14 +128,14 @@ namespace NML{
     }
 
     var* Points_Iterator__Link::operator[](Idx v){
-        Link_Block__Var *now_block;
+        Link_Block<var> *now_block;
         Idx now_block_head_v;
         if(v>=max_points_length) v = v % max_points_length;
         if(v>last_access_head_v){
             now_block=last_access_block;
             now_block_head_v=last_access_head_v;
         }else{
-            now_block=((Link_Block__Var*)data)->next;
+            now_block=((Link_Block<var>*)data)->next;
             now_block_head_v=0;
         }
         if((!now_block)||(!max_points_length)) return 0;
@@ -152,7 +152,7 @@ namespace NML{
     }
     
     Idx Points_Iterator__Link::calc_MaxPointsLength(){
-        Link_Block__Var *now_block=(Link_Block__Var*)data;
+        Link_Block<var> *now_block=(Link_Block<var>*)data;
         if(!now_block) return 0;
         Idx rtn=0;
         do{
@@ -166,8 +166,8 @@ namespace NML{
     void Points_Iterator__Link::append_Block(Idx size){
         if(size<__MIN_LINK_BLOCK_SIZE__)size=__MIN_LINK_BLOCK_SIZE__;
         if(size>__MAX_LINK_BLOCK_SIZE__)size=__MAX_LINK_BLOCK_SIZE__;
-        Link_Block__Var *block=new Link_Block__Var{ new var[size], size, 0 };
-        Link_Block__Var *last_block=(Link_Block__Var*)data;
+        Link_Block<var> *block=new Link_Block<var>{ 0, size, new var[size] };
+        Link_Block<var> *last_block=(Link_Block<var>*)data;
         if(!last_block){
             block->next=block;
             data=block;
@@ -206,6 +206,22 @@ namespace NML{
     // void Points_Iterator__2DList::install_Data(Idx_Algebra dimensional, Idx points_length){ data=new var[dimensional*points_length]; }
     // void Points_Iterator__2DList::free_Data(){delete (var*)data; data=0;}
     // var* Points_Iterator__2DList::operator[](int v) {return ((var*)data)+(v*dimensional);}
+
+    void Points_Iterator::copy_Data(Points_Iterator& copy_obj){
+        int i,j;
+        Points_Iterator& pi =*this;
+        var* temp_this;
+        var* temp_obj;
+        Idx _length=min(points_length,copy_obj.points_length);
+        Idx_Algebra _dimensional=min(dimensional,copy_obj.dimensional);
+        for(i=0;  i<_length;  ++i){
+            temp_this=pi[i];
+            temp_obj=copy_obj[i];
+            for(j=0;  j<_dimensional;  ++j){
+                temp_this[j]=temp_obj[j];
+            }
+        }
+    }
 
     bool calc_Intersection__Range(var& out_min,var& out_max, var r0_min, var r0_max, var r1_min, var r1_max){
         if(r0_min<=r1_max && r1_min<=r0_max){

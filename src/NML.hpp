@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-11-27 10:44:00
+ * @LastEditTime: 2024-01-17 16:31:19
  * @FilePath: \cnml\src\NML.hpp
  * @Description: Nittle Math Library 简单数学库
  * 
@@ -69,23 +69,16 @@ namespace NML{
     extern const Idx SAMPLE_SIZE_SEED;
     /** @brief 默认采样精度步长 */
     extern const var SAMPLE_SIZE_SIZE;
-    
-    /** @brief 数值块链节点 */
-    typedef struct Link_Block__Var{
-        var *data;
-        Idx size;
-        Idx max_size;
-        Link_Block__Var* next;
-    }Link_Block__Var;
-    
-    /** @brief 整形块链节点 */
-    typedef struct Link_Block__Int
-    {
-        Link_Block__Int *next;
-        Idx size;
-        int *data;
-    } Link_Block__Int;
 
+
+    template <typename Value_Type>
+    /** 块链节点 */
+    struct Link_Block {
+        Link_Block<Value_Type>* next;
+        Idx size;
+        Value_Type* data;
+    };
+    
 
     /** 三个坐标轴 */
     enum Axis{ X=0, Y=1, Z=2 };
@@ -147,10 +140,13 @@ namespace NML{
         Points_Iterator(){}
         Points_Iterator(Idx_Algebra dimensional, Idx points_length):points_length(points_length), dimensional(dimensional){}
         Points_Iterator(void *data, Idx_Algebra dimensional, Idx points_length):data(data), points_length(points_length), dimensional(dimensional){}
+        Points_Iterator(Points_Iterator& copy_obj):points_length(copy_obj.points_length), dimensional(copy_obj.dimensional){}
         /** @brief 用下标 取点 */
         virtual var* operator[](Idx v) = 0; 
         /** @brief 装配 new data */
         virtual void install_Data(Idx_Algebra dimensional, Idx points_length) = 0; 
+        /** @brief 抄录数据到当前实例的 data */
+        void copy_Data(Points_Iterator& copy_obj);
         /** @brief 释放data数据 */
         virtual void free_Data () = 0;
     };
@@ -159,6 +155,7 @@ namespace NML{
         public:
         Points_Iterator__2DList(var** data, Idx_Algebra dimensional, Idx points_length):Points_Iterator(data, dimensional, points_length){}
         Points_Iterator__2DList(Idx_Algebra dimensional, Idx points_length):Points_Iterator(dimensional, points_length){install_Data(dimensional, points_length);}
+        Points_Iterator__2DList(Points_Iterator& copy_obj):Points_Iterator(copy_obj){install_Data(dimensional, points_length);copy_Data(copy_obj);}
         ~Points_Iterator__2DList(){free_Data();}
         void install_Data(Idx_Algebra dimensional, Idx points_length);
         void free_Data();
@@ -169,21 +166,22 @@ namespace NML{
         public:
         Points_Iterator__1DList(var* data, Idx_Algebra dimensional, Idx points_length):Points_Iterator(data, dimensional, points_length){}
         Points_Iterator__1DList(Idx_Algebra dimensional, Idx points_length):Points_Iterator(new var[dimensional*points_length], dimensional, points_length){}
+        Points_Iterator__1DList(Points_Iterator& copy_obj):Points_Iterator(copy_obj){install_Data(dimensional, points_length);copy_Data(copy_obj);}
         ~Points_Iterator__1DList(){free_Data();}
         void install_Data(Idx_Algebra dimensional, Idx points_length){ data=new var[dimensional*points_length]; }
         void free_Data(){delete (var*)data; data=0;}
         var* operator[](Idx v) override{return ((var*)data)+(v*dimensional);}
     };
-
     
     class Points_Iterator__Link :virtual public Points_Iterator{
         public:
         /** @brief 最大存储长度 (缓存 calc_MaxPointsLength()的计算结果) */
         Idx max_points_length;
         Idx last_access_head_v;
-        Link_Block__Var* last_access_block;
-        Points_Iterator__Link(Link_Block__Var* data, Idx_Algebra dimensional, Idx points_length): Points_Iterator(data, dimensional, points_length), last_access_head_v(-1), last_access_block(0) {}
+        Link_Block<var>* last_access_block;
+        Points_Iterator__Link(Link_Block<var>* data, Idx_Algebra dimensional, Idx points_length): Points_Iterator(data, dimensional, points_length), last_access_head_v(-1), last_access_block(0) {}
         Points_Iterator__Link(Idx_Algebra dimensional, Idx points_length):Points_Iterator(dimensional, points_length){}
+        Points_Iterator__Link(Points_Iterator& copy_obj):Points_Iterator(copy_obj){install_Data(dimensional, points_length);copy_Data(copy_obj);}
         ~Points_Iterator__Link(){free_Data();}
         void install_Data(Idx_Algebra dimensional, Idx points_length){ append_Block(dimensional*points_length); }
         void free_Data();

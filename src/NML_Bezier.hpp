@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-10-08 21:04:33
+ * @LastEditTime: 2024-01-16 16:03:08
  * @FilePath: \cnml\src\NML_Bezier.hpp
  * @Description: 贝塞尔曲线
  * @
@@ -18,16 +18,16 @@ namespace NML{
     namespace Bezier{
 
         /**
-         * @brief 采样贝塞尔曲线    使用DeCasteljau算法 (不建议使用)
-         * @param out               输出目标, 采样点 长度为 points.dimensional
-         * @param points            贝塞尔曲线控制点集合 长度为 dimensional*points_length
-         * @param t                 时间参数 t
+         * @brief 采样贝塞尔曲线 使用DeCasteljau算法 (不建议使用)
+         * @param out      输出目标, 采样点 长度为 points.dimensional
+         * @param points   贝塞尔曲线控制点集合 长度为 dimensional*points_length
+         * @param t        时间参数 t
          * @return 修改并返回 out
          */
         var *&sample_Bezier__DeCasteljau(var*& out, Points_Iterator& points, var t);
         
 
-        typedef Link_Block__Int Bezier_Calc_Matrix;
+        typedef Link_Block<int> Bezier_Calc_Matrix;
         
         /**
          * @brief 获取 贝塞尔曲线计算矩阵
@@ -38,17 +38,17 @@ namespace NML{
 
         
         /**
-         * @brief 求贝塞尔曲线 的 各次幂的系数
+         * @brief 求贝塞尔曲线 的 系数
          * @param out      输出目标, 规模为 points 的转置
          * @param points   贝塞尔曲线控制点集合
-         * @return 修改并返回 out , 输出几个维度的各次幂的系数
+         * @return 修改并返回 out , 输出几个维度的系数
          */
         Points_Iterator& setup_BezierCoefficients(Points_Iterator& out, Points_Iterator& points);
 
         /** 
-         * @brief 采样贝塞尔曲线 使用各次幂的系数
+         * @brief 采样贝塞尔曲线 使用系数
          * @param out            输出目标, 采样点, 长度为 coefficients.points_length
-         * @param coefficients   贝塞尔曲线各次幂系数 ( 使用 setup_BezierCoefficients 计算 )
+         * @param coefficients   贝塞尔曲线计算系数 ( 使用 setup_BezierCoefficients 生成 )
          * @param t              时间参数t
          * @return 修改并返回 out (采样点)
          */
@@ -100,7 +100,7 @@ namespace NML{
         /** 
          * @brief 通过系数计算贝塞尔曲线控制点
          * @param out               输出目标, 控制点数据 规模与 coefficients 相同;
-         * @param coefficients      贝塞尔曲线各次幂系数 ( 使用 setup_BezierCoefficients 计算 )
+         * @param coefficients      贝塞尔曲线计算系数 ( 使用 setup_BezierCoefficients 生成 )
          * @return 修改 out 一维数组的内容 并返回 
          */
         Points_Iterator& calc_BezierCtrlPoints__Coefficients(Points_Iterator& out, Points_Iterator& coefficients);
@@ -123,26 +123,57 @@ namespace NML{
 
         /** todo:
          * 求交; 
-         * 求长度; 
-         * 求AABB; 
-         * 求OBB; 
-         * 弧长的LUT; 
          * 点在曲线上的投影(点到曲线的最短距离); 
-         * 求导;
          * 求曲率;
-         * x||y 坐标求t值
          * 曲线的拐点 (仅用于三阶曲线);
          * ...
          */
 
         /**
-         * @brief 计算拟合贝塞尔曲线的线段路径
+         * 求贝塞尔曲线的导函数 (一维)
+         * @param out                   输出对象
+         * @param ctrl_points           控制点坐标集合
+         * @param length__ctrl_points   控制点的个数长度
+         * @return 修改并返回 out, 一组新的贝塞尔曲线控制点
+         */
+        var*& setup_Derivatives__BezierPoints(var*& out, var*& ctrl_points,Idx_Algebra length__ctrl_points);
+
+        /**
+         * 求贝塞尔曲线的导函数
+         * @param out           输出对象 应满足 out.point_length == coefficients.point_length-1 && out.dimensional == coefficients.dimensional
+         * @param ctrl_points   控制点坐标集合
+         * @return 修改并返回 out, 一组新的贝塞尔曲线控制点
+         */
+        Points_Iterator& setup_Derivatives__BezierPoints(Points_Iterator& out, Points_Iterator& ctrl_points);
+
+
+        /**
+         * @brief 生成拟合贝塞尔曲线的线段路径
          * @param out               输出目标, 如果有 sample_step_size 参数,则 out 长度应为 ceil(1/sample_step_size)
-         * @param coefficients      曲线各次幂系数  ( 使用 setup_BezierCoefficients 计算 )
-         * @param sample_step_size  默认为 1/out.points_length
+         * @param coefficients      曲线计算系数  ( 使用 setup_BezierCoefficients 生成 )
+         * @param sample_step_size  采样点 t 值的步长, 默认为 1/out.points_length
          */
         Points_Iterator& setup_LinePath__FitBezier(Points_Iterator& out, Points_Iterator& coefficients, var sample_step_size=0);
-        
+
+        /**
+         * 生成贝塞尔曲线的 AABB 包围盒
+         * @param out_min       输出的 AABB 盒靠近坐标轴负方向的坐标 
+         * @param out_max       输出的 AABB 盒靠近坐标轴正方向的坐标 
+         * @param coefficients  计算系数  ( 使用 setup_BezierCoefficients 生成 )
+         * @param derivatives    计算系数的导数; 可选的参数, 用于避免再次生成导数  ( 使用 setup_Derivatives__UnivariatePolynomials 生成 )
+         */
+        void setup_AABB__Bezier(var*& out_min, var*& out_max, Points_Iterator& coefficients, Points_Iterator* derivatives=0);
+
+        /**
+         * 使用采样坐标计算t值
+         * @param out                    计算结果输出对象
+         * @param coefficients           某一维度的计算系数
+         * @param length                 计算系数的个数
+         * @param sample                 当前维度的采样坐标
+         * @return 返回对应 t 值的个数
+         */
+        Idx_Algebra calc_T__BySample_FromBezier(var*& out, var*& coefficients, Idx_Algebra length, var sample);
+
     }
 }
 

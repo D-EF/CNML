@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-12-04 14:17:00
+ * @LastEditTime: 2024-01-17 17:12:06
  * @FilePath: \CNML\src\NML_Geometry_2D_Primitives_2D.hpp
  * @Description: 2D 图元 相关内容
  * @
@@ -22,6 +22,15 @@ namespace NML{
          * @brief 2D 图元
          */
         namespace Primitives_2D{
+
+            typedef struct Line_2D
+            {
+                Point_2D p0;
+                Point_2D p1;
+            } Line_2D;
+            
+            typedef Line_2D AABB_2D;
+             
 
             /** @brief 2D 图元基类 */
             class Primitive_2D{
@@ -93,17 +102,24 @@ namespace NML{
 
                 /**
                  * @brief 判断点是否在图元内部
-                 * @param point 点的[x, y]坐标
+                 * @param point 局部坐标系中点的坐标
                  * @return 返回 {0, 1, 2} 表示 [ 不在内部, 在内部, 在边上 ]; 如果图元为非闭合图元, 将始终返回0.
                  */
-                inline char check_Inside__Loc(var* point){return this->check_Inside__Local__P(point[0], point[1]);}
+                inline char check_Inside__Loc(Point_2D& point){ return this->check_Inside__Local__P(point);}
                 
                 /**
                  * @brief 判断点是否在图元内部
-                 * @param point 点的[x, y]坐标
+                 * @param point 局部坐标系中点的 x, y 坐标
                  * @return 返回 {0, 1, 2} 表示 [ 不在内部, 在内部, 在边上 ]; 如果图元为非闭合图元, 将始终返回0.
                  */
-                inline char check_Inside__Loc(var x, var y){return this->check_Inside__Local__P(x, y);}
+                inline char check_Inside__Loc(var*& point){Point_2D* _p=(Point_2D*)point; return this->check_Inside__Local__P(*_p);}
+                
+                /**
+                 * @brief 判断点是否在图元内部
+                 * @param point 局部坐标系中点的坐标
+                 * @return 返回 {0, 1, 2} 表示 [ 不在内部, 在内部, 在边上 ]; 如果图元为非闭合图元, 将始终返回0.
+                 */
+                inline char check_Inside__Loc(var x, var y){Point_2D _p={x,y}; return this->check_Inside__Local__P(_p);}
                 
                 /** 
                  * @brief 获取 拟合图元的线段路径
@@ -153,11 +169,10 @@ namespace NML{
 
                 /** 
                  * @brief 判断点是否在图元内部 ( 继承用 )
-                 * @param x 点的x坐标
-                 * @param y 点的y坐标
+                 * @param point 局部坐标系中点的坐标
                  * @return 返回 {0, 1, 2} 表示 [ 不在内部, 在内部, 在边上 ]; 如果图元为非闭合图元, 将始终返回0.
                  */
-                virtual char check_Inside__Local__P(var x, var y)=0;
+                virtual char check_Inside__Local__P(Point_2D point)=0;
 
             };
 
@@ -193,12 +208,12 @@ namespace NML{
                 inline AABB_2D calc_LocalAABB(){
                     normalize_RectData(*data);
                     return {
-                        x0 : data->x,           y0 : data->y,
-                        x1 : data->x+data->w,   y1 : data->y+data->h
+                        p0 : {data->x, data->y},
+                        p1 : {data->x+data->w, data->y+data->h}
                     };
                 }
 
-                inline char check_Inside__Local__P(var x, var y) override { return check_Inside__AABB(get_LocalAABB(), x, y); }
+                char check_Inside__Local__P(Point_2D& point);
 
                 /**
                  * @brief 生成矩形的多边形代理
@@ -233,18 +248,18 @@ namespace NML{
                 Line_2D get_local_chord();
 
                 /** 计算局部坐标的弧形的弦信息(端点相对于圆心的位置)*/
-                Line_2D calc_local_chord();
+                Line_2D calc_LocalChord();
 
                 /** 局部坐标的弧形的弦信息(端点相对于圆心的位置)*/
-                Line_2D local_chord;
+                Line_2D loc_chord;
 
-                /** local_chord 是否可用*/
-                bool had__local_chord;
+                /** loc_chord 是否可用*/
+                bool had__loc_chord;
 
-                Primitive_2D__Arc():had__local_chord(false){}
+                Primitive_2D__Arc():had__loc_chord(false){}
 
                 inline void giveUp_AllCache(){
-                    had__local_chord=false;
+                    had__loc_chord=false;
                     Primitive_2D::giveUp_AllCache();
                 }
 
@@ -317,12 +332,6 @@ namespace NML{
                     polygon->install_Data(2, size);
                     return size;
                 }
-
-                /** 
-                 * @brief 获取周长
-                 * @return 返回获取周长; 缓存可用则返回缓存值, 不可用则重新计算
-                 */
-                var get_Girth();
                 
                 /** 
                  * @brief 获取局部坐标的 AABB 包围盒数据
@@ -348,6 +357,47 @@ namespace NML{
                  */
                 virtual Points_Iterator& load_Polyon() = 0;
 
+            };
+            
+            /** 路径组 图元对象 */
+            class Primitive_2D__Path_Group: public Primitive_2D{
+
+                /** 控制点数据集合 */
+                Points_Iterator* data;
+                /** 路径数据步长显式查找表,  next-now >> { 2: 直线段, 3: 平方曲线(2阶贝塞尔曲线), 4: 立方曲线(3阶贝塞尔曲线) ... } */
+                Link_Block<Idx_Algebra>* data_step;
+
+                /** 计算系数集合 */
+                Points_Iterator* coefficients;
+                /** 计算系数是否可用 */
+                Link_Block<bool>* had_coefficients;
+
+                /** 导数集合 */
+                Points_Iterator* derivatives;
+                /** 导数是否可用 */
+                Link_Block<bool>* had_derivatives;
+
+                /** 拟合路径的直线段组数据 */
+                Points_Iterator* polygon;
+                /** 拟合路径的段组数据 与 路径数据 的 下标显示查找表, -1表示当前位置的曲线未生成拟合数据 */
+                Link_Block<Idx>* lut__polygon;
+
+                /** 分段曲线的 aabb 集合 */
+                Points_Iterator* aabb_group;
+                /** 分段的 aabb 是否可用 */
+                Link_Block<bool>* had_aabb;
+
+                /** 每段路径的长度 LUT */
+                Link_Block<bool>* lut__path_long;
+                /** 路径组长度的 LUT */
+                Link_Block<bool>* lut__path_item_long;
+
+                /** 计算周长 */
+                var calc_Girth();
+
+                /** 计算局部 aabb */
+                AABB_2D calc_LocalAABB();
+                
             };
 
         }

@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-12-07 18:33:59
+ * @LastEditTime: 2024-01-29 17:24:56
  * @FilePath: \cnml\src\NML_Geometry_2D.hpp
  * @Description: 提供2d基本图元数据结构和部分算法
  * @
@@ -195,7 +195,7 @@ namespace NML{
          * @param is_ray_more_than_pi   夹角是否大于半圆(PI)
          * @return 返回点是否在夹角内部
          */
-        bool check_Inside__Angle(Point_2D& ray_op,Point_2D& ray_ed, Point_2D& point, bool is_angle_more_than_pi){
+        inline bool check_Inside__Angle(Point_2D& ray_op,Point_2D& ray_ed, Point_2D& point, bool is_angle_more_than_pi){
             return (Vector::cross_V2(ray_op.x,ray_op.y,point.x,point.y)>=0) && 
                    ((Vector::cross_V2(ray_ed.x,ray_ed.y,point.x,point.y)<=0)||(is_angle_more_than_pi));
         }

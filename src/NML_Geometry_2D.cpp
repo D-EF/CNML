@@ -97,7 +97,7 @@ namespace NML{
                 dy=line1_p1.y-line1_p0.y;
             var *rtn_p=(var*)&rtn;
 
-            if(!Algebra::calc_RootsOfSquare(rtn_p,line0_p0.x,bx,line1_p0.x,dx,line0_p0.y,by,line1_p0.y,dy)){
+            if(!Algebra::clac_EquationSolution__Linear(rtn_p,line0_p0.x,bx,line1_p0.x,dx,line0_p0.y,by,line1_p0.y,dy)){
                 rtn.x=rtn.y=INFINITY;
             }
             if( rtn.x<=1 && rtn.x>=0 && rtn.y<=1 && rtn.y>=0 ){

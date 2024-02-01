@@ -11,6 +11,40 @@
 
 ---
 
+## 部分类型说明
+可以修改宏定义的类型以替换默认的类型; 如将 通用数值类型 var 设置为 doble
+``` cpp
+#ifndef __NML_VALUE_TYPE__
+    /** @brief NML使用的基本数据类型 */
+    #define __NML_VALUE_TYPE__ float
+#endif
+
+#ifndef __NML_VECTOR_INDEX_TYPE__
+    /** @brief NML使用的向量和矩阵下标类型 */
+    #define __NML_VECTOR_MATRIX_INDEX_TYPE__ char
+#endif
+
+#ifndef __NML_INDEX_TYPE__
+    /** @brief 通用下标类型 */
+    #define __NML_INDEX_TYPE__ int
+#endif
+
+#ifndef __NML_ALGEBRA_INDEX_TYPE__
+    /** @brief 算数下标类型 */
+    #define __NML_ALGEBRA_INDEX_TYPE__ char
+#endif
+namespace NML{
+    /** @brief 基本数据类型 */
+    typedef __NML_VALUE_TYPE__ var;
+    /** @brief 通用下标类型 */
+    typedef __NML_INDEX_TYPE__ Idx;
+    /** @brief 向量和矩阵的下标类型 */
+    typedef __NML_VECTOR_MATRIX_INDEX_TYPE__ Idx_VM;
+    /** @brief 算数下标类型 */
+    typedef __NML_ALGEBRA_INDEX_TYPE__ Idx_Algebra;
+}
+```
+
 ## 编码规范
   * 编码时避免用1表示起始下标, 应该使用0;
   * 左花括号不换行, 右花括号要换行;
@@ -328,24 +362,3 @@
       ```
 
 
-
-  ### 贝塞尔曲线
-  * 贝塞尔曲线 以 *点云访问器* 保存;
-  * 方案1 使用各个维度的各次幂系数作为存储格式;
-      ```
-        +------> 第x维度
-        | 
-        | 
-        v
-        y次幂的系数
-      ```
-      
-  * 方案2 保存控制点集合
-      ```
-        +------> 第x维度
-        | 
-        | 
-        v
-        第y个控制点
-      ```
-  
