@@ -270,8 +270,20 @@
 
 ## 轴对齐包围盒 ( AABB : Axis Aligned Bounding Box )
 * 众所周知, 求 AABB 实际上就是在求图形在各个方向上的最大值和最小值; 
+* 所以在获取贝塞尔曲线的 AABB 时, 只需要 \[ 0,1,...取值范围在0~1上的曲线每个维度上导数的根 \] 作为 t , 进行采样后比对大小即可
+$$
+导数根集合: R'=\{R'_0,R'_1,R'_2,...,R'_l\} \\
+采样点t参数集合: T'=(R'\cap(0,1))\cup\{0,1\} \\
+某维度的采样点集合: P'=F_{sample\_Bezier\_n(C',T')} \\ 
+当前维度的最大值和最小值: \max(P'), \min(P') \\ 
+$$
+* 对于次数较低的函数, 尚有公式可用; 但是当次数>3时, 就需要使用迭代法求根了; 而且大多情况下还需要求更高阶的导数的根, 此处求一元多项式函数的根的过程比较繁琐, 已经另外建了一个文件专门编写这个内容, 请看[Find_Root_In_Univariate_Polynomials.md](https://github.com/D-EF/CNML/blob/master/doc/Find_Root_In_Univariate_Polynomials.md)
+ 
+## 给定某一维度的坐标, 求可用点的t值
+* 众所周知, 求 AABB 实际上就是在求图形在各个方向上的最大值和最小值; 
 * 所以在获取贝塞尔曲线的 AABB 时, 只需要 \[ 0,1,...曲线每个维度上导数的根 \] 作为 t , 进行采样后比对大小即可
 * 对于次数较低的函数, 尚有公式可用; 但是当次数>3时, 就需要使用迭代法求根了; 而且大多情况下还需要求更高阶的导数的根, 此处求一元多项式函数的根的过程比较繁琐, 已经另外建了一个文件专门编写这个内容, 请看[Find_Root_In_Univariate_Polynomials.md](https://github.com/D-EF/CNML/blob/master/doc/Find_Root_In_Univariate_Polynomials.md)
+ 
  
 
 ## 贝塞尔曲线的长度

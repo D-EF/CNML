@@ -15,9 +15,9 @@ namespace NML{
     
     namespace Geometry{
 
-        var calc_LineLong(var* point0, var* point1, Idx_Algebra length){
+        var calc_LineLong(var* point0, var* point1, Idx_Algebra dimensional){
             var g=0;
-            for(Idx_Algebra i;  i<length;  ++i){
+            for(Idx_Algebra i;  i<dimensional;  ++i){
                 g+=point0[i]*point0[i] + point1[i]*point1[i];
             }
             return sqrt(g);

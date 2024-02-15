@@ -2,8 +2,8 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-01-31 09:55:58
- * @FilePath: \cnml\src\NML_Bezier.cpp
+ * @LastEditTime: 2024-02-16 03:21:46
+ * @FilePath: \CNML\src\NML_Bezier.cpp
  * @Description: 贝塞尔曲线
  * @
  * @Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
@@ -11,6 +11,7 @@
 
 #include "NML_Bezier.hpp"
 #include "NML_Algebra.hpp"
+#include "NML_Geometry.hpp"
 
 namespace NML{
     namespace Bezier{
@@ -264,8 +265,8 @@ namespace NML{
 
 
 
-        Points_Iterator& setup_LinePath__FitBezier(Points_Iterator& out, Points_Iterator& coefficients, var sample_step_size){
-            if(!sample_step_size) sample_step_size=1/out.points_length;
+        Points_Iterator& setup_LinePath__FitBezier(Points_Iterator& out, Points_Iterator& coefficients, var _sample_step_size){
+            if(!_sample_step_size) _sample_step_size=1/out.points_length;
             var t=0;
             Idx i=0;
             var *editor_target;
@@ -273,8 +274,8 @@ namespace NML{
                 editor_target=out[i];
                 sample_Bezier__Coefficients(editor_target,coefficients,t);
                 ++i;
-                t+=sample_step_size;
-            }while(t<1);
+                t+=_sample_step_size;
+            }while(t<NML::NML_TOLERANCE_D1);
             editor_target=out[i];
             sample_Bezier__Coefficients(editor_target,coefficients,1);
             return out;
@@ -340,6 +341,88 @@ namespace NML{
                 }
             }
             return idx_root;
+        }
+        
+
+        Idx_Algebra find_NearPoint(var*& out, var*& point, Points_Iterator& coefficients, var _propxy_polygon_sample_step_size, var _tolerance){
+            Points_Iterator* polygon;
+            polygon=new Points_Iterator__1DList(coefficients.dimensional,std::ceil(_propxy_polygon_sample_step_size));
+            setup_LinePath__FitBezier(*polygon,coefficients,_propxy_polygon_sample_step_size);
+            Idx_Algebra rtn=find_NearPoint(out, point, coefficients, polygon, _tolerance);
+            delete polygon;
+            return rtn;
+        }
+
+        Idx_Algebra find_NearPoint(var*& out, var*& point, Points_Iterator& coefficients, Points_Iterator& polygon, var _tolerance){
+            var temp_value=INFINITY;
+            var temp_value_0, temp_value_1;
+            var temp, temp_0, temp_1=0;
+            Idx idx_min;
+            Idx i;
+            
+            // 找到多边形代理中的近点
+
+            for(i=1;  i<polygon.points_length;  ++i){
+                if(temp_value > (temp_0=Geometry::calc_LineLong(point, polygon[i], coefficients.dimensional))){
+                    temp_value=temp_0;
+                    idx_min=i;
+                }
+            }
+            // open * 可能接近起点 or 终点 * open 
+                if(idx_min==0)                         temp_1 = 0-_tolerance;   // 可能接近起点
+                if(idx_min==polygon.points_length-1)   temp_1 = 1+_tolerance;   // 可能接近终点
+                if(temp_1!=0.0){
+                    sample_Bezier__Coefficients(out, coefficients,temp_1);
+                    if(Geometry::calc_LineLong(point, out, coefficients.dimensional)<temp_value){
+                        if(temp_1>1){
+                            std::copy(polygon[polygon.points_length-1], polygon[polygon.points_length-1]+polygon.dimensional, out);
+                            return 2;
+                        }
+                        else {
+                            std::copy(polygon[0], polygon[0]+polygon.dimensional, out);
+                            return 1;
+                        }
+                    }
+                }
+            // end  * 可能接近起点 or 终点 * end  
+
+            // 二分法逼近 近点
+            var one_of_polygon_points_length=1/polygon.points_length;
+            if(idx_min<0){
+                temp_0=idx_min*one_of_polygon_points_length;
+                temp_1=(idx_min+1)*one_of_polygon_points_length;
+                temp_value_0=temp_value;
+                sample_Bezier__Coefficients(out,coefficients,temp_1);
+                temp_value_1=Geometry::calc_LineLong(point, out, coefficients.dimensional);
+            }else if(idx_min>polygon.points_length){
+                temp_0=(idx_min-1)*one_of_polygon_points_length;
+                temp_1=idx_min*one_of_polygon_points_length;
+                sample_Bezier__Coefficients(out,coefficients,temp_1);
+                temp_value_0=Geometry::calc_LineLong(point, out, coefficients.dimensional);
+                temp_value_1=temp_value;
+            }else{
+                temp_0=(idx_min-1)*one_of_polygon_points_length;
+                temp_1=(idx_min+1)*one_of_polygon_points_length;
+                sample_Bezier__Coefficients(out,coefficients,temp_0);
+                temp_value_0=Geometry::calc_LineLong(point, out, coefficients.dimensional);
+                sample_Bezier__Coefficients(out,coefficients,temp_1);
+                temp_value_1=Geometry::calc_LineLong(point, out, coefficients.dimensional);
+            }
+
+            do{
+                temp=(temp_0+temp_1)*0.5;
+                sample_Bezier__Coefficients(out,coefficients,temp);
+                temp_value=Geometry::calc_LineLong(point, out, coefficients.dimensional);
+                if(temp_value_0<temp_value_1){
+                    temp_value_1=temp_value;
+                    temp_1=temp;
+                }else{
+                    temp_value_0=temp_value;
+                    temp_0=temp;
+                }
+            }while(!check_Equal(temp_0,temp_1,_tolerance));
+
+            return 0;
         }
 
     }

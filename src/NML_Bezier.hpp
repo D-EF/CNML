@@ -2,8 +2,8 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-01-16 16:03:08
- * @FilePath: \cnml\src\NML_Bezier.hpp
+ * @LastEditTime: 2024-02-16 03:22:26
+ * @FilePath: \CNML\src\NML_Bezier.hpp
  * @Description: 贝塞尔曲线
  * @
  * @Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
@@ -16,6 +16,8 @@
 
 namespace NML{
     namespace Bezier{
+
+        var BEZIER_PROXY_POLYGON_SAMPLE_STEP_SIZE=0.1;
 
         /**
          * @brief 采样贝塞尔曲线 使用DeCasteljau算法 (不建议使用)
@@ -120,15 +122,6 @@ namespace NML{
         // p3=p4 + (-k*圆弧上的点 p4 的导向量)   // 需要计算
         // p4=终点
         
-
-        /** todo:
-         * 求交; 
-         * 点在曲线上的投影(点到曲线的最短距离); 
-         * 求曲率;
-         * 曲线的拐点 (仅用于三阶曲线);
-         * ...
-         */
-
         /**
          * 求贝塞尔曲线的导函数 (一维)
          * @param out                   输出对象
@@ -151,12 +144,12 @@ namespace NML{
          * @brief 生成拟合贝塞尔曲线的线段路径
          * @param out               输出目标, 如果有 sample_step_size 参数,则 out 长度应为 ceil(1/sample_step_size)
          * @param coefficients      曲线计算系数  ( 使用 setup_BezierCoefficients 生成 )
-         * @param sample_step_size  采样点 t 值的步长, 默认为 1/out.points_length
+         * @param _sample_step_size  采样点 t 值的步长, 默认为 1/out.points_length
          */
-        Points_Iterator& setup_LinePath__FitBezier(Points_Iterator& out, Points_Iterator& coefficients, var sample_step_size=0);
+        Points_Iterator& setup_LinePath__FitBezier(Points_Iterator& out, Points_Iterator& coefficients, var _sample_step_size=0);
 
         /**
-         * 生成贝塞尔曲线的 AABB 包围盒
+         * @brief 生成贝塞尔曲线的 AABB 包围盒
          * @param out_min       输出的 AABB 盒靠近坐标轴负方向的坐标 
          * @param out_max       输出的 AABB 盒靠近坐标轴正方向的坐标 
          * @param coefficients  计算系数  ( 使用 setup_BezierCoefficients 生成 )
@@ -165,7 +158,7 @@ namespace NML{
         void setup_AABB__Bezier(var*& out_min, var*& out_max, Points_Iterator& coefficients, Points_Iterator* derivatives=0);
 
         /**
-         * 使用采样坐标计算t值
+         * @brief 使用采样坐标计算t值
          * @param out                    计算结果输出对象
          * @param coefficients           某一维度的计算系数
          * @param length                 计算系数的个数
@@ -173,6 +166,37 @@ namespace NML{
          * @return 返回对应 t 值的个数
          */
         Idx_Algebra calc_T__BySample_FromBezier(var*& out, var*& coefficients, Idx_Algebra length, var sample);
+
+        /**
+         * @brief 找到曲线上靠近参数点的位置
+         * @param out            输出目标
+         * @param point          参数点
+         * @param coefficients   曲线计算系数
+         * @param _polygon       拟合曲线的直线段组, 用于辅助计算
+         * @param _tolerance     迭代法求近点时的容差
+         * @return 返回 0 表示近点在曲线中间,  返回 1 表示近点在曲线的起始位置, 返回 2 表示近点在曲线的终点位置
+         */
+        Idx_Algebra find_NearPoint(var*& out, var*& point, Points_Iterator& coefficients, Points_Iterator* _polygon=0, var _tolerance=NML_TOLERANCE);
+
+        /**
+         * @brief 找到曲线上靠近参数点的位置
+         * @param out                                输出目标
+         * @param point                              参数点
+         * @param coefficients                       曲线计算系数
+         * @param _propxy_polygon_sample_step_size   创建拟合曲线的直线段组时的采样步长
+         * @param _tolerance                         迭代法求近点时的容差
+         * @return 返回 0 表示近点在曲线中间,  返回 1 表示近点在曲线的起始位置, 返回 2 表示近点在曲线的终点位置
+         */
+        Idx_Algebra find_NearPoint(var*& out, var*& point, Points_Iterator& coefficients, var _propxy_polygon_sample_step_size=BEZIER_PROXY_POLYGON_SAMPLE_STEP_SIZE, var _tolerance=NML_TOLERANCE);
+        //  todo test find_NearPoint
+
+        /** todo:
+         * 求交; 
+         * 点在曲线上的投影(点到曲线的最短距离); 
+         * 求曲率;
+         * 曲线的拐点 (仅用于三阶曲线);
+         * ...
+         */
 
     }
 }

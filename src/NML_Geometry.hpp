@@ -23,9 +23,10 @@ namespace NML{
          * @brief 计算直线段长度
          * @param point0 线段端点0
          * @param point1 线段端点1
+         * @param dimensional 点的维度
          * @return 计算直线段长度并返回
          */
-        var calc_LineLong(var* point0, var* point1, Idx_Algebra length);
+        var calc_LineLong(var* point0, var* point1, Idx_Algebra dimensional);
 
         /**
          * @brief 计算直线段路径长度

@@ -48,6 +48,12 @@
 #endif
 
 
+#ifndef __NML_TOLERANCE__
+    /** @brief 默认容差 */
+    #define __NML_TOLERANCE__ 1e-6
+#endif
+
+
 #include <Math.h>
 #include <iostream>
 
