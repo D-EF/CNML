@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-01-17 16:31:19
+ * @LastEditTime: 2024-02-26 17:56:13
  * @FilePath: \cnml\src\NML.hpp
  * @Description: Nittle Math Library 简单数学库
  * 
@@ -84,6 +84,45 @@ namespace NML{
         Idx size;
         Value_Type* data;
     };
+    
+    
+    /** 块链节点 */
+    template <typename Value_Type> struct Link_Block {
+        Link_Block<Value_Type>* next;
+        Idx size;
+        Idx used_size;
+        Value_Type* data;
+    };
+
+
+// todo
+
+    /** 使用下标获取块链节点的内容
+     * 
+     */
+    template <typename Value_Type> Value_Type get_Item__LinkBlock(
+        Idx index, const Link_Block<Value_Type>& const header_block,
+        Link_Block<Value_Type>** out_cache_last_access_block=0, Idx* out_cache_index=0
+    );
+
+    template <typename Value_Type> Value_Type get_Item__LinkBlock(
+        Idx index, const Link_Block<Value_Type>& const last_access_block, Idx last_access_index,
+        Link_Block<Value_Type>** out_cache_last_access_block=0, Idx* out_cache_index=0
+    );
+
+    template <typename Value_Type> void free_LinkBlock(Link_Block<Value_Type>& last_access_block);
+    
+    template <typename Value_Type> bool inset_LinkBlock(Link_Block<Value_Type>& last_access_block, Idx index, Value_Type value, bool not_add_block=false);
+    
+    template <typename Value_Type> bool append_LinkBlock(Link_Block<Value_Type>& last_access_block, Idx index, Value_Type value, bool not_add_block=false);
+
+    template <typename Value_Type> bool inset_LinkBlock(Link_Block<Value_Type>& last_access_block, Idx index, Value_Type* value, Idx length, bool not_add_block=false);
+    
+    template <typename Value_Type> bool append_LinkBlock(Link_Block<Value_Type>& last_access_block, Idx index, Value_Type* value, Idx length, bool not_add_block=false);
+    
+
+    /** @brief 计算当前已有空间 */
+    template <typename Value_Type> Idx calc_MaxLength(Link_Block<Value_Type>& header_block);
     
 
     /** 三个坐标轴 */

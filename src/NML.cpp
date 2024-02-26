@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-02-16 01:58:15
+ * @LastEditTime: 2024-02-26 16:53:16
  * @FilePath: \CNML\src\NML.cpp
  * @Description: Nittle Math Library 简单数学库
  * 
@@ -15,7 +15,6 @@
 namespace NML{
 
     const var NML_TOLERANCE=__NML_TOLERANCE__;
-    const var NML_ONE_OF_TOLERANCE=1/NML_TOLERANCE;
     const var NML_TOLERANCE_D1=1-NML_TOLERANCE;
     const Idx SAMPLE_SIZE_SEED=__DEFINE_SAMPLE_SIZE_SEED__;
     const var SAMPLE_SIZE_SIZE=1.0/SAMPLE_SIZE_SEED;

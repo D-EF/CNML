@@ -146,6 +146,7 @@ namespace NML{
     * bezier         : 贝塞尔曲线
     * AABB           : 轴对齐包围盒 ( Axis-aligned bounding box )
     * intersection   : 交点
+    * distance       : 表示几何中的距离/长度
     * inside         : 表示状态  - 在内部
     * had            : 表示状态  - 有可用的缓存值
 
@@ -179,7 +180,7 @@ namespace NML{
 ---
 
 ## 部分数据结构说明
-  * 绝大部分数据结构都使用线性结构的数组表示
+  * 绝大部分数据结构都使用线性结构的数组/指针表示
 
   ### 数值类型
     * 宏 **\_\_NML_VALUE_TYPE\_\_** 定义了全局中使用的基本类型,默认为单浮点(float);   

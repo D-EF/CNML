@@ -15,7 +15,7 @@ namespace NML{
     
     namespace Geometry{
 
-        var calc_LineLong(var* point0, var* point1, Idx_Algebra dimensional){
+        var calc_LineDistance(var* point0, var* point1, Idx_Algebra dimensional){
             var g=0;
             for(Idx_Algebra i;  i<dimensional;  ++i){
                 g+=point0[i]*point0[i] + point1[i]*point1[i];
@@ -23,20 +23,20 @@ namespace NML{
             return sqrt(g);
         }
 
-        var calc_LinePathLong(Points_Iterator& line_path){
+        var calc_LinePathDistance(Points_Iterator& line_path){
             var rtn=0;
             for(Idx i=1; i<line_path.points_length; ++i){
-                rtn=calc_LineLong(line_path[i],line_path[i-1],line_path.dimensional);
+                rtn=calc_LineDistance(line_path[i],line_path[i-1],line_path.dimensional);
             }
             return rtn;
         }
 
-        var calc_LinePathLong(Points_Iterator& line_path, var*& out_long_lut){
+        var calc_LinePathDistance(Points_Iterator& line_path, var*& out_distance_lut){
             Idx i=0,l=line_path.points_length-1;
             while(i<line_path.points_length){
-                out_long_lut[i]=calc_LineLong(line_path[i],line_path[++i],line_path.dimensional);
+                out_distance_lut[i]=calc_LineDistance(line_path[i],line_path[++i],line_path.dimensional);
             }
-            return out_long_lut[i];
+            return out_distance_lut[i];
         }
 
     }

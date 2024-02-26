@@ -388,9 +388,9 @@ namespace NML{
                 Link_Block<bool>* had_aabb;
 
                 /** 每段路径的长度 LUT */
-                Link_Block<bool>* lut__path_long;
+                Link_Block<bool>* lut__path_distance;
                 /** 路径组长度的 LUT */
-                Link_Block<bool>* lut__path_item_long;
+                Link_Block<bool>* lut__path_item_distance;
 
                 /** 计算周长 */
                 var calc_Girth();

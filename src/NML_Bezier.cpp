@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-02-16 03:21:46
+ * @LastEditTime: 2024-02-26 16:57:24
  * @FilePath: \CNML\src\NML_Bezier.cpp
  * @Description: 贝塞尔曲线
  * @
@@ -12,6 +12,8 @@
 #include "NML_Bezier.hpp"
 #include "NML_Algebra.hpp"
 #include "NML_Geometry.hpp"
+#include "NML_Geometry_2D.hpp"
+#include "NML_Matrix_2D.hpp"
 
 namespace NML{
     namespace Bezier{
@@ -114,6 +116,14 @@ namespace NML{
             return out;
         }
 
+        Points_Iterator& sample_Bezier__Coefficients(Points_Iterator& out, Points_Iterator& coefficients, var*& t_list, Idx length__t_list){
+            var *temp_point;
+            for(Idx i=0;  i<length__t_list;  ++i){
+                temp_point=coefficients[i];
+                Bezier::sample_Bezier__Coefficients(temp_point,coefficients,t_list[i]);
+            }
+            return out;
+        }
 
         var*& calc_CutBezierMatrixQ(var*& out, Idx_Algebra n, var t){
             if(Algebra::_last_calc_pascals_triangle->size<n){
@@ -282,15 +292,15 @@ namespace NML{
         }
 
 
-        void setup_AABB__Bezier(var*& out_min, var*& out_max, Points_Iterator& coefficients, Points_Iterator* derivatives){
+        void setup_AABB__Bezier(var*& out_min, var*& out_max, Points_Iterator& coefficients, Points_Iterator* _derivatives){
             bool flag__create_derivatives=false;
-            if(!derivatives){
-                derivatives=new Points_Iterator__1DList(coefficients);
-                Algebra::setup_Derivatives__UnivariatePolynomials(*derivatives,coefficients);
+            if(!_derivatives){
+                _derivatives=new Points_Iterator__1DList(coefficients);
+                Algebra::setup_Derivatives__UnivariatePolynomials(*_derivatives,coefficients);
                 flag__create_derivatives=true;
             }
 
-            Idx idx_derivatives, idx_point, idx_t, l=derivatives->points_length, d=derivatives->dimensional;
+            Idx idx_derivatives, idx_point, idx_t, l=_derivatives->points_length, d=_derivatives->dimensional;
 
             var* derivatives__dimensional     = new var[l];
             var* coefficients__dimensional   = new var[l+1];
@@ -302,7 +312,7 @@ namespace NML{
                 out_min[idx_derivatives]=+INFINITY;
                 out_max[idx_derivatives]=-INFINITY;
                 for(idx_point=0;  idx_point<l;  ++idx_point){
-                    derivatives__dimensional[idx_point]   = (*derivatives)[idx_point][idx_derivatives];
+                    derivatives__dimensional[idx_point]   = (*_derivatives)[idx_point][idx_derivatives];
                     coefficients__dimensional[idx_point] = coefficients[idx_point][idx_derivatives];
                 }
                 
@@ -324,7 +334,7 @@ namespace NML{
 
             delete derivatives__dimensional;
             delete roots__dimensional;
-            if(flag__create_derivatives) delete derivatives;
+            if(flag__create_derivatives) delete _derivatives;
         }
 
 
@@ -342,9 +352,81 @@ namespace NML{
             }
             return idx_root;
         }
-        
 
-        Idx_Algebra find_NearPoint(var*& out, var*& point, Points_Iterator& coefficients, var _propxy_polygon_sample_step_size, var _tolerance){
+
+        var find_NearPoint(var*& out, var*& point, Points_Iterator& coefficients, Points_Iterator& polygon, var _tolerance){
+            var temp_value=INFINITY;
+            var temp_value_0, temp_value_1;
+            var temp, temp_0, temp_1=0;
+            Idx idx_min;
+            Idx i;
+            
+            // 找到多边形代理中的近点
+            for(i=0;  i<polygon.points_length;  ++i){
+                if(temp_value > (temp_0=Geometry::calc_LineDistance(point, polygon[i], coefficients.dimensional))){
+                    temp_value=temp_0;
+                    idx_min=i;
+                }
+            }
+            // open * 可能接近起点 or 终点 * open 
+                if(idx_min==0)                         temp_1 = 0-_tolerance*10;   // 可能接近起点
+                if(idx_min==polygon.points_length-1)   temp_1 = 1+_tolerance*10;   // 可能接近终点
+                if(temp_1!=0.0){
+                    sample_Bezier__Coefficients(out, coefficients,temp_1);
+                    if(Geometry::calc_LineDistance(point, out, coefficients.dimensional)<temp_value){
+                        if(temp_1>1){
+                            std::copy(polygon[polygon.points_length-1], polygon[polygon.points_length-1]+polygon.dimensional, out);
+                            return 1;
+                        }
+                        else {
+                            std::copy(polygon[0], polygon[0]+polygon.dimensional, out);
+                            return 0;
+                        }
+                    }
+                }
+            // end  * 可能接近起点 or 终点 * end  
+
+            // 二分法逼近 近点
+            var one_over_polygon_points_length = 1/polygon.points_length;
+            if(idx_min==0){
+                temp_0 = idx_min * one_over_polygon_points_length;
+                temp_1 = (idx_min+1) * one_over_polygon_points_length;
+                temp_value_0 = temp_value;
+                sample_Bezier__Coefficients(out,coefficients,temp_1);
+                temp_value_1 = Geometry::calc_LineDistance(point, out, coefficients.dimensional);
+            }else if(idx_min==polygon.points_length-1){
+                temp_0 = (idx_min-1) * one_over_polygon_points_length;
+                temp_1 = idx_min * one_over_polygon_points_length;
+                sample_Bezier__Coefficients(out,coefficients,temp_1);
+                temp_value_0 = Geometry::calc_LineDistance(point, out, coefficients.dimensional);
+                temp_value_1 = temp_value;
+            }else{
+                temp_0 = (idx_min-1) * one_over_polygon_points_length;
+                temp_1 = (idx_min+1) * one_over_polygon_points_length;
+                sample_Bezier__Coefficients(out,coefficients,temp_0);
+                temp_value_0 = Geometry::calc_LineDistance(point, out, coefficients.dimensional);
+                sample_Bezier__Coefficients(out,coefficients,temp_1);
+                temp_value_1 = Geometry::calc_LineDistance(point, out, coefficients.dimensional);
+            }
+
+            do{
+                temp = (temp_0+temp_1)*0.5;
+                sample_Bezier__Coefficients(out,coefficients,temp);
+                temp_value = Geometry::calc_LineDistance(point, out, coefficients.dimensional);
+                if(temp_value_0<temp_value_1){
+                    temp_value_1 = temp_value;
+                    temp_1 = temp;
+                }else{
+                    temp_value_0 = temp_value;
+                    temp_0 = temp;
+                }
+            }while(!check_Equal(temp_0,temp_1,_tolerance));
+
+            return temp;
+        }
+
+
+        var find_NearPoint(var*& out, var*& point, Points_Iterator& coefficients, var _propxy_polygon_sample_step_size, var _tolerance){
             Points_Iterator* polygon;
             polygon=new Points_Iterator__1DList(coefficients.dimensional,std::ceil(_propxy_polygon_sample_step_size));
             setup_LinePath__FitBezier(*polygon,coefficients,_propxy_polygon_sample_step_size);
@@ -353,77 +435,167 @@ namespace NML{
             return rtn;
         }
 
-        Idx_Algebra find_NearPoint(var*& out, var*& point, Points_Iterator& coefficients, Points_Iterator& polygon, var _tolerance){
-            var temp_value=INFINITY;
-            var temp_value_0, temp_value_1;
-            var temp, temp_0, temp_1=0;
-            Idx idx_min;
-            Idx i;
-            
-            // 找到多边形代理中的近点
 
-            for(i=1;  i<polygon.points_length;  ++i){
-                if(temp_value > (temp_0=Geometry::calc_LineLong(point, polygon[i], coefficients.dimensional))){
-                    temp_value=temp_0;
-                    idx_min=i;
+        Idx calc_T_DerivativesRootsLUT(var*& out, Points_Iterator& derivatives){
+            var *temp_dimensional = new var[derivatives.points_length];
+            var *temp_out;
+            Idx rtn,l=1;
+            Idx i,j;
+
+            out[0]=0;
+
+            // 计算各个维度的导数根
+            for(i=0;  i<derivatives.dimensional;  ++i){
+                for(j=0;  j<derivatives.points_length;  ++j){
+                    temp_dimensional[j]=derivatives[j][i];
                 }
+                temp_out=out+l;
+                l+=Algebra::calc_Roots__UnivariatePolynomials(temp_out,temp_dimensional,derivatives.points_length);
             }
-            // open * 可能接近起点 or 终点 * open 
-                if(idx_min==0)                         temp_1 = 0-_tolerance;   // 可能接近起点
-                if(idx_min==polygon.points_length-1)   temp_1 = 1+_tolerance;   // 可能接近终点
-                if(temp_1!=0.0){
-                    sample_Bezier__Coefficients(out, coefficients,temp_1);
-                    if(Geometry::calc_LineLong(point, out, coefficients.dimensional)<temp_value){
-                        if(temp_1>1){
-                            std::copy(polygon[polygon.points_length-1], polygon[polygon.points_length-1]+polygon.dimensional, out);
-                            return 2;
-                        }
-                        else {
-                            std::copy(polygon[0], polygon[0]+polygon.dimensional, out);
-                            return 1;
-                        }
+            out[l]=1;
+            ++l;
+
+            // 排序
+            rtn=l;
+            for(i=1;  i<l;  ++i){
+                if((out[i]<0) || (out[i]>1)){
+                    out[i]=INFINITY;
+                    --rtn;
+                } 
+            }
+            for(i=1;  i<l;  ++i){
+                for(j=0;  j<l-i;  ++j){
+                    if(out[j] < out[j+1]){
+                        std::swap(out[j],out[j+1]);
                     }
                 }
-            // end  * 可能接近起点 or 终点 * end  
-
-            // 二分法逼近 近点
-            var one_of_polygon_points_length=1/polygon.points_length;
-            if(idx_min<0){
-                temp_0=idx_min*one_of_polygon_points_length;
-                temp_1=(idx_min+1)*one_of_polygon_points_length;
-                temp_value_0=temp_value;
-                sample_Bezier__Coefficients(out,coefficients,temp_1);
-                temp_value_1=Geometry::calc_LineLong(point, out, coefficients.dimensional);
-            }else if(idx_min>polygon.points_length){
-                temp_0=(idx_min-1)*one_of_polygon_points_length;
-                temp_1=idx_min*one_of_polygon_points_length;
-                sample_Bezier__Coefficients(out,coefficients,temp_1);
-                temp_value_0=Geometry::calc_LineLong(point, out, coefficients.dimensional);
-                temp_value_1=temp_value;
-            }else{
-                temp_0=(idx_min-1)*one_of_polygon_points_length;
-                temp_1=(idx_min+1)*one_of_polygon_points_length;
-                sample_Bezier__Coefficients(out,coefficients,temp_0);
-                temp_value_0=Geometry::calc_LineLong(point, out, coefficients.dimensional);
-                sample_Bezier__Coefficients(out,coefficients,temp_1);
-                temp_value_1=Geometry::calc_LineLong(point, out, coefficients.dimensional);
             }
 
-            do{
-                temp=(temp_0+temp_1)*0.5;
-                sample_Bezier__Coefficients(out,coefficients,temp);
-                temp_value=Geometry::calc_LineLong(point, out, coefficients.dimensional);
-                if(temp_value_0<temp_value_1){
-                    temp_value_1=temp_value;
-                    temp_1=temp;
-                }else{
-                    temp_value_0=temp_value;
-                    temp_0=temp;
-                }
-            }while(!check_Equal(temp_0,temp_1,_tolerance));
-
-            return 0;
+            delete temp_dimensional;
+            return rtn;
         }
 
+    }
+
+    
+    namespace Geometry_2D{
+
+        Idx_Algebra calc_Intersection__Bezier_Line(Points_Iterator& out, Points_Iterator& coefficients, var*& line_p0, var*& line_p1){
+            Idx_Algebra rtn=0;
+            var *t_intersection = new var[coefficients.points_length];
+            var *temp_coefficients = new var[coefficients.points_length];
+            var *temp_point;
+            Idx i;
+
+            var x=line_p1[0]-line_p0[0],
+                y=line_p0[1]-line_p1[1];
+            var mag=sqrt(x*x+y*y);
+            if(check_Zero(mag)) return 0;
+            mag=1/mag;
+            x *= mag;
+            y *= mag;
+
+            // 进行平移+旋转变换 使线段处于x正方向上
+            temp_point=coefficients[0];
+            temp_coefficients[0] = x*(temp_point[0]-line_p0[0]) + y*(temp_point[1]-line_p0[1]);
+            for(i=1;  i<coefficients.points_length;  ++i){
+                temp_point=coefficients[i];
+                temp_coefficients[i] = x*temp_point[0] + y*temp_point[1];
+                // 由于计算t值时仅需使用一个维度, 所以仅计算一个维度的值
+            }
+
+            Idx_Algebra t_length = Bezier::calc_T__BySample_FromBezier(t_intersection, temp_coefficients, coefficients.points_length, 0);
+
+            // 采样点并保存在线段上的点
+            for(i=0;  i<t_length;  ++i){
+                temp_point=out[rtn];
+                Bezier::sample_Bezier__Coefficients(temp_point, coefficients, t_intersection[i]);
+                var projection_value = calc_PointInLine(*(Point_2D*)line_p0, *(Point_2D*)line_p1, *(Point_2D*)temp_point);
+                if(projection_value>=0 && projection_value<=1) ++rtn;
+            }
+
+            delete t_intersection;
+            delete temp_coefficients;
+            return rtn;
+        }
+
+
+        typedef class Node__Bezier_AABB{
+            public:
+            Node__Bezier_AABB* half_0 = 0;
+            Node__Bezier_AABB* half_1 = 0;
+            var aabb[4];
+            var t_0, t_1;
+            Node__Bezier_AABB():half_0(0),half_1(0){}
+        } Node__Bezier_AABB;
+
+        /**
+         * 创建 贝塞尔曲线单调区间 的 AABB 组
+         * @param points 曲线单调性变换位置的采样点(任一方向上的驻点)集合
+         * @param t_list 曲线各个维度的导数根集合, 是 points 对应的 t 值
+         * @param length t_list 和 points 的可用长度
+         * @return 返回一组 Node__Bezier_AABB 数组, 包含曲线中的 AABB 集合
+         */
+        Node__Bezier_AABB* create_BezierMonotonicAABBGroud(Points_Iterator& points, var*& t_list, Idx length){
+            if(length<2) return 0;
+            
+            Idx i;
+            Node__Bezier_AABB* now_node=new Node__Bezier_AABB[length-1]();
+            var *p_0, *p_1;
+
+            p_1=points[0];
+            for(i=0;  i<length-1;  ++i){
+                p_0=p_1;
+                p_1=points[i+1];
+                now_node[i].t_0 = t_list[i];
+                now_node[i].t_1 = t_list[i+1];
+                setup_AABB_ByPoint(now_node[i].aabb, p_0, p_1);
+            }
+            
+            return now_node;
+        }
+
+        /**
+         * @brief 释放 create_BezierMonotonicAABBGroud 与迭代生成的内容
+         */
+        void free_BezierAABBGroud(Node__Bezier_AABB* target, Idx length){
+            Node__Bezier_AABB *now_node;
+            Link_Block<Node__Bezier_AABB*> *path;
+            Idx i;
+
+            for(i=0;  i<length;  ++i){
+                now_node=target+i;
+                // path=
+                // todo
+            }
+        }
+
+        Idx calc_Intersection__Bezier_Bezier(
+            Points_Iterator&   out, 
+            Points_Iterator&   coefficients_0, 
+            Points_Iterator&   coefficients_1, 
+            var*&              derivatives_roots_lut_0, 
+            Idx                length__derivatives_roots_lut_0, 
+            var*&              derivatives_roots_lut_1, 
+            Idx                length__derivatives_roots_lut_1  
+        ){
+            Points_Iterator *aabb_point_list_0 = new Points_Iterator__1DList(coefficients_0.dimensional, length__derivatives_roots_lut_0);
+            Points_Iterator *aabb_point_list_1 = new Points_Iterator__1DList(coefficients_1.dimensional, length__derivatives_roots_lut_1);
+
+            Bezier::sample_Bezier__Coefficients(*aabb_point_list_0, coefficients_0, derivatives_roots_lut_0, length__derivatives_roots_lut_0);
+            Bezier::sample_Bezier__Coefficients(*aabb_point_list_1, coefficients_1, derivatives_roots_lut_1, length__derivatives_roots_lut_1);
+
+            Node__Bezier_AABB * aabb_gound_0 = create_BezierMonotonicAABBGroud(*aabb_point_list_0, derivatives_roots_lut_0, length__derivatives_roots_lut_0);
+            Node__Bezier_AABB * aabb_gound_1 = create_BezierMonotonicAABBGroud(*aabb_point_list_1, derivatives_roots_lut_1, length__derivatives_roots_lut_1);
+
+            Idx i,j,rtn;
+
+            delete aabb_point_list_0;
+            delete aabb_point_list_1;
+
+            // todo check pair_gound
+            
+            return rtn;
+        }
     }
 }

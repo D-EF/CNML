@@ -26,22 +26,22 @@ namespace NML{
          * @param dimensional 点的维度
          * @return 计算直线段长度并返回
          */
-        var calc_LineLong(var* point0, var* point1, Idx_Algebra dimensional);
+        var calc_LineDistance(var* point0, var* point1, Idx_Algebra dimensional);
 
         /**
          * @brief 计算直线段路径长度
          * @param line_path 路径点数据
          * @return 计算路径长度并返回
          */
-        var calc_LinePathLong(Points_Iterator& line_path);
+        var calc_LinePathDistance(Points_Iterator& line_path);
 
         /**
          * 计算直线段路径并生成对应的 LUT 显示查找表
          * @param line_path      路径点数据
-         * @param out_long_lut   输出的对应长度的 LUT, 数据长度应该和点的个数相等
+         * @param out_distance_lut   输出的对应长度的 LUT, 数据长度应该和点的个数相等
          * @return 计算路径长度并返回
          */
-        var calc_LinePathLong(Points_Iterator& line_path, var*& out_long_lut);
+        var calc_LinePathDistance(Points_Iterator& line_path, var*& out_distance_lut);
 
     }
 

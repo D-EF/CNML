@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-12-07 18:39:04
+ * @LastEditTime: 2024-02-26 09:17:07
  * @FilePath: \cnml\src\NML_Geometry_2D.cpp
  * @Description: 2d 几何; 提供基本图元数据结构和部分算法
  * @
@@ -16,7 +16,41 @@ namespace NML{
     
     namespace Geometry_2D{
         
+        void setup_AABB_ByPoint(var* out, Point_2D& p_0, Point_2D& p_1){
+            if(p_0.x>p_1.x){
+                out[0]=p_1.x;
+                out[2]=p_0.x;
+            }else{
+                out[0]=p_0.x;
+                out[2]=p_1.x;
+            }
+            if(p_0.y>p_1.y){
+                out[1]=p_1.y;
+                out[3]=p_0.y;
+            }else{
+                out[1]=p_0.y;
+                out[3]=p_1.y;
+            }
+        }
         
+        void setup_AABB_ByPoint(var* out, var*& p_0, var*& p_1){
+            if(p_0[0]>p_1[0]){
+                out[0]=p_1[0];
+                out[2]=p_0[0];
+            }else{
+                out[0]=p_0[0];
+                out[2]=p_1[0];
+            }
+            if(p_0[1]>p_1[1]){
+                out[1]=p_1[1];
+                out[3]=p_0[1];
+            }else{
+                out[1]=p_0[1];
+                out[3]=p_1[1];
+            }
+        }
+
+
         Rect_Data& normalize_RectData(Rect_Data& rect_data){
             if(rect_data.w<0){
                 rect_data.x+=rect_data.w;
@@ -55,8 +89,8 @@ namespace NML{
             return {c_focus_length*item.x, c_focus_length*item.y};
         }
 
-        char calc_Intersection__Theta_Theta(Points_Iterator& out, var theta0_min, var theta0_max, var theta1_min, var theta1_max){
-            char i=0;
+        Idx_Algebra calc_Intersection__Theta_Theta(Points_Iterator& out, var theta0_min, var theta0_max, var theta1_min, var theta1_max){
+            Idx_Algebra i=0;
             var *temp_out=out[i];
             if(theta0_max-theta0_min>=DEG_360){
                 temp_out[0]=theta0_min;
@@ -109,7 +143,7 @@ namespace NML{
             return rtn;
         }
         
-        char calc_Intersection__Circle_Circle(Points_Iterator& out, var c0x, var c0y, var r0, var c1x, var c1y, var r1){
+        Idx_Algebra calc_Intersection__Circle_Circle(Points_Iterator& out, var c0x, var c0y, var r0, var c1x, var c1y, var r1){
             var l=Vector::mag_v2( c1x-c0x , c1y-c0y );
             var rr=r1+r0;
             if( (l<NML_TOLERANCE) && (check_Equal(r0,r1))){
@@ -135,8 +169,8 @@ namespace NML{
         }
 
         
-        char calc_Intersection__Arc_Arc(Points_Iterator& out, var c0_x, var c0_y, var r0, var theta0_op, var theta0_ed, var c1_x, var c1_y, var r1, var theta1_op, var theta1_ed,bool _use_normalize){
-            char flag_il = calc_Intersection__Circle_Circle(out,c0_x,c0_y,r0,c1_x,c1_y,r1);
+        Idx_Algebra calc_Intersection__Arc_Arc(Points_Iterator& out, var c0_x, var c0_y, var r0, var theta0_op, var theta0_ed, var c1_x, var c1_y, var r1, var theta1_op, var theta1_ed,bool _use_normalize){
+            Idx_Algebra flag_il = calc_Intersection__Circle_Circle(out,c0_x,c0_y,r0,c1_x,c1_y,r1);
 
             if(!flag_il){
                 // 无交点
@@ -175,7 +209,7 @@ namespace NML{
             bool is_theta0_offset_more_than_pi=theta0_offset>DEG_180;
             bool is_theta1_offset_more_than_pi=theta1_offset>DEG_180;
 
-            char rtn=0;
+            Idx_Algebra rtn=0;
             var* temp_out=out[0];
             Point_2D point__loc0={ temp_out[0]-c0_x, temp_out[1]-c0_y };
             Point_2D point__loc1={ temp_out[0]-c1_x, temp_out[1]-c1_y };
@@ -203,5 +237,64 @@ namespace NML{
             return rtn;
         }
 
+
+        Idx_Algebra calc_Intersection__Circle_Line(Points_Iterator& out, var c_x, var c_y, var r, Point_2D& line_p0, Point_2D& line_p1){
+            Point_2D loc_p0_to_p1   = {line_p1.x-line_p0.x,line_p1.y-line_p0.y};
+            Point_2D loc_c_to_p0    = {line_p1.x-c_x,line_p1.y-c_y};
+            var *p__loc_p0_to_p1    = (var*)&loc_p0_to_p1;
+            var *p__loc_c_to_p0     = (var*)&loc_c_to_p0;
+
+            var a = Vector::dot_v2(p__loc_p0_to_p1,p__loc_p0_to_p1);
+            var b = Vector::dot_v2(p__loc_c_to_p0,p__loc_p0_to_p1);
+            var c = Vector::dot_v2(p__loc_c_to_p0,p__loc_c_to_p0) - r*r;
+
+            var discriminant = b * b - 4 * a * c;
+            if (discriminant < 0)   return 0;
+
+            discriminant = std::sqrt(discriminant);
+            var one_over_2a = 1/a*0.5;
+            var t1 = (-b - discriminant) * one_over_2a;
+            var t2 = (-b + discriminant) * one_over_2a;
+            Idx_Algebra i=0;
+
+            if (t1 >= 0 && t1 <= 1) {
+                out[i][0]=loc_c_to_p0.x*t1+line_p0.x;
+                out[i][1]=loc_c_to_p0.y*t1+line_p0.y;
+                ++i;
+            }
+
+            if (t2 >= 0 && t2 <= 1) {
+                out[i][0]=loc_c_to_p0.x*t2+line_p0.x;
+                out[i][1]=loc_c_to_p0.y*t2+line_p0.y;
+                ++i;
+            }
+            return i;
+        }
+
+        Idx_Algebra calc_Intersection__Arc_Line(Points_Iterator& out, var c_x, var c_y, var r, var theta_op, var theta_ed, Point_2D& line_p0, Point_2D& line_p1){
+            Idx_Algebra length = calc_Intersection__Circle_Line(out, c_x, c_y, r, line_p0, line_p1);
+            Idx_Algebra rtn=0;
+            if(!length) return length;
+            Point_2D point__op = calc_Point2D__Rotate(theta_op);
+            Point_2D point__ed = calc_Point2D__Rotate(theta_ed);
+            bool is_ray_more_than_pi=(theta_ed-theta_op>PI);
+
+            if(check_Inside__Angle(point__op, point__ed, *(Point_2D*)(out[0]), is_ray_more_than_pi)) {
+                ++rtn;
+            }
+            
+            if(length>=2){
+                if(check_Inside__Angle(point__op, point__ed, *(Point_2D*)(out[1]), is_ray_more_than_pi)) {
+                    if(!rtn){
+                        out[0][0]=out[1][0];
+                        out[0][1]=out[1][1];
+                    }
+                    ++rtn;
+                }
+            }
+
+            return rtn;
+        }
+        
     }
 }

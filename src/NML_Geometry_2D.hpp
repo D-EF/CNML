@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-01-29 17:24:56
+ * @LastEditTime: 2024-02-19 14:55:02
  * @FilePath: \cnml\src\NML_Geometry_2D.hpp
  * @Description: 提供2d基本图元数据结构和部分算法
  * @
@@ -27,6 +27,24 @@ namespace NML{
                 var x, y; 
             } Point_2D;
 
+
+            /**
+             * @brief 使用两个点设置 AABB
+             * @param out AABB 的输出对象
+             * @param p_0 参数点 0
+             * @param p_1 参数点 1
+             */
+            void setup_AABB_ByPoint(var* out, var*& p_0, var*& p_1);
+            
+            /**
+             * @brief 使用两个点设置 AABB
+             * @param out AABB 的输出对象
+             * @param p_0 参数点 0
+             * @param p_1 参数点 1
+             */
+            void setup_AABB_ByPoint(var* out, Point_2D& p_0, Point_2D& p_1);
+
+
             /**
              * @brief 检查点是否在AABB内部
              * @param aabb_p0 AABB 的端点 0
@@ -34,7 +52,7 @@ namespace NML{
              * @param p 点的坐标
              * @return 返回 {0, 1, 2} 表示 [ 不在内部, 在内部, 在边上 ]; 如果图元为非闭合图元, 将始终返回0.
              */
-            inline char check_Inside__AABB(Point_2D& aabb_p0, Point_2D& aabb_p1, Point_2D& p){
+            inline Idx_Algebra check_Inside__AABB(Point_2D& aabb_p0, Point_2D& aabb_p1, Point_2D& p){
                 return check_Inside__Range(aabb_p0.x,aabb_p1.x,p.x) && 
                        check_Inside__Range(aabb_p0.y,aabb_p1.y,p.y) ;
             }
@@ -319,6 +337,42 @@ namespace NML{
                         min0.y<=max1.y && min1.y<=max0.y ;
             }
 
+            /**
+             * @brief 检查两个 AABB 盒是否有重叠部分
+             * @param aabb_0  AABB 0 : {min_x, min_y, max_x, max_y}
+             * @param aabb_1  AABB 1 : {min_x, min_y, max_x, max_y}
+             * @return 返回 AABB 盒是否重叠
+             */
+            inline bool check_Overlap__AABB_AABB(var* aabb_0, var* aabb_1){
+                return  aabb_0[0]<=aabb_1[2] && aabb_1[0]<=aabb_0[2] &&
+                        aabb_0[1]<=aabb_1[3] && aabb_1[1]<=aabb_0[3] ;
+            }
+
+
+            
+            /**
+             * @brief 求两组夹角的绘制交集 (同圆心同半径的扇形的交集)
+             * @param out          交集输出目标, 输出交集的弧度范围 [[min,max],[min,max]]
+             * @param theta0_min   扇形0 起点弧度
+             * @param theta0_max   扇形0 终点弧度
+             * @param theta1_min   扇形1 起点弧度
+             * @param theta1_max   扇形1 终点弧度
+             * @return 返回两个弧形绘制弧度有多少组交集
+             */
+            Idx_Algebra calc_Intersection__Theta_Theta(Points_Iterator& out, var theta0_min_x, var theta0_min_y, var theta0_max_x, var theta0_max_y, var theta1_min_x, var theta1_min_y, var theta1_max_x, var theta1_max_y);
+            
+            /**
+             * @brief 求两组夹角的绘制交集 (同圆心同半径的扇形的交集)
+             * @param out          交集输出目标, 输出交集的弧度范围 [[min,max],[min,max]]
+             * @param theta0_min   扇形0 起点弧度
+             * @param theta0_max   扇形0 终点弧度
+             * @param theta1_min   扇形1 起点弧度
+             * @param theta1_max   扇形1 终点弧度
+             * @return 返回两个弧形绘制弧度有多少组交集
+             */
+            Idx_Algebra calc_Intersection__Theta_Theta(Points_Iterator& out, var theta0_min, var theta0_max, var theta1_min, var theta1_max);
+
+
 
             /**
              * 计算相对于点 line0_p0 的 line0_p1 与line1两点的叉积的乘积
@@ -389,7 +443,8 @@ namespace NML{
              * @param r1     圆1 的半径
              * @return 输出交点数量, 如果两个圆重合，将输出-1
              */
-            char calc_Intersection__Circle_Circle(Points_Iterator& out, var c0_x, var c0_y, var r0, var c1_x, var c1_y, var r1);
+            Idx_Algebra calc_Intersection__Circle_Circle(Points_Iterator& out, var c0_x, var c0_y, var r0, var c1_x, var c1_y, var r1);
+
 
             /**
              * @brief 求两弧形交点
@@ -407,66 +462,36 @@ namespace NML{
              * @param _use_normalize   是否执行规范化弧度值的操作, 默认为false, 应仅在不确认传入数据是否合法时使用 true
              * @return 返回 0:无相交; 1: [out[0]]; 2:[out[1]]; 3:[out[0],out[1]]; -1:弧形有重合部分, 重合的弧度存储到out[0]中;
              */
-            char calc_Intersection__Arc_Arc(Points_Iterator& out, var c0_x, var c0_y, var r0, var theta0_op, var theta0_ed, var c1_x, var c1_y, var r1, var theta1_op, var theta1_ed, bool _use_normalize=false);
+            Idx_Algebra calc_Intersection__Arc_Arc(Points_Iterator& out, var c0_x, var c0_y, var r0, var theta0_op, var theta0_ed, var c1_x, var c1_y, var r1, var theta1_op, var theta1_ed, bool _use_normalize=false);
 
 
-            /**
-             * @brief 求两组夹角的绘制交集 (同圆心同半径的扇形的交集)
-             * @param out          交集输出目标, 输出交集的弧度范围 [[min,max],[min,max]]
-             * @param theta0_min   扇形0 起点弧度
-             * @param theta0_max   扇形0 终点弧度
-             * @param theta1_min   扇形1 起点弧度
-             * @param theta1_max   扇形1 终点弧度
-             * @return 返回两个弧形绘制弧度有多少组交集
-             */
-            char calc_Intersection__Theta_Theta(Points_Iterator& out, var theta0_min_x, var theta0_min_y, var theta0_max_x, var theta0_max_y, var theta1_min_x, var theta1_min_y, var theta1_max_x, var theta1_max_y);
-            
-            /**
-             * @brief 求两组夹角的绘制交集 (同圆心同半径的扇形的交集)
-             * @param out          交集输出目标, 输出交集的弧度范围 [[min,max],[min,max]]
-             * @param theta0_min   扇形0 起点弧度
-             * @param theta0_max   扇形0 终点弧度
-             * @param theta1_min   扇形1 起点弧度
-             * @param theta1_max   扇形1 终点弧度
-             * @return 返回两个弧形绘制弧度有多少组交集
-             */
-            char calc_Intersection__Theta_Theta(Points_Iterator& out, var theta0_min, var theta0_max, var theta1_min, var theta1_max);
-
-            /**
-             * @brief 求圆形与线段的相交情况
-             * @param out   输出目标, 点数量应大于等于2
-             * @param c0_x   圆0 的圆心 x 坐标
-             * @param c0_y   圆0 的圆心 y 坐标
-             * @param r0    圆0 的半径
-             * @param line_p0_x    线段端点0 的坐标
-             * @param line_p1_y    线段端点1 的坐标
-             * @return 输出有多少交点
-             */
-            char check_Intersection__Circle_Line(var c0_x, var c0_y, var r0, Point_2D& line_p0, Point_2D& line_p1);
+            // ↓↓↓ todo test ↓↓↓
 
             /**
              * @brief 求圆与线段的交点
-             * @param out         输出目标, 点数量应大于等于2
-             * @param c0_x        圆0 的圆心 x 坐标
-             * @param c0_y        圆0 的圆心 y 坐标
-             * @param r0          圆0 的半径
-             * @param line_p0     线段端点0 的坐标
-             * @param line_p1     线段端点1 的坐标
+             * @param out       输出目标, 点数量应大于等于2
+             * @param c_x       圆0 的圆心 x 坐标
+             * @param c_y       圆0 的圆心 y 坐标
+             * @param r         圆0 的半径
+             * @param line_p0   线段端点0 的坐标
+             * @param line_p1   线段端点1 的坐标
              * @return 输出有多少交点
              */
-            char calc_Intersection__Circle_Line(Points_Iterator& out, var c0_x, var c0_y, var r0, Point_2D& line_p0, Point_2D& line_p1);
+            Idx_Algebra calc_Intersection__Circle_Line(Points_Iterator& out, var c_x, var c_y, var r, Point_2D& line_p0, Point_2D& line_p1);
 
             /**
              * @brief 求圆与线段的交点
-             * @param out         输出目标, 点数量应大于等于2
-             * @param c0_x        圆0 的圆心 x 坐标
-             * @param c0_y        圆0 的圆心 y 坐标
-             * @param r0          圆0 的半径
-             * @param line_p0     线段端点0 的坐标
-             * @param line_p1     线段端点1 的坐标
+             * @param out        输出目标, 点数量应大于等于2
+             * @param c_x        弧形的圆心 x 坐标
+             * @param c_y        弧形的圆心 y 坐标
+             * @param r          弧形的半径
+             * @param theta_op   弧形起点弧度
+             * @param theta_ed   弧形终点弧度
+             * @param line_p0    线段端点0 的坐标
+             * @param line_p1    线段端点1 的坐标
              * @return 输出有多少交点
              */
-            char calc_Intersection__Arc_Line(Points_Iterator& out, var c0_x, var c0_y, var r0, Point_2D& line_p0, Point_2D& line_p1);
+            Idx_Algebra calc_Intersection__Arc_Line(Points_Iterator& out, var c_x, var c_y, var r, var theta_op, var theta_ed, Point_2D& line_p0, Point_2D& line_p1);
 
         // end  * 求交函数 * end 
 

@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-10-25 17:53:18
+ * @LastEditTime: 2024-02-20 14:27:48
  * @FilePath: \cnml\src\NML_Matrix_2D.hpp
  * @Description: 2D 变换矩阵
  * @
@@ -127,6 +127,14 @@ namespace NML{
              */
             inline var*& setup_Matrix2D__Rotate(var*& out, var theta)
             {return act_Matrix2D__Rotate(setup_Matrix2D, out, theta);}
+            
+            /**
+             * @brief 使用向量设置旋转矩阵
+             * @param out             输出目标
+             * @param unit_vec__org   起点坐标 需要是单位坐标
+             * @param unit_vec__to    终点坐标 需要是单位坐标
+             * @return 修改并返回 out, 将 unit_vec__to 旋转到 unit_vec__org 的变换矩阵
+             */
             inline var*& setup_Matrix2D__Rotate__Vector(var*& out, var*& unit_vec__org, var*& unit_vec__to)
             {return act_Matrix2D__Rotate__Vector(setup_Matrix2D, out, unit_vec__org, unit_vec__to);}
             /**
@@ -207,6 +215,14 @@ namespace NML{
              */
             inline var*& transform_Matrix2D__Rotate(var*& out, var theta)
             {return act_Matrix2D__Rotate(transform_Matrix2D, out, theta);}
+            
+            /**
+             * @brief 使用向量 矩阵进行旋转变换
+             * @param out             输出目标
+             * @param unit_vec__org   起点坐标 需要是单位坐标
+             * @param unit_vec__to    终点坐标 需要是单位坐标
+             * @return 修改并返回 out, 矩阵将 unit_vec__to 旋转到 unit_vec__org 
+             */
             inline var*& transform_Matrix2D__Rotate__Vector(var*& out, var*& unit_vec__org, var*& unit_vec__to)
             {return act_Matrix2D__Rotate__Vector(transform_Matrix2D, out, unit_vec__org, unit_vec__to);}
             /**
