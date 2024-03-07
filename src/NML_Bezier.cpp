@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-02-26 16:57:24
+ * @LastEditTime: 2024-03-06 09:59:23
  * @FilePath: \CNML\src\NML_Bezier.cpp
  * @Description: 贝塞尔曲线
  * @
@@ -49,16 +49,16 @@ namespace NML{
             Bezier_Calc_Matrix *ptr__move, *ptr__static;
             ptr__move=ptr__static = _last_load_bezier_calc_matrix;
             // 查找缓存
-            while (!(n==ptr__move->size||ptr__move->next==ptr__static)){
+            while (!(n==ptr__move->length||ptr__move->next==ptr__static)){
                 ptr__move=ptr__move->next;
             }
-            if(ptr__move->size==n){
+            if(ptr__move->length==n){
                 _last_load_bezier_calc_matrix=ptr__move;
                 return ptr__move->data;
             }
             
-            Link_Block<int> *temp_pascals_triangle_line= Algebra::get_PascalsTriangleLine(n);   // 第n行的帕斯卡三角
-            Link_Block<int> *move_pascals_triangle_line= &Algebra::_G_PASCALS_TRIANGLE;         // 从第0行帕斯卡三角开始
+            Link_Block__Simple<int> *temp_pascals_triangle_line= Algebra::get_PascalsTriangleLine(n);   // 第n行的帕斯卡三角
+            Link_Block__Simple<int> *move_pascals_triangle_line= &Algebra::_G_PASCALS_TRIANGLE;         // 从第0行帕斯卡三角开始
             Idx matrix_n=n+1;
             Idx new_length=(matrix_n)*(matrix_n+1)/2;
             int *new_matrix_data=new int[new_length];
@@ -126,16 +126,16 @@ namespace NML{
         }
 
         var*& calc_CutBezierMatrixQ(var*& out, Idx_Algebra n, var t){
-            if(Algebra::_last_calc_pascals_triangle->size<n){
+            if(Algebra::_last_calc_pascals_triangle->length<n){
                 Algebra::_calc_PascalsTriangle(n);
             }
 
             Idx_Algebra u, v;
             Idx index=0;
             // Init matrix of pascals triangle
-            Link_Block<int> *pascals_line = Algebra::get_PascalsTriangleLine(0);
+            Link_Block__Simple<int> *pascals_line = Algebra::get_PascalsTriangleLine(0);
             for(v=0;  v<=n;  ++v){
-                for(u=0;  u<=pascals_line->size;  ++u, ++index){
+                for(u=0;  u<=pascals_line->length;  ++u, ++index){
                     out[index]=pascals_line->data[u];
                 }
                 pascals_line=pascals_line->next;
@@ -560,7 +560,7 @@ namespace NML{
          */
         void free_BezierAABBGroud(Node__Bezier_AABB* target, Idx length){
             Node__Bezier_AABB *now_node;
-            Link_Block<Node__Bezier_AABB*> *path;
+            Link_Block__Simple<Node__Bezier_AABB*> *path;
             Idx i;
 
             for(i=0;  i<length;  ++i){

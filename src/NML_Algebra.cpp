@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-01-30 17:57:45
+ * @LastEditTime: 2024-03-06 10:04:57
  * @FilePath: \cnml\src\NML_Algebra.cpp
  * @Description: 数与代数 运算相关
  * @
@@ -26,8 +26,8 @@ namespace NML{
         
         Pascals_Triangle_Line *_calc_PascalsTriangle(Idx_Algebra n){
             Pascals_Triangle_Line *&rtn=_last_calc_pascals_triangle;
-            while(rtn->size<n){
-                Idx_Algebra length__next=rtn->size+1;
+            while(rtn->length<n){
+                Idx_Algebra length__next=rtn->length+1;
                 rtn->next=new Pascals_Triangle_Line{&_G_PASCALS_TRIANGLE, length__next, new int[length__next+3]+1};
 
                 rtn->next->data[-1]=0;
@@ -45,8 +45,8 @@ namespace NML{
         Pascals_Triangle_Line *get_PascalsTriangleLine(Idx_Algebra n){
             if(n<0)return 0;
             Pascals_Triangle_Line *rtn=_last_calc_pascals_triangle;
-            if(rtn->size<n) rtn=_calc_PascalsTriangle(n);
-            while(rtn->size!=n){
+            if(rtn->length<n) rtn=_calc_PascalsTriangle(n);
+            while(rtn->length!=n){
                 rtn=rtn->next;
             }
             return rtn;
@@ -204,7 +204,7 @@ namespace NML{
 
             Idx i, l=(length-3)*(length+4)/2;
             var *derivatives=new var[l];
-            copy_To(derivatives, coefficients, length);
+            std::copy(derivatives, derivatives+length, coefficients);
             
             // 加载导数集合直到可以被公式求根的多项式 (一元三次函数)
             // q = 第 n 次计算导数起始位置, p = 第 n+1 次计算导数起始位置

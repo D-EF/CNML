@@ -29,7 +29,7 @@ namespace NML{
         var *&sample_Bezier__DeCasteljau(var*& out, Points_Iterator& points, var t);
         
 
-        typedef Link_Block<int> Bezier_Calc_Matrix;
+        typedef Link_Block__Simple<int> Bezier_Calc_Matrix;
         
         /**
          * @brief 获取 贝塞尔曲线计算矩阵

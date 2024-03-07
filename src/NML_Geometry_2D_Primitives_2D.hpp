@@ -365,32 +365,32 @@ namespace NML{
                 /** 控制点数据集合 */
                 Points_Iterator* data;
                 /** 路径数据步长显式查找表,  next-now >> { 2: 直线段, 3: 平方曲线(2阶贝塞尔曲线), 4: 立方曲线(3阶贝塞尔曲线) ... } */
-                Link_Block<Idx_Algebra>* data_step;
+                Link_Block__Simple<Idx_Algebra>* data_step;
 
                 /** 计算系数集合 */
                 Points_Iterator* coefficients;
                 /** 计算系数是否可用 */
-                Link_Block<bool>* had_coefficients;
+                Link_Block__Simple<bool>* had_coefficients;
 
                 /** 导数集合 */
                 Points_Iterator* derivatives;
                 /** 导数是否可用 */
-                Link_Block<bool>* had_derivatives;
+                Link_Block__Simple<bool>* had_derivatives;
 
                 /** 拟合路径的直线段组数据 */
                 Points_Iterator* polygon;
                 /** 拟合路径的段组数据 与 路径数据 的 下标显示查找表, -1表示当前位置的曲线未生成拟合数据 */
-                Link_Block<Idx>* lut__polygon;
+                Link_Block__Simple<Idx>* lut__polygon;
 
                 /** 分段曲线的 aabb 集合 */
                 Points_Iterator* aabb_group;
                 /** 分段的 aabb 是否可用 */
-                Link_Block<bool>* had_aabb;
+                Link_Block__Simple<bool>* had_aabb;
 
                 /** 每段路径的长度 LUT */
-                Link_Block<bool>* lut__path_distance;
+                Link_Block__Simple<bool>* lut__path_distance;
                 /** 路径组长度的 LUT */
-                Link_Block<bool>* lut__path_item_distance;
+                Link_Block__Simple<bool>* lut__path_item_distance;
 
                 /** 计算周长 */
                 var calc_Girth();

@@ -16,7 +16,7 @@
 namespace NML{
     namespace Algebra{
 
-        typedef Link_Block<int> Pascals_Triangle_Line;
+        typedef Link_Block__Simple<int> Pascals_Triangle_Line;
         
         /**
          * @brief 帕斯卡三角数据

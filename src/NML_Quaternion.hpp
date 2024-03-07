@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-09-08 16:40:23
+ * @LastEditTime: 2024-02-28 16:11:45
  * @FilePath: \cnml\src\NML_Quaternion.hpp
  * @Description: 四元数相关计算.  注: 如无特殊标明, $1些函数的参数中的四元数都默认需要单位向量
  * @
@@ -20,10 +20,10 @@
 namespace NML{
     namespace Quaternion{
         enum Idx__Quaternion{
-            qx=0,
-            qy=1,
-            qz=2,
-            qw=3,
+            QX=0,
+            QY=1,
+            QZ=2,
+            QW=3,
         };
 
         /**
@@ -36,10 +36,10 @@ namespace NML{
          * @return 修改 out 并输出
          */
         inline var*& setup_Quaternion(var*& out, var x, var y, var z, var w){
-            out[qx]=x;
-            out[qy]=y;
-            out[qz]=z;
-            out[qw]=w;
+            out[QX]=x;
+            out[QY]=y;
+            out[QZ]=z;
+            out[QW]=w;
             return out;
         }
 
@@ -77,10 +77,10 @@ namespace NML{
          * @return 修改并返回 out
          */
         inline var*& setup_Quaternion__Conjugate(var*& out, var*& quat){
-            out[qx]=-quat[qx];
-            out[qy]=-quat[qy];
-            out[qz]=-quat[qz];
-            out[qw]=+quat[qw];
+            out[QX]=-quat[QX];
+            out[QY]=-quat[QY];
+            out[QZ]=-quat[QZ];
+            out[QW]=+quat[QW];
             return out;
         }
         
@@ -92,10 +92,10 @@ namespace NML{
          * @return  修改 out 并输出
          */
         inline var*& cross_Quat(var*& out, var*& quat_left, var*& quat_right){
-            out[qx]=quat_left[qw]*quat_right[qx] + quat_left[qx]*quat_right[qw] + quat_left[qz]*quat_right[qy] - quat_left[qy]*quat_right[qz];
-            out[qy]=quat_left[qw]*quat_right[qy] + quat_left[qy]*quat_right[qw] + quat_left[qx]*quat_right[qz] - quat_left[qz]*quat_right[qx];
-            out[qz]=quat_left[qw]*quat_right[qz] + quat_left[qz]*quat_right[qw] + quat_left[qy]*quat_right[qx] - quat_left[qx]*quat_right[qy];
-            out[qw]=quat_left[qw]*quat_right[qw] - quat_left[qx]*quat_right[qx] - quat_left[qy]*quat_right[qy] - quat_left[qz]*quat_right[qz];
+            out[QX]=quat_left[QW]*quat_right[QX] + quat_left[QX]*quat_right[QW] + quat_left[QZ]*quat_right[QY] - quat_left[QY]*quat_right[QZ];
+            out[QY]=quat_left[QW]*quat_right[QY] + quat_left[QY]*quat_right[QW] + quat_left[QX]*quat_right[QZ] - quat_left[QZ]*quat_right[QX];
+            out[QZ]=quat_left[QW]*quat_right[QZ] + quat_left[QZ]*quat_right[QW] + quat_left[QY]*quat_right[QX] - quat_left[QX]*quat_right[QY];
+            out[QW]=quat_left[QW]*quat_right[QW] - quat_left[QX]*quat_right[QX] - quat_left[QY]*quat_right[QY] - quat_left[QZ]*quat_right[QZ];
             return out;
         }
 
@@ -106,11 +106,11 @@ namespace NML{
          * @return 修改并返回 out
          */
         var*& setup_Quaternion__Logarithms(var*& out, var*& quat){
-            var ac=acos(out[qw]);
-            out[qx]=quat[qx]*ac;
-            out[qy]=quat[qy]*ac;
-            out[qz]=quat[qz]*ac;
-            out[qw]=0;
+            var ac=acos(out[QW]);
+            out[QX]=quat[QX]*ac;
+            out[QY]=quat[QY]*ac;
+            out[QZ]=quat[QZ]*ac;
+            out[QW]=0;
             return out;
         }
 
@@ -143,7 +143,7 @@ namespace NML{
          * @param quat 标准化的四元数数据
          * @return 返回四元数旋转量(弧度)
          */
-        inline var calc_Angle__GetQuaternion(var*& quat){return acos(quat[qw])*2;}
+        inline var calc_Angle__GetQuaternion(var*& quat){return acos(quat[QW])*2;}
 
         /**
          * @brief 提取四元数旋转轴
@@ -152,10 +152,10 @@ namespace NML{
          * @return 修改并返回 out
          */
         inline var*& calc_Axis__GetQuaternion (var*& out, var*& quat){
-            var k=check_Equal(1, quat[qw])? 1 : 1/sqrt(1.0-quat[qw]*quat[qw]);
-            out[qx]=quat[qx]*k;
-            out[qy]=quat[qy]*k;
-            out[qz]=quat[qz]*k;
+            var k=check_Equal(1, quat[QW])? 1 : 1/sqrt(1.0-quat[QW]*quat[QW]);
+            out[QX]=quat[QX]*k;
+            out[QY]=quat[QY]*k;
+            out[QZ]=quat[QZ]*k;
             return out;
         }
 

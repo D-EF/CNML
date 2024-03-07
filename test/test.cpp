@@ -101,7 +101,7 @@ namespace Test_Algebra_Bezier{
         printf("]\n");
     }
     void test_AllFnc(){
-        printf("\n printf_IntLinelength=%d,%d,%d,%d,%d\n", get_PascalsTriangleLine(1)->size, get_PascalsTriangleLine(2)->size, get_PascalsTriangleLine(3)->size, get_PascalsTriangleLine(4)->size, get_PascalsTriangleLine(5)->size);
+        printf("\n printf_IntLinelength=%d,%d,%d,%d,%d\n", get_PascalsTriangleLine(1)->length, get_PascalsTriangleLine(2)->length, get_PascalsTriangleLine(3)->length, get_PascalsTriangleLine(4)->length, get_PascalsTriangleLine(5)->length);
         printf_IntLine(1, get_PascalsTriangleLine(1)->data);
         printf_IntLine(2, get_PascalsTriangleLine(2)->data);
         printf_IntLine(3, get_PascalsTriangleLine(3)->data);
@@ -215,10 +215,10 @@ namespace Test_Vector{
             check_Test(is_Zero(vec2, 3)==false,                                        "test is_Zero(vec2, 3)");
             check_Test(is_Zero(vec_zero__f, 3)==true,                                  "test is_Zero(vec_zero__f, 3)");
         // normalize
-            clone_To(temp, vec2, 3);
+            std::copy(temp+3, vec2);
             check_Test(check_Equal(3, normalize(temp, 3), unit__vec2),                   "test normalize(vec2, 3)");
         // instead
-            clone_To(temp, vec2, 3);
+            std::copy(temp+3, vec2);
             temp1[0]=-vec2[0];
             temp1[1]=-vec2[1];
             temp1[2]=-vec2[2];
@@ -250,8 +250,8 @@ namespace Test_Vector{
             check_Test(check_Equal(mag(3, vec1), mag__vec_1),                           "test mag_3(vec1)");
             check_Test(check_Equal(mag(3, vec2), mag__vec_2),                           "test mag_3(vec2)");
         // np
-            clone_To(temp, unit__vec1, 3);
-            clone_To(temp1, unit__vec2, 3);
+            std::copy(temp+3, unit__vec1);
+            std::copy(temp1+3, unit__vec2);
             
             check_Test(check_Equal(np(temp, 3, mag__vec_1), vec1, 3),                   "test np(v1)");
             check_Test(check_Equal(np(temp1, 3, mag__vec_2), vec2, 3),                   "test np(v2)");
@@ -377,11 +377,11 @@ namespace Test_Matrix{
             check_Test( check_Orthogonal(m3__orthogonal, 3),                                                     "check_Orthogonal(m3__orthogonal, 3)");
             check_Test(!check_Orthogonal(m3, 3),                                                                 "check_Orthogonal(m3, 3)");
         // transpose
-            clone_To(temp_m3, m3__orthogonal, 9);
+            std::copy(temp_m3+9, m3__orthogonal);
             check_Test(check_Equal(9, transpose(temp_m3, 3), m3__orthogonal_i),                                    "transpose(temp_m3, 3)");
         // transpose_2
         // transpose_3
-            clone_To(temp_m3, m3__orthogonal, 9);
+            std::copy(temp_m3+9, m3__orthogonal);
             check_Test(check_Equal(9, transpose_3(temp_m3), m3__orthogonal_i),                                    "transpose_3(temp_m3)");
         // calc_Det__Transformation
         // calc_Det

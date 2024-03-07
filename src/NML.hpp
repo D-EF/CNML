@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-02-26 17:56:13
+ * @LastEditTime: 2024-03-06 11:32:46
  * @FilePath: \cnml\src\NML.hpp
  * @Description: Nittle Math Library 简单数学库
  * 
@@ -37,17 +37,6 @@
     #define __DEFINE_SAMPLE_SIZE_SEED__ 10
 #endif
 
-#ifndef __MIN_LINK_BLOCK_SIZE__
-    /** @brief 创建链块存储的单块最小 size */
-    #define __MIN_LINK_BLOCK_SIZE__ 256
-#endif
-
-#ifndef __MAX_LINK_BLOCK_SIZE__
-    /** @brief 创建链块存储的单块最大 size */
-    #define __MAX_LINK_BLOCK_SIZE__ 65536
-#endif
-
-
 #ifndef __NML_TOLERANCE__
     /** @brief 默认容差 */
     #define __NML_TOLERANCE__ 1e-6
@@ -77,54 +66,7 @@ namespace NML{
     extern const var SAMPLE_SIZE_SIZE;
 
 
-    template <typename Value_Type>
-    /** 块链节点 */
-    struct Link_Block {
-        Link_Block<Value_Type>* next;
-        Idx size;
-        Value_Type* data;
-    };
     
-    
-    /** 块链节点 */
-    template <typename Value_Type> struct Link_Block {
-        Link_Block<Value_Type>* next;
-        Idx size;
-        Idx used_size;
-        Value_Type* data;
-    };
-
-
-// todo
-
-    /** 使用下标获取块链节点的内容
-     * 
-     */
-    template <typename Value_Type> Value_Type get_Item__LinkBlock(
-        Idx index, const Link_Block<Value_Type>& const header_block,
-        Link_Block<Value_Type>** out_cache_last_access_block=0, Idx* out_cache_index=0
-    );
-
-    template <typename Value_Type> Value_Type get_Item__LinkBlock(
-        Idx index, const Link_Block<Value_Type>& const last_access_block, Idx last_access_index,
-        Link_Block<Value_Type>** out_cache_last_access_block=0, Idx* out_cache_index=0
-    );
-
-    template <typename Value_Type> void free_LinkBlock(Link_Block<Value_Type>& last_access_block);
-    
-    template <typename Value_Type> bool inset_LinkBlock(Link_Block<Value_Type>& last_access_block, Idx index, Value_Type value, bool not_add_block=false);
-    
-    template <typename Value_Type> bool append_LinkBlock(Link_Block<Value_Type>& last_access_block, Idx index, Value_Type value, bool not_add_block=false);
-
-    template <typename Value_Type> bool inset_LinkBlock(Link_Block<Value_Type>& last_access_block, Idx index, Value_Type* value, Idx length, bool not_add_block=false);
-    
-    template <typename Value_Type> bool append_LinkBlock(Link_Block<Value_Type>& last_access_block, Idx index, Value_Type* value, Idx length, bool not_add_block=false);
-    
-
-    /** @brief 计算当前已有空间 */
-    template <typename Value_Type> Idx calc_MaxLength(Link_Block<Value_Type>& header_block);
-    
-
     /** 三个坐标轴 */
     enum Axis{ X=0, Y=1, Z=2 };
     
@@ -167,9 +109,18 @@ namespace NML{
         return (Axis)(order>>(2*index) &0b11);
     }
 
-    template <typename value_Type> inline value_Type min(value_Type a, value_Type b){return a>b?b:a;}
+    template <typename Value_Type> inline Value_Type min(const Value_Type& const a, const Value_Type& const b){return a>b?b:a;}
     
-    template <typename value_Type> inline value_Type max(value_Type a, value_Type b){return a>b?a:b;}
+    template <typename Value_Type> inline Value_Type max(const Value_Type& const a, const Value_Type& const b){return a>b?a:b;}
+    
+    
+    template <typename Value_Type>
+    /** 用于存储静态数据或自定访问规则的的简单块链节点 */
+    struct Link_Block__Simple {
+        Link_Block__Static<Value_Type>* next;
+        Idx length;
+        Value_Type* data;
+    };
 
 
     /**
@@ -196,17 +147,10 @@ namespace NML{
         virtual void free_Data () = 0;
     };
     
-    class Points_Iterator__2DList :virtual public Points_Iterator{
-        public:
-        Points_Iterator__2DList(var** data, Idx_Algebra dimensional, Idx points_length):Points_Iterator(data, dimensional, points_length){}
-        Points_Iterator__2DList(Idx_Algebra dimensional, Idx points_length):Points_Iterator(dimensional, points_length){install_Data(dimensional, points_length);}
-        Points_Iterator__2DList(Points_Iterator& copy_obj):Points_Iterator(copy_obj){install_Data(dimensional, points_length);copy_Data(copy_obj);}
-        ~Points_Iterator__2DList(){free_Data();}
-        void install_Data(Idx_Algebra dimensional, Idx points_length);
-        void free_Data();
-        var* operator[](Idx v) override{return ((var**)data)[v];}
-    };
 
+    /**
+     * @brief 物理一维存储的点访问器
+     */
     class Points_Iterator__1DList :virtual public Points_Iterator{
         public:
         Points_Iterator__1DList(var* data, Idx_Algebra dimensional, Idx points_length):Points_Iterator(data, dimensional, points_length){}
@@ -218,32 +162,6 @@ namespace NML{
         var* operator[](Idx v) override{return ((var*)data)+(v*dimensional);}
     };
     
-    class Points_Iterator__Link :virtual public Points_Iterator{
-        public:
-        /** @brief 最大存储长度 (缓存 calc_MaxPointsLength()的计算结果) */
-        Idx max_points_length;
-        Idx last_access_head_v;
-        Link_Block<var>* last_access_block;
-        Points_Iterator__Link(Link_Block<var>* data, Idx_Algebra dimensional, Idx points_length): Points_Iterator(data, dimensional, points_length), last_access_head_v(-1), last_access_block(0) {}
-        Points_Iterator__Link(Idx_Algebra dimensional, Idx points_length):Points_Iterator(dimensional, points_length){}
-        Points_Iterator__Link(Points_Iterator& copy_obj):Points_Iterator(copy_obj){install_Data(dimensional, points_length);copy_Data(copy_obj);}
-        ~Points_Iterator__Link(){free_Data();}
-        void install_Data(Idx_Algebra dimensional, Idx points_length){ append_Block(dimensional*points_length); }
-        void free_Data();
-        var* operator[](Idx v) override;
-        
-        /** @brief 计算当前已有空间的最多能存放多少个点数 */
-        Idx calc_MaxPointsLength();
-
-        /** 
-         * @brief 追加一块存储空间
-         * @param 块的大小 ( 实际空间大小= size * sizeof(var) )
-         */
-        void append_Block(Idx size=-1);
-    };
-
-    void clone_To(var* to, const var* val, Idx length);
-    inline void copy_To(var* to, const var* val, Idx length){clone_To(to, val, length);}
 
     /**
      * @brief 拷贝数据

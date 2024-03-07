@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-02-26 16:53:16
+ * @LastEditTime: 2024-03-06 11:17:11
  * @FilePath: \CNML\src\NML.cpp
  * @Description: Nittle Math Library 简单数学库
  * 
@@ -34,13 +34,8 @@ namespace NML{
               &DEG_360   = CYCLES;
 
     const var ONE_OVER_THREE  = 1.0/3;
-    const var FOUR_OVER_THREE = 4.0/3;
-
-    void clone_To(var* to, const var* val, Idx length){
-        for(Idx i=0;  i<length;  ++i){
-            to[i]=val[i];
-        }
-    }
+    const var FOUR_OVER_THREE = ONE_OVER_THREE+1.0;
+    
 
     var* create_Values__Clone(const var* val, Idx length){
         var *rtn=new var[length];
@@ -117,95 +112,6 @@ namespace NML{
         return out;
     }
 
-    void Points_Iterator__Link::free_Data(){
-        Link_Block<var> *temp=((Link_Block<var>*)data), *next;
-        while(temp!=data){
-            delete temp->data;
-            next=temp->next;
-            delete temp;
-            temp=next;
-        }
-    }
-
-    var* Points_Iterator__Link::operator[](Idx v){
-        Link_Block<var> *now_block;
-        Idx now_block_head_v;
-        if(v>=max_points_length) v = v % max_points_length;
-        if(v>last_access_head_v){
-            now_block=last_access_block;
-            now_block_head_v=last_access_head_v;
-        }else{
-            now_block=((Link_Block<var>*)data)->next;
-            now_block_head_v=0;
-        }
-        if((!now_block)||(!max_points_length)) return 0;
-
-        Idx now_block_last_v=now_block_head_v+now_block->size/dimensional-1;
-        while(now_block_last_v<v){
-            now_block=now_block->next;
-            now_block_head_v=now_block_last_v+1;
-            now_block_last_v=now_block_head_v+now_block->size/dimensional-1;
-        }
-        last_access_block=now_block;
-        last_access_head_v=now_block_head_v;
-        return now_block->data + (v-now_block_head_v)*dimensional;
-    }
-    
-    Idx Points_Iterator__Link::calc_MaxPointsLength(){
-        Link_Block<var> *now_block=(Link_Block<var>*)data;
-        if(!now_block) return 0;
-        Idx rtn=0;
-        do{
-            rtn+=now_block->size/dimensional;
-            now_block=now_block->next;
-        }while(now_block!=data);
-        max_points_length=rtn;
-        return rtn;
-    }
-
-    void Points_Iterator__Link::append_Block(Idx size){
-        if(size<__MIN_LINK_BLOCK_SIZE__)size=__MIN_LINK_BLOCK_SIZE__;
-        if(size>__MAX_LINK_BLOCK_SIZE__)size=__MAX_LINK_BLOCK_SIZE__;
-        Link_Block<var> *block=new Link_Block<var>{ 0, size, new var[size] };
-        Link_Block<var> *last_block=(Link_Block<var>*)data;
-        if(!last_block){
-            block->next=block;
-            data=block;
-            max_points_length=size/dimensional;
-        }else{
-            block->next=last_block->next;
-            last_block->next=block;
-            max_points_length+=size/dimensional;
-        }
-    }
-
-    
-    void Points_Iterator__2DList::install_Data(Idx_Algebra dimensional, Idx points_length){
-        var **d=new var*[points_length];
-        for(int i=0;  i<points_length;  ++i){
-            d[i]=new var[dimensional];
-        }
-        data=d;
-    }
-    void Points_Iterator__2DList::free_Data(){
-        for(int i=0;  i<points_length;  ++i){
-            delete ((var**)data)[i];
-        }
-        delete (var**)data;
-        data=0;
-    }
-
-    // var* Points_Iterator::operator[](int v){return ((var**)data)[v];}
-
-
-    // void Points_Iterator__1DList::install_Data(Idx_Algebra dimensional, Idx points_length){ data=new var[dimensional*points_length]; }
-    // void Points_Iterator__1DList::free_Data(){delete (var*)data; data=0;}
-    // var* Points_Iterator__1DList::operator[](int v){return ((var*)data)+(v*dimensional);}
-
-
-    // void Points_Iterator__2DList::install_Data(Idx_Algebra dimensional, Idx points_length){ data=new var[dimensional*points_length]; }
-    // void Points_Iterator__2DList::free_Data(){delete (var*)data; data=0;}
-    // var* Points_Iterator__2DList::operator[](int v) {return ((var*)data)+(v*dimensional);}
 
     void Points_Iterator::copy_Data(Points_Iterator& copy_obj){
         int i,j;
