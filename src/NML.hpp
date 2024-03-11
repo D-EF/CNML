@@ -64,12 +64,11 @@ namespace NML{
     extern const Idx SAMPLE_SIZE_SEED;
     /** @brief 默认采样精度步长 */
     extern const var SAMPLE_SIZE_SIZE;
-
-
     
     /** 三个坐标轴 */
     enum Axis{ X=0, Y=1, Z=2 };
     
+    /** 三个坐标轴 */
     enum Plane_3D{
         YZ=0,
         ZX=1,
@@ -99,21 +98,30 @@ namespace NML{
     extern const var ONE_OVER_THREE;
     extern const var FOUR_OVER_THREE;
 
+
     /**
      * @brief 提取 Rotation_Order 的旋转轴
      * @param order 欧拉角旋转顺序
      * @param index 旋转轴下标[0, 2], 表示第几次旋转
      * @return 返回当前旋转轴向
      */
-    inline Axis get_Rotation_Order(Rotation_Order order, char index){
-        return (Axis)(order>>(2*index) &0b11);
-    }
+    inline Axis get_Rotation_Order(Rotation_Order order, char index){ return (Axis)(order>>(2*index) &0b11); }
 
+    /** 
+     * @brief 取 [a, b] 中的最小值
+     */
     template <typename Value_Type> inline Value_Type min(const Value_Type& const a, const Value_Type& const b){return a>b?b:a;}
     
+    /** 
+     * @brief 取 [a, b] 中的最大值
+     */
     template <typename Value_Type> inline Value_Type max(const Value_Type& const a, const Value_Type& const b){return a>b?a:b;}
     
     
+    /** 用于各种回调的函数类型 */
+    typedef void (*Callback)(void*, int);
+
+
     template <typename Value_Type>
     /** 用于存储静态数据或自定访问规则的的简单块链节点 */
     struct Link_Block__Simple {

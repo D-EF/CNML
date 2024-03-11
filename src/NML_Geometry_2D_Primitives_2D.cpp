@@ -6,7 +6,7 @@
  * @FilePath: \CNML\src\NML_Geometry_2D_Primitives.cpp
  * @Description: 2D 图元 相关内容
  * @
- * @Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+ * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
 
 #include "NML_Geometry_2D_Primitives_2D.hpp"

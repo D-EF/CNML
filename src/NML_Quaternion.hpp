@@ -6,7 +6,7 @@
  * @FilePath: \cnml\src\NML_Quaternion.hpp
  * @Description: 四元数相关计算.  注: 如无特殊标明, $1些函数的参数中的四元数都默认需要单位向量
  * @
- * @Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+ * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
 
 #ifndef __NML_QUATERNION__

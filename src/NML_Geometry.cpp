@@ -6,7 +6,7 @@
  * @FilePath: \cnml\src\NML_Geometry.hpp
  * @Description: 提供部分数据结构和算法, 不区分维度的通用内容
  * @
- * @Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+ * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
 
 #include "NML_Geometry.hpp"

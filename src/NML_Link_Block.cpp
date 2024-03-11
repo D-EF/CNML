@@ -2,19 +2,19 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-03-06 11:34:26
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-03-06 17:59:35
+ * @LastEditTime: 2024-03-08 18:05:00
  * @FilePath: \CNML\src\NML_Link_Block.hpp
  * @Description: 块链存储结构
  * @
- * @Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+ * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
 
 #include "NML_Link_Block.hpp"
 
 namespace NML{
     namespace Link_Block{
-            
-        template <typename Value_Type> Value_Type get_Item__LinkBlock(
+        template <typename Value_Type> 
+        Value_Type get_Item__LinkBlock(
             const Link_Block_Node<Value_Type>* const origin_node, Idx index_offset, 
             Link_Block_Node<Value_Type>** _out_node, Idx* _out_node_head_index
         ){
@@ -34,7 +34,8 @@ namespace NML{
         }
         
 
-        template <typename Value_Type> void free_LinkBlock__After(Link_Block_Node<Value_Type>* header_node,bool _delete_data_item){
+        template <typename Value_Type> 
+        void free_LinkBlock__After(Link_Block_Node<Value_Type>* header_node,bool _delete_data_item){
             Link_Block_Node<Value_Type> *now_node=header_node, *temp=header_node->previous;
             Idx i;
 
@@ -50,15 +51,39 @@ namespace NML{
                 delete now_node;
             }
         }
-        
 
-        template <typename Value_Type> bool inset_LinkBlock(
-            Link_Block_Node<Value_Type>* origin_node, Idx index__offset, Value_Type* value,
-            Idx _length_value=1, Behavior_Pattern__Add_LinkBlock _paternadd, Idx _add_node_length
+        template <typename Value_Type> 
+        Idx spread_LinkBlock(
+            Link_Block_Node<Value_Type>& header_node, Idx index__offset, Idx length,
+            Link_Block_Node<Value_Type>* $origin_node,
+            bool _reset_used_length
+        ){
+            // 初始化将 $origin_node 设置为基准节点
+            Link_Block_Node<Value_Type>*& origin_node=$origin_node;
+            if(!origin_node) origin_node=&header_node;
+            if(index__offset>origin_node->used_length) get_Item__LinkBlock(origin_node, index__offset, &origin_node, &index__offset);
+
+            if(origin_node->length-origin_node->used_length > length){
+                // todo
+            }
+            
+            Link_Block_Node<Value_Type> *l_node=origin_node, *r_node=origin_node;
+            
+            Idx idx__left_node_offset, idx__right_node_offset;
+            while(
+                check_ELE__Link_Block()
+            );
+        }
+        
+        template <typename Value_Type> 
+        bool splice_LinkBlock(
+            Link_Block_Node<Value_Type>& header_node, Idx index__offset, Idx length,
+            Link_Block_Node<Value_Type>* $origin_node,
+            Value_Type* _value, Idx _length_value, Behavior_Pattern__Add_LinkBlock _paternadd, Idx _add_node_length, Idx _max_link_block_length 
         ){
             Link_Block_Node<Value_Type>* target_node;
             Idx idx__target_node_head;
-            get_Item__LinkBlock(origin_node, index__offset, &target_node, &idx__target_node_head);
+            get_Item__LinkBlock($origin_node, index__offset, &target_node, &idx__target_node_head);
             switch (_paternadd)
             {
                 // todo
@@ -77,18 +102,33 @@ namespace NML{
                 case active:
                 break;
                 case lazy: default:
-                    
                 break;
             }
         }
         
-
-        template <typename Value_Type> Idx calc_MaxLength(Link_Block_Node<Value_Type>& header_block){
+        
+        
+        /**
+         * 合并块链
+         * @param origin_node   起始节点
+         * @param node_length   需要合并多少个节点
+         * @param _min_length   当合并后的节点容量小于 _min_length 时, 使用 _min_length 作为节点的容量
+         */
+        template <typename Value_Type> 
+        Link_Block_Node<Value_Type>* merge_LinkBlock(Link_Block_Node<Value_Type>*& origin_node, Idx node_length, Idx _min_length){
 
         }
         
 
-            
+        template <typename Value_Type> 
+        Idx calc_MaxLength(Link_Block_Node<Value_Type>& header_block){
+
+        }
+        
+
+
+        // 点遍历器 链块存储
+        
         void Points_Iterator__Link::free_Data(){
             Link_Block__Simple<var> *temp=((Link_Block__Simple<var>*)data), *next;
             while(temp!=data){

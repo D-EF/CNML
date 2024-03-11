@@ -6,7 +6,7 @@
  * @FilePath: \CNML\src\NML_Bezier.cpp
  * @Description: 贝塞尔曲线
  * @
- * @Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+ * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
 
 #include "NML_Bezier.hpp"
@@ -487,6 +487,7 @@ namespace NML{
             var *temp_point;
             Idx i;
 
+            // 计算相对坐标
             var x=line_p1[0]-line_p0[0],
                 y=line_p0[1]-line_p1[1];
             var mag=sqrt(x*x+y*y);

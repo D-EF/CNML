@@ -6,7 +6,7 @@
  * @FilePath: \cnml\src\NML_Matrix.cpp
  * @Description: 矩阵 Matrix
  * @
- * @Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+ * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
 
 #include "NML.hpp"
@@ -335,8 +335,6 @@ namespace NML{
             Idx_VM length=n*n;
             var *temp_mat=create_Values__Clone(mat, length);
             
-            // printf_Matrix(temp_mat, n);
-
             // 初始化 out 为增广矩阵
             setup_Matrix__Identity(out, n, n);
             var **mats=new var*[2]{temp_mat, out};

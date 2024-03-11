@@ -6,7 +6,7 @@
  * @FilePath: \cnml\src\NML_Matrix_3D.cpp
  * @Description: 3D 变换矩阵
  * @
- * @Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+ * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
 
 #include "NML_Matrix_3D.hpp"

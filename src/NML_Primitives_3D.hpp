@@ -6,7 +6,7 @@
  * @FilePath: \cnml\src\NML_Primitives_3D.hpp
  * @Description: 3D 图元 相关内容
  * @
- * @Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+ * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
 
 #ifndef __NML_PRIMITIVES_3D__

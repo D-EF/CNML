@@ -6,7 +6,7 @@
  * @FilePath: \cnml\src\NML_Algebra.hpp
  * @Description: 数与代数 运算相关
  * @
- * @Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+ * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
 #ifndef __NML_ALGEBRA__
 #define __NML_ALGEBRA__

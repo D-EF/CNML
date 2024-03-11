@@ -6,7 +6,7 @@
  * @FilePath: \CNML\src\NML_Bezier.hpp
  * @Description: 贝塞尔曲线
  * @
- * @Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+ * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
 
 #ifndef __NML_BEZIER__
@@ -125,6 +125,7 @@ namespace NML{
         
         /** @brief 贝塞尔曲线拟合四分之一圆 的 k 值 */
         extern const var BEZIER_TO_CYCLES_K__1D4;
+
         // 三阶二维贝塞尔曲线拟合圆弧公式
         // 单位圆且起点角度为0   示例
         // p1=起点    //(1, 0)

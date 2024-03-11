@@ -6,7 +6,7 @@
  * @FilePath: \cnml\src\NML_Matrix_2D.hpp
  * @Description: 2D 变换矩阵
  * @
- * @Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+ * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
 
 #ifndef __NML_MATRIX_2D__

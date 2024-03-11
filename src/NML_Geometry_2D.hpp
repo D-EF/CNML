@@ -6,7 +6,7 @@
  * @FilePath: \cnml\src\NML_Geometry_2D.hpp
  * @Description: 提供2d基本图元数据结构和部分算法
  * @
- * @Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+ * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
 
 #ifndef __NML_GEOMETRY_2D__

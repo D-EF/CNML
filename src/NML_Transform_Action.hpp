@@ -6,7 +6,7 @@
  * @FilePath: \CNML\src\NML_Primitives_2D.hpp
  * @Description: 2D 3D 矩阵变换控制
  * @
- * @Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+ * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
 
 #ifndef __NML_TRANSFORM_ACTION__

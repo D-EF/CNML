@@ -6,7 +6,7 @@
  * @FilePath: \cnml\src\NML_Matrix.hpp
  * @Description: 矩阵 Matrix
  * @
- * @Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+ * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
 
 #ifndef __NML_MATRIX__
