@@ -176,11 +176,11 @@ namespace NML{
             }
             return false;
         }
-        bool transformation__ExchangeRow_ToUnZero(var**& mats, Idx_VM length_g, Idx_VM length, Idx_VM width, Idx_VM index, Idx_VM v, Idx_VM step_length, Idx_VM _index_m){
+        bool transformation__ExchangeRow_ToUnZero(var**& mats, Idx_VM length_g, Idx_VM length, Idx_VM width, Idx_VM index, Idx_VM v, Idx_VM step_length, Idx_VM _idx_m){
             Idx_VM f=step_length>0?1:-1;
             Idx_VM v_target=v+f;
             for(Idx_VM i=index+step_length;  i>=0&&i<length;  i+=step_length, v_target+=f){
-                if(check_Zero(mats[_index_m][i])){
+                if(check_Zero(mats[_idx_m][i])){
                     transformation__ExchangeRow(mats, length_g, width, v, v_target);
                     return true;
                 }
@@ -208,19 +208,19 @@ namespace NML{
             return true;
         }
         
-        bool transformation__ExchangeRow_PivotToMax(var**& mats, Idx_VM length_g, Idx_VM length, Idx_VM width, Idx_VM index, Idx_VM v, Idx_VM step_length, Idx_VM _index_m){
+        bool transformation__ExchangeRow_PivotToMax(var**& mats, Idx_VM length_g, Idx_VM length, Idx_VM width, Idx_VM index, Idx_VM v, Idx_VM step_length, Idx_VM _idx_m){
             Idx_VM f=step_length>0?1:-1;
             Idx_VM v_target=v+f;
             
             Idx_VM max_row=v;
             Idx_VM max_row_pivot_index=index;
             for(Idx_VM i=index+step_length;  i>=0&&i<length;  i+=step_length, v_target+=f){
-                if(mats[_index_m][max_row_pivot_index]<mats[_index_m][i]){
+                if(mats[_idx_m][max_row_pivot_index]<mats[_idx_m][i]){
                     max_row_pivot_index=i;
                     max_row=v_target;
                 }
             }
-            if(check_Zero(mats[_index_m][max_row_pivot_index])){
+            if(check_Zero(mats[_idx_m][max_row_pivot_index])){
                 return false;
             }
             if(v!=max_row) transformation__ExchangeRow(mats, length_g, width, v, max_row);
@@ -229,7 +229,7 @@ namespace NML{
 
 
         var*& multiplication(var*& out, var*& mat_left, var*& mat_right, Idx_VM height_left, Idx_VM _width_left_height_right, Idx_VM _width_right){
-            Idx_VM index_out=0;
+            Idx_VM idx_out=0;
             Idx_VM width_left_height_right=_width_left_height_right?_width_left_height_right:height_left;
             Idx_VM width_right=_width_right?_width_right:height_left;
 
@@ -239,15 +239,15 @@ namespace NML{
                     for(Idx_VM l=height_left*i, k=j, c=0; c<width_left_height_right; ++c, ++l, k+=width_right){
                         temp+=mat_left[l]*mat_right[k];
                     }
-                    out[index_out]=temp;
-                    ++index_out;
+                    out[idx_out]=temp;
+                    ++idx_out;
                 }
             }
             return out;
         }
 
         var*& multiplication(var*& out, var*& mat_left, var*& mat_right, Idx_VM n){
-            Idx_VM index_out=0;
+            Idx_VM idx_out=0;
             Idx_VM length=n*n;
 
             for(Idx_VM i=0;  i<n;  ++i){
@@ -256,8 +256,8 @@ namespace NML{
                     for(Idx_VM l=n*i, k=j; k<length; ++l, k+=n){
                         temp+=mat_left[l]*mat_right[k];
                     }
-                    out[index_out]=temp;
-                    ++index_out;
+                    out[idx_out]=temp;
+                    ++idx_out;
                 }
             }
             return out;
@@ -285,12 +285,12 @@ namespace NML{
         }
         
         var*& transpose(var*& out, var*& mat, Idx_VM width_mat, Idx_VM height_mat){
-            Idx_VM index_out=0;
+            Idx_VM idx_out=0;
 
             for(Idx_VM u=0;  u<width_mat;  ++u){
                 for(Idx_VM v=0;  v<height_mat;  ++v){
-                    out[index_out]=mat[get_Index(width_mat, u, v)];
-                    ++index_out;
+                    out[idx_out]=mat[get_Index(width_mat, u, v)];
+                    ++idx_out;
                 }
             }
             return out;
@@ -303,11 +303,11 @@ namespace NML{
             Idx_VM _n=n-1;
 
             for(Idx_VM uv=0; uv<_n; ++uv){
-                Idx_VM index_v=uv*n;
-                Idx_VM index_mat__uv=index_v+uv;
+                Idx_VM idx_v=uv*n;
+                Idx_VM idx_mat__uv=idx_v+uv;
                 
-                if(check_Zero(temp_mat[index_mat__uv])){    // 换行
-                    if(!transformation__ExchangeRow_ToUnZero(temp_mat, length, n, index_mat__uv, uv, n)){
+                if(check_Zero(temp_mat[idx_mat__uv])){    // 换行
+                    if(!transformation__ExchangeRow_ToUnZero(temp_mat, length, n, idx_mat__uv, uv, n)){
                         delete temp_mat;
                         return 0;
                     }
@@ -315,13 +315,13 @@ namespace NML{
                 }
                 
                 // 消元
-                for(Idx_VM index=index_mat__uv+n;  index<length;  index+=n){
-                    temp=(temp_mat[index])/temp_mat[index_mat__uv];
+                for(Idx_VM index=idx_mat__uv+n;  index<length;  index+=n){
+                    temp=(temp_mat[index])/temp_mat[idx_mat__uv];
                     for(Idx_VM i=uv+1, j=index+1;  i<n;  ++i, ++j){
-                        temp_mat[j]-=temp*temp_mat[index_v+i];
+                        temp_mat[j]-=temp*temp_mat[idx_v+i];
                     }
                 }
-                det*=temp_mat[index_mat__uv];
+                det*=temp_mat[idx_mat__uv];
             }
             det*=temp_mat[length-1];
 
@@ -340,23 +340,23 @@ namespace NML{
             var **mats=new var*[2]{temp_mat, out};
             
             for(Idx_VM uv=0; uv<n; ++uv){
-                Idx_VM index_v=uv*n;
-                Idx_VM index_mat__uv=index_v+uv;
+                Idx_VM idx_v=uv*n;
+                Idx_VM idx_mat__uv=idx_v+uv;
 
                 // 换行设置最大主元
-                if(!transformation__ExchangeRow_PivotToMax(mats, 2, length, n, index_mat__uv, uv, n)) {
+                if(!transformation__ExchangeRow_PivotToMax(mats, 2, length, n, idx_mat__uv, uv, n)) {
                     delete temp_mat;
                     delete mats;
                     return false;
                 }
-                transformation__ScaleRow(mats, 2, n, uv, 1/mats[0][index_mat__uv]);
+                transformation__ScaleRow(mats, 2, n, uv, 1/mats[0][idx_mat__uv]);
 
                 for(Idx_VM i=0, index=0;  i<n;  ++i, index+=n){
                     if(i==uv) continue;
                     var k=temp_mat[index+uv];
                     for(Idx_VM j=0;  j<n;  ++j){
-                        temp_mat[index+j] -= k * temp_mat[index_v+j];
-                        out[index+j]      -= k * out     [index_v+j];
+                        temp_mat[index+j] -= k * temp_mat[idx_v+j];
+                        out[index+j]      -= k * out     [idx_v+j];
                     }
                 }
             }

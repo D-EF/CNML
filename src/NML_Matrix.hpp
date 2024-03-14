@@ -177,10 +177,10 @@ namespace NML{
          * @param  index        当前下标
          * @param  v            当前v坐标(行下标)
          * @param  step_length  寻址步长, $1为  ±width
-         * @param  _index_m     传入多个矩阵时使用哪个矩阵的值 默认0
+         * @param  _idx_m     传入多个矩阵时使用哪个矩阵的值 默认0
          * @return 返回是否成功换行
          */
-        bool transformation__ExchangeRow_ToUnZero(var**& mats, Idx_VM length_g,  Idx_VM length, Idx_VM width, Idx_VM index, Idx_VM v, Idx_VM step_length, Idx_VM _index_m=0);
+        bool transformation__ExchangeRow_ToUnZero(var**& mats, Idx_VM length_g,  Idx_VM length, Idx_VM width, Idx_VM index, Idx_VM v, Idx_VM step_length, Idx_VM _idx_m=0);
 
 
         /** 
@@ -206,10 +206,10 @@ namespace NML{
          * @param  index        当前下标
          * @param  v            当前v坐标(行下标)
          * @param  step_length  寻址步长, $1为  ±width
-         * @param  _index_m     传入多个矩阵时使用哪个矩阵的值 默认0
+         * @param  _idx_m     传入多个矩阵时使用哪个矩阵的值 默认0
          * @return 返回是否成功换行
          */
-        bool transformation__ExchangeRow_PivotToMax(var**& mats, Idx_VM length_g, Idx_VM length, Idx_VM width, Idx_VM index, Idx_VM v, Idx_VM step_length, Idx_VM _index_m=0);
+        bool transformation__ExchangeRow_PivotToMax(var**& mats, Idx_VM length_g, Idx_VM length, Idx_VM width, Idx_VM index, Idx_VM v, Idx_VM step_length, Idx_VM _idx_m=0);
 
         /**
          * @brief 矩阵乘法

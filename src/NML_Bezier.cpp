@@ -148,10 +148,10 @@ namespace NML{
             // 1   t   
             // 1   t   tt
             // 1   t   tt   ttt
-            Idx index_uv=0;
+            Idx idx_uv=0;
             for(u=1;  u<=n;  ++u, temp*=t){
-                index_uv+=u+1;
-                index=index_uv;
+                idx_uv+=u+1;
+                index=idx_uv;
                 for(v=u;  v<=n;  ++v, index+=v){
                     out[index]*=temp;
                 }
@@ -162,10 +162,10 @@ namespace NML{
             // dd   d    1
             // ddd  dd   d    1
             temp=d;
-            index_uv=0;
+            idx_uv=0;
             for(v=1;  v<=n;  ++v, temp*=d){
-                index_uv+=v;
-                index=index_uv;
+                idx_uv+=v;
+                index=idx_uv;
                 for(u=v;  u<=n;  ++u, index+=u+1){
                     out[index]*=temp;
                 }
@@ -183,17 +183,17 @@ namespace NML{
         
         Points_Iterator& cut_Bezier__ByMatrix__p0pt(Points_Iterator& out, Points_Iterator& points, var*& cut_matrix_q){
             Idx_Algebra &dimensional=points.dimensional;
-            Idx index_m=1;
+            Idx idx_m=1;
             var *calcing_target=out[0], *point;
             std::copy(points[0], points[0]+dimensional, calcing_target);
             
             for(Idx i=1;  i<points.points_length;  ++i){
                 calcing_target=out[i];
                 std::fill_n(calcing_target, dimensional, 0);
-                for(Idx j=0;  j<=i;  ++j, ++index_m){
+                for(Idx j=0;  j<=i;  ++j, ++idx_m){
                     point=points[j];
                     for(Idx_Algebra d=0;  d<dimensional;  ++d){
-                        calcing_target[d]+=point[d]*cut_matrix_q[index_m];
+                        calcing_target[d]+=point[d]*cut_matrix_q[idx_m];
                     }
                 }
             }
@@ -204,7 +204,7 @@ namespace NML{
         Points_Iterator& cut_Bezier__ByMatrix__ptp1(Points_Iterator& out, Points_Iterator& points, var*& cut_matrix_q){
             Idx_Algebra &dimensional=points.dimensional;
             Idx &length=points.points_length;
-            Idx index_m, index_line=length*(length+1)/2;
+            Idx idx_m, idx_line=length*(length+1)/2;
             Idx n=length-1;
             var *calcing_target=out[n], *point;
             std::copy(points[n], points[n]+dimensional, calcing_target);
@@ -212,12 +212,12 @@ namespace NML{
             for(Idx i=0, ii=length;  i<n;  ++i, --ii){
                 calcing_target=out[i];
                 std::fill_n(calcing_target, dimensional, 0);
-                index_line-=ii;
-                index_m=index_line;
-                for(Idx j=i;  j<length;  ++j, ++index_m){
+                idx_line-=ii;
+                idx_m=idx_line;
+                for(Idx j=i;  j<length;  ++j, ++idx_m){
                     point=points[j];
                     for(Idx_Algebra d=0;  d<dimensional;  ++d){
-                        calcing_target[d]+=point[d]*cut_matrix_q[index_m];
+                        calcing_target[d]+=point[d]*cut_matrix_q[idx_m];
                     }
                 }
             }
@@ -230,18 +230,18 @@ namespace NML{
             Idx_Algebra &dimensional=coefficients.dimensional;
             int *m=get_BezierCalcMatrix(length-1);
             var *temp=new var[dimensional], *calcing_tgt;
-            Idx index_m=0;
-            for(Idx i=0;  i<length;  ++i, ++index_m){
+            Idx idx_m=0;
+            for(Idx i=0;  i<length;  ++i, ++idx_m){
                 std::copy(coefficients[i], coefficients[i]+dimensional, temp);
-                for(var j=0;  j<i;  ++j, ++index_m){
+                for(var j=0;  j<i;  ++j, ++idx_m){
                     calcing_tgt=out[j];
                     for(Idx_Algebra d=0;  d<dimensional;  ++d){
-                        temp[d]-=calcing_tgt[d]*m[index_m];
+                        temp[d]-=calcing_tgt[d]*m[idx_m];
                     }
                 }
                 var *calcing_tgt=out[i];
                 for(Idx_Algebra d=0;  d<dimensional;  ++d){
-                    calcing_tgt[d]=temp[d]/m[index_m];
+                    calcing_tgt[d]=temp[d]/m[idx_m];
                 }
             }
             return out;

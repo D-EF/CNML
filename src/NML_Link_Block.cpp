@@ -2,9 +2,9 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-03-06 11:34:26
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-03-14 15:34:57
+ * @LastEditTime: 2024-03-14 18:18:34
  * @FilePath: \CNML\src\NML_Link_Block.hpp
- * @Description: 块链存储结构
+ * @Description: 块状链表存储结构
  * @
  * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
@@ -15,32 +15,32 @@ namespace NML{
     namespace Link_Block{
         template <typename Value_Type> 
         Value_Type& get_Item__LinkBlock(
-            const Link_Block_Node<Value_Type>* const origin_node, Idx index_offset, 
+            const Link_Block_Node<Value_Type>* const origin_node, Idx idx_offset, 
             Link_Block_Node<Value_Type>** _out_node, Idx* _out_node_head_index
         ){
             Idx i;
             Link_Block_Node<Value_Type> *now_node=origin_node;
 
-            if(index_offset>=0){
-                for(i=0;  i+now_node->used_length<index_offset;  i+=now_node->used_length, now_node=now_node->next) 
-                    if(now_node.next==0) throw index_offset;
+            if(idx_offset>=0){
+                for(i=0;  i+now_node->used_length<idx_offset;  i+=now_node->used_length, now_node=now_node->next) 
+                    if(now_node.next==0) throw idx_offset;
             }else{
-                for(i=0;  i>index_offset;  i-=now_node->used_length, now_node=now_node->previous) 
-                    if(now_node.previous==0) throw index_offset;
+                for(i=0;  i>idx_offset;  i-=now_node->used_length, now_node=now_node->prev) 
+                    if(now_node.prev==0) throw idx_offset;
             }
             if(_out_node_head_index)*_out_node_head_index=i;
             if(_out_node)*_out_node=now_node;
-            return now_node->data[index_offset-i];
+            return now_node->data[idx_offset-i];
         }
         
 
         template <typename Value_Type> 
         void free_LinkBlock__After(Link_Block_Node<Value_Type>* header_node,bool _delete_data_item){
-            Link_Block_Node<Value_Type> *now_node=header_node, *temp=header_node->previous;
+            Link_Block_Node<Value_Type> *now_node=header_node, *temp=header_node->prev;
             Idx i;
 
             while(!check_ELE__Link_Block(header_node,now_node,temp)){
-                now_node->previous=0;
+                now_node->prev=0;
                 temp=now_node->next;
                 now_node->next=0;
                 if(_delete_data_item){
@@ -51,86 +51,64 @@ namespace NML{
                 delete now_node;
             }
         }
-        
+
+
+        template <typename Value_Type> 
+        int erase_LinkBlock(Link_Block_Node<Value_Type>* origin_node, Idx index, Idx _erase_length, bool _delete_data_item, Link_Block_Node<Value_Type>** _out_node, Link_Block_Node<Value_Type>* end_node){
+
+            Link_Block_Node<Value_Type>*& origin_node=$origin_node;
+            if(!origin_node) origin_node=&header_node;
+            if(idx_offset>origin_node->used_length) get_Item__LinkBlock(origin_node, index, &origin_node, &index);
+
+            Link_Block_Node<Value_Type>* prev_node =  origin_node.prev;
+            Idx erase_count=0;
+            Idx l;
+            Idx last;
+
+            if(now_node->used_length-index >= _delete_data_item){
+                last=index;
+                l=index+_delete_data_item;
+            }else{
+                l=now_node->used_length;
+                last=0;
+            }
+
+
+            while(check_ELE__Link_Block(end_node,origin_node,prev_node)&&){
+                if(_delete_data_item){
+                    while(index<l){
+                        // todo
+                        ++index;
+                    }
+                }
+                index=0;
+            }
+        }
+
+
         template <typename Value_Type> 
         int splice_LinkBlock(
-            Link_Block_Node<Value_Type>& header_node, Idx index__offset, Idx delete_length,
+            Link_Block_Node<Value_Type>& header_node, Idx idx_offset, Idx erase_length,
             Link_Block_Node<Value_Type>* $origin_node,
             Value_Type* _ex_value, Idx _ex_length, Option_Act_LinkBlock* _option
         ){
-            // 初始化将 $origin_node 设置为基准节点
-            if(delete_length<0){
-                index__offset-=delete_length;
-                delete_length=-delete_length;
+            if(erase_length<0){
+                idx_offset-=erase_length;
+                erase_length=-erase_length;
             }
+            if(_ex_length<0)_ex_length=0;
+            // 初始化将 $origin_node 设置为基准节点
             Link_Block_Node<Value_Type>*& origin_node=$origin_node;
             if(!origin_node) origin_node=&header_node;
-            if(index__offset>origin_node->used_length) get_Item__LinkBlock(origin_node, index__offset, &origin_node, &index__offset);
+            if(idx_offset>origin_node->used_length) get_Item__LinkBlock(origin_node, idx_offset, &origin_node, &idx_offset);
 
-            if(_ex_length<0)_ex_length=0;
-
-            Idx i;
-            /** 插入位置的指针 */
-            Value_Type* ptr_using_data;
-            /** 插入位置后 有多少使用过的元素 */
-            Idx length__used = origin_node->used_length - index__offset;
-            /** 插入位置后 有多少元素的空间 */
-            Idx length__full = origin_node->length - index__offset;
-            
-
-            if(_option->delete_data_item) for(i=index__offset; i< origin_node->used_length; ++i){
-                delete origin_node->data[i];
-            }
-
-            // 仅需操作当前节点
-            if( length__full > _ex_length-delete_length && length__used > delete_length ){
-                ptr_using_data = origin_node.data+index__offset;
-                if(_ex_length){
-                    if(_ex_length<delete_length) std::copy(ptr_using_data + delete_length,  origin_node->data + origin_node->used_length,  ptr_using_data);
-                    if(_ex_length>delete_length) std::copy_backward(ptr_using_data + delete_length,  origin_node->data + origin_node->used_length,  ptr_using_data);
-                    std::copy(_ex_value, _ex_value+_ex_length, ptr_using_data);
-                }
-                origin_node->used_length = origin_node->used_length + _ex_length - delete_length;
-                return 0;
-            }
-
-            Link_Block_Node<Value_Type>* now_node=origin_node.next;
-            Link_Block_Node<Value_Type>* previous_node=origin_node;
-            Idx count__free=previous_node->length-previous_node->used_length;
-            Idx count__delete=previous_node->used_length-index__offset;
-            Link_Block_Node<Value_Type>* delete_end_node=0;
-            Idx delete_end_index;
-
-            if( count__delete > delete_length){ // 基准节点已达成删除量
-                delete_end_index= delete_length + index__offset;
-                delete_end_node=previous_node;
-                count__delete = delete_length;
-            }
-
-            for(i=0;  ((count__delete<delete_length)|| ((count__free<_ex_length) && (i!=_option->max_after_free_count))) && check_ELE__Link_Block(header_node,now_node,previous_node);  ++i){
-                if(delete_length==count__delete){
-                    count__free += now_node->length - now_node->used_length;
-                }
-                else {
-                    count__delete += now_node->used_length;
-                    if( count__delete > delete_length){ // 达成删除量
-                        delete_end_index= delete_length - count__delete + now_node->used_length;
-                        delete_end_node=now_node;
-                        count__delete = delete_length;
-                    }
-                }
-                previous_node = now_node;
-            }
-            if(count__free>_ex_length){
-                
-            }
             // todo
         }
         
         
         
         /**
-         * 合并块链
+         * 合并块状链表
          * @param origin_node   起始节点
          * @param node_length   需要合并多少个节点
          * @param _min_length   当合并后的节点容量小于 _min_length 时, 使用 _min_length 作为节点的容量

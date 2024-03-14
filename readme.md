@@ -97,7 +97,7 @@ namespace NML{
   ### 变量、形参
   * 小写字母下划线命名
       ```
-      index_mat__uv //矩阵对应uv坐标的物理下标
+      idx_mat__uv //矩阵对应uv坐标的物理下标
       ```
   * 私有成员, 可选参数; 以下划线开始
       ```
@@ -153,7 +153,7 @@ namespace NML{
         /** @brief 贝塞尔曲线拟合四分之一圆 的 k 值 */
         extern const var BEZIER_TO_CYCLES_K__1D4;
         
-        /** 插入内容时追加块链节点时的行为模式 */
+        /** 插入内容时追加块状链表节点时的行为模式 */
         enum Behavior_Pattern__Add_LinkBlock{
             // 禁止添加
                 /** 禁止添加, 将尽可能在已有的节点中分配空间存储内容; 无法完成时将会报错 */
@@ -181,24 +181,24 @@ namespace NML{
     ``` cpp
   
         /** 
-         * @brief 向块链插入内容
-         * @tparam Value_Type 块链节点使用的数据类型
+         * @brief 向块状链表插入内容
+         * @tparam <Value_Type> 块状链表节点使用的数据类型
          * @param header_node              头部节点
-         * @param index__offset            元素在访问节点后的下标偏移量
+         * @param idx__offset            元素在访问节点后的下标偏移量
          * @param length                   删除的内容的长度
          * @param value                    追加的内容
          * @param $origin_node             访问节点, 应该可以用header节点访问到, 用于重置 0 下标的位置, 默认使用 header_node
          * @param _length_value            添加内容的长度, 默认为1
          * @param _delete_data_item        是否对删除内容的每个元素执行delete, 默认false
-         * @param _paternadd               当前节点无法装载内容时追加块链的行为模式 默认为 lazy (仅检查相邻的块容量)
+         * @param _paternadd               当前节点无法装载内容时追加块状链表的行为模式 默认为 lazy (仅检查相邻的块容量)
          * @param _add_node_length         追加节点时新块的长度, 默认为 __MIN_LINK_BLOCK_SIZE__
-         * @param _max_link_block_length   块链的最大容量
+         * @param _max_link_block_length   块状链表的最大容量
          * @return 返回是否增加了节点
-         * @throw int l  : 当 _paternadd 为禁止新增节点时, 且块链中不足以存入内容, 会抛出整数数值表示还需要额外多少个元素的空间 
+         * @throw int l  : 当 _paternadd 为禁止新增节点时, 且块状链表中不足以存入内容, 会抛出整数数值表示还需要额外多少个元素的空间 
          */
         template <typename Value_Type> 
         bool splice_LinkBlock(
-            Link_Block_Node<Value_Type>& header_node, Idx index__offset, Idx length,
+            Link_Block_Node<Value_Type>& header_node, Idx idx__offset, Idx length,
             Link_Block_Node<Value_Type>* $origin_node=0,
             Value_Type* _value=0, Idx _length_value=1, Behavior_Pattern__Add_LinkBlock _paternadd=lazy, Idx _add_node_length=__MIN_LINK_BLOCK_SIZE__, Idx _max_link_block_length 
         );
@@ -290,6 +290,8 @@ namespace NML{
   * distance       : 表示几何中的距离/长度
   * inside         : 表示状态  - 在内部
   * had            : 表示状态  - 有可用的缓存值
+  * prev           : 前一个 (previous)
+  * tgt            : 目标 (target)
   ```
   
   ### 动词和动词短语
@@ -386,9 +388,9 @@ namespace NML{
         };
     ```
 * 使用两种迭代器类 Points_Iterator__1DList, Points_Iterator__2DList 对一维数组或二维数组的点云数据进行操作
-* 块链存储结构 Points_Iterator__Link ,可以运行中添加空间, 用于mesh或其它需要频繁修改长度的操作
+* 块状链表存储结构 Points_Iterator__Link ,可以运行中添加空间, 用于mesh或其它需要频繁修改长度的操作
     * 使用 成员函数 **void append_Block(Idx size)** 进行追加空间的操作, size 为追加块的 **var \*data** 的长度
-    * Points_Iterator__Link 使用循环块链表存储, 其中 data 为尾块的指针
+    * Points_Iterator__Link 使用循环块状链表表存储, 其中 data 为尾块的指针
     * 单块空间大小有最大值和最小值, 使用宏定义 
     ```c++
         #define __MIN_LINK_BLOCK_SIZE__ 256

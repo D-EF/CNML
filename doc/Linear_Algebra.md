@@ -336,11 +336,11 @@ $$
         Idx_VM _n=n-1;
 
         for(Idx_VM uv=0; uv<_n; ++uv){
-            Idx_VM index_v=uv*n;
-            Idx_VM index_mat__uv=index_v+uv;
+            Idx_VM idx_v=uv*n;
+            Idx_VM idx_mat__uv=idx_v+uv;
             
-            if(check_Zero(temp_mat[index_mat__uv])){    // 换行
-                if(!transformation__ExchangeRow_ToUnZero(temp_mat, length, n, index_mat__uv, uv, n)){
+            if(check_Zero(temp_mat[idx_mat__uv])){    // 换行
+                if(!transformation__ExchangeRow_ToUnZero(temp_mat, length, n, idx_mat__uv, uv, n)){
                     delete temp_mat;
                     return 0;
                 }
@@ -348,13 +348,13 @@ $$
             }
             
             // 消元
-            for(Idx_VM index=index_mat__uv+n;  index<length;  index+=n){
-                temp=(temp_mat[index])/temp_mat[index_mat__uv];
+            for(Idx_VM index=idx_mat__uv+n;  index<length;  index+=n){
+                temp=(temp_mat[index])/temp_mat[idx_mat__uv];
                 for(Idx_VM i=uv+1, j=index+1;  i<n;  ++i, ++j){
-                    temp_mat[j]-=temp*temp_mat[index_v+i];
+                    temp_mat[j]-=temp*temp_mat[idx_v+i];
                 }
             }
-            det*=temp_mat[index_mat__uv];
+            det*=temp_mat[idx_mat__uv];
         }
         det*=temp_mat[length-1];
 
@@ -418,22 +418,22 @@ $$
         * @param  index        当前下标
         * @param  v            当前v坐标(行下标)
         * @param  step_length  寻址步长, $1为  ±width
-        * @param  _index_m     传入多个矩阵时使用哪个矩阵的值 默认0
+        * @param  _idx_m     传入多个矩阵时使用哪个矩阵的值 默认0
         * @return 返回是否成功换行
         */
-    bool transformation__ExchangeRow_PivotToMax(var**& mats, Idx_VM length_g, Idx_VM length, Idx_VM width, Idx_VM index, Idx_VM v, Idx_VM step_length, Idx_VM _index_m){
+    bool transformation__ExchangeRow_PivotToMax(var**& mats, Idx_VM length_g, Idx_VM length, Idx_VM width, Idx_VM index, Idx_VM v, Idx_VM step_length, Idx_VM _idx_m){
         Idx_VM f=step_length>0?1:-1;
         Idx_VM v_target=v+f;
         
         Idx_VM max_row=v;
         Idx_VM max_row_pivot_index=index;
         for(Idx_VM i=index+step_length;  i>=0&&i<length;  i+=step_length, v_target+=f){
-            if(mats[_index_m][max_row_pivot_index]<mats[_index_m][i]){
+            if(mats[_idx_m][max_row_pivot_index]<mats[_idx_m][i]){
                 max_row_pivot_index=i;
                 max_row=v_target;
             }
         }
-        if(check_Zero(mats[_index_m][max_row_pivot_index])){
+        if(check_Zero(mats[_idx_m][max_row_pivot_index])){
             return false;
         }
         if(v!=max_row) transformation__ExchangeRow(mats, length_g, width, v, max_row);
@@ -458,23 +458,23 @@ $$
         var **mats=new var*[2]{temp_mat, out};
         
         for(Idx_VM uv=0; uv<n; ++uv){
-            Idx_VM index_v=uv*n;
-            Idx_VM index_mat__uv=index_v+uv;
+            Idx_VM idx_v=uv*n;
+            Idx_VM idx_mat__uv=idx_v+uv;
 
             // 换行设置最大主元
-            if(!transformation__ExchangeRow_PivotToMax(mats, 2, length, n, index_mat__uv, uv, n)) {
+            if(!transformation__ExchangeRow_PivotToMax(mats, 2, length, n, idx_mat__uv, uv, n)) {
                 delete temp_mat;
                 delete mats;
                 return false;
             }
-            transformation__ScaleRow(mats, 2, n, uv, 1/mats[0][index_mat__uv]);
+            transformation__ScaleRow(mats, 2, n, uv, 1/mats[0][idx_mat__uv]);
 
             for(Idx_VM i=0, index=0;  i<n;  ++i, index+=n){
                 if(i==uv) continue;
                 var k=temp_mat[index+uv];
                 for(Idx_VM j=0;  j<n;  ++j){
-                    temp_mat[index+j] -= k * temp_mat[index_v+j];
-                    out[index+j]      -= k * out     [index_v+j];
+                    temp_mat[index+j] -= k * temp_mat[idx_v+j];
+                    out[index+j]      -= k * out     [idx_v+j];
                 }
             }
         }

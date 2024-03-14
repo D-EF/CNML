@@ -123,7 +123,7 @@ namespace NML{
 
 
     template <typename Value_Type>
-    /** 用于存储静态数据或自定访问规则的的简单块链节点 */
+    /** 用于存储静态数据或自定访问规则的的简单块状链表节点 */
     struct Link_Block__Simple {
         Link_Block__Simple<Value_Type>* next;
         Idx length;
