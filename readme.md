@@ -269,6 +269,8 @@ namespace NML{
   * x              : x 坐标
   * y              : y 坐标
   * z              : z 坐标
+  * q,p            : 左指针(q) 和 右指针(p)
+  * ex             : 额外的, 追加的, 附加的 (extra)
   * quat           : 四元数 ( quaternion )
   * square         : 平方, 平方曲线(抛物线), 2阶贝塞尔曲线
   * cubic          : 立方, 立方曲线, 3阶贝塞尔曲线

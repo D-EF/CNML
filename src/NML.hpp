@@ -110,22 +110,22 @@ namespace NML{
     /** 
      * @brief 取 [a, b] 中的最小值
      */
-    template <typename Value_Type> inline Value_Type min(const Value_Type& const a, const Value_Type& const b){return a>b?b:a;}
+    template <typename Value_Type> inline Value_Type min(Value_Type& a, Value_Type& b){return a>b?b:a;}
     
     /** 
      * @brief 取 [a, b] 中的最大值
      */
-    template <typename Value_Type> inline Value_Type max(const Value_Type& const a, const Value_Type& const b){return a>b?a:b;}
+    template <typename Value_Type> inline Value_Type max(Value_Type& a, Value_Type& b){return a>b?a:b;}
     
     
     /** 用于各种回调的函数类型 */
-    typedef void (*Callback)(void*, int);
+    typedef void (*Callback)(void*);
 
 
     template <typename Value_Type>
     /** 用于存储静态数据或自定访问规则的的简单块链节点 */
     struct Link_Block__Simple {
-        Link_Block__Static<Value_Type>* next;
+        Link_Block__Simple<Value_Type>* next;
         Idx length;
         Value_Type* data;
     };
