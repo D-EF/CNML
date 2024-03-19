@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-03-06 11:34:26
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-03-14 16:20:25
+ * @LastEditTime: 2024-03-19 17:59:40
  * @FilePath: \CNML\src\NML_Link_Block.hpp
  * @Description: 块状链表存储结构
  * @
@@ -25,6 +25,10 @@
 #include "NML.hpp"
 
 namespace NML{
+    /** 
+     * @brief 块状链表结构 解决方案
+     * @tparam Value_Type 块状链表节点使用的数据类型
+     */
     namespace Link_Block{
 
         /** 块状链表节点
@@ -45,10 +49,10 @@ namespace NML{
         };
         
 
-        /** 使用下标获取块状链表的内容
-         * @tparam Value_Type 块状链表节点使用的数据类型
+        /** 
+         * @brief 使用下标获取块状链表的内容
          * @param origin_node             访问节点, 节点数据的起始位置将作为 0 下标
-         * @param idx__offset           元素在访问节点的下标偏移量, 使用负数可以向前查找
+         * @param idx__offset             元素在访问节点的下标偏移量, 使用负数可以向前查找
          * @param  _out_node              在访问后将被修改为 reutrn 元素所在的节点
          * @param  _out_node_head_index   在访问后将被修改为 reutrn 元素所在的节点的 0 元素相对于 origin_node 的下标偏移量
          * @return 返回对应下标的内容
@@ -62,6 +66,15 @@ namespace NML{
 
 
         /**
+         * @brief 将节点和超出可用范围的index, 重新定位到在范围内的index和对应节点
+         * @param origin_node   访问节点, 节点数据的起始位置将作为 0 下标
+         * @param idx__offset   元素在访问节点的下标偏移量, 使用负数可以向前查找
+         */
+        template <typename Value_Type> 
+        inline void redirect_LinkBlock(Link_Block_Node<Value_Type>*& origin_node, Idx& index){ if(index>origin_node->used_length||index<0) get_Item__LinkBlock(origin_node, index, &origin_node, &index); }
+
+
+        /**
          * 用于delete时遍历块状链表时的结束判断 (now_node==0) || (now_node==end_node) || (prev_node!=now_node->prev);  
          */
         template <typename Value_Type> 
@@ -72,6 +85,76 @@ namespace NML{
                 (prev_node!=now_node->prev);    // error
         }
 
+
+        /**
+         * @brief 强制覆盖拷贝数据到块状链表中
+         * @tparam Value_Type 块状链表的数据类型
+         * @param origin_node        起始节点
+         * @param index              从第 index 个元素开始覆盖
+         * @param data               需要写入的数据
+         * @param length             需要写入的数据长度
+         * @param _flag_used         是否仅对已使用的元素 (0 ~ node.used_length) 进行覆盖, 默认为 false (完全覆盖 0 ~ node.length )
+         * @param _reset_last_used   是否修改操作中最后一个节点的已使用长度, 默认为 false (不修改)
+         * @param _end_node          当轮询到 _end_node 时直接结束覆盖行为, 默认为 0 (循环链表时应为尾节点)
+         * @return 返回成功写入多少元素
+         */
+        template <typename Value_Type> 
+        Idx rape_LinkBlock(Link_Block_Node<Value_Type>* origin_node, Idx index, Value_Type* data, Idx length, bool _flag_used=false, bool _reset_last_used=false, Link_Block_Node<Value_Type>* _end_node=0 );
+
+
+        /**
+         * @brief 擦除块状链表中的一段元素
+         * @tparam Value_Type 块状链表的数据类型
+         * @param origin_node              起始节点
+         * @param index                    从第 index 个元素开始擦除
+         * @param _erase_length            擦除多少个元素, 默认为 1
+         * @param _flag_delete_data_item   是否对每个元素执行 delete, 默认为 false
+         * @param _end_node                当轮询到 _end_node 时直接结束擦除行为, 默认为 0 (循环链表时应为尾节点)
+         * @param _out_node                输出擦除完成后的活跃节点,  默认为 0 (不输出)
+         * @return 返回删除后从起始位置到结束位置有多少空闲空间
+         */
+        template <typename Value_Type> 
+        Idx erase_LinkBlock(
+            Link_Block_Node<Value_Type>* origin_node, Idx index, 
+            Idx _erase_length=1, bool _flag_delete_data_item=false, Link_Block_Node<Value_Type>* _end_node=0, Link_Block_Node<Value_Type>** _out_node=0
+        );
+
+
+        /**
+         * @brief 向前移动数据以腾出空间
+         * @param origin_node        起始节点
+         * @param index              从第 index 个元素开始
+         * @param length             向前移动的长度
+         * @param _out_node          输出移动后的活跃节点, 默认为0 (不输出)
+         * @param _out_index         输出移动后的活跃节点尾部, 默认为0 (不输出)
+         * @param _end_node          当节点轮询到 _end_node 时直接退出循环, 默认为 0 (循环链表时应为尾节点)
+         * @param _max_node_length   最大访问节点数量, 默认为 INFINITY
+         * @return 返回成功移动的长度
+         */
+        template <typename Value_Type> 
+        int shiftForward_LinkBlock(
+            Link_Block_Node<Value_Type>* origin_node, Idx index, Idx length, 
+            Link_Block_Node<Value_Type>** _out_node=0, Idx* _out_index=0, Link_Block_Node<Value_Type>* _end_node=0, Idx _max_node_length=INFINITY
+        );
+
+
+        /**
+         * @brief 向后移动数据以腾出空间
+         * @tparam Value_Type 块状链表的数据类型
+         * @param origin_node        起始节点
+         * @param index              从第 index 个元素开始
+         * @param length             向后移动的长度
+         * @param _out_node          输出移动后的活跃节点, 默认为0 (不输出)
+         * @param _out_index         输出移动后的活跃节点第一个实际可用元素, 默认为0 (不输出)
+         * @param _end_node          当节点轮询到 _end_node 时直接退出循环, 默认为 0 (循环链表时应为尾节点)
+         * @param _max_node_length   最大访问节点数量, 默认为 INFINITY
+         * @return 返回 移动操作完成后原数据在活跃节点的下标
+         */
+        template <typename Value_Type> 
+        int backOff_LinkBlock(
+            Link_Block_Node<Value_Type>* origin_node, Idx index, Idx length, 
+            Link_Block_Node<Value_Type>** _out_node=0, Idx* _out_index=0, Link_Block_Node<Value_Type>* _end_node=0, Idx _max_node_length=INFINITY
+        );
         
 
         /** 操作块状链表时的设置 */
@@ -85,28 +168,25 @@ namespace NML{
             /** 追加节点时新块的长度 */
             Idx ex_link_block_length;
             /** 当擦除/覆盖时 是否对每个内容 delete*/
-            bool delete_data_item;
-            /** 当擦除*/
-            bool delete_data_item;
+            bool flag_delete_data_item;
         } Option_Act_LinkBlock;
 
-        /** 
-         * @brief 向块状链表插入内容
-         * @tparam Value_Type 块状链表节点使用的数据类型
-         * @param header_node              头部节点
-         * @param idx__offset            元素在访问节点后的下标偏移量
-         * @param length                   擦除的内容的长度
-         * @param value                    追加的内容
-         * @param $origin_node             访问节点, 应该可以用header节点访问到, 用于重置 0 下标的位置, 默认使用 header_node
-         * @param _length_value            添加内容的长度, 默认为1
-         * @return 返回增加几个节点
-         * @throw int l  : 当 _paternadd 为禁止新增节点时, 且块状链表中不足以存入内容, 会抛出整数数值表示还需要额外多少个元素的空间 
+
+        /**
+         * 插入/替换中间部分内容
+         * @param origin_node   基准位置节点, 作为 0 下标的基准
+         * @param index         从哪个下标位置开始操作
+         * @param free_length   清理数据的长度
+         * @param _ex_value     用于插入的数据
+         * @param _ex_length    插入数据的长度
+         * @param _option       用于控制插入时的行为模式的参数
+         * @param _head_node    头部节点, 用于控制寻址的边界
+         * @param _tail_node    尾部节点, 用于控制寻址的边界
          */
         template <typename Value_Type> 
-        int splice_LinkBlock(
-            Link_Block_Node<Value_Type>& header_node, Idx idx__offset, Idx erase_length,
-            Link_Block_Node<Value_Type>* $origin_node=0,
-            Value_Type* _ex_value=0, Idx _ex_length=0, Option_Act_LinkBlock* _option=0
+        void splice_LinkBlock(
+            Link_Block_Node<Value_Type>* origin_node, Idx index, Idx free_length,
+            Value_Type* _ex_value, Idx _ex_length, Option_Act_LinkBlock* _option, Link_Block_Node<Value_Type>* _head_node, Link_Block_Node<Value_Type>* _tail_node
         );
 
 
@@ -127,18 +207,16 @@ namespace NML{
 
         /** 
          * @brief 释放/销毁 后段块状链表
-         * @tparam Value_Type 块状链表节点使用的数据类型
          * @param header_node 起始节点, 当访问 next 为 0 或 header_node 时, 会认为是到达了尾部节点
-         * @param _delete_data_item 是否对每个数据元素执行 delete 关键字, 默认 false
+         * @param _flag_delete_data_item 是否对每个数据元素执行 delete 关键字, 默认 false
          * @param _erase_callback  是否对每个数据元素执行 _erase_callback
          */
         template <typename Value_Type> 
-        void free_LinkBlock__After(Link_Block_Node<Value_Type>* header_node,bool _delete_data_item=false, Callback _erase_callback=0);
+        void free_LinkBlock__After(Link_Block_Node<Value_Type>* header_node,bool _flag_delete_data_item=false, Callback _erase_callback=0);
 
 
         /** 
          * @brief 计算整段块状链表的最大容量
-         * @tparam Value_Type 块状链表节点使用的数据类型
          * @param header_block 起始节点, 当访问 next 为 0 或 header_node 时, 会认为是到达了尾部节点
          */
         template <typename Value_Type> 

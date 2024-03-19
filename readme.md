@@ -189,7 +189,7 @@ namespace NML{
          * @param value                    追加的内容
          * @param $origin_node             访问节点, 应该可以用header节点访问到, 用于重置 0 下标的位置, 默认使用 header_node
          * @param _length_value            添加内容的长度, 默认为1
-         * @param _delete_data_item        是否对删除内容的每个元素执行delete, 默认false
+         * @param _flag_delete_data_item        是否对删除内容的每个元素执行delete, 默认false
          * @param _paternadd               当前节点无法装载内容时追加块状链表的行为模式 默认为 lazy (仅检查相邻的块容量)
          * @param _add_node_length         追加节点时新块的长度, 默认为 __MIN_LINK_BLOCK_SIZE__
          * @param _max_link_block_length   块状链表的最大容量
@@ -292,6 +292,7 @@ namespace NML{
   * had            : 表示状态  - 有可用的缓存值
   * prev           : 前一个 (previous)
   * tgt            : 目标 (target)
+  * now            : 当前 (指针/节点)
   ```
   
   ### 动词和动词短语
@@ -309,6 +310,8 @@ namespace NML{
   * check              : 检查 
   * load               : 加载 (计算值保存到成员变量上)
   * give up            : 淘汰 (淘汰缓存)
+  * stand back         : 靠后排列
+  * rape copy          : 强制覆盖
   ```
   
   ### 函数形参中的特殊名词
