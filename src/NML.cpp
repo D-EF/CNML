@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-03-06 11:17:11
+ * @LastEditTime: 2024-03-27 13:39:36
  * @FilePath: \CNML\src\NML.cpp
  * @Description: Nittle Math Library 简单数学库
  * 
@@ -69,6 +69,13 @@ namespace NML{
         return true;
     }
 
+    bool check_Equal(Idx length, int*& val_left, int*& val_right){
+        for(Idx i=0;  i<length;  ++i){
+            if(val_left[i]!=val_right[i])return false;
+        }
+        return true;
+    }
+
     bool check_Zero(Idx length, var*& value, var _tolerance){
         for(Idx i=0;  i<length;  ++i){
             if(!check_Zero(value[i], _tolerance))return false;
@@ -118,8 +125,8 @@ namespace NML{
         Points_Iterator& pi =*this;
         var* temp_this;
         var* temp_obj;
-        Idx _length=min(points_length,copy_obj.points_length);
-        Idx_Algebra _dimensional=min(dimensional,copy_obj.dimensional);
+        Idx _length=std::min(points_length,copy_obj.points_length);
+        Idx_Algebra _dimensional=std::min(dimensional,copy_obj.dimensional);
         for(i=0;  i<_length;  ++i){
             temp_this=pi[i];
             temp_obj=copy_obj[i];
@@ -131,8 +138,8 @@ namespace NML{
 
     bool calc_Intersection__Range(var& out_min,var& out_max, var r0_min, var r0_max, var r1_min, var r1_max){
         if(r0_min<=r1_max && r1_min<=r0_max){
-            out_min=max(r0_min,r1_min);
-            out_max=min(r0_max,r1_max);
+            out_min=std::max(r0_min,r1_min);
+            out_max=std::min(r0_max,r1_max);
             return true;
         }
         return false;

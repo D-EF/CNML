@@ -9,7 +9,7 @@
  * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
 
-#include "NML_Primitives_3D.hpp"
+#include "./NML_Primitives_3D.hpp"
 
 namespace NML{
     namespace Primitives_3D{

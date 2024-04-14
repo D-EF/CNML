@@ -13,7 +13,7 @@
 #define __NML_GEOMETRY__
 
 #include "NML.hpp"
-#include "NML_Vector.hpp"
+#include "Algebra/NML_Vector.hpp"
 
 namespace NML{
     

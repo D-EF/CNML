@@ -13,8 +13,8 @@
 #define __NML_GEOMETRY_2D_PRIMITIVES__
 
 #include "NML.hpp"
-#include "NML_Geometry_2D.hpp"
-#include "NML_Matrix_2D.hpp"
+#include "./NML_Geometry_2D.hpp"
+#include "./NML_Matrix_2D.hpp"
 
 namespace NML{
     namespace Geometry_2D{

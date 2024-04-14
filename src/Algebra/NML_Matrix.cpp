@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-11-24 15:15:14
+ * @LastEditTime: 2024-03-27 11:47:57
  * @FilePath: \cnml\src\NML_Matrix.cpp
  * @Description: 矩阵 Matrix
  * @
@@ -11,7 +11,7 @@
 
 #include "NML.hpp"
 #include <iostream>
-#include "NML_Matrix.hpp"
+#include "./NML_Matrix.hpp"
 
 namespace NML{
     namespace Matrix{
@@ -41,8 +41,8 @@ namespace NML{
             Idx_VM low_height   = _low_height?_low_height:low_width;
             Idx_VM new_height   = _new_height?_new_height:new_width;
             Idx_VM left, load_left, top, load_top;
-            Idx_VM right    = min((Idx_VM)(shift_left+low_width), new_width);
-            Idx_VM bottom   = min((Idx_VM)(shift_top+low_height), new_height);
+            Idx_VM right    = std::min((Idx_VM)(shift_left+low_width), new_width);
+            Idx_VM bottom   = std::min((Idx_VM)(shift_top+low_height), new_height);
             if(shift_left>=0){   left   = shift_left;   load_left   = 0;            }
             else{                left   = 0;            load_left   =-shift_left;   }
             if(shift_top>=0){    top    = shift_top;    load_top    = 0;            }
@@ -267,7 +267,7 @@ namespace NML{
             Idx_VM u, v;
             for(v=0;  v<n-1;  ++v){
                 for(u=v+1;  u<n;  ++u){
-                    if(mat[get_Index(n, u, v)]!=-mat[get_Index(n, v, u)])return false;
+                    if(mat[clac_Index(n, u, v)]!=-mat[clac_Index(n, v, u)])return false;
                 }
             }
             return true;
@@ -289,7 +289,7 @@ namespace NML{
 
             for(Idx_VM u=0;  u<width_mat;  ++u){
                 for(Idx_VM v=0;  v<height_mat;  ++v){
-                    out[idx_out]=mat[get_Index(width_mat, u, v)];
+                    out[idx_out]=mat[clac_Index(width_mat, u, v)];
                     ++idx_out;
                 }
             }

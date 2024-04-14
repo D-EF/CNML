@@ -1,14 +1,13 @@
 /*!
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
- * @Date: 2023-04-04 01:26:00
+ * @Date: 2024-02-28 10:05:05
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-03-06 10:04:57
- * @FilePath: \cnml\src\NML_Algebra.cpp
- * @Description: 数与代数 运算相关
- * @
- * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
+ * @LastEditTime: 2024-04-01 11:01:40
+ * @FilePath: \CNML\src\Algebra\NML_Algebra.cpp
+ * @Description: 基本数与代数运算
  */
-#include "NML_Algebra.hpp"
+
+#include "./NML_Algebra.hpp"
 
 namespace NML{
     namespace Algebra{
@@ -197,6 +196,7 @@ namespace NML{
             return 1;
         }
 
+
         Idx_Algebra find_Roots__UnivariatePolynomials__IterationMethod (var*& out, var*& coefficients, Idx_Algebra length, var _tolerance){
             // 筛去高次的0系数
             while(coefficients[length-1]==0) --length;
@@ -235,6 +235,7 @@ namespace NML{
 
             return roots_length;
         }
+
 
         Idx_Algebra find_Roots__UnivariatePolynomials__IterationMethod (var*& out, var*& coefficients, var*& derivatives, Idx_Algebra length__coefficients, var*& derivatives_roots, Idx_Algebra length__derivatives_roots, var _tolerance){
             Idx_Algebra roots_length = 0;
@@ -297,6 +298,7 @@ namespace NML{
             return roots_length;
         }
 
+
         var find_Roots__UnivariatePolynomials__IterationMethod__NewtonThenBisection(var init_param, var*& coefficients, var*& derivatives, Idx_Algebra length__coefficients, var _tolerance, var _init_value){
             var &root=init_param, &temp_value=_init_value;
             var derivative;
@@ -317,6 +319,7 @@ namespace NML{
             }
             return root;
         };
+        
 
         var find_Roots__UnivariatePolynomials__IterationMethod__Bisection(var init_open, var init_end, var*& coefficients, Idx_Algebra length__coefficients, var _tolerance, var _init_value_0, var _init_value_1){
             var temp_root, temp_value;
@@ -358,6 +361,5 @@ namespace NML{
             return theta;
         }
         
-
     }
 }

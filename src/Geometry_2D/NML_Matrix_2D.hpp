@@ -12,7 +12,7 @@
 #ifndef __NML_MATRIX_2D__
 #define __NML_MATRIX_2D__
 #include "NML.hpp"
-#include "NML_Matrix.hpp"
+#include "Algebra/NML_Matrix.hpp"
 
 namespace NML{
     namespace Matrix_2D{

@@ -13,9 +13,9 @@
 #define __NML_QUATERNION__
 
 #include "NML.hpp"
-#include "NML_Vector.hpp"
-#include "NML_Matrix.hpp"
-#include "NML_Matrix_3D.hpp"
+#include "Algebra/NML_Vector.hpp"
+#include "Algebra/NML_Matrix.hpp"
+#include "./NML_Matrix_3D.hpp"
 
 namespace NML{
     namespace Quaternion{

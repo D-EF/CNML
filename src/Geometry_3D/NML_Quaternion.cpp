@@ -1,4 +1,4 @@
-#include "NML_Quaternion.hpp"
+#include "./NML_Quaternion.hpp"
 
 namespace NML{
     namespace Quaternion{

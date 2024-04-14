@@ -14,7 +14,7 @@
 #include "NML.hpp"
 #include "NML_Algebra.hpp"
 #include "NML_Bezier.hpp"
-#include "NML_Matrix.hpp"
+#include "/Algebra/NML_Matrix.hpp"
 #include "NML_Matrix_2D.hpp"
 #include "NML_Matrix_3D.hpp"
 #include "NML_Euler_Angle.hpp"

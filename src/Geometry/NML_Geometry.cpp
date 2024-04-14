@@ -9,7 +9,7 @@
  * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
 
-#include "NML_Geometry.hpp"
+#include "./NML_Geometry.hpp"
 
 namespace NML{
     

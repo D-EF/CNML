@@ -9,7 +9,7 @@
  * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
 
-#include "NML_Matrix_2D.hpp"
+#include "./NML_Matrix_2D.hpp"
 
 namespace NML{
     namespace Matrix_2D{

@@ -1,13 +1,12 @@
 /*!
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
- * @Date: 2023-04-04 01:26:00
+ * @Date: 2024-02-28 10:05:05
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-02-01 14:02:26
- * @FilePath: \cnml\src\NML_Algebra.hpp
- * @Description: 数与代数 运算相关
- * @
- * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
+ * @LastEditTime: 2024-04-01 11:02:38
+ * @FilePath: \CNML\src\Algebra\NML_Algebra.hpp
+ * @Description: 基本数与代数运算
  */
+
 #ifndef __NML_ALGEBRA__
 #define __NML_ALGEBRA__
 

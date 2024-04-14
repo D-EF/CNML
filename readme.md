@@ -191,7 +191,7 @@ namespace NML{
          * @param _length_value            添加内容的长度, 默认为1
          * @param _flag_delete_data_item        是否对删除内容的每个元素执行delete, 默认false
          * @param _paternadd               当前节点无法装载内容时追加块状链表的行为模式 默认为 lazy (仅检查相邻的块容量)
-         * @param _add_node_length         追加节点时新块的长度, 默认为 __MIN_LINK_BLOCK_SIZE__
+         * @param _add_node_length         追加节点时新块的长度, 默认为 __DEFAULT_LINK_BLOCK_SIZE__
          * @param _max_link_block_length   块状链表的最大容量
          * @return 返回是否增加了节点
          * @throw int l  : 当 _paternadd 为禁止新增节点时, 且块状链表中不足以存入内容, 会抛出整数数值表示还需要额外多少个元素的空间 
@@ -200,7 +200,7 @@ namespace NML{
         bool splice_LinkBlock(
             Link_Block_Node<Value_Type>& header_node, Idx idx__offset, Idx length,
             Link_Block_Node<Value_Type>* $origin_node=0,
-            Value_Type* _value=0, Idx _length_value=1, Behavior_Pattern__Add_LinkBlock _paternadd=lazy, Idx _add_node_length=__MIN_LINK_BLOCK_SIZE__, Idx _max_link_block_length 
+            Value_Type* _value=0, Idx _length_value=1, Behavior_Pattern__Add_LinkBlock _paternadd=lazy, Idx _add_node_length=__DEFAULT_LINK_BLOCK_SIZE__, Idx _max_link_block_length 
         );
     ```
 
@@ -396,7 +396,7 @@ namespace NML{
     * Points_Iterator__Link 使用循环块状链表表存储, 其中 data 为尾块的指针
     * 单块空间大小有最大值和最小值, 使用宏定义 
     ```c++
-        #define __MIN_LINK_BLOCK_SIZE__ 256
+        #define __DEFAULT_LINK_BLOCK_SIZE__ 256
         #define __MAX_LINK_BLOCK_SIZE__ 65536
     ```
     * 点坐标数据存储在每块的data指针处, 多余的空间会被空省

@@ -31,14 +31,20 @@ project (NML)
         SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${PROJECT_SOURCE_DIR}/out/test)
 # end  * 初始化输出目录 * end 
 
+# 设置项目代码根目录为 /src/
+include_directories("${PROJECT_SOURCE_DIR}/src")
 
 # open * 设置编译文件 * open
-    file(GLOB SRC_FILES
+    file(GLOB_RECURSE SRC_FILES
         "${PROJECT_SOURCE_DIR}/src/**.c"
         "${PROJECT_SOURCE_DIR}/src/**.h"
-        "${PROJECT_SOURCE_DIR}/src/**.hpp"
         "${PROJECT_SOURCE_DIR}/src/**.cpp"
+        "${PROJECT_SOURCE_DIR}/src/**.hpp"
     )
+    # 将 "test.cpp" 的文件 防止在末尾
+    list(FILTER SRC_FILES EXCLUDE REGEX ".*test\\.cpp$")
+    file(GLOB_RECURSE TEST_FILES"${PROJECT_SOURCE_DIR}/src/**test.cpp")
+    list(APPEND SRC_FILES ${TEST_FILES})
     message(STATUS "\n\nSRC_FILES: \n ${SRC_FILES}")
 # end  * 设置编译文件 * end 
 

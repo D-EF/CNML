@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-03-08 10:52:13
+ * @LastEditTime: 2024-03-27 11:44:27
  * @FilePath: \cnml\src\NML_Matrix.hpp
  * @Description: 3D 变换矩阵
  * @
@@ -12,7 +12,7 @@
 #ifndef __NML_MATRIX_3D__
 #define __NML_MATRIX_3D__
 #include "NML.hpp"
-#include "NML_Matrix.hpp"
+#include "Algebra/NML_Matrix.hpp"
 
 namespace NML{
     namespace Matrix_3D{

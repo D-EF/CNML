@@ -2,15 +2,15 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-02-26 09:17:07
+ * @LastEditTime: 2024-03-27 11:59:28
  * @FilePath: \cnml\src\NML_Geometry_2D.cpp
  * @Description: 2d 几何; 提供基本图元数据结构和部分算法
  * @
  * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
 
-#include "NML_Geometry_2D.hpp"
-#include "NML_Algebra.hpp"
+#include "./NML_Geometry_2D.hpp"
+#include "Algebra/NML_Algebra.hpp"
 
 namespace NML{
     

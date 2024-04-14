@@ -12,8 +12,8 @@
 #ifndef __NML_Euler_Angle__
 #define __NML_Euler_Angle__
 #include "NML.hpp"
-#include "NML_Matrix.hpp"
-#include "NML_Matrix_3D.hpp"
+#include "Algebra/NML_Matrix.hpp"
+#include "./NML_Matrix_3D.hpp"
 
 namespace NML{
     namespace Euler_Angle{

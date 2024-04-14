@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-04 01:26:00
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-02-19 14:55:02
+ * @LastEditTime: 2024-03-27 12:00:06
  * @FilePath: \cnml\src\NML_Geometry_2D.hpp
  * @Description: 提供2d基本图元数据结构和部分算法
  * @
@@ -13,7 +13,7 @@
 #define __NML_GEOMETRY_2D__
 
 #include "NML.hpp"
-#include "NML_Vector.hpp"
+#include "Algebra/NML_Vector.hpp"
 
 namespace NML{
     
