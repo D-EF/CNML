@@ -14,7 +14,6 @@ namespace NML_Test{
             if(!flag){
                 ++_test_error_count;
             }
-            
         }
     }
 

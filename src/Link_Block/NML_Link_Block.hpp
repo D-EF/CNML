@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-03-06 11:34:26
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-12 18:02:44
+ * @LastEditTime: 2024-04-19 17:34:21
  * @FilePath: \CNML\src\NML_Link_Block.hpp
  * @Description: 块状链表存储结构
  * @
@@ -75,7 +75,15 @@ namespace NML{
          * @param length 节点的最大长度
          */
         template <typename Value_Type> 
-        inline Link_Block_Node<Value_Type>* create_LinkBlockNode(Idx _length=__DEFAULT_LINK_BLOCK_SIZE__){ return new Link_Block_Node<Value_Type>{0, 0, _length, 0, new ValueType(_length)}; }
+        inline Link_Block_Node<Value_Type>* create_LinkBlockNode(Idx _length=__DEFAULT_LINK_BLOCK_SIZE__){ 
+            Link_Block_Node<Value_Type> *rtn= new Link_Block_Node<Value_Type>; 
+            rtn->prev          = 0;
+            rtn->next          = 0;
+            rtn->length        = _length;
+            rtn->used_length   = 0;
+            rtn->data          = new Value_Type(_length);
+            return rtn;
+        }
 
         
         /**
@@ -83,7 +91,16 @@ namespace NML{
          * 
          */
         template <typename Value_Type> 
-        inline Link_Block_Node<Value_Type>* create_LinkBlockNode(Idx used_length, Value_Type* value, Idx _length=0){ return new Link_Block_Node<Value_Type>{0, 0, _length||used_length, used_length, value}; }
+        inline Link_Block_Node<Value_Type>* create_LinkBlockNode(Idx used_length, Value_Type* value, Idx _length=0){ 
+            return new Link_Block_Node<Value_Type>; 
+            Link_Block_Node<Value_Type> *rtn= new Link_Block_Node<Value_Type>; 
+            rtn->prev          = 0;
+            rtn->next          = 0;
+            rtn->length        = _length||used_length;
+            rtn->used_length   = used_length;
+            rtn->data          = value;
+            return rtn;
+        }
         
         /** 
          * @brief 获取块状链表的元素
@@ -104,13 +121,13 @@ namespace NML{
 
             if(index_offset>=0){
                 for(i=0;  i+now->used_length<index_offset;  i+=now->used_length, now=now->next) 
-                    if(now->next==0) throw index_offset;
+                    if(!now) throw index_offset;
             }else{
                 for(i=0;  i>index_offset;  i-=now->used_length, now=now->prev) 
-                    if(now->prev==0) throw index_offset;
+                    if(!now) throw index_offset;
             }
-            if(_out_node_head_index)*_out_node_head_index=i;
-            if(_out_node)*_out_node=now;
+            if(_out_node_head_index) *_out_node_head_index=index_offset-i;
+            if(_out_node) *_out_node=now;
             return now->data[index_offset-i];
         }
         
@@ -137,45 +154,29 @@ namespace NML{
         template <typename Value_Type> 
         Idx erase_LinkBlock(
             Link_Block_Node<Value_Type>* origin_node, Idx index, 
-            Idx _erase_length=1, bool _flag_delete_data_item=false, Link_Block_Node<Value_Type>** _out_node=0
+            Idx _erase_length=1, Link_Block_Node<Value_Type>** _out_node=0
         ){
             if(_erase_length<1) return 0;
             redirect_LinkBlock(origin_node, index);
 
-            Link_Block_Node<Value_Type> *&now =  origin_node;
-            Link_Block_Node<Value_Type> *prev_node =  origin_node.prev;
-            Idx erase_count=0;
-            Idx rtn=0;
-            Idx erase_end;
-            Idx last;
+            Link_Block_Node<Value_Type> *now = origin_node;
 
-            if(now->used_length-index >= _erase_length){
-                erase_end=index+_erase_length;
-                last=index;
-            }else{
-                erase_end=now->used_length;
-                last=0;
-            }
+            Idx &erase_end=_erase_length,  rtn=0;
+            erase_end=_erase_length+index;
 
-            while(now&&now->prev==prev_node){
-                now->used_length = index;
-                if(_flag_delete_data_item){
-                    erase_count += erase_end-index;
-                    while(index<erase_end){
-                        delete now->data[index];
-                        ++index;
-                    }
-                }else{
-                    erase_count += erase_end-index;
-                }
-                if(erase_count<_erase_length) break;
+            while(now && erase_end>now->used_length){
+                erase_end-=now->used_length;
+                rtn+=now->length-index;
+                now->used_length=index;
                 index=0;
-                prev_node=now;
                 now=now->next;
-                erase_end=std::min(now->used_length, _erase_length-erase_count);
-                rtn+=std::min(now->length, _erase_length-erase_count);
             }
-            std::copy(now->data+erase_end, now->data+erase_end+now->used_length, now->data+last);
+            
+            if(now) {
+                std::copy(now->data+erase_end, now->data+now->used_length, now->data+index);
+                now->used_length-=erase_end-index;
+            }
+            
             if(_out_node)*_out_node=now;
             return rtn;
         }
@@ -206,14 +207,16 @@ namespace NML{
             std::copy(data+left, data+right, now->data+index);
             if( right<length || _reset_last_used) now->used_length=offset;
 
+            now = now->next;
+
             while(right<length && now){
-                now    = now->next;
-                left   = right;
+                left  = right;
                 right = right + (_flag_used ? now->used_length : now->length);
                 if(right>length) right=length;
                 std::copy(data+left, data+right, now->data);
                 if(right==length && !_reset_last_used) break;
                 now->used_length=right-left;
+                now = now->next;
             }
             return right;
         }
@@ -277,7 +280,7 @@ namespace NML{
                 write->data[idx_write] = read->data[idx_read];
                 ++idx_write;
                 ++idx_read;
-            }while(!((write==origin_node) && (idx_read==index)));
+            }while(!((read==origin_node) && (idx_read==index)));
 
             if(_out_index) *_out_index=idx_write;
             if(_out_node) *_out_node=write;
@@ -294,7 +297,7 @@ namespace NML{
          * @param _out_node          输出移动后的活跃节点, 默认为0 (不输出)
          * @param _out_index         输出移动后的活跃节点第一个实际可用元素, 默认为0 (不输出)
          * @param _max_node_length   最大访问节点数量, 默认为 INFINITY
-         * @return 返回 移动操作完成后原数据在活跃节点的下标
+         * @return 返回 成功移动的长度
          */
         template <typename Value_Type> 
         int backOff_LinkBlock(
@@ -303,11 +306,11 @@ namespace NML{
         ){
             redirect_LinkBlock(origin_node, index);
             Link_Block_Node<Value_Type>* now=origin_node;
-            Link_Block_Node<Value_Type>* next=origin_node.next;
+            Link_Block_Node<Value_Type>* last_node;
             Idx back_length=0, loc_offset, node_length=0;
 
             // 寻找可用空闲空间
-            while(back_length<offset && now && next.prev==now && node_length<=_max_node_length){
+            do{
                 ++node_length;
                 if(back_length+now->length-now->used_length>offset){
                     loc_offset=offset-back_length;
@@ -315,35 +318,34 @@ namespace NML{
                     loc_offset=now->length-now->used_length;
                 }
                 back_length+=loc_offset;
-                now=next;
-                next=next->next;
-            }
+                last_node=now;
+                now=now->next;
+            }while(back_length<offset && now && node_length<=_max_node_length);
             if(back_length==0) return 0;
             
-            next=now;
-            
+            now=last_node;
             Link_Block_Node<Value_Type> *&write=now;
-            Link_Block_Node<Value_Type> *&read=next;
+            Link_Block_Node<Value_Type> *&read=last_node;
 
             Idx idx_write=write->used_length+loc_offset, idx_read=read->used_length;
             write->used_length=idx_write;
             do{
                 while(idx_write==0){
-                    write=write.prev;
-                    idx_write=now->length;
-                    now->used_length=idx_write;
+                    write=write->prev;
+                    idx_write=write->length;
+                    write->used_length=idx_write;
                 }
                 while(idx_read==0){
-                    read=read.prev;
-                    idx_read=now->used_length;
+                    read=read->prev;
+                    idx_read=read->used_length;
                 }
                 --idx_write;
                 --idx_read;
                 write->data[idx_write] = read->data[idx_read];
-            }while(read==origin_node && idx_read==index);
+            }while(!(read==origin_node && idx_read==index));
             
-            if(_out_node)  _out_node  = origin_node;
-            if(_out_index) _out_index = index;
+            if(_out_node)  *_out_node  = origin_node;
+            if(_out_index) *_out_index = index;
             return back_length;
         }
         
@@ -369,20 +371,32 @@ namespace NML{
                 free_length =- free_length;
             }
             if(_ex_length<0)_ex_length=0;
-            Link_Block_Node<Value_Type>*& now=origin_node;
+            Link_Block_Node<Value_Type> *now=origin_node;
+            Link_Block_Node<Value_Type> *erase_node;
+            Link_Block_Node<Value_Type> *left_node, *right_node;
             redirect_LinkBlock(origin_node, index);
             
             if(free_length){
                 free_length=erase_LinkBlock(now, index, free_length, _option->flag_delete_data_item);
             }
-            if((!_ex_value)||(_ex_length<1)) return; // 无插入操作
+            if((!_ex_value)||(_ex_length<1)){  // 无插入操作
+                return;
+            }
             
-            backOff_LinkBlock(now,index,_ex_length,0,0);
+            Idx left_index, right_index, back_off_length;
+            
+            free_length = backOff_LinkBlock(now, index, _ex_length, &right_node, &right_index, _option->find_free_max_after_node_count);
+
             if(free_length>_ex_value){
-                // rape_LinkBlock(origin_node,)
+                rape_LinkBlock(now,index,_ex_value, _ex_length, false, true);
             }
 
-            // todo
+            free_length += shiftForward_LinkBlock(now,index,_ex_length-free_length,0,0);
+
+            if(free_length>_ex_value){
+                rape_LinkBlock(now,index,_ex_value, _ex_length, false, true);
+            }
+
         }
 
 
@@ -456,7 +470,9 @@ namespace NML{
 
 
         /**
-         * 
+         * 输出块状链表内容
+         * @param head_code 头部节点
+         * @param os 输出通道 默认为 std::cout
          */
         template <typename T>
         void out_LinkBlock(Link_Block_Node<T>* head_node, std::ostream* os=&std::cout){
@@ -514,7 +530,7 @@ namespace NML{
 
             /** @brief 创建一个新链表 */
             Link_Block_Ctrl(Idx _length=__DEFAULT_LINK_BLOCK_SIZE__, Option_Act_LinkBlock* _option=0){
-                origin_node=head_node=new Link_Block_Node<Value_Type>{ 0, 0, _length, 0, new Value_Type(_length) };
+                end_node =origin_node=head_node=new Link_Block_Node<Value_Type>{ 0, 0, _length, 0, new Value_Type(_length) };
 
                 origin_index__item = origin_index__node = used_length=0;
                 max_length=_length;
@@ -541,15 +557,20 @@ namespace NML{
             }
 
             /** @brief 取用设置对象 */
-            Option_Act_LinkBlock* get_Option();
+            Option_Act_LinkBlock* get_Option(){
+                if(_option) return _option;
+                return get_DefaultLinkBlockActOption();
+            }
 
             /** 
              * @brief 存入设置对象
-             * @param option      存入的新设置对象
-             * @param _delete_flag     是否对旧 option 执行 delete 
+             * @param new_option      存入的新设置对象
+             * @param _delete_flag     是否对旧 new_option 执行 delete 
              */
-            void set_Option(Option_Act_LinkBlock* option, bool _delete_flag=false);
-
+            void set_Option(Option_Act_LinkBlock* new_option, bool _delete_flag=false){
+                if(_delete_flag) delete _option;
+                _option=new_option;
+            }
 
 
             /** 
@@ -557,7 +578,15 @@ namespace NML{
              * @param index 下标
              * @return 返回对应下标的元素的引用
              */
-            Value_Type& get_Item(int index);
+            Value_Type& get_Item(int index){
+                if(index<0) index+=used_length;
+                Idx i=index-origin_index__item;
+                if(index<origin_index__item && index<(-i)){
+                    i=index;
+                    origin_node=head_node;
+                }
+                return get_Item__LinkBlock(origin_node, i, &origin_node, &origin_index__item);
+            }
             
             /** 
              * @brief 使用下标获取元素
@@ -603,38 +632,9 @@ namespace NML{
             }
             
         };
-        
-        
 
 
 
-
-        template <typename Value_Type> 
-        Value_Type& Link_Block_Ctrl<Value_Type>::get_Item(int index){
-            if(index<0) index+=used_length;
-            Idx i=index-origin_index__item;
-            if(index<origin_index__item && index<(-i)){
-                i=index;
-                origin_node=head_node;
-            }
-            return get_Item__LinkBlock(origin_node, i, &origin_node, &origin_index__item);
-        }
-
-
-        template <typename Value_Type> 
-        Option_Act_LinkBlock* Link_Block_Ctrl<Value_Type>::get_Option(){
-            if(_option) return _option;
-            return get_DefaultLinkBlockActOption();
-        }
-
-
-        template <typename Value_Type> 
-        void Link_Block_Ctrl<Value_Type>::set_Option(Option_Act_LinkBlock* option, bool _delete_flag){
-            if(_delete_flag) delete _option;
-            _option=option;
-        }
-
-        
     }
 }
 

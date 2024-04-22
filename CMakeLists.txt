@@ -41,29 +41,29 @@ include_directories("${PROJECT_SOURCE_DIR}/src")
         "${PROJECT_SOURCE_DIR}/src/**.cpp"
         "${PROJECT_SOURCE_DIR}/src/**.hpp"
     )
-    # 将 "test.cpp" 的文件 防止在末尾
-    list(FILTER SRC_FILES EXCLUDE REGEX ".*test\\.cpp$")
-    file(GLOB_RECURSE TEST_FILES"${PROJECT_SOURCE_DIR}/src/**test.cpp")
-    list(APPEND SRC_FILES ${TEST_FILES})
-    message(STATUS "\n\nSRC_FILES: \n ${SRC_FILES}")
+    # 将 "test.cpp" 的文件 放置在末尾
+        # list(FILTER SRC_FILES EXCLUDE REGEX ".*test\\.cpp$")
+        # file(GLOB_RECURSE TEST_FILES"${PROJECT_SOURCE_DIR}/src/**test.cpp")
+        # list(APPEND SRC_FILES ${TEST_FILES})
+        # message(STATUS "\n\nSRC_FILES: \n ${SRC_FILES}")
 # end  * 设置编译文件 * end 
 
 
 # open * 分库编译 * open
     list(REMOVE_ITEM SRC_FILES "${PROJECT_SOURCE_DIR}/src/test.cpp")
     # 静态库
-        add_library(${CMAKE_PROJECT_NAME}_lib STATIC ${SRC_FILES})
-        set_target_properties(${CMAKE_PROJECT_NAME}_lib PROPERTIES PREFIX "" OUTPUT_NAME "${CMAKE_PROJECT_NAME}")
+        add_library(${CMAKE_PROJECT_NAME}_LIB STATIC ${SRC_FILES})
+        set_target_properties(${CMAKE_PROJECT_NAME}_LIB PROPERTIES PREFIX "" OUTPUT_NAME "${CMAKE_PROJECT_NAME}")
 
     # 动态库
-        add_library(${CMAKE_PROJECT_NAME}_dll SHARED ${SRC_FILES})
-        set_target_properties(${CMAKE_PROJECT_NAME}_dll PROPERTIES PREFIX "" OUTPUT_NAME "${CMAKE_PROJECT_NAME}")
+        add_library(${CMAKE_PROJECT_NAME}_DLL SHARED ${SRC_FILES})
+        set_target_properties(${CMAKE_PROJECT_NAME}_DLL PROPERTIES PREFIX "" OUTPUT_NAME "${CMAKE_PROJECT_NAME}")
 
     # 测试例
-        add_executable(${CMAKE_PROJECT_NAME}_test ${PROJECT_SOURCE_DIR}/src/test.cpp)
-        target_link_libraries(${CMAKE_PROJECT_NAME}_test ${CMAKE_PROJECT_NAME}_dll)
+        add_executable(${CMAKE_PROJECT_NAME}_TEST ${PROJECT_SOURCE_DIR}/src/test.cpp)
+        target_link_libraries(${CMAKE_PROJECT_NAME}_TEST ${CMAKE_PROJECT_NAME}_DLL)
 # end  * 分库编译 * end 
 
 # open * 直接编译 * open
-    # add_executable(${CMAKE_PROJECT_NAME}_test ${SRC_FILES})
+    # add_executable(${CMAKE_PROJECT_NAME}_TEST ${SRC_FILES})
 # end  * 直接编译 * end 
