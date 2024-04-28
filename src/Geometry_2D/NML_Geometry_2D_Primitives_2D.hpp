@@ -1,12 +1,10 @@
 /*!
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
- * @Date: 2023-04-04 01:26:00
+ * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-01-17 17:12:06
- * @FilePath: \CNML\src\NML_Geometry_2D_Primitives_2D.hpp
+ * @LastEditTime: 2024-04-28 16:57:35
+ * @FilePath: \CNML\src\Geometry_2D\NML_Geometry_2D_Primitives_2D.hpp
  * @Description: 2D 图元 相关内容
- * @
- * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
 
 #ifndef __NML_GEOMETRY_2D_PRIMITIVES__

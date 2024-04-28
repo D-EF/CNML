@@ -1,12 +1,10 @@
 /*!
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
- * @Date: 2023-04-04 01:26:00
+ * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-03-27 11:47:57
- * @FilePath: \cnml\src\NML_Matrix.cpp
+ * @LastEditTime: 2024-04-28 16:48:46
+ * @FilePath: \CNML\src\Algebra\NML_Matrix.cpp
  * @Description: 矩阵 Matrix
- * @
- * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
 
 #include "NML.hpp"

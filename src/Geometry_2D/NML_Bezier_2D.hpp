@@ -1,12 +1,10 @@
 /*!
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
- * @Date: 2023-04-04 01:26:00
+ * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-03-27 12:06:58
+ * @LastEditTime: 2024-04-28 16:56:17
  * @FilePath: \CNML\src\Geometry_2D\NML_Bezier_2D.hpp
- * @Description: 贝塞尔曲线 2D 专用 相关内容 (求交等)
- * @
- * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
+ * @Description: 2D 贝塞尔曲线相关计算
  */
 
 #ifndef __NML_BEZIER_2D__

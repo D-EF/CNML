@@ -1,11 +1,11 @@
 {
     
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
         "window.title": "NML",
         "editor.quickSuggestions": {
             "comments": "off",
@@ -13,7 +13,7 @@
             "other": "off"
         },
         "editor.suggestOnTriggerCharacters": false,
-		"files.associations": {
+        "files.associations": {
             "*.wpy": "vue",
             "*.wxss": "css",
             "*.wxml": "html",
@@ -86,53 +86,86 @@
             "fstream": "cpp",
             "sstream": "cpp"
         },
-		"editor.inlayHints.enabled": "off",
-    	"editor.fontFamily": "Ubuntu Mono derivative Powerline,Ubuntu Mono,DejaVu Sans Mono",
-		"editor.foldingStrategy": "indentation",
-		"html.completion.attributeDefaultValue": "empty",
-		"editor.formatOnSave": false,
-		"editor.tokenColorCustomizations": {
-			"textMateRules": [
-				{
-					"scope": "variable.parameter", //形参
-					"settings": {
-						"fontStyle": "italic",
-						"foreground": "#8ff"
-					}
-				}
-			]
-		},
-		"workbench.colorCustomizations": {
-		},
-		"align-text-like-table.selector__separator": "(?: {3,})|(?:\t)",
-		"align-text-like-table.separator__align_after": "   ",
-		
-		"fileheader.configObj": {
-			"createFileTime": true,
-			"language": {
-				"js/ts/c/h/hpp/cpp/cs": {
-					"head": "/*!",
-					"middle": " * @",
-					"end": " */",
-					"functionSymbol": {
-						"head": "/** ",
-						"middle": " * @",
-						"end": " */"
-					},
-					"functionParams": "js"
-				}
-			},
-			"autoAdd": false
-		}
-	},
-	"extensions": {
-		"recommendations": [
-			"obkoro1.korofileheader",
-			"albymor.increment-selection",
-			"formulahendry.auto-rename-tag",
-			"formulahendry.auto-close-tag",
-			"jock.svg",
-			"align-text-like-table.align-text-like-table"
-		]
-	}
+        "editor.inlayHints.enabled": "off",
+        "editor.fontFamily": "Ubuntu Mono derivative Powerline,Ubuntu Mono,DejaVu Sans Mono",
+        "editor.foldingStrategy": "indentation",
+        "html.completion.attributeDefaultValue": "empty",
+        "editor.formatOnSave": false,
+        "editor.tokenColorCustomizations": {
+            "textMateRules": [
+                {
+                    "scope": "variable.parameter", //形参
+                    "settings": {
+                        "fontStyle": "italic",
+                        "foreground": "#8ff"
+                    }
+                },
+                {
+                    "scope":"keyword.operator.logical", // 逻辑运算符
+                    "settings": {
+                        "fontStyle": "bold",
+                        "foreground": "#e78",
+                    }
+                },
+                {
+                    "scope":"keyword.operator.assignment", // 赋值运算符
+                    "settings": {
+                        "fontStyle": "bold",
+                        "foreground": "#49f",
+                    }
+                },
+                {
+                    "scope":"keyword.operator.arithmetic", // 计算运算符
+                    "settings": {
+                        "fontStyle": "bold",
+                        "foreground": "#b78",
+                    }
+                },
+                {
+                    "scope":"keyword.operator.comparison", // 判断运算符
+                    "settings": {
+                        "foreground": "#ff0",
+                    }
+                },
+                {
+                    "scope":"source.cpp keyword.operator.new",
+                    "settings": {
+                        "fontStyle": "bold",
+                    }
+                }
+            ]
+        },
+        "workbench.colorCustomizations": {
+        },
+        "align-text-like-table.selector__separator": "(?: {3,})|(?:\t)",
+        "align-text-like-table.separator__align_after": "   ",
+        
+        "fileheader.configObj": {
+            "createFileTime": true,
+            "language": {
+                "js/ts/c/h/hpp/cpp/cs": {
+                    "head": "/*!",
+                    "middle": " * @",
+                    "end": " */",
+                    "functionSymbol": {
+                        "head": "/** ",
+                        "middle": " * @",
+                        "end": " */"
+                    },
+                    "functionParams": "js"
+                }
+            },
+            "autoAdd": false
+        }
+    },
+    "extensions": {
+        "recommendations": [
+            "obkoro1.korofileheader",
+            "albymor.increment-selection",
+            "formulahendry.auto-rename-tag",
+            "formulahendry.auto-close-tag",
+            "jock.svg",
+            "align-text-like-table.align-text-like-table"
+        ]
+    }
 }

@@ -1,12 +1,10 @@
 /*!
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
- * @Date: 2023-04-04 01:26:00
+ * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-01-11 15:32:04
- * @FilePath: \cnml\src\NML_Geometry.hpp
- * @Description: 提供部分数据结构和算法, 不区分维度的通用内容
- * @
- * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
+ * @LastEditTime: 2024-04-28 16:54:25
+ * @FilePath: \CNML\src\Geometry\NML_Geometry.cpp
+ * @Description: 通用图形计算, 提供部分数据结构和算法, 不区分维度的通用内容
  */
 
 #include "./NML_Geometry.hpp"

@@ -1,12 +1,10 @@
 /*!
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
- * @Date: 2023-04-04 01:26:00
+ * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-03-27 18:17:45
- * @FilePath: \CNML\src\NML_Bezier.cpp
+ * @LastEditTime: 2024-04-28 16:53:03
+ * @FilePath: \CNML\src\Geometry\NML_Bezier.cpp
  * @Description: 贝塞尔曲线
- * @
- * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
 
 #include "Algebra/NML_Algebra.hpp"

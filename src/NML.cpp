@@ -5,8 +5,6 @@
  * @LastEditTime: 2024-03-27 13:39:36
  * @FilePath: \CNML\src\NML.cpp
  * @Description: Nittle Math Library 简单数学库
- * 
- * @Copyright (c) 2023 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
  */
 
 #include "NML.hpp"

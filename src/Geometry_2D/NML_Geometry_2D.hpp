@@ -1,12 +1,10 @@
 /*!
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
- * @Date: 2023-04-04 01:26:00
+ * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-03-27 12:00:06
- * @FilePath: \cnml\src\NML_Geometry_2D.hpp
- * @Description: 提供2d基本图元数据结构和部分算法
- * @
- * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
+ * @LastEditTime: 2024-04-28 17:01:13
+ * @FilePath: \CNML\src\Geometry_2D\NML_Geometry_2D.hpp
+ * @Description: 2D图形相关内容
  */
 
 #ifndef __NML_GEOMETRY_2D__

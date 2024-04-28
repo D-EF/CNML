@@ -1,12 +1,10 @@
 /*!
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
- * @Date: 2023-04-04 01:26:00
+ * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-09-09 15:51:04
- * @FilePath: \cnml\src\NML_Matrix_2D.cpp
- * @Description: 2D 变换矩阵
- * @
- * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
+ * @LastEditTime: 2024-04-28 17:01:13
+ * @FilePath: \CNML\src\Geometry_2D\NML_Matrix_2D.cpp
+ * @Description: 2D 矩阵计算
  */
 
 #include "./NML_Matrix_2D.hpp"

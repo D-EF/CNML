@@ -1,3 +1,12 @@
+/*!
+ * @Author: Darth_Eternalfaith darth_ef@hotmail.com
+ * @Date: 2024-04-15 08:37:42
+ * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
+ * @LastEditTime: 2024-04-28 16:56:17
+ * @FilePath: \CNML\src\Geometry_2D\NML_Bezier_2D.cpp
+ * @Description: 2D 贝塞尔曲线相关计算
+ */
+
 #include "NML_Bezier_2D.hpp"
 #include "Geometry/NML_Bezier.hpp"
 #include "./NML_Geometry_2D.hpp"

@@ -1,3 +1,12 @@
+/*!
+ * @Author: Darth_Eternalfaith darth_ef@hotmail.com
+ * @Date: 2024-04-15 08:37:42
+ * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
+ * @LastEditTime: 2024-04-28 16:52:54
+ * @FilePath: \CNML\src\Algebra\test.cpp
+ * @Description: test 基本代数计算、向量、矩阵
+ */
+
 #include <iostream>
 #include "./NML_Algebra.hpp"
 #include "./NML_Matrix.hpp"

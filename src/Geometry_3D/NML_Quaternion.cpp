@@ -1,3 +1,12 @@
+/*!
+ * @Author: Darth_Eternalfaith darth_ef@hotmail.com
+ * @Date: 2024-04-15 08:37:42
+ * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
+ * @LastEditTime: 2024-04-28 17:06:13
+ * @FilePath: \CNML\src\Geometry_3D\NML_Quaternion.cpp
+ * @Description: 四元数
+ */
+
 #include "./NML_Quaternion.hpp"
 
 namespace NML{

@@ -2,11 +2,9 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-03-06 11:34:26
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-19 17:34:21
+ * @LastEditTime: 2024-04-28 15:26:30
  * @FilePath: \CNML\src\NML_Link_Block.hpp
  * @Description: 块状链表存储结构
- * @
- * @Copyright (c) 2023 by darth_ef@hotmail.com, All Rights Reserved. 
  */
 
 #ifndef __NML_Link_Block__
@@ -59,15 +57,13 @@ namespace NML{
             /** 插入操作时追加节点的数据长度, 使用 0 表示禁止自动追加节点 */
             Idx ex_link_block_length;
             /** 当擦除/覆盖时 是否对每个内容 delete*/
-            bool flag_delete_data_item;
+            Callback erase_callback;
         } Option_Act_LinkBlock;
 
         /** @brief 默认的设置操作 { 2, 2, 255, false } */
         extern Option_Act_LinkBlock _DEFAULT_LINK_BLOCK_ACT_OPTION;
-        /** @brief 默认的设置操作(指针) { 2, 2, 255, false } */
-        extern Option_Act_LinkBlock *DEFAULT_LINK_BLOCK_ACT_OPTION;
         /** @brief 获取默认的设置操作(指针) { 2, 2, 255, false } */
-        inline Option_Act_LinkBlock* get_DefaultLinkBlockActOption(){return DEFAULT_LINK_BLOCK_ACT_OPTION;}
+        Option_Act_LinkBlock* get_DefaultLinkBlockActOption();
 
         
         /**
@@ -81,7 +77,7 @@ namespace NML{
             rtn->next          = 0;
             rtn->length        = _length;
             rtn->used_length   = 0;
-            rtn->data          = new Value_Type(_length);
+            rtn->data          = new Value_Type[_length];
             return rtn;
         }
 
@@ -120,12 +116,11 @@ namespace NML{
             Link_Block_Node<Value_Type> *now=origin_node;
 
             if(index_offset>=0){
-                for(i=0;  i+now->used_length<index_offset;  i+=now->used_length, now=now->next) 
-                    if(!now) throw index_offset;
+                for(i=0; now && i+now->used_length<index_offset;  i+=now->used_length, now=now->next);
             }else{
-                for(i=0;  i>index_offset;  i-=now->used_length, now=now->prev) 
-                    if(!now) throw index_offset;
+                for(i=0; now && i>index_offset;  i-=now->used_length, now=now->prev);
             }
+            if(!now) throw index_offset;
             if(_out_node_head_index) *_out_node_head_index=index_offset-i;
             if(_out_node) *_out_node=now;
             return now->data[index_offset-i];
@@ -147,14 +142,14 @@ namespace NML{
          * @param origin_node              起始节点
          * @param index                    从第 index 个元素开始擦除
          * @param _erase_length            擦除多少个元素, 默认为 1
-         * @param _flag_delete_data_item   是否对每个元素执行 delete, 默认为 false接结束擦除行为, 默认为 0 (循环链表时应为头节点)
          * @param _out_node                输出擦除完成后的活跃节点,  默认为 0 (不输出)
+         * @param _erase_callback          擦除时对每个元素调用回调
          * @return 返回删除后从起始位置到结束位置有多少空闲空间
          */
         template <typename Value_Type> 
         Idx erase_LinkBlock(
             Link_Block_Node<Value_Type>* origin_node, Idx index, 
-            Idx _erase_length=1, Link_Block_Node<Value_Type>** _out_node=0
+            Idx _erase_length=1, Link_Block_Node<Value_Type>** _out_node=0, Callback _erase_callback=0
         ){
             if(_erase_length<1) return 0;
             redirect_LinkBlock(origin_node, index);
@@ -165,6 +160,11 @@ namespace NML{
             erase_end=_erase_length+index;
 
             while(now && erase_end>now->used_length){
+                if(_erase_callback){
+                    for(i=index;  i<erase_end && i<now->used_length;  ++i){
+                        _erase_callback((void*)&now->data[i]);
+                    }
+                }
                 erase_end-=now->used_length;
                 rtn+=now->length-index;
                 now->used_length=index;
@@ -199,14 +199,16 @@ namespace NML{
             Link_Block_Node<Value_Type> *&now=origin_node;
 
             Idx offset = _flag_used ? now->used_length : now->length;
-            Idx left=0, right = offset -index;
+            Idx left, right = offset-index, temp_used_length;
 
-            if(right>length){
-                right=length;
+            if(right>=length){
+                std::copy(data, data+length, now->data+index);
+                if(_reset_last_used) now->used_length=length+index;
+                return length;
             }
-            std::copy(data+left, data+right, now->data+index);
-            if( right<length || _reset_last_used) now->used_length=offset;
 
+            now->used_length=offset;
+            std::copy(data, data+right, now->data+index);
             now = now->next;
 
             while(right<length && now){
@@ -214,8 +216,9 @@ namespace NML{
                 right = right + (_flag_used ? now->used_length : now->length);
                 if(right>length) right=length;
                 std::copy(data+left, data+right, now->data);
-                if(right==length && !_reset_last_used) break;
-                now->used_length=right-left;
+                temp_used_length=right-left;
+                if(right==length && !_reset_last_used && now->used_length>temp_used_length) break;
+                now->used_length=temp_used_length;
                 now = now->next;
             }
             return right;
@@ -282,8 +285,12 @@ namespace NML{
                 ++idx_read;
             }while(!((read==origin_node) && (idx_read==index)));
 
+            if(idx_write>=offset_write){
+                idx_write=0;
+                write=write->next;
+            }
             if(_out_index) *_out_index=idx_write;
-            if(_out_node) *_out_node=write;
+            if(_out_node)  *_out_node =write;
             return shift_length;
         }
 
@@ -349,53 +356,83 @@ namespace NML{
             return back_length;
         }
         
+        
+        /** 插入新节点到块状链表中
+         * @param node      在这个节点的后面插入新节点
+         * @param length    新节点的数据长度
+         * @return 返回新节点的指针
+         */
+        template <typename Value_Type> 
+        inline Link_Block_Node<Value_Type>* insert_LinkBlockNode(Link_Block_Node<Value_Type>* node, Idx length){
+            Link_Block_Node<Value_Type>* add_node = new Link_Block_Node<Value_Type>;
+            add_node->data = new Value_Type[length];
+            add_node->length = length;
+            add_node->used_length = 0;
+            add_node->next = node->next;
+            add_node->prev = node;
+            if(node->next) node->next->prev = add_node;
+            node->next = add_node;
+            return add_node;
+        }
 
         /**
          * 插入/替换中间部分内容
-         * @param origin_node   基准位置节点, 作为 0 下标的基准
-         * @param index         从哪个下标位置开始操作
-         * @param free_length   清理数据的长度
-         * @param _ex_value     用于插入的数据
-         * @param _ex_length    插入数据的长度
-         * @param _option       用于控制插入时的行为模式的参数
-         * @param _head_node    头部节点, 用于控制寻址的边界
-         * @param _tail_node    尾部节点, 用于控制寻址的边界
+         * @param origin_node    基准位置节点, 作为 0 下标的基准
+         * @param index          从哪个下标位置开始操作
+         * @param erase_length   清理数据的长度
+         * @param _ex_value      用于插入的数据
+         * @param _ex_length     插入数据的长度
+         * @param _option        用于控制插入时的行为模式的参数
+         * @param _head_node     头部节点, 用于控制寻址的边界
+         * @param _tail_node     尾部节点, 用于控制寻址的边界
+         * @throw int 抛出 int 类型异常时表示可用空间不足
          */
         template <typename Value_Type> 
         void splice_LinkBlock(
-            Link_Block_Node<Value_Type>* origin_node, Idx index, Idx free_length,
-            Value_Type* _ex_value=0, Idx _ex_length=0, Option_Act_LinkBlock* _option=DEFAULT_LINK_BLOCK_ACT_OPTION, Link_Block_Node<Value_Type>* _head_node=0, Link_Block_Node<Value_Type>* _tail_node=0
+            Link_Block_Node<Value_Type>* origin_node, Idx index, Idx erase_length,
+            Value_Type* _ex_value=0, Idx _ex_length=0, Option_Act_LinkBlock* _option=0
         ){
-            if(free_length<0){
-                index -= free_length;
-                free_length =- free_length;
-            }
-            if(_ex_length<0)_ex_length=0;
-            Link_Block_Node<Value_Type> *now=origin_node;
-            Link_Block_Node<Value_Type> *erase_node;
-            Link_Block_Node<Value_Type> *left_node, *right_node;
-            redirect_LinkBlock(origin_node, index);
+            redirect_LinkBlock(origin_node,index);
             
-            if(free_length){
-                free_length=erase_LinkBlock(now, index, free_length, _option->flag_delete_data_item);
-            }
-            if((!_ex_value)||(_ex_length<1)){  // 无插入操作
-                return;
-            }
-            
-            Idx left_index, right_index, back_off_length;
-            
-            free_length = backOff_LinkBlock(now, index, _ex_length, &right_node, &right_index, _option->find_free_max_after_node_count);
+            Link_Block_Node<Value_Type>* now = origin_node;
 
-            if(free_length>_ex_value){
-                rape_LinkBlock(now,index,_ex_value, _ex_length, false, true);
+            Idx free_length__after  = erase_LinkBlock(origin_node, index, erase_length, &now);
+            Idx free_length = 0;
+            Idx node_length = -1;
+
+            if(!_option) _option=get_DefaultLinkBlockActOption();
+
+            // 向后检查空闲空间
+            while(free_length__after < _ex_length  &&  now  &&  node_length < _option->find_free_max_after_node_count){
+                free_length__after += now->length - now->used_length;
+                now = now->next;
+                ++node_length;
             }
 
-            free_length += shiftForward_LinkBlock(now,index,_ex_length-free_length,0,0);
-
-            if(free_length>_ex_value){
-                rape_LinkBlock(now,index,_ex_value, _ex_length, false, true);
+            // 向前检查空闲空间
+            node_length=0;
+            now=origin_node->prev;
+            free_length=free_length__after;
+            while(free_length < _ex_length  &&  now  &&  node_length < _option->find_free_max_before_node_count){
+                free_length += now->length - now->used_length;
+                now = now->prev;
+                ++node_length;
             }
+
+            if(free_length < _ex_length){ // 可用空间不足
+                if(_option->ex_link_block_length < 0) throw _ex_length - free_length;
+                do{
+                    insert_LinkBlockNode(origin_node, _option->ex_link_block_length);
+                    free_length += _option->ex_link_block_length;
+                    free_length__after += _option->ex_link_block_length;
+                }while(free_length < _ex_length);
+            }
+
+            now = origin_node;
+            free_length = _ex_length - backOff_LinkBlock(now,index,free_length__after<_ex_length?free_length__after:_ex_length);
+            if(free_length>0)shiftForward_LinkBlock(now, index, free_length, &now, &index);
+            
+            rape_LinkBlock(now,index,_ex_value,_ex_length);
 
         }
 
@@ -407,30 +444,66 @@ namespace NML{
          * @param _min_length   当合并后的节点容量小于 _min_length 时, 使用 _min_length 作为节点的容量
          */
         template <typename Value_Type> 
-        Link_Block_Node<Value_Type>* merge_LinkBlock(Link_Block_Node<Value_Type>*& origin_node, Idx node_length, Idx _min_length=__DEFAULT_LINK_BLOCK_SIZE__);
+        Link_Block_Node<Value_Type>* merge_LinkBlock(Link_Block_Node<Value_Type>*& origin_node, Idx node_length, Idx _min_length=__DEFAULT_LINK_BLOCK_SIZE__){
+            if(node_length<=1)return origin_node;
+            Link_Block_Node<Value_Type>* prev=origin_node->prev;
+            Link_Block_Node<Value_Type>* now=origin_node;
+            Idx new_length = 0, node_index = 0;
+            while(now && node_index<node_length){
+                new_length += now->used_length;
+                now = now->next;
+                ++node_index;
+            }
+
+            Link_Block_Node<Value_Type>* new_node = new Link_Block_Node<Value_Type>;
+            new_node->length = new_length<_min_length?_min_length:new_length;
+            new_node->used_length = new_length;
+            new_node->data = new Value_Type[new_length];
+            node_index=new_length=0;
+            now=origin_node;
+            while(now && node_index<node_length){
+                std::copy(now->data, now->data+now->used_length, new_node->data+new_length);
+                ++node_index;
+                new_length+=now->used_length;
+                now=now->next;
+                if(now->prev){
+                    delete now->prev->data;
+                    delete now->prev;
+                }
+            }
+            new_node->next=now;
+            now->prev=new_node;
+            if(prev){
+                prev->next=new_node;
+                new_node->prev=prev;
+            }else{
+                origin_node=new_node;
+                new_node->prev=0;
+            }
+            
+            return new_node;
+        }
         
 
         /** 
          * @brief 释放/销毁 后段块状链表
          * @param header_node 起始节点, 当访问 next 为 0 或 header_node 时, 会认为是到达了尾部节点
-         * @param _flag_delete_data_item 是否对每个数据元素执行 delete 关键字, 默认 false
-         * @param _erase_callback  是否对每个数据元素执行 _erase_callback
+         * @param _erase_callback  如果存在则对每个数据元素执行 _erase_callback
          */
         template <typename Value_Type> 
-        void free_LinkBlock(Link_Block_Node<Value_Type>* header_node,bool _flag_delete_data_item=false, Callback _erase_callback=0){
+        void free_LinkBlock(Link_Block_Node<Value_Type>* header_node, Callback _erase_callback=0){
             Link_Block_Node<Value_Type> *now=header_node, *temp;
             Idx i;
 
             while(now){
-                now->prev=0;
-                temp=now->next;
-                now->next=0;
-                if(_flag_delete_data_item){
+                if(_erase_callback){
                     for(i=0;  i<now->used_length;  ++i){
-                        delete now->data[i];
+                        _erase_callback((void*)&now->data[i]);
                     }
                 }
-                delete now;
+                temp=now;
+                now=now->next;
+                delete temp;
             }
         }
 
@@ -530,11 +603,15 @@ namespace NML{
 
             /** @brief 创建一个新链表 */
             Link_Block_Ctrl(Idx _length=__DEFAULT_LINK_BLOCK_SIZE__, Option_Act_LinkBlock* _option=0){
-                end_node =origin_node=head_node=new Link_Block_Node<Value_Type>{ 0, 0, _length, 0, new Value_Type(_length) };
+                end_node =origin_node=head_node=new Link_Block_Node<Value_Type>{ 0, 0, _length, 0, new Value_Type[_length] };
 
                 origin_index__item = origin_index__node = used_length=0;
                 max_length=_length;
             };
+
+            ~Link_Block_Ctrl(){
+                free_LinkBlock(head_node,get_Option()->erase_callback);
+            }
 
             void add_Node(Link_Block_Node<Value_Type>* node){
                 node_length++;
@@ -598,22 +675,22 @@ namespace NML{
             /**
              * @brief 替换内容
              * @param op_index        下标
-             * @param delete_length   插入的数据
+             * @param erase_length    插入的数据
              * @param inset_data      插入的数据
              * @param length          插入的数据
-             * @param _out_address    将 op_index ~ op_index+delete_length 内容复制到输出位置
+             * @param _out_address    将 op_index ~ op_index+erase_length  内容复制到输出位置
              */
-            void splice(Idx op_index, Idx delete_length, Value_Type* inset_data, Idx length, Value_Type* _out_address=0);
+            void splice(Idx op_index, Idx erase_length, Value_Type* inset_data, Idx length, Value_Type* _out_address=0);
 
             /**
              * @brief 替换内容
              * @param op_index        下标
-             * @param delete_length   插入的数据
+             * @param erase_length    插入的数据
              * @param inset_data      插入的数据
              * @param length          插入的数据
-             * @param _out_address    将 op_index ~ op_index+delete_length 内容复制到输出位置
+             * @param _out_address    将 op_index ~ op_index+erase_length  内容复制到输出位置
              */
-            void splice(Idx op_index, Idx delete_length, Link_Block_Node<Value_Type> inset_data, Value_Type* _out_address=0);
+            void splice(Idx op_index, Idx erase_length, Link_Block_Node<Value_Type> inset_data, Value_Type* _out_address=0);
 
             /**
              * @brief 重新计算链表的长度
@@ -632,8 +709,6 @@ namespace NML{
             }
             
         };
-
-
 
     }
 }
