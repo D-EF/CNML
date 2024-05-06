@@ -2,13 +2,14 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-20 00:58:11
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-07 11:19:50
+ * @LastEditTime: 2024-04-29 11:01:35
  * @FilePath: \CNML\src\test.cpp
  * @Description: 单元测试 入口文件
  */
 
 #include "unit_test_basics.hpp"
 #include "Algebra/test.cpp"
+#include "Geometry/test.cpp"
 #include "Link_Block/test.cpp"
 
 int main(int argc, char **argv){
@@ -16,7 +17,8 @@ int main(int argc, char **argv){
     // add_TestAct(test_Vector,"test_Vector");
     // add_TestAct(test_Matrix,"test_Matrix");
     // add_TestAct(test_Algebra,"test_Algebra");
-    add_TestAct(test_LinkBlock,"test_LinkBlock");
+    // add_TestAct(test_LinkBlock,"test_LinkBlock");
+    add_TestAct(test_Bezier,"test_Bezier");
     run_Test();
     return 0;
 }

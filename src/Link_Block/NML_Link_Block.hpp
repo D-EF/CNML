@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-03-06 11:34:26
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-28 15:26:30
+ * @LastEditTime: 2024-04-29 11:03:04
  * @FilePath: \CNML\src\NML_Link_Block.hpp
  * @Description: 块状链表存储结构
  */
@@ -156,7 +156,7 @@ namespace NML{
 
             Link_Block_Node<Value_Type> *now = origin_node;
 
-            Idx &erase_end=_erase_length,  rtn=0;
+            Idx &erase_end=_erase_length,  rtn=0, i;
             erase_end=_erase_length+index;
 
             while(now && erase_end>now->used_length){

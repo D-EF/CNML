@@ -264,6 +264,7 @@ namespace NML{
   * m2d            : 2D矩阵 ( matrix two dimensional )
   * m3d            : 3D矩阵 ( matrix three dimensional )
   * det            : 行列式 ( determinant )
+  * dimensional    : 维度
   * u              : u 坐标 (水平坐标)
   * v              : v 坐标 (垂直坐标)
   * x              : x 坐标
@@ -293,6 +294,7 @@ namespace NML{
   * prev           : 前一个 (previous)
   * tgt            : 目标 (target)
   * now            : 当前 (指针/节点)
+  * origin         : 源/起点/初始值
   ```
   
   ### 动词和动词短语
@@ -312,6 +314,7 @@ namespace NML{
   * give up            : 淘汰 (淘汰缓存)
   * stand back         : 靠后排列
   * rape copy          : 强制覆盖
+  * empty              : 置空
   ```
   
   ### 函数形参中的特殊名词

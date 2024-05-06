@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-28 17:01:13
+ * @LastEditTime: 2024-04-30 17:02:21
  * @FilePath: \CNML\src\Geometry_2D\NML_Matrix_2D.hpp
  * @Description: 2D 矩阵变换
  */
@@ -49,6 +49,35 @@ namespace NML{
          */
         void printf_M2dCss(var*& mat);
 
+
+        // 代码中类似 矩阵左乘向量
+
+        /**
+         * @brief 对向量进行变换
+         * @param vec 需要变换的向量(2D), 将会被修改
+         * @param mat 变换矩阵
+         */
+        inline void transform_Vector2D( var*& vec, var*& mat){
+            var x = mat[mxx]*vec[0]  +  mat[myx]*vec[1]  +  mat[mzx];
+            var y = mat[mxy]*vec[0]  +  mat[myy]*vec[1]  +  mat[mzy];
+            vec[0] = x;   vec[1] = y;
+        }
+
+
+        /**
+         * @brief 对向量进行变换
+         * @param vec 需要变换的向量(2D), 将会被修改
+         * @param mat 变换矩阵
+         * @param _homogeneous_value 齐次坐标的参数值, 默认为 1; 用于将 2D 向量当作 3D [vec[0], vec[1], _homogeneous_value] 与3x3矩阵 进行矩阵乘法
+         * @return 输出 变换后的 _homogeneous_value
+         */
+        inline var transform_Vector2D( var*& vec, var*& mat, var _homogeneous_value){
+            var x = mat[mxx]*vec[0]  +  mat[myx]*vec[1]  +  mat[mzx]*_homogeneous_value;
+            var y = mat[mxy]*vec[0]  +  mat[myy]*vec[1]  +  mat[mzy]*_homogeneous_value;
+            var z = mat[mxz]*vec[0]  +  mat[myz]*vec[1]  +  mat[mzz]*_homogeneous_value;
+            vec[0] = x;   vec[1] = y;
+            return z;
+        }
         
         /**
          * @brief 写入矩阵数据

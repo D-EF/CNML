@@ -5,20 +5,16 @@
 
 * 线性变换在 左乘矩阵 和 右乘矩阵 中有区分, 左乘使用的矩阵在右乘时可能需要做出转置的操作
 
-* 左乘矩阵 2D 变换矩阵
+* 默认 2D 变换矩阵左乘向量
     $$
-    \begin{bmatrix}
-        a,b,0 \\
-        c,d,0 \\
-        x,y,1 \\
-    \end{bmatrix}
+    \begin{pmatrix} v_0 , v_1 , 1 \end{pmatrix}
     ·
-    \begin{pmatrix}
-        v_0 \\
-        v_1 \\
-        1 \\
-    \end{pmatrix}
+    \begin{bmatrix}
+        m_{xx},   m_{xy},   0 \\
+        m_{yx},   m_{yy},   0 \\
+        t_x,      t_y,      1 \\
+    \end{bmatrix}
     $$
-    * 其中 { a, b, c, d } 是变换矩阵部分; { x, y } 是齐次坐标部分; { 0, 0, 1 } 是可省略的列; 右侧为原向量
+    * 其中 { m_xx, m_xy, m_yx, m_yy } 是变换矩阵部分; { t_x, t_y } 是齐次坐标部分; { 0, 0, 1 } 是可省略的列; 右侧为原向量
 
 

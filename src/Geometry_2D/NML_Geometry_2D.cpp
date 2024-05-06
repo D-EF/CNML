@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-28 17:01:13
+ * @LastEditTime: 2024-04-30 10:41:21
  * @FilePath: \CNML\src\Geometry_2D\NML_Geometry_2D.cpp
  * @Description: 2D图形相关内容
  */
@@ -48,6 +48,43 @@ namespace NML{
             }
         }
 
+        void transform_AABB(var*& min, var*& max, var*& transform_matrix){
+            using namespace NML::Matrix_2D;
+            var min_x = 0, min_y = 0,
+                max_x = 0, max_y = 0;
+            if(transform_matrix[mxx]>0){
+                min_x += min[0] * transform_matrix[mxx];
+                max_x += max[0] * transform_matrix[mxx];
+            }else{
+                min_x += max[0] * transform_matrix[mxx];
+                max_x += min[0] * transform_matrix[mxx];
+            }
+            if(transform_matrix[mxy]>0){
+                min_y += min[1] * transform_matrix[mxy];
+                max_y += max[1] * transform_matrix[mxy];
+            }else{
+                min_y += max[1] * transform_matrix[mxy];
+                max_y += min[1] * transform_matrix[mxy];
+            }
+            if(transform_matrix[myx]>0){
+                min_x += min[0] * transform_matrix[myx];
+                max_x += max[0] * transform_matrix[myx];
+            }else{
+                min_x += max[0] * transform_matrix[myx];
+                max_x += min[0] * transform_matrix[myx];
+            }
+            if(transform_matrix[myy]>0){
+                min_y += min[1] * transform_matrix[myy];
+                max_y += max[1] * transform_matrix[myy];
+            }else{
+                min_y += max[1] * transform_matrix[myy];
+                max_y += min[1] * transform_matrix[myy];
+            }
+            min[0] = min_x + transform_matrix[tx];
+            min[1] = min_y + transform_matrix[ty];
+            max[0] = max_x + transform_matrix[tx];
+            max[1] = max_y + transform_matrix[ty];
+        }
 
         Rect_Data& normalize_RectData(Rect_Data& rect_data){
             if(rect_data.w<0){

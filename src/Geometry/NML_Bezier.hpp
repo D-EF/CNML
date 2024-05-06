@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-28 16:53:03
+ * @LastEditTime: 2024-04-29 14:49:25
  * @FilePath: \CNML\src\Geometry\NML_Bezier.hpp
  * @Description: 贝塞尔曲线
  */
@@ -115,13 +115,13 @@ namespace NML{
          */
         Points_Iterator& calc_BezierCtrlPoints__Coefficients(Points_Iterator& out, Points_Iterator& coefficients);
 
-        /** 计算 贝塞尔曲线拟合圆弧 的 k 值
+        /** 计算 三阶贝塞尔曲线拟合圆弧 的 k 值
          * @param   angle 终点与 (1, 0) 夹角弧度
          * @return  返回用于计算拟合圆弧的 k 值
          */
         inline var calc_K__BezierToCyles(var angle){return FOUR_OVER_THREE*tan(angle*0.25);}
         
-        /** @brief 贝塞尔曲线拟合四分之一圆 的 k 值 */
+        /** @brief 三阶贝塞尔曲线拟合四分之一圆 的 k 值 */
         extern const var BEZIER_TO_CYCLES_K__1D4;
 
         // 三阶二维贝塞尔曲线拟合圆弧公式

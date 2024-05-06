@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-28 17:09:16
+ * @LastEditTime: 2024-04-30 17:15:38
  * @FilePath: \CNML\src\Geometry_3D\NML_Matrix_3D.hpp
  * @Description: 3D 矩阵变换
  */
@@ -49,6 +49,36 @@ namespace NML{
          * @param mat 矩阵数据
          */
         void printf_M3dCss(var*& mat);
+
+
+        /**
+         * @brief 对向量进行变换
+         * @param vec 需要变换的向量(3D), 将会被修改
+         * @param mat 变换矩阵
+         */
+        inline void transform_Vector3D( var*& vec, var*& mat){
+            var x = mat[mxx]*vec[0]  +  mat[myx]*vec[1]  +  mat[mzx]*vec[2]  +  mat[mwx];
+            var y = mat[mxy]*vec[0]  +  mat[myy]*vec[1]  +  mat[mzy]*vec[2]  +  mat[mwy];
+            var z = mat[mxz]*vec[0]  +  mat[myz]*vec[1]  +  mat[mzz]*vec[2]  +  mat[mwz];
+            vec[0] = x;   vec[1] = y;   vec[2] = z;
+        }
+
+
+        /**
+         * @brief 对向量进行变换
+         * @param vec 需要变换的向量(3D), 将会被修改
+         * @param mat 变换矩阵
+         * @param _homogeneous_value 齐次坐标的参数值, 默认为 1; 用于将 3D 向量当作 4D [vec[0], vec[1], vec[2], _homogeneous_value] 与4x4矩阵 进行矩阵乘法
+         * @return 输出 变换后的 _homogeneous_value
+         */
+        inline var transform_Vector3D( var*& vec, var*& mat, var _homogeneous_value){
+            var x = mat[mxx]*vec[0]  +  mat[myx]*vec[1]  +  mat[mzx]*vec[2]  +  mat[mwx]*_homogeneous_value;
+            var y = mat[mxy]*vec[0]  +  mat[myy]*vec[1]  +  mat[mzy]*vec[2]  +  mat[mwy]*_homogeneous_value;
+            var z = mat[mxz]*vec[0]  +  mat[myz]*vec[1]  +  mat[mzz]*vec[2]  +  mat[mwz]*_homogeneous_value;
+            var w = mat[mxw]*vec[0]  +  mat[myw]*vec[1]  +  mat[mzw]*vec[2]  +  mat[mww]*_homogeneous_value;
+            vec[0] = x;   vec[1] = y;   vec[2] = z;
+            return w;
+        }
 
 
         /**

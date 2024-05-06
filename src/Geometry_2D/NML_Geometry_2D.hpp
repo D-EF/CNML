@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-28 17:01:13
+ * @LastEditTime: 2024-04-30 10:41:45
  * @FilePath: \CNML\src\Geometry_2D\NML_Geometry_2D.hpp
  * @Description: 2D图形相关内容
  */
@@ -12,6 +12,7 @@
 
 #include "NML.hpp"
 #include "Algebra/NML_Vector.hpp"
+#include "./NML_Matrix_2D.hpp"
 
 namespace NML{
     
@@ -54,6 +55,15 @@ namespace NML{
                 return check_Inside__Range(aabb_p0.x,aabb_p1.x,p.x) && 
                        check_Inside__Range(aabb_p0.y,aabb_p1.y,p.y) ;
             }
+
+            
+            /**
+             * @brief 将一个 AABB 进行线性变换后得到新的 AABB
+             * @param min 原 AABB 的 min 向量, 函数执行后将被修改 
+             * @param max 原 AABB 的 max 向量, 函数执行后将被修改 
+             * @param transform_matrix 变换矩阵
+             */
+            void transform_AABB(var*& min, var*& max, var*& transform_matrix);
 
             
             // open * 矩形 * open
@@ -186,22 +196,21 @@ namespace NML{
 
         // end  * 2D 基本数据结构体 * end 
 
+        /**
+         * @brief 生成旋转值单位向量
+         * @param out   输出地址
+         * @param theta 旋转量
+         * @return 修改并返回 out
+         */
+        inline var*& setup_Vector2__Rotate(var*&out, var theta){   out[0]=cos(theta);   out[1]=sin(theta);   return out;   }
 
         /**
          * @brief 生成旋转值单位向量
          * @param out   输出地址
-         * @param angle 旋转量
+         * @param theta 旋转量
          * @return 修改并返回 out
          */
-        inline var*& setup_Vector2__Rotate(var*&out, var angle){   out[0]=cos(angle);   out[1]=sin(angle);   return out;   }
-
-        /**
-         * @brief 生成旋转值单位向量
-         * @param out   输出地址
-         * @param angle 旋转量
-         * @return 修改并返回 out
-         */
-        inline Point_2D calc_Point2D__Rotate(var angle){   return { cos(angle), sin(angle) };   }
+        inline Point_2D calc_Point2D__Rotate(var theta){   return { cos(theta), sin(theta) };   }
 
         /**
          * @brief 判断点是否在夹角的内部
