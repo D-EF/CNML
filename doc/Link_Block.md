@@ -8,11 +8,6 @@
         /** @brief 创建块状链表存储的默认单块长度 size */
         #define __DEFAULT_LINK_BLOCK_SIZE__ 256
     #endif
-
-    #ifndef __MAX_LINK_BLOCK_SIZE__
-        /** @brief 创建块状链表存储的单块最大长度 size */
-        #define __MAX_LINK_BLOCK_SIZE__ 65536
-    #endif
     ```
 
 * 基本数据结构:

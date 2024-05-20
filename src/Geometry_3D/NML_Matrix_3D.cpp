@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-28 17:06:13
+ * @LastEditTime: 2024-05-07 08:49:16
  * @FilePath: \CNML\src\Geometry_3D\NML_Matrix_3D.cpp
  * @Description: 3D 矩阵变换
  */
@@ -75,7 +75,7 @@ namespace NML{
                 v_mzw=mat[mzw];
                 v_mww=mat[mww];
             }
-            printf("transform:matrix3d(%f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f);\n",
+            printf("matrix3d(%f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f)\n",
                 mat[mxx],   mat[mxy],   mat[mxz],   v_mxw,
                 mat[myx],   mat[myy],   mat[myz],   v_myw,
                 mat[mzx],   mat[mzy],   mat[mzz],   v_mzw,

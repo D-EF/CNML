@@ -48,11 +48,11 @@ namespace NML{
 ## 编码规范
   * 命名和编码时避免用1表示起始, 应该使用0;
   * 左花括号不换行, 右花括号要换行;
-  * 指针(引用)符号(*&) 在函数、形参的类型中往类型名靠; 在变量声明时往变量名靠;
+  * 声明变量时指针或引用符号(*&) 在只有一个变量名时往类型名靠; 在一次声明多个变量时往变量名靠;
     ``` cpp
       int* fnc(int* list, int length){
-        int *rtn=list;
-        for(int i=0; i<length; ++i){
+        int *rtn=list, i;
+        for(i=0; i<length; ++i){
           if(i%2){
             rtn+=list[i];
           }else{
@@ -397,11 +397,6 @@ namespace NML{
 * 块状链表存储结构 Points_Iterator__Link ,可以运行中添加空间, 用于mesh或其它需要频繁修改长度的操作
     * 使用 成员函数 **void append_Block(Idx size)** 进行追加空间的操作, size 为追加块的 **var \*data** 的长度
     * Points_Iterator__Link 使用循环块状链表表存储, 其中 data 为尾块的指针
-    * 单块空间大小有最大值和最小值, 使用宏定义 
-    ```c++
-        #define __DEFAULT_LINK_BLOCK_SIZE__ 256
-        #define __MAX_LINK_BLOCK_SIZE__ 65536
-    ```
     * 点坐标数据存储在每块的data指针处, 多余的空间会被空省
     ```
         // 当前块的空间大小为14, 点维度为3

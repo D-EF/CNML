@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-02-28 10:05:05
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-01 11:01:40
+ * @LastEditTime: 2024-05-13 11:19:11
  * @FilePath: \CNML\src\Algebra\NML_Algebra.cpp
  * @Description: 基本数与代数运算
  */
@@ -99,9 +99,9 @@ namespace NML{
 
 
         Idx_Algebra calc_Roots__Square(var*& out, var*& coefficients){
-            var a=coefficients[2]||0,
-                b=coefficients[1]||0,
-                c=coefficients[0]||0;
+            var a=coefficients[2],
+                b=coefficients[1],
+                c=coefficients[0];
             if(a==0) {
                 out[0] = calc_Root__Line(c,b);
                 return 1;
@@ -120,10 +120,10 @@ namespace NML{
         }
         
         Idx_Algebra calc_Roots__Cubic(var*& out, var*& coefficients){
-            var a=coefficients[2]||0,
-                b=coefficients[1]||0,
-                c=coefficients[0]||0,
-                d=coefficients[3]||0;
+            var a=coefficients[2],
+                b=coefficients[1],
+                c=coefficients[0],
+                d=coefficients[3];
 
             //一元一至三次函数求根公式编程表示 来自 https://pomax.github.io/bezierinfo/zh-CN/index.html#extremities
             

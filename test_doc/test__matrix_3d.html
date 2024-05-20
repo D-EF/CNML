@@ -10,52 +10,226 @@
             position: absolute;
             transform-style: preserve-3d;
         }
-        .box{
-            transform:translateX(-50px) translateY(200px);
-        }
         .box_face{
-            border: 2px #f00 solid;
+            border: 5px solid;
+            box-sizing: border-box;
             backface-visibility: inherit;
             width: 100px;
             height: 100px;
+            transform-origin: 50% 50%;
         }
 
-        .front    {background-color: #f004; transform: translateZ(50px);}
-        .back     {background-color: #0f04; transform: rotateY(180deg) translateZ(50px);}
-        .right    {background-color: #00f4; transform: rotateY(90deg) translateZ(50px);}
-        .left     {background-color: #ff04; transform: rotateY(-90deg) translateZ(50px);}
-        .top      {background-color: #0ff4; transform: rotateX(90deg) translateZ(50px);}
-        .bottom   {background-color: #f0f4; transform: rotateX(-90deg) translateZ(50px);}
+        .box .target{
+            position:absolute;
+            transform:translateX(00px) translateY(0px) translateZ(50px)
+        }
+        .xy    {border-color:#f00; background-color: #0004; transform: rotateZ(00deg);}
+        .yz    {border-color:#0f0; background-color: #0004; transform: rotateX(90deg);}
+        .zx    {border-color:#00f; background-color: #0004; transform: rotateY(-90deg);}
+        .front    {border-color:#f008; background-color: #f004; transform: translateZ(50px);}
+        .back     {border-color:#0f08; background-color: #0f04; transform: rotateY(180deg) translateZ(50px);}
+        .right    {border-color:#00f8; background-color: #00f4; transform: rotateY(90deg) translateZ(50px);}
+        .left     {border-color:#ff08; background-color: #ff04; transform: rotateY(-90deg) translateZ(50px);}
+        .top      {border-color:#0ff8; background-color: #0ff4; transform: rotateX(90deg) translateZ(50px);}
+        .bottom   {border-color:#f0f8; background-color: #f0f4; transform: rotateX(-90deg) translateZ(50px);}
 
         .camera{
             perspective-origin:0 0;
             left: 50%;
             top: 50%;
+            user-select: none;
         }
         .viewport{
-            width: 100%;
-            height: 100%;
+            left:300px;
+            width:  800px;
+            height: 800px;
             perspective: 500px;
+            border:5px #000 solid;
+            overflow: hidden;
         }
-        .target{
-            transform: rotateX(0deg) translateZ(-600px) rotateY(15deg);
+        .world{
+            transform: scaleZ(-1) scaleY(-1) rotateX(-10deg) rotateY(10deg);
+        }
+        .world *{
+            pointer-events:none;
+        }
+        .axis{
+            transform-origin: 0 0;
+
+        }
+        .axis_face {
+            width:  1600px;
+            height: 1600px;
+            transform-origin: 0 0;
+        }
+        .axis_face>img{
+            opacity: 0.2;
+            width:  100%;
+            height: 100%;
+        }
+        .axis_face.xy    {background-color: #f884;}
+        .axis_face.yz    {background-color: #8f84;}
+        .axis_face.zx    {background-color: #88f4;}
+        .axis_line{
+            position: absolute;
+            width: 3000px;
+            height:0;
+            transform-origin: 0 0;
+        }
+        .axis_line.x{ transform: rotateX(90deg) translateX(0)}
+        .axis_line.y{ transform: rotateZ(90deg) translateX(0)}
+        .axis_line.z{ transform: rotateY(-90deg) translateX(0)}
+        .axis_line.x::after, .axis_line.x::before{content: "";display: block; width: 100%; border:3px #f00 solid; position:absolute; top:-3px; } .axis_line.x::after{transform:rotateX(90deg);}
+        .axis_line.y::after, .axis_line.y::before{content: "";display: block; width: 100%; border:3px #0f0 solid; position:absolute; top:-3px; } .axis_line.y::after{transform:rotateX(90deg);}
+        .axis_line.z::after, .axis_line.z::before{content: "";display: block; width: 100%; border:3px #00f solid; position:absolute; top:-3px; } .axis_line.z::after{transform:rotateX(90deg);}
+
+        .box{
+            /* transform: translateZ(100px); */
+        }
+        .transform_input_box{
+            width:300px;
+        }
+        #transform_style_input{
+            width:280px;
+        }
+        .transform_input_box *{
+            position:relative;
         }
     </style>
+    <style id="transform_style_ctrl"> </style>
 </head>
 <body>
+
+
     <div class="viewport">
         <div class="camera">
-            <div class="target">
+            <div class="world">
+                <div class="axis">
+                    <div class="axis_line x"></div>
+                    <div class="axis_line y"></div>
+                    <div class="axis_line z"></div>
+                    <div class="axis_face xy"><img src="./SpritesMap.svg"/></div>
+                    <div class="axis_face yz"><img src="./SpritesMap.svg"/></div>
+                    <div class="axis_face zx"><img src="./SpritesMap.svg"/></div>
+                </div>
                 <div class="box">
-                    <div class="box_face front "></div>
-                    <div class="box_face back  "></div>
-                    <div class="box_face right "></div>
-                    <div class="box_face left  "></div>
-                    <div class="box_face top   "></div>
-                    <div class="box_face bottom"></div>
+                    <div class=target>
+                        <div class="box_face xy"></div>
+                        <div class="box_face yz"></div>
+                        <div class="box_face zx"></div>
+
+                        <div class="box_face front "></div>
+                        <div class="box_face back  "></div>
+                        <div class="box_face right "></div>
+                        <div class="box_face left  "></div>
+                        <div class="box_face top   "></div>
+                        <div class="box_face bottom"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="transform_input_box">
+        <div>
+            now transform:  <br>
+            <span id="now_transform">matrix(1, 0, 0, 1, 0, 0);</span>
+        </div>
+        <br>
+        <br>
+        <textarea id="transform_style_input" name="transform_style_input"></textarea>
+        <br>
+        <button id="add_transform_style">input</button>
+        <ul class="transform_list">
+            <li><span>matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)</span></li>
+        </ul>
+    </div>
+
+    <script>
+        // 设置变换
+            /** @type {HTMLDivElement} 元素 */
+            var box=document.getElementsByClassName("box")[0];
+            var now_transform=document.getElementById("now_transform");
+            var add_transform_style=document.getElementById("add_transform_style");
+            var transform_style_input=document.getElementById("transform_style_input");
+            var transform_list=document.getElementsByClassName("transform_list")[0];
+            
+            add_transform_style.onclick=function(){
+                transform_list.innerHTML+=`<li><span>${transform_style_input.value}</span><button>X</button></li>`;
+                transform_style_input.value="";
+            }
+            /**
+             * @param {PointerEvent} e
+             */
+            transform_list.onclick=function(e){
+                /** @type {HTMLElement} */
+                var tgt=e.target;
+                console.log("e",e);
+                if(tgt.tagName=="LI") tgt = tgt.children[0];
+                else if(tgt.tagName=="SPAN") tgt=tgt;
+                else{
+                    if(tgt.tagName=="BUTTON")  tgt.parentElement.remove();
+                    return;
+                }
+                now_transform.innerText=box.style.transform=tgt.innerText;
+            }
+        // 视口操作
+            /** @type {HTMLDivElement} 视口 */
+            var viewport=document.getElementsByClassName("viewport")[0];
+            /** @type {HTMLDivElement} 世界坐标 */
+            var world=document.getElementsByClassName("world")[0];
+
+            /** @type {number} 鼠标原坐标 */
+            var org_x=0, org_y=0;
+            /** @type {number} 当前旋转量 */
+            var rx=-10, ry=10;
+            /** @type {number} 原旋转量 */
+            var org_rx=-10, org_ry=10;
+            var s=-1;
+
+            /**
+             * 拖拽时的回调
+             * @param {MouseEvent} e 鼠标事件
+             */
+            function callback_DragView(e){
+                rx=(org_rx-(e.y-org_y)*0.5);
+                ry=(org_ry-(e.x-org_x)*0.5)%360;
+                if(rx>90)rx=90;
+                else if(rx<-90) rx=-90;
+                world.style.transform=`scaleZ(${s}) scaleY(${s}) scaleX(${-s}) rotateX(${rx}deg) rotateY(${ry}deg)`;
+            }
+
+            /** 
+             * @param {MouseEvent} e
+             */
+            viewport.onmousedown=function(e){
+                console.log(e);
+                org_rx=rx;
+                org_ry=ry;
+                org_x=e.x;
+                org_y=e.y;
+                viewport.onmousemove=callback_DragView;
+            }
+            viewport.onmouseleave = viewport.onmouseup=function(e){
+                viewport.onmousemove=null;
+            }
+
+            /**
+             * @param {WheelEvent} e 
+             */
+            viewport.onwheel=function(e){
+                if(e.deltaY>0){
+                    s+=0.1;
+                }else{
+                    s-=0.1;
+                }
+                if(s>-0.1){
+                    s=-0.1;
+                }
+                console.log(s);
+                world.style.transform=`scaleZ(${s}) scaleY(${s}) scaleX(${-s}) rotateX(${rx}deg) rotateY(${ry}deg)`;
+            }
+            
+    </script>
 </body>
 </html>

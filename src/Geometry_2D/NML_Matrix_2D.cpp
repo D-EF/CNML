@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-28 17:01:13
+ * @LastEditTime: 2024-05-07 09:40:52
  * @FilePath: \CNML\src\Geometry_2D\NML_Matrix_2D.cpp
  * @Description: 2D 矩阵计算
  */
@@ -68,7 +68,7 @@ namespace NML{
                 v_myz=mat[myz];
                 v_mzz=mat[mzz];
             }
-            printf("transform:matrix(%f, %f, %f, %f, %f, %f);\n",
+            printf("matrix(%f, %f, %f, %f, %f, %f)\n",
                 mat[mxx],   mat[mxy],
                 mat[myx],   mat[myy],
                 mat[tx],    mat[ty]

@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-20 00:58:11
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-29 11:01:35
+ * @LastEditTime: 2024-05-06 09:31:33
  * @FilePath: \CNML\src\test.cpp
  * @Description: 单元测试 入口文件
  */
@@ -18,7 +18,8 @@ int main(int argc, char **argv){
     // add_TestAct(test_Matrix,"test_Matrix");
     // add_TestAct(test_Algebra,"test_Algebra");
     // add_TestAct(test_LinkBlock,"test_LinkBlock");
-    add_TestAct(test_Bezier,"test_Bezier");
+    add_TestAct(test_LinkBlock_256,"test_LinkBlock_256");
+    // add_TestAct(test_Bezier,"test_Bezier");
     run_Test();
     return 0;
 }

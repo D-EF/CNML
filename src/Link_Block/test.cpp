@@ -2,11 +2,10 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-28 16:23:05
+ * @LastEditTime: 2024-05-13 13:38:54
  * @FilePath: \CNML\src\Link_Block\test.cpp
  * @Description: 块链 单元测试
  */
-
 #include "unit_test_basics.hpp"
 #include "./NML_Link_Block.hpp"
 #include <iostream>
@@ -28,17 +27,17 @@ namespace NML_Test{
                 (*os) << "[";
                 i=0;
                 while(i<now_node->used_length){
-                    (*os) << (T)now_node->data[i];
+                    (*os) << (T)now_node->data[i] <<  ",";
                     ++i;
-                    (*os) << ",";
                 }
                 if(now_node->used_length < now_node->length){
                     (*os) << "...x" << now_node->length - now_node->used_length << "x]";
                 }else{
-                    (*os) << "\b]";
+                    (*os) << "\b]\n";
                 }
                 now_node=now_node->next;
             }while(now_node && now_node!=head_node);
+            (*os) << "\n\n";
         }
 
         template <typename T>
@@ -124,7 +123,33 @@ namespace NML_Test{
 
         void test_LinkBlock_256(){
             
-            Link_Block_Ctrl<var> d = Link_Block_Ctrl<var>(256);
+            var *data     =new var[256];
+            var *data_i   =new var[256];
+            var *data_s   =new var[256];
+
+            int i;
+
+            Option_Act_LinkBlock* option__256 = new Option_Act_LinkBlock;
+            option__256->ex_link_block_length=256;
+            option__256->find_free_max_after_node_count  = 1;
+            option__256->find_free_max_before_node_count = 1;
+            option__256->erase_callback=0;
+
+            for(i=0;i< 256;++i) data  [i] = i;
+            for(i=0;i<=256;++i) data_i[i] = -i-1;
+            for(i=0;i<=256;++i) data_s[i] = i+1*0.1;
+
+            Link_Block_Node<var> *hn=create_LinkBlockNode(256,data,256);
+            Link_Block_Ctrl<var> d = Link_Block_Ctrl<var>(hn);
+            d.set_Option(option__256);
+            d.reload_Length();
+
+            printf_TestLinkBlock(d.head_node);
+
+            // d.splice(0,0,data_i,1);
+            d.splice(256,0,data_i,1);
+
+            printf_TestLinkBlock(d.head_node);
             
         }
     }

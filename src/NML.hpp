@@ -2,100 +2,21 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-03-06 11:32:46
+ * @LastEditTime: 2024-05-08 18:17:09
  * @FilePath: \cnml\src\NML.hpp
  * @Description: Nittle Math Library 简单数学库
  */
 
+
 #ifndef __NITTLE_MATH_LIBRARY__
 #define __NITTLE_MATH_LIBRARY__
 
-#ifndef __NML_VALUE_TYPE__
-    /** @brief NML使用的基本数据类型 */
-    #define __NML_VALUE_TYPE__ float
-#endif
-
-#ifndef __NML_VECTOR_INDEX_TYPE__
-    /** @brief NML使用的向量和矩阵下标类型 */
-    #define __NML_VECTOR_MATRIX_INDEX_TYPE__ char
-#endif
-
-#ifndef __NML_INDEX_TYPE__
-    /** @brief 通用下标类型 */
-    #define __NML_INDEX_TYPE__ int
-#endif
-
-#ifndef __NML_ALGEBRA_INDEX_TYPE__
-    /** @brief 算数下标类型 */
-    #define __NML_ALGEBRA_INDEX_TYPE__ char
-#endif
-
-#ifndef __DEFINE_SAMPLE_SIZE_SEED__
-    /** @brief 全局默认采样精度种子 */
-    #define __DEFINE_SAMPLE_SIZE_SEED__ 10
-#endif
-
-#ifndef __NML_TOLERANCE__
-    /** @brief 默认容差 */
-    #define __NML_TOLERANCE__ 1e-6
-#endif
-
-
+#include "NML_Define.hpp"
 #include <Math.h>
 #include <iostream>
 
-namespace NML{
-
-    /** @brief 基本数据类型 */
-    typedef __NML_VALUE_TYPE__ var;
-    /** @brief 通用下标类型 */
-    typedef __NML_INDEX_TYPE__ Idx;
-    /** @brief 向量和矩阵的下标类型 */
-    typedef __NML_VECTOR_MATRIX_INDEX_TYPE__ Idx_VM;
-    /** @brief 算数下标类型 */
-    typedef __NML_ALGEBRA_INDEX_TYPE__ Idx_Algebra;
-    /** @brief 默认容差 */
-    extern const var NML_TOLERANCE;
-    /** 1 - 默认容差 */
-    extern const var NML_TOLERANCE_D1;
-    /** @brief 默认采样精度种子 */
-    extern const Idx SAMPLE_SIZE_SEED;
-    /** @brief 默认采样精度步长 */
-    extern const var SAMPLE_SIZE_SIZE;
+EXPORT_SYMBOL namespace NML{
     
-    /** 三个坐标轴 */
-    enum Axis{ X=0, Y=1, Z=2 };
-    
-    /** 三个坐标轴 */
-    enum Plane_3D{
-        YZ=0,
-        ZX=1,
-        XY=2
-    };
-    
-    /** 欧拉角旋转顺序 */
-    enum Rotation_Order{
-        XYZ=0b000110,    XYX=0b000100,    XZY=0b001001,    XZX=0b001000,
-        YXZ=0b010010,    YXY=0b010001,    YZX=0b011000,    YZY=0b011001,
-        ZXY=0b100001,    ZXZ=0b100010,    ZYX=0b100100,    ZYZ=0b100110
-    };
-    
-    extern const var PI,
-                     DEG, 
-                     DEG_90, 
-                     CYCLES, 
-                     PI_I, 
-                     DEG_90_I, 
-                     CYCLES_I;
-
-    extern const var &DEG_180_I,
-                     &DEG_180,
-                     &DEG_360_I,
-                     &DEG_360;
-                     
-    extern const var ONE_OVER_THREE;
-    extern const var FOUR_OVER_THREE;
-
 
     /**
      * @brief 提取 Rotation_Order 的旋转轴
@@ -105,44 +26,6 @@ namespace NML{
      */
     inline Axis get_Rotation_Order(Rotation_Order order, char index){ return (Axis)(order>>(2*index) &0b11); }
 
-    
-    /** 用于各种回调的函数类型 */
-    typedef void (*Callback)(void*);
-
-
-    template <typename Value_Type>
-    /** 用于存储静态数据或自定访问规则的的简单块状链表节点 */
-    struct Link_Block__Simple {
-        Link_Block__Simple<Value_Type>* next;
-        Idx length;
-        Value_Type* data;
-    };
-
-
-    /**
-     * @brief 点云数据访问器
-     */
-    class Points_Iterator{
-        public:
-        void *data;
-        /** @brief 点的数量 */
-        Idx points_length;
-        /** @brief 点的维度 */
-        Idx_Algebra dimensional;
-        Points_Iterator(){}
-        Points_Iterator(Idx_Algebra dimensional, Idx points_length):points_length(points_length), dimensional(dimensional){}
-        Points_Iterator(void *data, Idx_Algebra dimensional, Idx points_length):data(data), points_length(points_length), dimensional(dimensional){}
-        Points_Iterator(Points_Iterator& copy_obj):points_length(copy_obj.points_length), dimensional(copy_obj.dimensional){}
-        /** @brief 用下标 取点 */
-        virtual var* operator[](Idx v) = 0; 
-        /** @brief 装配 new data */
-        virtual void install_Data(Idx_Algebra dimensional, Idx points_length) = 0; 
-        /** @brief 抄录数据到当前实例的 data */
-        void copy_Data(Points_Iterator& copy_obj);
-        /** @brief 释放data数据 */
-        virtual void free_Data () = 0;
-    };
-    
 
     /**
      * @brief 物理一维存储的点访问器
@@ -331,4 +214,3 @@ namespace NML{
 }
 
 #endif
-

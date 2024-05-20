@@ -84,7 +84,8 @@
             "ctime": "cpp",
             "optional": "cpp",
             "fstream": "cpp",
-            "sstream": "cpp"
+            "sstream": "cpp",
+            "span": "cpp"
         },
         "editor.inlayHints.enabled": "off",
         "editor.fontFamily": "Ubuntu Mono derivative Powerline,Ubuntu Mono,DejaVu Sans Mono",
