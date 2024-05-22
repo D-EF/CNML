@@ -56,9 +56,9 @@
     
     
     // open * Link Block * open
-        #ifndef __DEFAULT_LINK_BLOCK_SIZE__
+        #ifndef __DEFAULT_LINK_BLOCK_LENGTH__
             /** @brief 创建块状链表存储的默认单块长度 size */
-            #define __DEFAULT_LINK_BLOCK_SIZE__ 256
+            #define __DEFAULT_LINK_BLOCK_LENGTH__ 256
         #endif
 
         #define __LINK_BLOCK__NEVER_OVERLOAD_OPERATOR__

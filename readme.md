@@ -191,7 +191,7 @@ namespace NML{
          * @param _length_value            添加内容的长度, 默认为1
          * @param _flag_delete_data_item        是否对删除内容的每个元素执行delete, 默认false
          * @param _paternadd               当前节点无法装载内容时追加块状链表的行为模式 默认为 lazy (仅检查相邻的块容量)
-         * @param _add_node_length         追加节点时新块的长度, 默认为 __DEFAULT_LINK_BLOCK_SIZE__
+         * @param _add_node_length         追加节点时新块的长度, 默认为 __DEFAULT_LINK_BLOCK_LENGTH__
          * @param _max_link_block_length   块状链表的最大容量
          * @return 返回是否增加了节点
          * @throw int l  : 当 _paternadd 为禁止新增节点时, 且块状链表中不足以存入内容, 会抛出整数数值表示还需要额外多少个元素的空间 
@@ -200,7 +200,7 @@ namespace NML{
         bool splice_LinkBlock(
             Link_Block_Node<Value_Type>& header_node, Idx idx__offset, Idx length,
             Link_Block_Node<Value_Type>* $origin_node=0,
-            Value_Type* _value=0, Idx _length_value=1, Behavior_Pattern__Add_LinkBlock _paternadd=lazy, Idx _add_node_length=__DEFAULT_LINK_BLOCK_SIZE__, Idx _max_link_block_length 
+            Value_Type* _value=0, Idx _length_value=1, Behavior_Pattern__Add_LinkBlock _paternadd=lazy, Idx _add_node_length=__DEFAULT_LINK_BLOCK_LENGTH__, Idx _max_link_block_length 
         );
     ```
 
@@ -257,6 +257,8 @@ namespace NML{
   * i(j/k)         : 迭代器(iterator)
   * l              : 长度(length)
   * d              : 差(differ)
+  * r              : 读(read)
+  * w              : 写(write)
   * op/ed          : 起始/结束(open/end)
   * idx            : 索引/下标 ( index )
   * vec            : 向量 ( vector )
@@ -295,6 +297,7 @@ namespace NML{
   * tgt            : 目标 (target)
   * now            : 当前 (指针/节点)
   * origin         : 源/起点/初始值
+  * src            : 来源/源代码/溯源
   ```
   
   ### 动词和动词短语

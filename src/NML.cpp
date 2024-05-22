@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-05-11 12:01:35
+ * @LastEditTime: 2024-05-20 16:15:08
  * @FilePath: \CNML\src\NML.cpp
  * @Description: Nittle Math Library 简单数学库
  */
@@ -26,10 +26,10 @@ namespace NML{
         DEG_90_I = -1.57079632679489661923,
         CYCLES_I = -6.28318530717958647692;
 
-    extern const var &DEG_180_I    = PI_I,
-                     &DEG_360_I    = CYCLES_I,
-                     &DEG_180      = PI,
-                     &DEG_360      = CYCLES;
+    const var &DEG_180_I    = PI_I,
+              &DEG_360_I    = CYCLES_I,
+              &DEG_180      = PI,
+              &DEG_360      = CYCLES;
 
     const var ONE_OVER_THREE  = 1.0/3;
     const var FOUR_OVER_THREE = ONE_OVER_THREE+1.0;
