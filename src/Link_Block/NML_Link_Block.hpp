@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-03-06 11:34:26
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-05-22 10:46:23
+ * @LastEditTime: 2024-05-24 16:57:44
  * @FilePath: \CNML\src\NML_Link_Block.hpp
  * @Description: 块状链表存储结构
  */
@@ -732,7 +732,8 @@ namespace NML{
          * @param target             目标链表
          * @param items              追加的元素值
          * @param _write_length      追加的个数 默认为1
-         * @param _new_node_length   当目标无可用空间时, 新增的节点长度
+         * @param _new_node_length   当目标无可用空间时, 新增的节点长度 <=0 表示禁止增加节点
+         * @throw 无可用空间且禁止增加节点 抛出 std::bad_alloc 
          * @return 返回新增了多少个节点
          */
         template <typename Value_Type> 
@@ -745,6 +746,7 @@ namespace NML{
 
             while(i<_write_length){
                 if(target->used_length >= target->length){
+                    if(_new_node_length<=0) throw std::bad_alloc();
                     target = add_LinkBlockNode(target,_new_node_length);
                     ++count_add;
                 }
@@ -754,6 +756,32 @@ namespace NML{
             }
 
             return count_add;
+        }
+
+        
+        /**
+         * @brief 在链表中追加元素
+         * @param target             目标链表
+         * @param item               追加的元素值
+         * @param _new_node_length   当目标无可用空间时, 新增的节点长度 <=0 表示禁止增加节点
+         * @throw 无可用空间且禁止增加节点 抛出 std::bad_alloc 
+         * @return 返回新增了多少个节点
+         */
+        template <typename Value_Type> 
+        Idx push_LinkBlockItem(Link_Block_Node<Value_Type>* target, Value_Type item, Idx _new_node_length=__DEFAULT_LINK_BLOCK_LENGTH__){
+            while(target->next) {
+                target=target->next;
+            }
+            if(target->used_length >= target->length){
+                if(_new_node_length<=0) throw std::bad_alloc();
+                target = add_LinkBlockNode(target,_new_node_length);
+                target->data[target->used_length] = item;
+                ++target->used_length;
+                return 1;
+            }
+            target->data[target->used_length] = item;
+            ++target->used_length;
+            return 0;
         }
 
 
@@ -813,20 +841,50 @@ namespace NML{
             origin_node(head_node),
             origin_index__item(0)
             {
-                reload_Length(); 
+                reload_Length();
             }
 
-            /** @brief 无任何可用节点的空链表 */
-            Link_Block_Ctrl():
-                _option(0),
-                head_node(0),
-                end_node(0),
+            /**
+             * @brief 使用一个长度初始化头节点
+             */
+            Link_Block_Ctrl(Idx _init_length=__DEFAULT_LINK_BLOCK_LENGTH__):
                 origin_node(0),
                 origin_index__item(0),
-                max_length(0),
+                max_length(_init_length),
                 used_length(0),
-                node_length(0)
-            {}
+                node_length(1)
+            {
+                head_node = end_node = create_LinkBlockNode(_init_length);
+            }
+
+            /**
+             * @brief 使用一个配置对象进行初始化
+             * @throw 抛出 std::bad_alloc 表示使用了不能正常创建节点的配置
+             */
+            Link_Block_Ctrl(Option_Act_LinkBlock* option):
+                _option(option),
+                origin_node(0),
+                origin_index__item(0),
+                max_length(option->ex_link_block_length),
+                used_length(0),
+                node_length(1)
+            {
+                Option_Act_LinkBlock* option= get_Option();
+                if(option->ex_link_block_length<=0) throw std::bad_alloc();
+                head_node = end_node = create_LinkBlockNode(option->ex_link_block_length);
+            }
+
+
+            Link_Block_Ctrl(Option_Act_LinkBlock* option):
+                _option(option),
+                origin_node(0),
+                origin_index__item(0),
+                max_length(_option->ex_link_block_length),
+                used_length(0),
+                node_length(1)
+            {
+                head_node = end_node = create_LinkBlockNode(option->ex_link_block_length);
+            }
 
             /** @brief 创建一个新链表 */
             Link_Block_Ctrl(Idx _length, Option_Act_LinkBlock* _option=0):
@@ -870,12 +928,24 @@ namespace NML{
                 add_Node(node);
             }
 
-            void push_Items(Value_Type*& items, Idx _length=0){
+            void push_Items(Value_Type* items, Idx _length=1){
                 Option_Act_LinkBlock* option = get_Option();
                 Idx add_node_length=push_LinkBlockItems(end_node,items,_length,option->ex_link_block_length);
                 used_length += _length;
                 max_length  += add_node_length * option->ex_link_block_length;
+                while(end_node->next) end_node = end_node->next;
                 node_length += add_node_length;
+            }
+             
+            void push_Item(Value_Type item){
+                Option_Act_LinkBlock* option = get_Option();
+                Idx add_node_length=push_LinkBlockItem(end_node,item,option->ex_link_block_length);
+                ++used_length;
+                if(add_node_length){
+                    max_length += option->ex_link_block_length;
+                    end_node=end_node->next;
+                    ++node_length;
+                }
             }
 
             /** @brief 取用设置对象 */

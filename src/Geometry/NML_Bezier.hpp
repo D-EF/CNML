@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-29 14:49:25
+ * @LastEditTime: 2024-05-22 16:08:16
  * @FilePath: \CNML\src\Geometry\NML_Bezier.hpp
  * @Description: 贝塞尔曲线
  */
@@ -223,7 +223,36 @@ namespace NML{
          * @param derivatives   曲线计算系数的导数
          * @return 返回 t 的个数 (显式查找表的可用数据长度)
          */
-        Idx calc_T_DerivativesRootsLUT(var*& out, Points_Iterator& derivatives);
+        Idx calc_T__DerivativesRootsLUT(var*& out, Points_Iterator& derivatives);
+
+
+        /** 
+         * @brief 计算贝塞尔曲线的在每个维度中单调性的拐点的 t 参数
+         * @param out            输出目标
+         * @param coefficients   曲线计算系数
+         * @return 返回拐点数量
+         */
+        Idx setup_BezierMonotonicLut(var*& out, Points_Iterator& coefficients);
+
+        /**
+         * @brief 贝塞尔曲线求交
+         * @param out                   输出目标, 输出交点在 coefficients_0 上的 t 参数; 长度应该为两个曲线的最大次数的积
+         * @param coefficients_0        贝塞尔曲线 0 的计算系数
+         * @param coefficients_1        贝塞尔曲线 1 的计算系数
+         * @param _derivatives_root_0   贝塞尔曲线 0 的导数的根
+         * @param _derivatives_root_1   贝塞尔曲线 1 的导数的根
+         * @return 返回交点的个数, 最多为两个曲线的最大次数的积; [ 0, (c_0.l-1)(c_1.l-1) ]
+         */
+        Idx calc_Intersection__Bezier_Bezier(
+            Points_Iterator&   out, 
+            Points_Iterator&   coefficients_0, 
+            Points_Iterator&   coefficients_1, 
+            var*               _derivatives_roots_lut_0, 
+            Idx                _length__derivatives_roots_lut_0, 
+            var*               _derivatives_roots_lut_1, 
+            Idx                _length__derivatives_roots_lut_1
+        );
+
 
         /** todo:
          * 点在曲线上的投影(近点)(点到曲线的最短距离); test

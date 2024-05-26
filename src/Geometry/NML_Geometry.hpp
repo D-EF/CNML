@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-29 15:12:24
+ * @LastEditTime: 2024-05-23 17:55:44
  * @FilePath: \CNML\src\Geometry\NML_Geometry.hpp
  * @Description: 通用图形计算, 提供部分数据结构和算法, 不区分维度的通用内容
  */
@@ -11,11 +11,39 @@
 #define __NML_GEOMETRY__
 
 #include "NML.hpp"
+#include "Link_Block/NML_Link_Block.hpp"
 #include "Algebra/NML_Vector.hpp"
 
 namespace NML{
     
     namespace Geometry{
+
+
+        /**
+         * aabb 节点 (用于曲线求交)
+         */
+        typedef struct AABB_Node{
+            /** 采样用的 t 参数 */
+            var op_t, ed_t;
+            /** aabb 值 内容应为 {min_axis,max_axis,...}, 长度为 2*axis */
+            var* aabb;
+        } AABB_Node;
+
+        /**
+         * aabb 节点集合 (用于曲线求交)
+         */
+        typedef struct AABB_Nodes{
+            AABB_Node* nodes;
+            Idx length;
+        } AABB_Nodes;
+
+        /**
+         * aabb配对
+         */
+        typedef struct AABB_Pair{
+            Geometry::AABB_Node *box_0, *box_1;
+        } NML_Bezier__AABB_Pair;
+
 
         /**
          * @brief 计算直线段长度
@@ -69,7 +97,8 @@ namespace NML{
          * @return 返回 是否为空
          */
         bool check_AABBEmpty(var*& min, var*& max, Idx_Algebra dimensional);
-        
+
+
     }
 
 }

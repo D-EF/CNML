@@ -31,9 +31,9 @@ namespace NML{
          * @param out                               交点输出对象 应该有至少 (coefficients_0.points_length-1) * (coefficients_1.points_length-1) 的长度以保证空间足够存储输出
          * @param coefficients_0                    曲线 0 计算系数
          * @param coefficients_1                    曲线 1 计算系数
-         * @param derivatives_roots_lut_0           用于分隔曲线以生成单调曲线的 t 值  ( 使用 calc_T_DerivativesRootsLUT 生成 )
+         * @param derivatives_roots_lut_0           用于分隔曲线以生成单调曲线的 t 值  ( 使用 calc_T__DerivativesRootsLUT 生成 )
          * @param length__derivatives_roots_lut_0   derivatives_roots_lut_0 的长度
-         * @param derivatives_roots_lut_1           用于分隔曲线以生成单调曲线的 t 值  ( 使用 calc_T_DerivativesRootsLUT 生成 )
+         * @param derivatives_roots_lut_1           用于分隔曲线以生成单调曲线的 t 值  ( 使用 calc_T__DerivativesRootsLUT 生成 )
          * @param length__derivatives_roots_lut_1   derivatives_roots_lut_1 的长度
          * @return 返回交点的个数
          */

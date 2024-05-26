@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-28 16:53:03
+ * @LastEditTime: 2024-05-24 17:52:36
  * @FilePath: \CNML\src\Geometry\NML_Bezier.cpp
  * @Description: 贝塞尔曲线
  */
@@ -10,6 +10,7 @@
 #include "Algebra/NML_Algebra.hpp"
 #include "./NML_Bezier.hpp"
 #include "./NML_Geometry.hpp"
+#include "Link_Block/NML_Link_Block.hpp"
 
 namespace NML{
     namespace Bezier{
@@ -434,7 +435,7 @@ namespace NML{
         }
 
 
-        Idx calc_T_DerivativesRootsLUT(var*& out, Points_Iterator& derivatives){
+        Idx calc_T__DerivativesRootsLUT(var*& out, Points_Iterator& derivatives){
             var *temp_dimensional = new var[derivatives.points_length];
             var *temp_out;
             Idx rtn,l=1;
@@ -471,6 +472,40 @@ namespace NML{
 
             delete temp_dimensional;
             return rtn;
+        }
+
+
+        Idx setup_BezierMonotonicLut(var*& out, Points_Iterator& coefficients){
+            Points_Iterator__1DList temp_derivatives(coefficients.dimensional,coefficients.points_length-1);
+            if(out==0) out = new var[temp_derivatives.points_length*temp_derivatives.dimensional];
+            Algebra::setup_Derivatives__UnivariatePolynomials(temp_derivatives, coefficients);
+            Idx rtn = calc_T__DerivativesRootsLUT(out, temp_derivatives);
+            return rtn;
+        }
+
+
+
+        Idx calc_Intersection__Bezier_Bezier(
+            Points_Iterator&        out, 
+            Points_Iterator&        coefficients_0, 
+            Points_Iterator&        coefficients_1, 
+            Geometry::AABB_Nodes&   aabb_group_0,
+            Geometry::AABB_Nodes&   aabb_group_1
+        ){
+            using namespace Link_Block;
+            using namespace Geometry;
+            Link_Block_Ctrl<AABB_Pair> pair;
+
+            Idx i,j;
+
+            for(i=0;i<aabb_group_0.length;++i){
+                for(j=0;j<aabb_group_1.length;++j){
+                    pair.push_Item({ aabb_group_0.nodes+i, aabb_group_1.nodes+j });
+                }
+            }
+            
+            // todo
+            // (pair[pair.used_length])
         }
 
     }
