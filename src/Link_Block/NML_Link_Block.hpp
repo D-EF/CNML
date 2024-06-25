@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-03-06 11:34:26
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-05-24 16:57:44
+ * @LastEditTime: 2024-06-24 17:50:22
  * @FilePath: \CNML\src\NML_Link_Block.hpp
  * @Description: 块状链表存储结构
  */
@@ -45,7 +45,7 @@ namespace NML{
             int find_free_max_before_node_count;
             /** 插入操作时追加节点的数据长度, 使用 0 表示禁止自动追加节点 */
             Idx ex_link_block_length;
-            /** 当擦除/覆盖时 是否对每个内容 delete*/
+            /** 当擦除/覆盖时 对每个内容的进行回调操作*/
             Callback erase_callback;
         } Option_Act_LinkBlock;
 
@@ -258,7 +258,7 @@ namespace NML{
         template <typename Value_Type> 
         int shiftForward_LinkBlock(
             Link_Block_Node<Value_Type>* origin_node, Idx index, Idx offset, 
-            Link_Block_Node<Value_Type>** _out_node=0, Idx* _out_index=0, Idx _max_node_length=INFINITY
+            Link_Block_Node<Value_Type>** _out_node=0, Idx* _out_index=0, Idx _max_node_length=__NML_IDX_INFINITY__
         ){
             redirect_LinkBlock(origin_node, index);
             Link_Block_Node<Value_Type>* now=origin_node->prev;
@@ -329,7 +329,7 @@ namespace NML{
         template <typename Value_Type> 
         int backOff_LinkBlock(
             Link_Block_Node<Value_Type>* origin_node, Idx index, Idx offset, 
-            Link_Block_Node<Value_Type>** _out_node=0, Idx* _out_index=0, Idx _max_node_length=INFINITY
+            Link_Block_Node<Value_Type>** _out_node=0, Idx* _out_index=0, Idx _max_node_length=__NML_IDX_INFINITY__
         ){
             redirect_LinkBlock(origin_node, index);
             Link_Block_Node<Value_Type>* now=origin_node;
@@ -740,15 +740,18 @@ namespace NML{
         Idx push_LinkBlockItems(Link_Block_Node<Value_Type>* target, Value_Type* items, Idx _write_length=1, Idx _new_node_length=__DEFAULT_LINK_BLOCK_LENGTH__){
             Idx i=0, count_add=0;
 
-            while(target->next) {
-                target=target->next;
-            }
+            while(target->next) target=target->next;
+            while(target->used_length==0 && target->prev && (target->prev->used_length < target->prev->length)) target = target->prev;
 
             while(i<_write_length){
-                if(target->used_length >= target->length){
-                    if(_new_node_length<=0) throw std::bad_alloc();
-                    target = add_LinkBlockNode(target,_new_node_length);
-                    ++count_add;
+                while(target->used_length >= target->length){
+                    if(target->next){
+                        target=target->next;
+                    }else{
+                        if(_new_node_length<=0) throw std::bad_alloc();
+                        target = add_LinkBlockNode(target,_new_node_length);
+                        ++count_add;
+                    }
                 }
                 target->data[target->used_length] = items[i];
                 ++target->used_length;
@@ -769,9 +772,9 @@ namespace NML{
          */
         template <typename Value_Type> 
         Idx push_LinkBlockItem(Link_Block_Node<Value_Type>* target, Value_Type item, Idx _new_node_length=__DEFAULT_LINK_BLOCK_LENGTH__){
-            while(target->next) {
-                target=target->next;
-            }
+            while(target->next) target=target->next;
+            while(target->used_length==0 && target->prev && (target->prev->used_length < target->prev->length)) target = target->prev;
+
             if(target->used_length >= target->length){
                 if(_new_node_length<=0) throw std::bad_alloc();
                 target = add_LinkBlockNode(target,_new_node_length);
@@ -782,6 +785,62 @@ namespace NML{
             target->data[target->used_length] = item;
             ++target->used_length;
             return 0;
+        }
+
+        /**
+         * @brief 从尾部开始移除元素
+         * @param target            访问链表的入口节点
+         * @param length            要移除的长度
+         * @param _erase_callback   擦除时对每个元素调用回调
+         * @return 返回实际成功擦除了多少个元素
+         */
+        template <typename Value_Type> 
+        Idx remove_LinkBlockEndItems(Link_Block_Node<Value_Type>* target, Idx length, Callback _erase_callback=0){
+            while(target->next) target=target->next;
+
+            Idx i=0;
+
+            if(_erase_callback){
+                while(i<length){
+                    while(target->used_length<=0){
+                        target=target->prev;
+                    }
+                    if(!target) break;
+                    --target->used_length;
+                    ++i;
+                    _erase_callback(target->data[target->used_length]);
+                }
+            }else{
+                while(length>0 && target){
+                    if(target->used_length>length){
+                        target->used_length-=length;
+                        length=0;
+                        i+=length;
+                    }else{
+                        length-=target->used_length;
+                        i+=target->used_length;
+                        target->used_length=0;
+                        target=target->prev;
+                    }
+                }
+            }
+            return i;
+        }
+
+        /**
+         * @brief 从尾部开始移除元素
+         * @param target            访问链表的入口节点
+         * @param _erase_callback   擦除时对每个元素调用回调
+         * @return 返回实际成功擦除了多少个元素
+         */
+        template <typename Value_Type> 
+        Idx remove_LinkBlockEndItem(Link_Block_Node<Value_Type>* target, Callback _erase_callback=0){
+            while(target->next) target=target->next;
+            while(target->used_length<=0 && target->prev && target->prev->used_length>0 ) target = target->prev;
+            if(target->used_length<=0) return 0;
+            if(_erase_callback) _erase_callback(target->data[target->used_length]);
+            --target->used_length;
+            return 1;
         }
 
 
@@ -846,15 +905,17 @@ namespace NML{
 
             /**
              * @brief 使用一个长度初始化头节点
+             * @param _init_length 初始化时提供的初始空间长度
              */
             Link_Block_Ctrl(Idx _init_length=__DEFAULT_LINK_BLOCK_LENGTH__):
+                _option(0),
                 origin_node(0),
                 origin_index__item(0),
                 max_length(_init_length),
                 used_length(0),
                 node_length(1)
             {
-                head_node = end_node = create_LinkBlockNode(_init_length);
+                head_node = end_node = create_LinkBlockNode<Value_Type>(_init_length);
             }
 
             /**
@@ -869,33 +930,12 @@ namespace NML{
                 used_length(0),
                 node_length(1)
             {
-                Option_Act_LinkBlock* option= get_Option();
-                if(option->ex_link_block_length<=0) throw std::bad_alloc();
-                head_node = end_node = create_LinkBlockNode(option->ex_link_block_length);
+                Option_Act_LinkBlock* p_option = get_Option();
+                if(p_option->ex_link_block_length<=0) throw std::bad_alloc();
+                head_node = end_node = create_LinkBlockNode<Value_Type>(p_option->ex_link_block_length);
             }
 
 
-            Link_Block_Ctrl(Option_Act_LinkBlock* option):
-                _option(option),
-                origin_node(0),
-                origin_index__item(0),
-                max_length(_option->ex_link_block_length),
-                used_length(0),
-                node_length(1)
-            {
-                head_node = end_node = create_LinkBlockNode(option->ex_link_block_length);
-            }
-
-            /** @brief 创建一个新链表 */
-            Link_Block_Ctrl(Idx _length, Option_Act_LinkBlock* _option=0):
-                _option(_option), 
-                max_length(_length), 
-                origin_index__item(0), 
-                used_length(0)
-            {
-                end_node = origin_node = head_node = new Node{ 0, 0, _length, 0, new Value_Type[_length] };
-            }
-            
             /** @brief 拷贝链表, 新链表的每块长度为 option 设置的最大长度 或 总数据长度*/
             Link_Block_Ctrl(Link_Block_Ctrl<Value_Type>*& link_block, Option_Act_LinkBlock* _option=0):
                 _option(_option), 
@@ -928,6 +968,11 @@ namespace NML{
                 add_Node(node);
             }
 
+            /**
+             * 在尾部增加元素
+             * @param items     需要添加的元素集合
+             * @param _length   需要添加的长度
+             */
             void push_Items(Value_Type* items, Idx _length=1){
                 Option_Act_LinkBlock* option = get_Option();
                 Idx add_node_length=push_LinkBlockItems(end_node,items,_length,option->ex_link_block_length);
@@ -937,6 +982,11 @@ namespace NML{
                 node_length += add_node_length;
             }
              
+
+             /**
+              * 在尾部增加元素
+              * @param item 需要添加的元素
+              */
             void push_Item(Value_Type item){
                 Option_Act_LinkBlock* option = get_Option();
                 Idx add_node_length=push_LinkBlockItem(end_node,item,option->ex_link_block_length);
@@ -947,6 +997,28 @@ namespace NML{
                     ++node_length;
                 }
             }
+
+
+            /**
+             * 从尾部移除元素
+             * @param length 要移除的长度
+             * @return 返回实际成功擦除了多少个元素
+             */
+            Idx remove_EndItems(Idx length){
+                Option_Act_LinkBlock* option= get_Option();
+                return remove_LinkBlockEndItems(end_node, length, option->erase_callback);
+            }
+            
+
+            /**
+             * 从尾部移除一个元素
+             * @return 返回实际成功擦除了多少个元素
+             */
+            Idx remove_EndItem(){
+                Option_Act_LinkBlock* option= get_Option();
+                return remove_LinkBlockEndItem(end_node, option->erase_callback);
+            }
+
 
             /** @brief 取用设置对象 */
             Option_Act_LinkBlock* get_Option(){
@@ -1055,6 +1127,100 @@ namespace NML{
                 return os;
             }
             
+        };
+
+
+        /**
+         * @brief 物理块状链表存储的点访问器
+         */
+        class Points_Iterator__LinkBlock :virtual public Points_Iterator{
+            /** 点访问器中使用的 块状链表控制器 数据类型 */
+            using LBC = Link_Block_Ctrl<var>;
+            /** 点访问器中使用的 块状链表节点 数据类型 */
+            using LBN = Link_Block_Node<var>;
+
+            public:
+
+            /** 
+             * @brief 接管一个链表数据建立点访问器
+             * @param data 已有的链表数据
+             * @param dimensional 维度
+             */
+            Points_Iterator__LinkBlock(LBC* data, Idx_Algebra dimensional):Points_Iterator(data, dimensional, 0){
+                points_length=calc_UsedPointsLength();
+            }
+
+            Points_Iterator__LinkBlock(Points_Iterator& copy_obj):Points_Iterator(copy_obj){}
+
+            /**
+             * 初始化长度的数据
+             * @param dimensional   维度
+             * @param points_length 点的个数
+             */
+            Points_Iterator__LinkBlock(Idx_Algebra dimensional, Idx points_length):Points_Iterator(dimensional, points_length){
+                install_Data(dimensional, points_length);
+            }
+
+            ~Points_Iterator__LinkBlock(){free_Data();}
+
+            void install_Data(Idx_Algebra dimensional, Idx points_length){ 
+                Idx l = dimensional*points_length;
+                data = new LBC(l); 
+                ((LBC*)data)->used_length = l;
+            }
+            
+            void free_Data(){delete (LBC*)data; data=0;}
+
+            var* operator[](Idx v) override{
+                LBC* d = (LBC*)data;
+                return &d->get_Item(v*dimensional);
+            }
+
+            /**
+             * @brief 设置链表配置
+             * @param option 新的配置
+             */
+            void set_Option(Option_Act_LinkBlock* option){
+                LBC* d = (LBC*)data;
+                d->set_Option(option);
+            }
+            
+            /**
+             * @brief 获取链表配置
+             * @return 返回当前 data 中使用的配置
+             */
+            Option_Act_LinkBlock* get_Option(){
+                LBC* d = (LBC*)data;
+                return d->get_Option();
+            }
+
+            /**
+             * @brief 计算当前 data 链表中已使用的数据有多少个点
+             * @return 遍历节点以计算结果
+             */
+            Idx calc_UsedPointsLength();
+            
+            /**
+             * @brief 计算当前 data 链表中最大可用多少个点
+             * @return 遍历节点以计算结果
+             */
+            Idx calc_PointsLength();
+            
+            /** 设置 维度 */
+            void set_Dimensional(Idx_Algebra new_dimensional){
+                dimensional = new_dimensional;
+                settle_Values();
+                points_length = calc_UsedPointsLength();
+            }
+
+            /** 设置 点的个数 */
+            void set_PointsLength(Idx new_points_length);
+
+            /** 
+             * @brief 整理内容并尝试合并链表数据节点
+             * @param critical_value 当节点长度小于临界点时, 向后合并节点, 默认为 get_Option()->ex_link_block_length/2
+             */
+            void settle_Values(Idx critical_value=0);
         };
 
     }

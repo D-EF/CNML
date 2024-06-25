@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-30 10:41:21
+ * @LastEditTime: 2024-06-19 15:59:49
  * @FilePath: \CNML\src\Geometry_2D\NML_Geometry_2D.cpp
  * @Description: 2D图形相关内容
  */
@@ -330,6 +330,114 @@ namespace NML{
 
             return rtn;
         }
+
+
+
+        char MAP__SVG_PATH_CMD_VALUE_STEP_SIZE[128]={0};
+
+        void init__Map__SVG_PATH_CMD_VALUE_STEP_SIZE(char *out_map) {
+            if(out_map[0]==-1)return;
+
+            // 非法字符
+            for (int i = 0; i < 128; ++i) {
+                out_map[i] = -1;
+            }
+
+            // 命令
+            out_map['M'] = 2;   out_map['m'] = 2;
+            out_map['l'] = 2;   out_map['l'] = 2;
+            out_map['H'] = 1;   out_map['h'] = 1;
+            out_map['V'] = 1;   out_map['v'] = 1;
+            out_map['C'] = 6;   out_map['c'] = 6;
+            out_map['S'] = 4;   out_map['s'] = 4;
+            out_map['Q'] = 4;   out_map['q'] = 4;
+            out_map['T'] = 2;   out_map['t'] = 2;
+            out_map['A'] = 7;   out_map['a'] = 7;
+            out_map['Z'] = 0;   out_map['z'] = 0;
+
+            // 数值
+            out_map['.'] = -2;   out_map['.'] = -2;
+            out_map['E'] = -3;   out_map['e'] = -3;
+            for (int i = '0'; i <= '9'; ++i) {
+                out_map[i] = -4;
+            }
+            out_map['+'] = -5;   out_map['-'] = -5;
+        }
+
+
+        int setup_Values__ByString(var* out,const char* str, int& idx_str, int max_value_length) {
+            int i=0, e;
+            var d;
+            bool flag=true,flag_e;
+            while(str[idx_str] && !(str[idx_str]>='0' && str[idx_str]<='9')) ++idx_str;
+            out[i]=0;
+            while(str[idx_str] && i<max_value_length){
+                if(str[idx_str]=='.'){
+                    flag=false;
+                    d=0.1;
+                } else if(str[idx_str]>='0' && str[idx_str]<='9'){
+                    if((flag)){
+                        out[i]*=10;
+                        out[i]+=str[idx_str]-'0';
+                    }else{
+                        out[i]+=(str[idx_str]-'0')*d;
+                        d*=0.1;
+                    }
+                }else{
+                    if(str[idx_str]=='E' || str[idx_str]=='e'){   // 科学计数法指数部分 ( ${float}(e|E)±?${int} ) 
+                        ++idx_str;
+                        flag_e=true;
+                        if(str[idx_str]=='-'){
+                            ++idx_str;
+                            flag_e=false;
+                        }else if(str[idx_str]=='+'){
+                            ++idx_str;
+                        }
+                        e=0;
+                        do{
+                            e*=10;
+                            e+=str[idx_str]-'0';
+                            ++idx_str;
+                        }while(str[idx_str]>='0' && str[idx_str]<='9');
+                        if(flag_e){
+                            out[i]*=pow(10,e);
+                        }else{
+                            out[i]/=pow(10,e);
+                        }
+                    }
+                    ++i;
+                    while(!(str[idx_str]>='0' && str[idx_str]<='9')) {
+                        // 遇到 svg cmd 符号, 退出
+                        if((str[idx_str]>='A' && str[idx_str]<='Z')  ||  (str[idx_str]>='a' && str[idx_str]<='z')  ||  (!str[idx_str])  ||  i>max_value_length ) return i;
+                        ++idx_str;
+                    }
+                    out[i]=str[idx_str]-'0';
+                    flag=true;
+                }
+                ++idx_str;
+            }
+            return i;
+        }
+
+        Link_Block::Link_Block_Ctrl<SVG_Cmd>* load_SVGPath(const char* path_d){
+            init__Map__SVG_PATH_CMD_VALUE_STEP_SIZE(MAP__SVG_PATH_CMD_VALUE_STEP_SIZE);
+
+            Link_Block::Link_Block_Ctrl<SVG_Cmd>* rtn=new Link_Block::Link_Block_Ctrl<SVG_Cmd>();
+            SVG_Cmd temp_cmd;
+            int i=0;
+
+            do{
+                while(path_d[i] && (path_d[i]<'0' || path_d[i]>'9') && path_d[i]!='-' && path_d[i]!='+'){
+                    if(MAP__SVG_PATH_CMD_VALUE_STEP_SIZE[path_d[i]]>=0) temp_cmd.type = path_d[i];
+                    ++i;
+                }
+                setup_Values__ByString(temp_cmd.param,path_d,i,MAP__SVG_PATH_CMD_VALUE_STEP_SIZE[temp_cmd.type]);
+                rtn->push_Item(temp_cmd);
+            }while(path_d[i]);
+
+            return rtn;
+        }
         
     }
+
 }

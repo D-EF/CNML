@@ -16,9 +16,9 @@ namespace NML_Test{
     extern int _test_count;
     extern int _test_error_count;
     
-    namespace print__check_Test{void check_Test(bool flag, char* msg=0);    extern const bool FLAG__TEST_PRINT; }
+    namespace print__check_Test{void check_Test(bool flag, const char* msg=0);    extern const bool FLAG__TEST_PRINT; }
 
-    namespace unprint__check_Test{void check_Test(bool flag, char* msg=0);  extern const bool FLAG__TEST_PRINT; }
+    namespace unprint__check_Test{void check_Test(bool flag, const char* msg=0);  extern const bool FLAG__TEST_PRINT; }
 
     #ifndef __NML_TEST_TYPE__
         #define __NML_TEST_TYPE__ print__check_Test;

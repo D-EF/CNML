@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-05-20 16:15:08
+ * @LastEditTime: 2024-06-12 09:11:13
  * @FilePath: \CNML\src\NML.cpp
  * @Description: Nittle Math Library 简单数学库
  */
@@ -15,7 +15,6 @@ namespace NML{
     const var NML_TOLERANCE=__NML_TOLERANCE__;
     const var NML_TOLERANCE_D1=1-NML_TOLERANCE;
     const Idx SAMPLE_SIZE_SEED=__DEFINE_SAMPLE_SIZE_SEED__;
-    const var SAMPLE_SIZE_SIZE=1.0/SAMPLE_SIZE_SEED;
     
     const var 
         PI       = 3.14159265358979323846,
@@ -121,15 +120,15 @@ namespace NML{
     void Points_Iterator::copy_Data(Points_Iterator& copy_obj){
         int i,j;
         Points_Iterator& pi =*this;
-        var* temp_this;
-        var* temp_obj;
+        var* temp_point__this;
+        var* temp_point__obj;
         Idx _length=std::min(points_length,copy_obj.points_length);
         Idx_Algebra _dimensional=std::min(dimensional,copy_obj.dimensional);
         for(i=0;  i<_length;  ++i){
-            temp_this=pi[i];
-            temp_obj=copy_obj[i];
+            temp_point__this=pi[i];
+            temp_point__obj=copy_obj[i];
             for(j=0;  j<_dimensional;  ++j){
-                temp_this[j]=temp_obj[j];
+                temp_point__this[j]=temp_point__obj[j];
             }
         }
     }

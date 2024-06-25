@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "g++.exe - 生成和调试活动文件",
+            "name": "生成和调试活动文件",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/out/test/NML_test.exe",

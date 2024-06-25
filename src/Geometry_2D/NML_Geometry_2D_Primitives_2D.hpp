@@ -2,13 +2,13 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-28 16:57:35
- * @FilePath: \CNML\src\Geometry_2D\NML_Geometry_2D_Primitives_2D.hpp
+ * @LastEditTime: 2024-06-20 10:09:08
+ * @FilePath: \CNML\src\Geometry_2D\NML_Geometry_2D_Primitive_2D.hpp
  * @Description: 2D 图元 相关内容
  */
 
-#ifndef __NML_GEOMETRY_2D_PRIMITIVES__
-#define __NML_GEOMETRY_2D_PRIMITIVES__
+#ifndef __NML_GEOMETRY_2D_Primitive__
+#define __NML_GEOMETRY_2D_Primitive__
 
 #include "NML.hpp"
 #include "./NML_Geometry_2D.hpp"
@@ -19,7 +19,7 @@ namespace NML{
         /**
          * @brief 2D 图元
          */
-        namespace Primitives_2D{
+        namespace Primitive_2D{
 
             typedef struct Line_2D
             {
@@ -397,6 +397,32 @@ namespace NML{
                 AABB_2D calc_LocalAABB();
                 
             };
+
+            class Primitive_2D__Line{
+                var x,y;
+            };
+
+
+            Primitive_2D__Path_Group& setup_PathGroup(Primitive_2D__Path_Group& out, Link_Block::Link_Block_Ctrl<SVG_Cmd>& svg_cmd){
+                // todo
+                Link_Block::Link_Block_Ctrl<Primitive_2D*>* rtn = new Link_Block::Link_Block_Ctrl<Primitive_2D*>();
+                Primitive_2D* temp;
+                var temp_x=0, temp_y=0;
+                Idx i=0;
+
+                switch (svg_cmd[i].type){
+                    case 'L':  // todo
+                    case 'M':   temp_x =svg_cmd[i].param[0];   temp_y =svg_cmd[i].param[1];   break;
+
+                    case 'l':  // todo
+                    case 'm':   temp_x+=svg_cmd[i].param[0];   temp_y+=svg_cmd[i].param[1];   break;
+
+                    default:
+                    break;
+                }
+
+                return out;
+            }
 
         }
     }

@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-05-08 18:17:09
+ * @LastEditTime: 2024-06-21 17:41:19
  * @FilePath: \cnml\src\NML.hpp
  * @Description: Nittle Math Library 简单数学库
  */
@@ -34,9 +34,14 @@ EXPORT_SYMBOL namespace NML{
         public:
         Points_Iterator__1DList(var* data, Idx_Algebra dimensional, Idx points_length):Points_Iterator(data, dimensional, points_length){}
         Points_Iterator__1DList(Idx_Algebra dimensional, Idx points_length):Points_Iterator(new var[dimensional*points_length], dimensional, points_length){}
-        Points_Iterator__1DList(Points_Iterator& copy_obj):Points_Iterator(copy_obj){install_Data(dimensional, points_length);copy_Data(copy_obj);}
+        Points_Iterator__1DList(Points_Iterator& copy_obj):Points_Iterator(copy_obj){}
         ~Points_Iterator__1DList(){free_Data();}
-        void install_Data(Idx_Algebra dimensional, Idx points_length){ data=new var[dimensional*points_length]; }
+        void install_Data(Idx_Algebra new_dimensional=0, Idx new_points_length=0){ 
+            if(new_dimensional>0)   dimensional     = new_dimensional;
+            if(points_length>0)     points_length   = new_points_length;
+
+            data=new var[dimensional*points_length]; 
+        }
         void free_Data(){delete (var*)data; data=0;}
         var* operator[](Idx v) override{return ((var*)data)+(v*dimensional);}
     };

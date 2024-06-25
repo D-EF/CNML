@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-28 17:18:55
+ * @LastEditTime: 2024-06-03 11:53:56
  * @FilePath: \CNML\src\unit_test_basics.cpp
  * @Description: 单元测试
  */
@@ -18,7 +18,7 @@ namespace NML_Test{
 
     namespace unprint__check_Test{
         const bool FLAG__TEST_PRINT=false;
-        void check_Test(bool flag, char* msg){
+        void check_Test(bool flag, const char* msg){
             ++_test_count;
             if(!flag){
                 ++_test_error_count;
@@ -28,7 +28,7 @@ namespace NML_Test{
 
     namespace print__check_Test{
         const bool FLAG__TEST_PRINT=true;
-        void check_Test(bool flag, char* msg){
+        void check_Test(bool flag, const char* msg){
             ++_test_count;
             if(flag){
                 printf("    \033[32m done -> %s \033[0m \n", msg);

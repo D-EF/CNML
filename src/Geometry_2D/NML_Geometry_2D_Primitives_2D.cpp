@@ -3,15 +3,15 @@
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditTime: 2024-04-28 16:57:35
- * @FilePath: \CNML\src\Geometry_2D\NML_Geometry_2D_Primitives_2D.cpp
+ * @FilePath: \CNML\src\Geometry_2D\NML_Geometry_2D_Primitive_2D.cpp
  * @Description: 2D 图元 相关内容
  */
 
-#include "./NML_Geometry_2D_Primitives_2D.hpp"
+#include "./NML_Geometry_2D_Primitive_2D.hpp"
 
 namespace NML{
     namespace Geometry_2D{
-        namespace Primitives_2D{
+        namespace Primitive_2D{
             
             // open * 图元基类 * open
 

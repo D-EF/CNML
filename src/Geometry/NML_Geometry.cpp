@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-29 15:44:00
+ * @LastEditTime: 2024-05-28 14:15:24
  * @FilePath: \CNML\src\Geometry\NML_Geometry.cpp
  * @Description: 通用图形计算, 提供部分数据结构和算法, 不区分维度的通用内容
  */
@@ -55,6 +55,24 @@ namespace NML{
             return false;
         }
 
+
+        bool check_Intersection__AABB(AABB_Node& aabb_0, AABB_Node& aabb_1){
+            int l=aabb_0.dimensional/2;
+            for(int i=0; i<l; ++i){
+                if(! check_Intersection__Range_Unordered(aabb_0.aabb[i],aabb_0.aabb[i+l],aabb_1.aabb[i],aabb_1.aabb[i+l]) ) return false;
+            }
+            return true;
+        }
+
+        bool check_Tolerance__AABB(AABB_Node& box, var _tolerance){
+            var temp=0;
+            int l=box.dimensional/2;
+            for(Idx i=0; i<l; ++i){
+                temp += abs(box.aabb[i]-box.aabb[i+l]);
+            }
+            return _tolerance > temp;
+        }
+        
     }
 
 }

@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-02-28 10:05:05
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-01 11:02:38
+ * @LastEditTime: 2024-05-31 15:47:47
  * @FilePath: \CNML\src\Algebra\NML_Algebra.hpp
  * @Description: 基本数与代数运算
  */
@@ -175,9 +175,10 @@ namespace NML{
                  * @param out            计算结果输出目标, 长度应该等于 length
                  * @param coefficients   函数的系数集合, 从低次幂到高次幂 [ a, b, c, d ] 下标 = x 的指数
                  * @param length         函数的系数个数
+                 * @param _tolerance     容差, 在4次以上的函数中需要使用数值算法所以需要容差
                  * @return 返回计算后得到了几个根
                  */
-                Idx_Algebra calc_Roots__UnivariatePolynomials(var*& out, var*& coefficients,Idx_Algebra length);
+                Idx_Algebra calc_Roots__UnivariatePolynomials(var*& out, var*& coefficients,Idx_Algebra length, var _tolerance=NML_TOLERANCE);
 
             // end  * 一元多项式求根 * end 
         // end  * 一元多项式 * end  

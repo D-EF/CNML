@@ -8,4 +8,10 @@
         "*.tcc": "cpp"
     },
     "cmake.generator": "MinGW Makefiles"
+
+    // "cmake.generator": "Visual Studio",
+    // "cmake.configureSettings": {
+    //     "CMAKE_CXX_COMPILER": "cl.exe",
+    //     "CMAKE_C_COMPILER": "cl.exe"
+    // }
 }

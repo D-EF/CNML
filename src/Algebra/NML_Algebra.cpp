@@ -344,13 +344,13 @@ namespace NML{
         };
 
 
-        Idx_Algebra calc_Roots__UnivariatePolynomials(var*& out, var*& coefficients,Idx_Algebra length){
+        Idx_Algebra calc_Roots__UnivariatePolynomials(var*& out, var*& coefficients,Idx_Algebra length, var _tolerance){
             if(length<=0) return -1;
             switch (length){
                 case 1:  return calc_Roots__Line(out,coefficients);  break;
                 case 2:  return calc_Roots__Square(out,coefficients); break;
                 case 3:  return calc_Roots__Cubic(out,coefficients); break;
-                default: return find_Roots__UnivariatePolynomials__IterationMethod(out,coefficients,length); break;
+                default: return find_Roots__UnivariatePolynomials__IterationMethod(out,coefficients,length, _tolerance); break;
             }
         }
 

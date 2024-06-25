@@ -15,6 +15,7 @@
 #include "./NML_Transform_Action.hpp"
 #include "unit_test_basics.hpp"
 
+
 namespace NML_Test{
     namespace Test_Act{
 
@@ -28,7 +29,7 @@ namespace NML_Test{
             printf("]\n");
         }
 
-        void test_Bezier(){
+        void test_Bezier__sp(){
             using namespace NML;
             using namespace NML::Algebra;
             using namespace NML::Bezier;
@@ -101,6 +102,9 @@ namespace NML_Test{
             printf_Points(cut_o1);
         }
 
+        void test_Bezier(){
+
+        }
     }
 }
         

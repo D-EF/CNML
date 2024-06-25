@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-05-06 15:14:27
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-05-20 14:27:51
+ * @LastEditTime: 2024-06-21 17:00:30
  * @FilePath: \CNML\src\NML_Define.hpp
  * @Description: 包含各种公用的 宏, 类型, 结构体, 常量值, 枚举 声明 的头文件, 常量定义在 NML.cpp
  */
@@ -23,6 +23,12 @@
 
 
     // open * NML * open
+    
+        #ifndef __NML_IDX_INFINITY__
+            /** @brief Idx 的最大值 */
+            #define __NML_IDX_INFINITY__ 2147483647
+        #endif
+
         #ifndef __NML_VALUE_TYPE__
             /** @brief NML使用的基本数据类型 */
             #define __NML_VALUE_TYPE__ float
@@ -45,7 +51,7 @@
 
         #ifndef __DEFINE_SAMPLE_SIZE_SEED__
             /** @brief 全局默认采样精度种子 */
-            #define __DEFINE_SAMPLE_SIZE_SEED__ 10
+            #define __DEFINE_SAMPLE_SIZE_SEED__ 16
         #endif
 
         #ifndef __NML_TOLERANCE__
@@ -89,8 +95,6 @@ EXPORT_SYMBOL namespace NML{
     extern const var NML_TOLERANCE_D1;
     /** @brief 默认采样精度种子 */
     extern const Idx SAMPLE_SIZE_SEED;
-    /** @brief 默认采样精度步长 */
-    extern const var SAMPLE_SIZE_SIZE;
     
     /** 三个坐标轴 */
     enum Axis{ X=0, Y=1, Z=2 };
@@ -171,15 +175,32 @@ EXPORT_SYMBOL namespace NML{
         Points_Iterator(){}
         Points_Iterator(Idx_Algebra dimensional, Idx points_length):points_length(points_length), dimensional(dimensional){}
         Points_Iterator(void *data, Idx_Algebra dimensional, Idx points_length):data(data), points_length(points_length), dimensional(dimensional){}
-        Points_Iterator(Points_Iterator& copy_obj):points_length(copy_obj.points_length), dimensional(copy_obj.dimensional){}
+        Points_Iterator(Points_Iterator& copy_obj):points_length(copy_obj.points_length), dimensional(copy_obj.dimensional){
+            install_Data(dimensional, points_length);
+            copy_Data(copy_obj);
+        }
         /** @brief 用下标 取点 */
         virtual var* operator[](Idx v) = 0; 
+
         /** @brief 装配 new data */
         virtual void install_Data(Idx_Algebra dimensional, Idx points_length) = 0; 
+
         /** @brief 抄录数据到当前实例的 data */
         void copy_Data(Points_Iterator& copy_obj);
+
         /** @brief 释放data数据 */
         virtual void free_Data () = 0;
+
+        /** 设置 维度 */
+        void set_Dimensional(Idx_Algebra new_dimensional){
+            dimensional=new_dimensional;
+        }
+
+        /** 设置 点的个数 */
+        void set_PointsLength(Idx new_points_length){
+            points_length = new_points_length;
+        }
+
     };
     
 

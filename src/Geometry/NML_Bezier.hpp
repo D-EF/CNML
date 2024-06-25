@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-05-22 16:08:16
+ * @LastEditTime: 2024-06-06 15:27:25
  * @FilePath: \CNML\src\Geometry\NML_Bezier.hpp
  * @Description: 贝塞尔曲线
  */
@@ -11,6 +11,7 @@
 #define __NML_BEZIER__
 
 #include "NML.hpp"
+#include "./NML_Geometry.hpp"
 
 namespace NML{
     namespace Bezier{
@@ -24,7 +25,7 @@ namespace NML{
          * @param t        时间参数 t
          * @return 修改并返回 out
          */
-        var *&sample_Bezier__DeCasteljau(var*& out, Points_Iterator& points, var t);
+        var*& sample_Bezier__DeCasteljau(var*& out, Points_Iterator& points, var t);
         
 
         typedef Link_Block__Simple<int> Bezier_Calc_Matrix;
@@ -111,7 +112,7 @@ namespace NML{
          * @brief 通过系数计算贝塞尔曲线控制点
          * @param out               输出目标, 控制点数据 规模与 coefficients 相同;
          * @param coefficients      贝塞尔曲线计算系数 ( 使用 setup_BezierCoefficients 生成 )
-         * @return 修改 out 一维数组的内容 并返回 
+         * @return 修改 out 并返回 
          */
         Points_Iterator& calc_BezierCtrlPoints__Coefficients(Points_Iterator& out, Points_Iterator& coefficients);
 
@@ -217,6 +218,7 @@ namespace NML{
         var find_NearPoint(var*& out, var*& point, Points_Iterator& coefficients, var _propxy_polygon_sample_step_size, var _tolerance=NML_TOLERANCE);
         //  todo test find_NearPoint
 
+
         /**
          * @brief 计算各维度的多项式中的根, 并且 ∈ [0,1], 升序排序
          * @param out           t 集合的输出对象 应该有至少 derivatives.points_length*derivatives.dimensional 的长度以保证空间足够存储输出
@@ -226,40 +228,136 @@ namespace NML{
         Idx calc_T__DerivativesRootsLUT(var*& out, Points_Iterator& derivatives);
 
 
-        /** 
-         * @brief 计算贝塞尔曲线的在每个维度中单调性的拐点的 t 参数
-         * @param out            输出目标
-         * @param coefficients   曲线计算系数
-         * @return 返回拐点数量
-         */
-        Idx setup_BezierMonotonicLut(var*& out, Points_Iterator& coefficients);
-
-        /**
-         * @brief 贝塞尔曲线求交
-         * @param out                   输出目标, 输出交点在 coefficients_0 上的 t 参数; 长度应该为两个曲线的最大次数的积
-         * @param coefficients_0        贝塞尔曲线 0 的计算系数
-         * @param coefficients_1        贝塞尔曲线 1 的计算系数
-         * @param _derivatives_root_0   贝塞尔曲线 0 的导数的根
-         * @param _derivatives_root_1   贝塞尔曲线 1 的导数的根
-         * @return 返回交点的个数, 最多为两个曲线的最大次数的积; [ 0, (c_0.l-1)(c_1.l-1) ]
-         */
-        Idx calc_Intersection__Bezier_Bezier(
-            Points_Iterator&   out, 
-            Points_Iterator&   coefficients_0, 
-            Points_Iterator&   coefficients_1, 
-            var*               _derivatives_roots_lut_0, 
-            Idx                _length__derivatives_roots_lut_0, 
-            var*               _derivatives_roots_lut_1, 
-            Idx                _length__derivatives_roots_lut_1
-        );
-
 
         /** todo:
          * 点在曲线上的投影(近点)(点到曲线的最短距离); test
          * 求交; 
          * 求曲率;
          * 曲线的拐点
+         * 包装类
          */
+
+        class Bezier_Object{
+            private:
+            
+            /** 创建线段组代理时的采样精度 */
+            var _sample_seed__line;
+
+            public:
+
+            /** 计算系数 */
+            Points_Iterator* coefficients;
+
+            /** 缓存的系数长度, 用于判断其他缓存值的空间是否可用 */
+            Idx length__coefficients;
+            /** 缓存的系数维度, 用于判断其他缓存值的空间是否可用 */
+            Idx_Algebra dimensional__coefficients;
+
+            /** 导函数的系数, 使用 had_derivatives 表示是否有效 */
+            Points_Iterator* derivatives;
+
+            /** 当前导数是否有效 */
+            bool had_derivatives;
+
+            /** 导函数的在各个维度的根, 从小到大 , length__derivatives_root<0 时表示失效 */
+            var* derivatives_root;
+            
+            /** 导函数的根的个数 */
+            Idx_Algebra length__derivatives_root;
+
+            /** 根据单调性的拆分出的 aabb, 用于初始化求交函数 monotonic_aabbs.length<0 时表示失效 */
+            Geometry::AABB_Nodes monotonic_aabbs;
+
+            /** 线段组代理, 拟合曲线的线段组, 用于计算长度或其他辅助计算, distance<0 时表示失效 */
+            Points_Iterator* line_path;
+
+            /** 长度与t的显式查找表, distance<0 时表示失效, t步长 = 采样精度 */
+            var* lut__distance;
+
+            /** 缓存曲线长度, 负数表示未计算 */
+            var distance;
+
+            /**
+             * @brief 直接使用已有的系数进行初始化
+             * @param coefficients_ 参数的系数
+             */
+            Bezier_Object(Points_Iterator& coefficients_){
+                coefficients=new Points_Iterator__1DList(coefficients_);
+                _sample_seed__line=0.1;
+                giveUp_Cache();
+            }
+            
+            /**
+             * @brief 直接使用已有的系数进行初始化
+             * @param coefficients 参数的系数
+             */
+            Bezier_Object(){
+                this->coefficients=0;
+                _sample_seed__line=0.1;
+                giveUp_Cache();
+            }
+
+            /** 采样点函数 */
+            var*& sample(var*& out,var t){ 
+                if(!coefficients) throw 0;
+                return sample_Bezier__Coefficients(out, *coefficients, t);
+            }
+
+            /**
+             * @brief 淘汰缓存内容, 使缓存内容标记失效并刷新 length__coefficients , dimensional
+             */
+            void giveUp_Cache();
+            
+            /**
+             * @brief 为当前曲线计算一个合适的采样精度, 计算过程为 : 计算导数根 >> 采样并链接成线段 >> 使用线段长度计算采样精度
+             * @param sample_seed  采样精度的计算种子, 值越小采样精度越高
+             * @return 返回采样步长 t_step = sample_seed/(distance(derivatives__roots));
+             */
+            var calc_SampleStep(var sample_seed=__DEFINE_SAMPLE_SIZE_SEED__);
+
+            /** 
+             * @brief 设置线段组代理采样精度
+             * @param sample_step 新采样精度
+             */
+            var set_LineSampleStep(var sample_step){
+                _sample_seed__line=sample_step;
+                if(lut__distance) {   delete lut__distance;   lut__distance=0;   }
+                if(line_path) {       delete line_path;       line_path=0;       }
+                return _sample_seed__line;
+            }
+
+
+            /**
+             * @brief 加载导数
+             */
+            void load_Derivatives();
+
+            /**
+             * @brief 加载导数根 计算结果将存储到 derivatives_root
+             * @param _tolerance 计算导数根时使用的容差
+             */
+            void load_DerivativesRoot(var _tolerance=__NML_TOLERANCE__);
+
+            /**
+             * @brief 加载 单调区间的 AABB
+             * @param _tolerance 计算导数根时使用的容差
+             */
+            void load_MonotonicAABB(var _tolerance=__NML_TOLERANCE__);
+
+            /**
+             * @brief 使用控制点初始化曲线对象
+             * @param ctrl_points       需要导入的控制点
+             */
+            void import_CtrlPoints(Points_Iterator& ctrl_points);
+
+
+            /**
+             * @brief 将贝塞尔曲线的计算系数导出为控制点
+             * @param out 导出控制点的输出对象
+             */
+            void export_CtrlPoints(Points_Iterator& out){ calc_BezierCtrlPoints__Coefficients(out,*coefficients); }
+
+        };
 
     }
 }

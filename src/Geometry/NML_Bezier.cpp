@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-05-24 17:52:36
+ * @LastEditTime: 2024-06-24 09:45:39
  * @FilePath: \CNML\src\Geometry\NML_Bezier.cpp
  * @Description: 贝塞尔曲线
  */
@@ -10,7 +10,6 @@
 #include "Algebra/NML_Algebra.hpp"
 #include "./NML_Bezier.hpp"
 #include "./NML_Geometry.hpp"
-#include "Link_Block/NML_Link_Block.hpp"
 
 namespace NML{
     namespace Bezier{
@@ -119,7 +118,7 @@ namespace NML{
             var *temp_point;
             for(Idx i=0;  i<length__t_list;  ++i){
                 temp_point=coefficients[i];
-                Bezier::sample_Bezier__Coefficients(temp_point,coefficients,t_list[i]);
+                sample_Bezier__Coefficients(temp_point,coefficients,t_list[i]);
             }
             return out;
         }
@@ -301,9 +300,9 @@ namespace NML{
 
             Idx idx_derivatives, idx_point, idx_t, l=_derivatives->points_length, d=_derivatives->dimensional;
 
-            var* derivatives__dimensional     = new var[l];
+            var* derivatives__dimensional    = new var[l];
             var* coefficients__dimensional   = new var[l+1];
-            var* roots__dimensional          = new var[l+2];
+            var* roots__dimensional          = new var[l+2]; 
             Idx_Algebra length__roots;
             var temp_sample;
 
@@ -484,28 +483,111 @@ namespace NML{
         }
 
 
-
-        Idx calc_Intersection__Bezier_Bezier(
-            Points_Iterator&        out, 
-            Points_Iterator&        coefficients_0, 
-            Points_Iterator&        coefficients_1, 
-            Geometry::AABB_Nodes&   aabb_group_0,
-            Geometry::AABB_Nodes&   aabb_group_1
-        ){
-            using namespace Link_Block;
-            using namespace Geometry;
-            Link_Block_Ctrl<AABB_Pair> pair;
-
-            Idx i,j;
-
-            for(i=0;i<aabb_group_0.length;++i){
-                for(j=0;j<aabb_group_1.length;++j){
-                    pair.push_Item({ aabb_group_0.nodes+i, aabb_group_1.nodes+j });
-                }
+        void Bezier_Object::giveUp_Cache(){
+            if(!coefficients){
+                derivatives                = 0;
+                derivatives_root           = 0;
+                monotonic_aabbs.nodes      = 0;
+                line_path                  = 0;
+                had_derivatives            = false;
+                length__derivatives_root   = -1;
+                distance                   = -1;
+                monotonic_aabbs.length     = -1;
+                return;
             }
-            
-            // todo
-            // (pair[pair.used_length])
+            if((length__coefficients!=coefficients->points_length) || (dimensional__coefficients!=coefficients->dimensional) ){   // 曲线计算系数的空间修改, 则其他缓存的空间也要修改
+                if(derivatives)        {   delete derivatives;        derivatives=0;        }
+                if(derivatives_root)   {   delete derivatives_root;   derivatives_root=0;   }
+                if(monotonic_aabbs.nodes)     {   delete monotonic_aabbs.nodes;     monotonic_aabbs.nodes=0;     }
+            }
+            if(dimensional__coefficients){   // line_path 点的维度与曲线的维度需要相同
+                if(line_path)   {   delete line_path;   line_path=0;   }
+            }
+            length__coefficients=coefficients->points_length;
+            dimensional__coefficients=coefficients->dimensional;
+
+            had_derivatives   = false;
+
+            // lut__distance 的数据长度由采样精度决定, 所以此处仅将 distance 置负, 在更新 _sample_seed__line 时删除内存 (set_SampleStep(var))
+
+            length__derivatives_root   = -1;
+            distance                   = -1;
+            monotonic_aabbs.length     = -1;
+        }
+
+
+        var Bezier_Object::calc_SampleStep(var sample_seed){ 
+            using namespace Geometry;
+            var derivatives__root;
+            load_MonotonicAABB();
+            NML::Geometry::AABB_Node* node = monotonic_aabbs.nodes;
+            Idx_Algebra &d=node->dimensional;
+            Idx i;
+            for(i=0;  i < node->dimensional;  ++i, node=monotonic_aabbs.nodes+i){
+                derivatives__root+=calc_LineDistance(node->aabb, node->aabb+d, d);
+            }
+            return sample_seed / derivatives__root;
+        }
+
+
+        void Bezier_Object::load_Derivatives(){
+            if(!derivatives){
+                derivatives=new Points_Iterator__1DList(coefficients->dimensional, coefficients->points_length-1);
+                had_derivatives=false;
+            }
+            if(!had_derivatives){
+                Algebra::setup_Derivatives__UnivariatePolynomials(*derivatives, *coefficients);
+            }
+        }
+
+        void Bezier_Object:: load_DerivativesRoot(var _tolerance){
+            if(!derivatives_root){
+                derivatives_root=new var[derivatives->points_length*derivatives->dimensional];
+                length__derivatives_root=-1;
+            }
+            if(length__derivatives_root>=0){
+                load_Derivatives();
+                length__derivatives_root = calc_T__DerivativesRootsLUT(derivatives_root,*derivatives);
+            }
+        }
+
+        void Bezier_Object::load_MonotonicAABB(var _tolerance){
+            load_DerivativesRoot(_tolerance);
+            if(monotonic_aabbs.nodes && monotonic_aabbs.length>0) return;
+            Idx i, j=1;
+            Idx_Algebra &dimensional = dimensional__coefficients;
+
+            if(!monotonic_aabbs.nodes){  // 初始化最大 AABB 数量为 导数的系数长度 * 维度 +2
+                Idx max_length=derivatives->dimensional*derivatives->points_length+2;
+                monotonic_aabbs.nodes=new Geometry::AABB_Node[max_length];
+                for(i=0; i<max_length; ++i) monotonic_aabbs.nodes[i].init(dimensional);
+            }
+
+            // 采样生成 AABB
+            var* temp_point=new var[dimensional];
+            while(derivatives_root[i]<0 && i<length__derivatives_root) ++i;
+            sample(monotonic_aabbs.nodes[0].aabb,0);
+            while(derivatives_root[i]<1 && i<length__derivatives_root){
+                sample(monotonic_aabbs.nodes[j].aabb,derivatives_root[i]);
+                std::copy(monotonic_aabbs.nodes[j].aabb, monotonic_aabbs.nodes[j].aabb+dimensional, monotonic_aabbs.nodes[j-1].aabb+dimensional);
+                ++i; ++j;
+            }
+            var *p=monotonic_aabbs.nodes[j-1].aabb+dimensional;
+            sample(p,1);
+            monotonic_aabbs.length=j;
+        }
+
+
+        void Bezier_Object::import_CtrlPoints(Points_Iterator& ctrl_points){
+            if(coefficients && ctrl_points.points_length!=coefficients->points_length){
+                delete coefficients;
+                coefficients=0;
+            }
+            if(!coefficients){
+                coefficients=new Points_Iterator__1DList(ctrl_points.dimensional,ctrl_points.points_length);
+            }
+            setup_BezierCoefficients(*coefficients,ctrl_points);
+            giveUp_Cache();
         }
 
     }

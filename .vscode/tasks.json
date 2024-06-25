@@ -25,6 +25,7 @@
                 "cwd": "${workspaceFolder}/build"
             },
             "command":"mingw32-make.exe",
+            // "command":"MsBuild.exe",
             "args": [
             ]
         },
