@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-03-06 11:34:26
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-06-24 17:50:22
+ * @LastEditTime: 2024-06-25 10:28:28
  * @FilePath: \CNML\src\NML_Link_Block.hpp
  * @Description: 块状链表存储结构
  */
@@ -1150,10 +1150,14 @@ namespace NML{
                 points_length=calc_UsedPointsLength();
             }
 
+            /** 
+             * @brief 拷贝构造函数
+             * @param copy_obj 原数据对象
+             */
             Points_Iterator__LinkBlock(Points_Iterator& copy_obj):Points_Iterator(copy_obj){}
 
             /**
-             * 初始化长度的数据
+             * @brief 初始化长度的数据
              * @param dimensional   维度
              * @param points_length 点的个数
              */
@@ -1163,10 +1167,18 @@ namespace NML{
 
             ~Points_Iterator__LinkBlock(){free_Data();}
 
-            void install_Data(Idx_Algebra dimensional, Idx points_length){ 
+            /**
+             * @brief 装配 new data (初始化分配数据)
+             * @param dimensional   维度
+             * @param points_length 点的个数
+             */
+            void install_Data(Idx_Algebra dimensional, Idx points_length) override{ 
+                if(data) free_Data();
                 Idx l = dimensional*points_length;
                 data = new LBC(l); 
                 ((LBC*)data)->used_length = l;
+                this->dimensional   = dimensional;
+                this->points_length = points_length;
             }
             
             void free_Data(){delete (LBC*)data; data=0;}

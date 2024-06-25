@@ -2,13 +2,13 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-06-20 10:09:08
- * @FilePath: \CNML\src\Geometry_2D\NML_Geometry_2D_Primitive_2D.hpp
+ * @LastEditTime: 2024-06-25 10:51:55
+ * @FilePath: \CNML\src\Geometry_2D\NML_Geometry_2D_Primitives.hpp
  * @Description: 2D 图元 相关内容
  */
 
-#ifndef __NML_GEOMETRY_2D_Primitive__
-#define __NML_GEOMETRY_2D_Primitive__
+#ifndef __NML_GEOMETRY_2D_PRIMITIVES__
+#define __NML_GEOMETRY_2D_PRIMITIVES__
 
 #include "NML.hpp"
 #include "./NML_Geometry_2D.hpp"

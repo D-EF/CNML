@@ -2,12 +2,12 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-28 16:57:35
- * @FilePath: \CNML\src\Geometry_2D\NML_Geometry_2D_Primitive_2D.cpp
+ * @LastEditTime: 2024-06-25 10:51:39
+ * @FilePath: \CNML\src\Geometry_2D\NML_Geometry_2D_Primitives.cpp
  * @Description: 2D 图元 相关内容
  */
 
-#include "./NML_Geometry_2D_Primitive_2D.hpp"
+#include "./NML_Geometry_2D_Primitives.hpp"
 
 namespace NML{
     namespace Geometry_2D{

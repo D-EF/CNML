@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-05-22 10:52:26
+ * @LastEditTime: 2024-06-25 10:42:38
  * @FilePath: \CNML\src\Link_Block\test.cpp
  * @Description: 块链 单元测试
  */
@@ -158,7 +158,16 @@ namespace NML_Test{
             d.splice(255,0,test_data_i,1);
 
             printf_TestLinkBlock(d.head_node);
-            
         }
+
+
+        void test_Points_Iterator__LinkBlock(){
+            
+            Points_Iterator__LinkBlock p=Points_Iterator__LinkBlock(3,128);
+            
+            printf_Points(p);
+
+        }
+
     }
 };
