@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-06-12 09:11:13
+ * @LastEditTime: 2024-06-28 14:11:21
  * @FilePath: \CNML\src\NML.cpp
  * @Description: Nittle Math Library 简单数学库
  */
@@ -42,19 +42,30 @@ namespace NML{
         return rtn;
     }
     
-    void printf_Vec(const var* val, Idx length){
+    void printf_Vec(const var* val, Idx length, const char* line_head){
         Idx i=0;
-        printf("[%f", val[i]);
-        for(i++;  i<length;  i++){
-            printf(",%f", val[i]);
+        if(line_head){
+            printf("%s",line_head);
         }
-        printf("]\n");
+        printf("\t[%+f", val[i]);
+        for(i++;  i<length;  i++){
+            printf(",%+f", val[i]);
+        }
+        printf("],\n");
     }
 
-    void printf_Points(Points_Iterator& points){
+    void printf_Points(Points_Iterator& points, const char* line_head){
+        if(line_head){
+            printf("%s",line_head);
+        }
         printf("{\n");
+        var* k;
         for(Idx i=0;  i<points.points_length;  i++){
-            printf_Vec(points[i], points.dimensional);
+            k=points[i];
+            printf_Vec(points[i], points.dimensional, line_head);
+        }
+        if(line_head){
+            printf("%s",line_head);
         }
         printf("}\n");
     }
@@ -116,27 +127,22 @@ namespace NML{
         return out;
     }
 
-
-    void Points_Iterator::copy_Data(Points_Iterator& copy_obj){
-        int i,j;
-        Points_Iterator& pi =*this;
-        var* temp_point__this;
-        var* temp_point__obj;
-        Idx _length=std::min(points_length,copy_obj.points_length);
-        Idx_Algebra _dimensional=std::min(dimensional,copy_obj.dimensional);
-        for(i=0;  i<_length;  ++i){
-            temp_point__this=pi[i];
-            temp_point__obj=copy_obj[i];
-            for(j=0;  j<_dimensional;  ++j){
-                temp_point__this[j]=temp_point__obj[j];
-            }
+    
+    void Points_Iterator::copy_Data(Points_Iterator& src_data, Idx read_offset=0){
+        Idx i=0;
+        Points_Iterator& write = *this;
+        var* read;
+        while(i<points_length && read_offset<src_data.points_length){
+            read=src_data[read_offset];
+            std::copy(read, read+dimensional, write[i]);
+            ++read_offset; ++i;
         }
     }
 
     bool calc_Intersection__Range(var& out_min,var& out_max, var r0_min, var r0_max, var r1_min, var r1_max){
         if(r0_min<=r1_max && r1_min<=r0_max){
-            out_min=std::max(r0_min,r1_min);
-            out_max=std::min(r0_max,r1_max);
+            out_min = std::max(r0_min,r1_min);
+            out_max = std::min(r0_max,r1_max);
             return true;
         }
         return false;

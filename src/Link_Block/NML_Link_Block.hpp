@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-03-06 11:34:26
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-06-25 10:28:28
+ * @LastEditTime: 2024-06-28 13:52:18
  * @FilePath: \CNML\src\NML_Link_Block.hpp
  * @Description: 块状链表存储结构
  */
@@ -134,8 +134,10 @@ namespace NML{
                 for(i=0; now && i>index_offset;  i-=now->used_length, now=now->prev);
             }
             if(!now) throw std::out_of_range("using index is out of link_block's used range");
-            if(_out_node_head_index) *_out_node_head_index=i;
-            if(_out_node) *_out_node=now;
+            if(now!=origin_node){
+                if(_out_node_head_index)   *_out_node_head_index += i;
+                if(_out_node)              *_out_node = now;
+            }
             return now->data[index_offset-i];
         }
 
@@ -158,11 +160,11 @@ namespace NML{
         /**
          * @brief 擦除块状链表中的一段元素
          * @tparam Value_Type 块状链表的数据类型
-         * @param origin_node              起始节点
-         * @param index                    从第 index 个元素开始擦除
-         * @param _erase_length            擦除多少个元素, 默认为 1
-         * @param _out_node                输出擦除完成后的活跃节点,  默认为 0 (不输出)
-         * @param _erase_callback          擦除时对每个元素调用回调
+         * @param origin_node       起始节点
+         * @param index             从第 index 个元素开始擦除
+         * @param _erase_length     擦除多少个元素, 默认为 1
+         * @param _out_node         输出擦除完成后的活跃节点,  默认为 0 (不输出)
+         * @param _erase_callback   擦除时对每个元素调用回调
          * @return 返回删除后从起始位置到结束位置有多少空闲空间
          */
         template <typename Value_Type> 
@@ -504,10 +506,10 @@ namespace NML{
          * @param _min_length   当合并后的节点容量小于 _min_length 时, 使用 _min_length 作为节点的容量
          */
         template <typename Value_Type> 
-        Link_Block_Node<Value_Type>* merge_LinkBlock(Link_Block_Node<Value_Type>*& origin_node, Idx node_length, Idx _min_length=__DEFAULT_LINK_BLOCK_LENGTH__){
-            if(node_length<=1)return origin_node;
-            Link_Block_Node<Value_Type>* prev=origin_node->prev;
-            Link_Block_Node<Value_Type>* now=origin_node;
+        Link_Block_Node<Value_Type>* merge_LinkBlock(Link_Block_Node<Value_Type>** origin_node, Idx node_length, Idx _min_length=__DEFAULT_LINK_BLOCK_LENGTH__){
+            if(node_length<=1)return *origin_node;
+            Link_Block_Node<Value_Type>* prev = (*origin_node)->prev;
+            Link_Block_Node<Value_Type>* now  = (*origin_node);
             Idx new_length = 0, node_index = 0;
             while(now && node_index<node_length){
                 new_length += now->used_length;
@@ -519,25 +521,25 @@ namespace NML{
             new_node->length = new_length<_min_length?_min_length:new_length;
             new_node->used_length = new_length;
             new_node->data = new Value_Type[new_length];
-            node_index=new_length=0;
-            now=origin_node;
+            node_index = new_length = 0;
+            now = (*origin_node);
             while(now && node_index<node_length){
                 std::copy(now->data, now->data+now->used_length, new_node->data+new_length);
                 ++node_index;
                 new_length+=now->used_length;
                 now=now->next;
-                if(now->prev){
+                if(now && now->prev){
                     delete[] now->prev->data;
                     delete now->prev;
                 }
             }
             new_node->next=now;
-            now->prev=new_node;
+            if(now) now->prev=new_node;
             if(prev){
                 prev->next=new_node;
                 new_node->prev=prev;
             }else{
-                origin_node=new_node;
+                *origin_node=new_node;
                 new_node->prev=0;
             }
             
@@ -808,7 +810,7 @@ namespace NML{
                     if(!target) break;
                     --target->used_length;
                     ++i;
-                    _erase_callback(target->data[target->used_length]);
+                    _erase_callback(&target->data[target->used_length]);
                 }
             }else{
                 while(length>0 && target){
@@ -1037,6 +1039,25 @@ namespace NML{
             }
 
 
+            Node* get_Node(int node_index, Node** out__prev_to_tgt=0, Node** out__next_to_tgt=0){
+                if(!node_index){
+                    if(out__next_to_tgt) out__next_to_tgt = &(head_node->next->prev);
+                    return head_node;
+                }
+                int i=0;
+                Node* node=head_node;
+                do{
+                    node=node->next;
+                    ++i;
+                }while(i<node_index);
+
+                if(out__prev_to_tgt) out__prev_to_tgt = &(node->prev->next);
+                if(out__next_to_tgt) out__next_to_tgt = &(node->next->prev);
+
+                return node;
+            }
+
+
             /** 
              * @brief 使用下标获取元素
              * @param index 下标
@@ -1047,12 +1068,13 @@ namespace NML{
                 if(!_use_cache_index){
                     if(index<0)   return get_Item__LinkBlock(end_node, index - end_node->used_length);
                     else          return get_Item__LinkBlock(head_node,index);
-                } 
+                }
                 if(index<0) index+=used_length;
                 Idx _index=index-origin_index__item;
-                if(index<origin_index__item && index<(-_index)){
+                if((!origin_node) || (index<origin_index__item && index<(-_index)) ){
                     _index=index;
                     origin_node=head_node;
+                    origin_index__item=0;
                 }
                 return get_Item__LinkBlock(origin_node, _index, &origin_node, &origin_index__item);
             }
@@ -1162,6 +1184,7 @@ namespace NML{
              * @param points_length 点的个数
              */
             Points_Iterator__LinkBlock(Idx_Algebra dimensional, Idx points_length):Points_Iterator(dimensional, points_length){
+                data=0;
                 install_Data(dimensional, points_length);
             }
 
@@ -1176,7 +1199,7 @@ namespace NML{
                 if(data) free_Data();
                 Idx l = dimensional*points_length;
                 data = new LBC(l); 
-                ((LBC*)data)->used_length = l;
+                ((LBC*)data)->used_length  =  ((LBC*)data)->head_node->used_length  =  l;
                 this->dimensional   = dimensional;
                 this->points_length = points_length;
             }
@@ -1219,14 +1242,14 @@ namespace NML{
             Idx calc_PointsLength();
             
             /** 设置 维度 */
-            void set_Dimensional(Idx_Algebra new_dimensional){
+            void set_Dimensional(Idx_Algebra new_dimensional, bool reset_data=true) override{
                 dimensional = new_dimensional;
-                settle_Values();
+                if(reset_data)settle_Values();
                 points_length = calc_UsedPointsLength();
             }
 
             /** 设置 点的个数 */
-            void set_PointsLength(Idx new_points_length);
+            void set_PointsLength(Idx new_points_length, bool reset_data=true) override;
 
             /** 
              * @brief 整理内容并尝试合并链表数据节点

@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-03-06 11:34:26
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-06-24 17:59:57
+ * @LastEditTime: 2024-06-28 14:26:12
  * @FilePath: \CNML\src\NML_Link_Block.hpp
  * @Description: 块状链表存储结构
  */
@@ -45,38 +45,49 @@ namespace NML{
         }
         
 
-        void Points_Iterator__LinkBlock::set_PointsLength(Idx new_points_length){
-            settle_Values();
-            LBC* d = (LBC*)data;
-            Idx l = new_points_length - points_length;
-            l*=dimensional;
-            if(l<0){
-                d->remove_EndItems(l);
-            }else if(l>0){
-                var* new_data = new var[l];
-                d->push_Items(new_data,l);
-                delete new_data;
+        void Points_Iterator__LinkBlock::set_PointsLength(Idx new_points_length,bool reset_data){
+            if(reset_data){
+                LBC* d = (LBC*)data;
+                Idx l = new_points_length - points_length;
+                l*=dimensional;
+                if(l<0){
+                    d->remove_EndItems(-l);
+                }else if(l>0){
+                    var* new_data = new var[l];
+                    d->push_Items(new_data,l);
+                    delete new_data;
+                }
+                settle_Values();
             }
+            points_length=new_points_length;
         }
 
         
-        void Points_Iterator__LinkBlock::settle_Values(Idx critical_value=0){
+        void Points_Iterator__LinkBlock::settle_Values(Idx critical_value){
             LBC* d = (LBC*)data;
-            LBN* node = d->head_node;
-            Idx l=0,i=0;
+            LBN* new_node;
+            LBN** node;
+            LBN* i_node;
+            Idx l=0, i=0;
+
+            i_node = d->head_node;
+            node = &d->head_node;
 
             if(critical_value<=0) critical_value = get_Option()->ex_link_block_length/2;
 
-            while(node){
-                node->used_length -= node->used_length%dimensional;
-                l+=node->used_length;
+            while(i_node){
+                i_node->used_length -= i_node->used_length % dimensional;
+                l+=i_node->used_length;
                 ++i;
+                i_node=i_node->next;
                 if(l>critical_value){
-                    merge_LinkBlock(node,i,get_Option()->ex_link_block_length);
+                    merge_LinkBlock(node, i, get_Option()->ex_link_block_length);
                     l = i = 0;
+                    node = &(i_node->prev->next);
                 }
-                node=node->next;
             }
+            if(i) merge_LinkBlock(node, i, get_Option()->ex_link_block_length);
+            d->origin_node=d->head_node;
         }
 
 

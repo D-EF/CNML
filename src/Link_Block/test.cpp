@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-06-25 10:42:38
+ * @LastEditTime: 2024-06-28 14:42:09
  * @FilePath: \CNML\src\Link_Block\test.cpp
  * @Description: 块链 单元测试
  */
@@ -119,7 +119,7 @@ namespace NML_Test{
             d.reload_Length();
             _printf_Test(d);
 
-            merge_LinkBlock(d.head_node,3,10);
+            merge_LinkBlock(&d.head_node,3,10);
             d.reload_Length();
             _printf_Test(d);
 
@@ -160,14 +160,33 @@ namespace NML_Test{
             printf_TestLinkBlock(d.head_node);
         }
 
-
         void test_Points_Iterator__LinkBlock(){
             
-            Points_Iterator__LinkBlock p=Points_Iterator__LinkBlock(3,128);
-            
-            printf_Points(p);
+            Points_Iterator* _p = new Points_Iterator__LinkBlock(3,16);
+            Points_Iterator* _pl = new Points_Iterator__1DList(3,4);
+
+            Points_Iterator& p=*_p;
+            Points_Iterator& pl=*_pl;
+
+            p.set_PointsLength(123);
+            using LBC = Link_Block_Ctrl<var>;
+
+            var* k = p[0];
+
+            p[0][0]    = 0.01;
+            p[1][0]    = 0.02;
+            p[2][0]    = 0.03;
+            p[3][0]    = 0.04;
+            p[13][0]   = 0.05;
+            p[15][0]   = 0.06;
+            p[0][1]    = 0.07;
+
+            p.set_PointsLength(16);
+            printf_Points(p, "\t");
+            pl.copy_Data(p,2);
+            printf_Points(pl, "\t");
 
         }
 
     }
-};
+};  

@@ -2,10 +2,12 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-05-06 15:14:27
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-06-21 17:00:30
+ * @LastEditTime: 2024-06-27 11:29:53
  * @FilePath: \CNML\src\NML_Define.hpp
  * @Description: 包含各种公用的 宏, 类型, 结构体, 常量值, 枚举 声明 的头文件, 常量定义在 NML.cpp
  */
+
+#include <iostream>
 
 #ifndef __NITTLE_MATH_LIBRARY_DEFINE__
 #define __NITTLE_MATH_LIBRARY_DEFINE__
@@ -175,10 +177,7 @@ EXPORT_SYMBOL namespace NML{
         Points_Iterator(){}
         Points_Iterator(Idx_Algebra dimensional, Idx points_length):points_length(points_length), dimensional(dimensional){}
         Points_Iterator(void *data, Idx_Algebra dimensional, Idx points_length):data(data), points_length(points_length), dimensional(dimensional){}
-        Points_Iterator(Points_Iterator& copy_obj):points_length(copy_obj.points_length), dimensional(copy_obj.dimensional){
-            install_Data(dimensional, points_length);
-            copy_Data(copy_obj);
-        }
+        Points_Iterator(Points_Iterator& copy_obj):points_length(copy_obj.points_length), dimensional(copy_obj.dimensional){}
         /** @brief 用下标 取点 */
         virtual var* operator[](Idx v) = 0; 
 
@@ -192,17 +191,17 @@ EXPORT_SYMBOL namespace NML{
         virtual void free_Data () = 0;
 
         /** 设置 维度 */
-        void set_Dimensional(Idx_Algebra new_dimensional){
+        virtual void set_Dimensional(Idx_Algebra new_dimensional, bool reset_data=true){
             dimensional=new_dimensional;
         }
 
         /** 设置 点的个数 */
-        void set_PointsLength(Idx new_points_length){
+        virtual void set_PointsLength(Idx new_points_length, bool reset_data=true){
             points_length = new_points_length;
         }
 
+        void copy_Data(Points_Iterator& src_data, Idx read_offset);
     };
-    
 
 }
 

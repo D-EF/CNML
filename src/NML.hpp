@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-06-21 17:41:19
+ * @LastEditTime: 2024-06-26 10:07:47
  * @FilePath: \cnml\src\NML.hpp
  * @Description: Nittle Math Library 简单数学库
  */
@@ -44,6 +44,14 @@ EXPORT_SYMBOL namespace NML{
         }
         void free_Data(){delete (var*)data; data=0;}
         var* operator[](Idx v) override{return ((var*)data)+(v*dimensional);}
+        void set_Dimensional(Idx_Algebra new_dimensional, bool reset_data=true) override{
+            dimensional=new_dimensional;
+            if(reset_data)install_Data();
+        }
+        void set_PointsLength(Idx new_points_length, bool reset_data=true) override{
+            points_length=new_points_length;
+            if(reset_data)install_Data();
+        }
     };
     
 
@@ -63,13 +71,13 @@ EXPORT_SYMBOL namespace NML{
      * @param val    数据
      * @param length 长度
      */
-    void printf_Vec(const var* val, Idx length);
+    void printf_Vec(const var* val, Idx length, const char* line_head=0);
 
     /**
      * @brief 打印点云数据
      * @param points    点云数据访问器
      */
-    void printf_Points(Points_Iterator& points);
+    void printf_Points(Points_Iterator& points, const char* line_head=0);
 
 
     /**
