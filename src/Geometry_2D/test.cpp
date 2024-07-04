@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-06-04 15:37:53
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-06-19 14:21:31
+ * @LastEditTime: 2024-07-04 08:50:13
  * @FilePath: \CNML\src\Geometry_2D\test.cpp
  * @Description: 2D 测试用, 编辑 svg 绘制代码
  */
@@ -14,6 +14,7 @@
 #include "Geometry/NML_Bezier.hpp"
 #include "Geometry/NML_Geometry.hpp"
 #include "Geometry_2D/NML_Geometry_2D.hpp"
+#include "Geometry_2D/NML_Path_2D.hpp"
 
 namespace NML_Test{
     namespace Test_Act{
@@ -86,11 +87,17 @@ namespace NML_Test{
         //     }
         // }
 
-        void test_2D_Bezier(){
+        using namespace NML::Geometry_2D::Path;
+        
+        void test_Path(){
             var temp[6];
             int i=0;
             setup_Values__ByString(temp,"123.321,456.789e+2l123.456,1e-3,5",i);
-            Link_Block::Link_Block_Ctrl<SVG_Cmd>* d = load_SVGPath("M10 80 C 40 10, 65 10, 95 80 S 150 150, 180 80 q 25 -80, 80 0 t 80 0 l 40 240 a 300 180 45 0 0 -320 -40z");
+
+            SVG_Cmds* d = load_SVGPath("M10 80 C 40 10, 65 10, 95 80 S 150 150, 180 80 q 25 -80, 80 0 t 80 80 l 40 240 a 300 180 45 0 0 -320 -40zM10 10 l20 20");
+
+            normalize_SvgCmd(*d);
+
             return;
         }
     }

@@ -116,3 +116,24 @@
 * 计算适合的长度 (手动计算)   
     * 设 d = _\_DEFAULT\_LINK\_BLOCK\_SIZE\_\_   
     * 适合的长度 $ L_{node} = d⌈ \frac{L{data}}{d} ⌉  $
+
+
+# 基于块状链表的点访问器 Points_Iterator__LinkBlock
+
+* *继承于点访问器基类 NML::Points_Iterator*
+
+* Points_Iterator__LinkBlock 使用循环块状链表表存储, 其中 data 块状链表控制器的指针
+* 点坐标数据存储在每块的data指针处, 多余的空间会被空省
+```
+    // 当前块的空间大小为14, 点维度为3
+    [x0, y0, z0]
+    [x1, y1, z1]
+    [x2, y2, z2]
+    [x4, y4, z4]
+    [*,*] // 无用的两个值
+```
+* 成员函数 **Idx calc_PointsLength();** 可以使用当前 data 中 used_length 进行计算
+* override的成员函数 **setset_Dimensional** 和 **set_PointsLength** 执行后会尝试合并块状链表, 合并规则为 链表控制器中的 option->ex_link_block_length; 具体表现为 当某个链表块长度小于  option->ex_link_block_length/2 时, 进行合并.
+
+
+    

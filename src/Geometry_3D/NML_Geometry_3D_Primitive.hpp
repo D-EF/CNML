@@ -3,7 +3,7 @@
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditTime: 2024-06-25 10:53:35
- * @FilePath: \CNML\src\Geometry_3D\NML_Geometry_3D_Primitives.hpp
+ * @FilePath: \CNML\src\Geometry_3D\NML_Geometry_3D_Primitive.hpp
  * @Description: 3D 图元
  */
 

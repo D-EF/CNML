@@ -133,7 +133,8 @@ namespace NML{
 
   * 所有对某个 宏,类/结构体,函数,常量/变量 的声明添加注释时 应该使用块注释并以 "/\*\*"起始, 使用 JavaDoc 的格式编写;
 
-  * 对类型的说明和命名无法一目了然的枚举常量、全局变量，应该有说明, 如果命名就能很明确的清楚这个变量的意义可以省略注释;
+  * 对类型的说明和命名无法一目了然的枚举常量、全局变量，应该有说明, 如果命名很短且明确的清楚这个变量的意义可以省略注释;
+  * 命名比较长的时候(超过两个单词), 通常需要阅读命名并尝试理解, 更建议使用注释以令编辑器的题词器和说明得以工作
     ``` cpp
     // 例 不需要增加注释 :
 
@@ -153,97 +154,35 @@ namespace NML{
         /** @brief 贝塞尔曲线拟合四分之一圆 的 k 值 */
         extern const var BEZIER_TO_CYCLES_K__1D4;
         
-        /** 插入内容时追加块状链表节点时的行为模式 */
-        enum Behavior_Pattern__Add_LinkBlock{
-            // 禁止添加
-                /** 禁止添加, 将尽可能在已有的节点中分配空间存储内容; 无法完成时将会报错 */
-                disabled,
-                /** 禁止添加, 当前节点无法容纳插入内容时尝试在前面的节点中已有的空间中重新分配以腾出空间保存内容, 无法完成时将会报错*/
-                disabled_move_forward,
-                /** 禁止添加, 当前节点无法容纳插入内容时尝试在后面的节点中已有的空间中重新分配以腾出空间保存内容, 无法完成时将会报错*/
-                disabled_move_backward,
-            // 添加
-                /** 添加, 当前节点无法容纳插入内容时尝试在前面的节点中已有的空间中重新分配以腾出空间保存内容, 无法保存内容时才会增加节点*/
-                able_move_forward,
-                /** 添加, 当前节点无法容纳插入内容时尝试在后面的节点中已有的空间中重新分配以腾出空间保存内容, 无法保存内容时才会增加节点*/
-                able_move_backward,
-                /** 紧凑的, 当所有节点的剩余空间都不足以保存内容时才会增加节点 */
-                tight,
-                /** 懒惰的, 仅判断节点和前后一个节点是否有剩余空间保存内容, 无法保存时增加节点 */
-                lazy,
-                /** 积极添加, 当前节点无法容纳插入内容时直接分为3块 >> [0,index):before, [index,length):insert_values, [index+length,...]: after*/
-                active
-        };
     ```
 
 
   * 函数声明的时候都应该写注释, 其中起码要包括函数的说明、参数的说明和可能存在的限制、返回值说明、可能产生的抛出异常和说明;     
     ``` cpp
-  
-        /** 
-         * @brief 向块状链表插入内容
-         * @tparam <Value_Type> 块状链表节点使用的数据类型
-         * @param header_node              头部节点
-         * @param idx__offset            元素在访问节点后的下标偏移量
-         * @param length                   删除的内容的长度
-         * @param value                    追加的内容
-         * @param $origin_node             访问节点, 应该可以用header节点访问到, 用于重置 0 下标的位置, 默认使用 header_node
-         * @param _length_value            添加内容的长度, 默认为1
-         * @param _flag_delete_data_item        是否对删除内容的每个元素执行delete, 默认false
-         * @param _paternadd               当前节点无法装载内容时追加块状链表的行为模式 默认为 lazy (仅检查相邻的块容量)
-         * @param _add_node_length         追加节点时新块的长度, 默认为 __DEFAULT_LINK_BLOCK_LENGTH__
-         * @param _max_link_block_length   块状链表的最大容量
-         * @return 返回是否增加了节点
-         * @throw int l  : 当 _paternadd 为禁止新增节点时, 且块状链表中不足以存入内容, 会抛出整数数值表示还需要额外多少个元素的空间 
+        /**
+         * @brief 函数的大体说明
+         * @param param 参数的说明
+         * @throw 函数可能产生的抛出异常的类型和说明
+         * @return 函数返回值的说明
          */
-        template <typename Value_Type> 
-        bool splice_LinkBlock(
-            Link_Block_Node<Value_Type>& header_node, Idx idx__offset, Idx length,
-            Link_Block_Node<Value_Type>* $origin_node=0,
-            Value_Type* _value=0, Idx _length_value=1, Behavior_Pattern__Add_LinkBlock _paternadd=lazy, Idx _add_node_length=__DEFAULT_LINK_BLOCK_LENGTH__, Idx _max_link_block_length 
-        );
+        int fnc(int param){
+            // (code...)
+        }
     ```
 
   * 在比较复杂函数代码实现里加一点注释说明当前操作处于算法的哪个步骤
     ``` cpp
-        Idx_Algebra calc_Intersection__Bezier_Line(Points_Iterator& out, Points_Iterator& coefficients, var*& line_p0, var*& line_p1){
-            Idx_Algebra rtn=0;
-            var *t_intersection = new var[coefficients.points_length];
-            var *temp_coefficients = new var[coefficients.points_length];
-            var *temp_point;
-            Idx i;
+        void fnc(/*params...*/){
+            // (步骤1)
+            // (code...)
 
-            // 计算相对坐标
-            var x=line_p1[0]-line_p0[0],
-                y=line_p0[1]-line_p1[1];
-            var mag=sqrt(x*x+y*y);
-            if(check_Zero(mag)) return 0;
-            mag=1/mag;
-            x *= mag;
-            y *= mag;
+            // (步骤2)
+            // (code...)
 
-            // 进行平移+旋转变换 使线段处于x正方向上
-            temp_point=coefficients[0];
-            temp_coefficients[0] = x*(temp_point[0]-line_p0[0]) + y*(temp_point[1]-line_p0[1]);
-            for(i=1;  i<coefficients.points_length;  ++i){
-                temp_point=coefficients[i];
-                temp_coefficients[i] = x*temp_point[0] + y*temp_point[1];
-                // 由于计算t值时仅需使用一个维度, 所以仅计算一个维度的值
-            }
+            // (步骤3)
+            // (code...)
 
-            Idx_Algebra t_length = Bezier::calc_T__BySample_FromBezier(t_intersection, temp_coefficients, coefficients.points_length, 0);
-
-            // 采样点并保存在线段上的点
-            for(i=0;  i<t_length;  ++i){
-                temp_point=out[rtn];
-                Bezier::sample_Bezier__Coefficients(temp_point, coefficients, t_intersection[i]);
-                var projection_value = calc_PointInLine(*(Point_2D*)line_p0, *(Point_2D*)line_p1, *(Point_2D*)temp_point);
-                if(projection_value>=0 && projection_value<=1) ++rtn;
-            }
-
-            delete t_intersection;
-            delete temp_coefficients;
-            return rtn;
+            //...
         }
     ```
 
@@ -372,45 +311,10 @@ namespace NML{
 
 
 ### 点云
-* points 点云的坐标集合; 可选使用一维数组和二维数组存储;
-* 点云访问器基类
-    ``` cpp
-        /**
-        * @brief 点云数据访问器
-        */
-        class Points_Iterator{
-            public:
-            void *data;
-            Idx points_length;
-            Idx_Algebra dimensional;
-            Points_Iterator(){}
-            Points_Iterator(Idx_Algebra dimensional, Idx points_length):points_length(points_length), dimensional(dimensional){}
-            Points_Iterator(void *data, Idx_Algebra dimensional, Idx points_length):data(data), points_length(points_length), dimensional(dimensional){
-                install_Data(dimensional, points_length); 
-            }
-            /** @brief 用下标 取点 */
-            virtual var* operator[](int v) = 0; 
-            /** @brief 装配 new data */
-            virtual void install_Data(Idx_Algebra dimensional, Idx points_length) = 0; 
-            /** @brief 释放data数据 */
-            virtual void free_Data () = 0;
-        };
-    ```
-* 使用两种迭代器类 Points_Iterator__1DList, Points_Iterator__2DList 对一维数组或二维数组的点云数据进行操作
-* 块状链表存储结构 Points_Iterator__Link ,可以运行中添加空间, 用于mesh或其它需要频繁修改长度的操作
-    * 使用 成员函数 **void append_Block(Idx size)** 进行追加空间的操作, size 为追加块的 **var \*data** 的长度
-    * Points_Iterator__Link 使用循环块状链表表存储, 其中 data 为尾块的指针
-    * 点坐标数据存储在每块的data指针处, 多余的空间会被空省
-    ```
-        // 当前块的空间大小为14, 点维度为3
-        [x0, y0, z0]
-        [x1, y1, z1]
-        [x2, y2, z2]
-        [x4, y4, z4]
-        [*,*] // 无用的两个值
-    ```
-    * 成员函数 **Idx calc_MaxPointsLength();** 可以计算当前已有的块空间最多能存放多少个点, 计算值将存储到成员属性 **Idx max_points_length;** 中缓存
-    * 使用 points_iterator\[index\] 获取点时，如果 index >= max_points_length, 将会取到 points_iterator\[index%max_points_length\] 
+* points 点云的坐标集合; 可选使用一维数组和块状链表;
+* 点云访问器基类 Points_Iterator
+    * 一维线性表存储结构 Points_Iterator__1DList , 用于不常修改长度的情景, 开销更小.
+    * 块状链表存储结构 Points_Iterator__LinkBlock ,可以运行中更灵活地修改空间, 用于mesh或其它需要频繁修改长度的操作; 详细说明见 doc/Link_Block.md
 
 ### 矩阵
 * *矩阵使用行优先展开的数值数组*
@@ -500,7 +404,7 @@ namespace NML{
     enum Rotation_Order{
         XYZ=0b000110,    XYX=0b000100,    XZY=0b001001,    XZX=0b001000,
         YXZ=0b010010,    YXY=0b010001,    YZX=0b011000,    YZY=0b011001,
-        ZXY=0b100001,    ZXZ=0b100010,    ZYX=0b100100,    ZYZ=0b100110
+        ZXY=0b100001,    ZXZ=0b100010,    ZYX=0b100100,    ZYZ=0b100110 
     };
     ```
 

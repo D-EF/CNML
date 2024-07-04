@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-06-17 17:53:17
+ * @LastEditTime: 2024-07-01 14:32:40
  * @FilePath: \CNML\src\Geometry_2D\NML_Geometry_2D.hpp
  * @Description: 2D图形相关内容
  */
@@ -21,12 +21,20 @@ namespace NML{
         
         // open * 2D 基本数据结构体 * open
 
-            /** @brief 一条线段图元数据 */
+            /** @brief 2D点 */
             typedef struct Point_2D {
                 /** @brief 坐标 */
                 var x, y; 
             } Point_2D;
-
+            
+            /** @brief 一条2D线段图元数据 */
+            typedef struct Line_2D
+            {
+                Point_2D p0;
+                Point_2D p1;
+            } Line_2D;
+            
+            typedef Line_2D AABB_2D;
 
             /**
              * @brief 使用两个点设置 AABB
@@ -522,41 +530,7 @@ namespace NML{
             inline var calc_VectorAngle(var* v){return atan2(v[1], v[0]);}
             
         // end  * 不同参数调用原函数的重载函数 * end 
-
-
-    
-        extern char MAP__SVG_PATH_CMD_VALUE_STEP_SIZE[128];
-
-        /** 
-         * @brief 初始化 svg 步长映射表(使用ascii映射)
-         * @param out_map 生成映射表的输出目标, 需要 out_map[0]==0 才会进行初始化;  -1 表示非法字符
-         */
-        void init__Map__SVG_PATH_CMD_VALUE_STEP_SIZE(char* out_map);
-
-        typedef struct SVG_Cmd{
-            char type;
-            var param[8];
-        } SVG_Cmd;
-
-        /**
-         * @brief 解析svg命令
-         * @param path_d  svg 中 path元素的 d 属性内容
-         * @return 返回 svg 命令实例集合
-         */
-        Link_Block::Link_Block_Ctrl<SVG_Cmd>* load_SVGPath(const char* path_d);
-
-
-        /**
-         * @brief 字符串转换为数值数组
-         * @param out                输出地址
-         * @param str                初始字符串
-         * @param idx_str            读取字符串时的访问下标引用
-         * @param max_value_length   输出时的最大长度
-         * @return 返回转换了多少个数值
-         */
-        int setup_Values__ByString(var* out, const char* str, int& idx_str, int max_value_length=__NML_IDX_INFINITY__);
-        
-        
+                
     }
 
 }

@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-03-06 11:34:26
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-06-28 13:52:18
+ * @LastEditTime: 2024-06-28 16:53:20
  * @FilePath: \CNML\src\NML_Link_Block.hpp
  * @Description: 块状链表存储结构
  */
@@ -434,14 +434,14 @@ namespace NML{
 
         /**
          * 插入/替换中间部分内容
-         * @param origin_node    基准位置节点, 作为 0 下标的基准
-         * @param index          从哪个下标位置开始操作
-         * @param erase_length   清理数据的长度
-         * @param _inset_value      用于插入的数据
-         * @param _inset_length     插入数据的长度
-         * @param _option        用于控制插入时的行为模式的参数
-         * @param _head_node     头部节点, 用于控制寻址的边界
-         * @param _tail_node     尾部节点, 用于控制寻址的边界
+         * @param origin_node     基准位置节点, 作为 0 下标的基准
+         * @param index           从哪个下标位置开始操作
+         * @param erase_length    清理数据的长度
+         * @param _inset_value    用于插入的数据
+         * @param _inset_length   插入数据的长度
+         * @param _option         用于控制插入时的行为模式的参数
+         * @param _head_node      头部节点, 用于控制寻址的边界
+         * @param _tail_node      尾部节点, 用于控制寻址的边界
          * @throw  抛出 std::bad_alloc 异常时表示无法分配空间
          * @throw  抛出 std::out_of_range 异常时表示 index 超出可用范围
          * @return 返回 index_0: 向后移动的长度, index_1 腾出的总长度
@@ -501,7 +501,7 @@ namespace NML{
 
         /**
          * @brief 合并块状链表
-         * @param origin_node   起始节点
+         * @param origin_node   起始节点的指针, 合并后会修改这个指针的值以指向新的节点
          * @param node_length   需要合并多少个节点
          * @param _min_length   当合并后的节点容量小于 _min_length 时, 使用 _min_length 作为节点的容量
          */

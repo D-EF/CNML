@@ -2,13 +2,13 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-06-25 10:51:55
- * @FilePath: \CNML\src\Geometry_2D\NML_Geometry_2D_Primitives.hpp
+ * @LastEditTime: 2024-07-01 14:24:36
+ * @FilePath: \CNML\src\Geometry_2D\NML_Geometry_2D_Primitive.hpp
  * @Description: 2D 图元 相关内容
  */
 
-#ifndef __NML_GEOMETRY_2D_PRIMITIVES__
-#define __NML_GEOMETRY_2D_PRIMITIVES__
+#ifndef __NML_GEOMETRY_2D_PRIMITIVE__
+#define __NML_GEOMETRY_2D_PRIMITIVE__
 
 #include "NML.hpp"
 #include "./NML_Geometry_2D.hpp"
@@ -19,16 +19,7 @@ namespace NML{
         /**
          * @brief 2D 图元
          */
-        namespace Primitive_2D{
-
-            typedef struct Line_2D
-            {
-                Point_2D p0;
-                Point_2D p1;
-            } Line_2D;
-            
-            typedef Line_2D AABB_2D;
-             
+        namespace Primitive_2D{             
 
             /** @brief 2D 图元基类 */
             class Primitive_2D{
@@ -357,72 +348,6 @@ namespace NML{
 
             };
             
-            /** 路径组 图元对象 */
-            class Primitive_2D__Path_Group: public Primitive_2D{
-
-                /** 控制点数据集合 */
-                Points_Iterator* data;
-                /** 路径数据步长显式查找表,  next-now >> { 2: 直线段, 3: 平方曲线(2阶贝塞尔曲线), 4: 立方曲线(3阶贝塞尔曲线) ... } */
-                Link_Block__Simple<Idx_Algebra>* data_step;
-
-                /** 计算系数集合 */
-                Points_Iterator* coefficients;
-                /** 计算系数是否可用 */
-                Link_Block__Simple<bool>* had_coefficients;
-
-                /** 导数集合 */
-                Points_Iterator* derivatives;
-                /** 导数是否可用 */
-                Link_Block__Simple<bool>* had_derivatives;
-
-                /** 拟合路径的直线段组数据 */
-                Points_Iterator* polygon;
-                /** 拟合路径的段组数据 与 路径数据 的 下标显式查找表, -1表示当前位置的曲线未生成拟合数据 */
-                Link_Block__Simple<Idx>* lut__polygon;
-
-                /** 分段曲线的 aabb 集合 */
-                Points_Iterator* aabb_group;
-                /** 分段的 aabb 是否可用 */
-                Link_Block__Simple<bool>* had_aabb;
-
-                /** 每段路径的长度 LUT */
-                Link_Block__Simple<bool>* lut__path_distance;
-                /** 路径组长度的 LUT */
-                Link_Block__Simple<bool>* lut__path_item_distance;
-
-                /** 计算周长 */
-                var calc_Girth();
-
-                /** 计算局部 aabb */
-                AABB_2D calc_LocalAABB();
-                
-            };
-
-            class Primitive_2D__Line{
-                var x,y;
-            };
-
-
-            Primitive_2D__Path_Group& setup_PathGroup(Primitive_2D__Path_Group& out, Link_Block::Link_Block_Ctrl<SVG_Cmd>& svg_cmd){
-                // todo
-                Link_Block::Link_Block_Ctrl<Primitive_2D*>* rtn = new Link_Block::Link_Block_Ctrl<Primitive_2D*>();
-                Primitive_2D* temp;
-                var temp_x=0, temp_y=0;
-                Idx i=0;
-
-                switch (svg_cmd[i].type){
-                    case 'L':  // todo
-                    case 'M':   temp_x =svg_cmd[i].param[0];   temp_y =svg_cmd[i].param[1];   break;
-
-                    case 'l':  // todo
-                    case 'm':   temp_x+=svg_cmd[i].param[0];   temp_y+=svg_cmd[i].param[1];   break;
-
-                    default:
-                    break;
-                }
-
-                return out;
-            }
 
         }
     }
