@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-07-01 14:23:29
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-07-03 18:06:51
+ * @LastEditTime: 2024-07-05 18:21:19
  * @FilePath: \CNML\src\Geometry_2D\NML_Path_2D.hpp
  * @Description: 2D 路径组
  */
@@ -24,7 +24,7 @@ namespace NML{
                     out_map[i] = -1;
                 }
 
-                // 命令
+                // 指令
                 out_map['M'] = 2;   out_map['m'] = 2;
                 out_map['l'] = 2;   out_map['l'] = 2;
                 out_map['H'] = 1;   out_map['h'] = 1;
@@ -100,11 +100,12 @@ namespace NML{
                 return i;
             }
 
-            SVG_Cmds* load_SVGPath(const char* path_d){
+            void load_SVGPath(SVG_Path_Cmds& out, const char* path_d){
                 init__Map__SVG_PATH_CMD_VALUE_STEP_SIZE(MAP__SVG_PATH_CMD_VALUE_STEP_SIZE);
 
-                SVG_Cmds* rtn=new SVG_Cmds();
-                SVG_Cmd temp_cmd;
+                out.remove_EndItems(out.used_length);
+
+                SVG_Path_Cmd temp_cmd;
                 int i=0;
 
                 do{
@@ -113,14 +114,12 @@ namespace NML{
                         ++i;
                     }
                     setup_Values__ByString(temp_cmd.param,path_d,i,MAP__SVG_PATH_CMD_VALUE_STEP_SIZE[temp_cmd.type]);
-                    rtn->push_Item(temp_cmd);
+                    out.push_Item(temp_cmd);
                 }while(path_d[i]);
-
-                return rtn;
             }
 
 
-            void toAbsolute_SvgCmd(SVG_Cmd& cmd, var relative_x, var relative_y){
+            void toAbsolute_SvgCmd(SVG_Path_Cmd& cmd, var relative_x, var relative_y){
                 Idx i,l;
                 if(cmd.type=='a'){
                     cmd.param[6] += relative_x;
@@ -138,59 +137,108 @@ namespace NML{
             }
 
 
-            SVG_Cmds& normalize_SvgCmd(SVG_Cmds& cmds){
+            SVG_Path_Cmds& normalize_SvgCmd(SVG_Path_Cmds& cmds){
                 Idx i,l, cmd_length=cmds.used_length;
                 var x, y;
-                SVG_Cmd *cmd, *prev_cmd;
+                SVG_Path_Cmd *prev_cmd=0;
                 x=y=0;
 
                 for(i=0;  i<9;  ++i){
-                    cmd=&cmds[i];
-                    toAbsolute_SvgCmd(*cmd,x,y);
+                    SVG_Path_Cmd &cmd=cmds[i];
+                    toAbsolute_SvgCmd(cmd,x,y);
 
-                    // 简化直线端
-                    switch(cmd->type){
+                    // 处理简化直线段
+                    switch(cmd.type){
                         case 'H': // 水平线
-                            cmd->type='L';
-                            cmd->param[1]=y;
+                            cmd.type='L';
+                            cmd.param[1]=y;
                         break;
                         case 'V': // 垂直线
-                            cmd->type='L';
-                            cmd->param[1]=cmd->param[0];
-                            cmd->param[0]=x;
+                            cmd.type='L';
+                            cmd.param[1]=cmd.param[0];
+                            cmd.param[0]=x;
                         break;
                     }
 
-                    // 简化曲线
-                    if(cmd->type=='S'||cmd->type=='T'){
-                        switch(cmd->type){
+                    // 处理简化曲线
+                    if(cmd.type=='S'||cmd.type=='T'){
+                        switch(cmd.type){
                             case 'S': // 三阶贝塞尔曲线
-                                std::copy_backward(cmd->param, cmd->param+2, cmd->param+2);
-                                cmd->type='C';
+                                std::copy_backward(cmd.param, cmd.param+2, cmd.param+2);
+                                cmd.type='C';
                             break;
                             case 'T': // 二阶贝塞尔曲线
-                                std::copy_backward(cmd->param, cmd->param+4, cmd->param+2);
-                                cmd->type='Q';
+                                std::copy_backward(cmd.param, cmd.param+4, cmd.param+2);
+                                cmd.type='Q';
                             break;
                         }
-                        if(prev_cmd->type=='C'||prev_cmd->type=='Q'){
+                        if(prev_cmd && (prev_cmd->type=='C'||prev_cmd->type=='Q')){
                             l = MAP__SVG_PATH_CMD_VALUE_STEP_SIZE[prev_cmd->type]-4;
-                            cmd->param[0] = 2*prev_cmd->param[l+2] - prev_cmd->param[l];
-                            cmd->param[1] = 2*prev_cmd->param[l+3] - prev_cmd->param[l+1];
+                            cmd.param[0] = 2*prev_cmd->param[l+2] - prev_cmd->param[l];
+                            cmd.param[1] = 2*prev_cmd->param[l+3] - prev_cmd->param[l+1];
                         }else{
-                            cmd->param[0]=x;
-                            cmd->param[1]=y;
+                            cmd.param[0]=x;
+                            cmd.param[1]=y;
                         }
                     }
 
-                    l=MAP__SVG_PATH_CMD_VALUE_STEP_SIZE[cmd->type]-2;
-                    x=cmd->param[l];
-                    y=cmd->param[l+1];
-                    prev_cmd=cmd;
+                    l=MAP__SVG_PATH_CMD_VALUE_STEP_SIZE[cmd.type]-2;
+                    x=cmd.param[l];
+                    y=cmd.param[l+1];
+                    prev_cmd=&cmd;
                 }
 
                 return cmds;
             }
+
+
+            
+            void Path_2D::init_Primitives(){
+                if(primitives) return;
+                primitives=new Primitives_2D(cmds->used_length);
+                Primitive_2D::Primitive_2D** f=new Primitive_2D::Primitive_2D*[cmds->used_length];
+                for(Idx i=0; i<cmds->used_length; ++i) f[i]=0;
+                primitives->push_Items(f,cmds->used_length);
+            }
+
+            void get_CMDDroppoint(SVG_Path_Cmd& cmd, var& x, var& y){
+                Idx_Algebra i=MAP__SVG_PATH_CMD_VALUE_STEP_SIZE[cmd.type]-2;
+                x = cmd.param[i];
+                y = cmd.param[i+1];
+            }
+
+
+            void Path_2D::load_Primitives(Idx index){
+                var x,y;
+
+                if(index==0){
+                    x = y = 0;
+                }else{
+                    get_CMDDroppoint((*cmds)[index-1],x,y);
+                }
+                
+                SVG_Path_Cmd& cmd=(*cmds)[index];
+
+                switch (cmd.type)
+                {
+                case 'L':
+                    // todo
+                break;
+                
+                default:
+                    char d[]="Error SVG_Path_Cmd.type : 0";
+                    d[26]=cmd.type;
+                    throw new std::logic_error(d);
+                break;
+                }
+                
+            }
+
+            void Path_2D::load_Primitives(bool reload=false, Idx index=-1){
+
+            }
+
+
         }
     }
 }

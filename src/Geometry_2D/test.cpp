@@ -94,7 +94,8 @@ namespace NML_Test{
             int i=0;
             setup_Values__ByString(temp,"123.321,456.789e+2l123.456,1e-3,5",i);
 
-            SVG_Cmds* d = load_SVGPath("M10 80 C 40 10, 65 10, 95 80 S 150 150, 180 80 q 25 -80, 80 0 t 80 80 l 40 240 a 300 180 45 0 0 -320 -40zM10 10 l20 20");
+            SVG_Path_Cmds* d = new SVG_Path_Cmds();
+            load_SVGPath(*d, "M10 80 C 40 10, 65 10, 95 80 S 150 150, 180 80 q 25 -80, 80 0 t 80 80 l 40 240 a 300 180 45 0 0 -320 -40zM10 10 l20 20");
 
             normalize_SvgCmd(*d);
 
