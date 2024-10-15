@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-07-01 14:23:29
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-07-05 18:21:19
+ * @LastEditTime: 2024-07-10 16:13:44
  * @FilePath: \CNML\src\Geometry_2D\NML_Path_2D.hpp
  * @Description: 2D 路径组
  */
@@ -26,7 +26,7 @@ namespace NML{
 
                 // 指令
                 out_map['M'] = 2;   out_map['m'] = 2;
-                out_map['l'] = 2;   out_map['l'] = 2;
+                out_map['L'] = 2;   out_map['l'] = 2;
                 out_map['H'] = 1;   out_map['h'] = 1;
                 out_map['V'] = 1;   out_map['v'] = 1;
                 out_map['C'] = 6;   out_map['c'] = 6;
@@ -208,7 +208,12 @@ namespace NML{
             }
 
 
-            void Path_2D::load_Primitives(Idx index){
+            Primitive_2D::Primitive_2D* Path_2D::create_Primitives(Idx index){
+                using namespace Primitive_2D;
+                SVG_Path_Cmd& cmd=(*cmds)[index];
+                
+                if(cmd.type=='M')return 0;
+
                 var x,y;
 
                 if(index==0){
@@ -217,24 +222,35 @@ namespace NML{
                     get_CMDDroppoint((*cmds)[index-1],x,y);
                 }
                 
-                SVG_Path_Cmd& cmd=(*cmds)[index];
 
-                switch (cmd.type)
-                {
-                case 'L':
-                    // todo
-                break;
-                
-                default:
-                    char d[]="Error SVG_Path_Cmd.type : 0";
-                    d[26]=cmd.type;
-                    throw new std::logic_error(d);
-                break;
+                switch (cmd.type){
+                    case 'L':
+                        // todo
+                        // primitives[index]=new Primitive_2D__Line({{x,y},{cmd.param[0],cmd.param[1]}});
+                    break;
+                    case 'Q':
+                        // todo
+                    break;
+                    case 'C':
+                        // todo
+                    break;
+                    case 'A':
+                        // todo
+                    break;
+                    case 'Z':
+                        // todo
+                    break;
+                    
+                    default:
+                        char d[]="Error SVG_Path_Cmd.type : 0";
+                        d[26]=cmd.type;
+                        throw new std::logic_error(d);
+                    break;
                 }
                 
             }
 
-            void Path_2D::load_Primitives(bool reload=false, Idx index=-1){
+            void Path_2D::load_Primitives(bool reload, Idx index){
 
             }
 

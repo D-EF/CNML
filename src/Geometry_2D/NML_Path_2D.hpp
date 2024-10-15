@@ -113,7 +113,7 @@ namespace NML{
                  * @brief 生成指定下标的图元对象
                  * @param index   对应下标, 如果当前下标已有图元对象会delete
                  */
-                void load_Primitives(Idx index);
+                Primitive_2D::Primitive_2D* create_Primitives(Idx index);
 
                 /** 
                  * @brief 生成图元对象

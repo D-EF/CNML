@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-06-19 15:59:49
+ * @LastEditTime: 2024-07-12 16:08:13
  * @FilePath: \CNML\src\Geometry_2D\NML_Geometry_2D.cpp
  * @Description: 2D图形相关内容
  */
@@ -14,41 +14,25 @@ namespace NML{
     
     namespace Geometry_2D{
         
-        void setup_AABB_ByPoint(var* out, Point_2D& p_0, Point_2D& p_1){
-            if(p_0.x>p_1.x){
-                out[0]=p_1.x;
-                out[2]=p_0.x;
-            }else{
-                out[0]=p_0.x;
-                out[2]=p_1.x;
-            }
-            if(p_0.y>p_1.y){
-                out[1]=p_1.y;
-                out[3]=p_0.y;
-            }else{
-                out[1]=p_0.y;
-                out[3]=p_1.y;
-            }
-        }
-        
-        void setup_AABB_ByPoint(var* out, var*& p_0, var*& p_1){
+        void setup_AABB_ByPoint(Line_2D& out, Point_2D p_0, Point_2D p_1){
             if(p_0[0]>p_1[0]){
-                out[0]=p_1[0];
-                out[2]=p_0[0];
+                out.p0[0]=p_1[0];
+                out.p1[0]=p_0[0];
             }else{
-                out[0]=p_0[0];
-                out[2]=p_1[0];
+                out.p0[0]=p_0[0];
+                out.p1[0]=p_1[0];
             }
             if(p_0[1]>p_1[1]){
-                out[1]=p_1[1];
-                out[3]=p_0[1];
+                out.p0[1]=p_1[1];
+                out.p1[1]=p_0[1];
             }else{
-                out[1]=p_0[1];
-                out[3]=p_1[1];
+                out.p0[1]=p_0[1];
+                out.p1[1]=p_1[1];
             }
         }
 
-        void transform_AABB(var*& min, var*& max, var*& transform_matrix){
+
+        void transform_AABB(Point_2D& min, Point_2D& max, var*& transform_matrix){
             using namespace NML::Matrix_2D;
             var min_x = 0, min_y = 0,
                 max_x = 0, max_y = 0;
@@ -115,13 +99,15 @@ namespace NML{
         }
 
         
-        Point_2D calc_EllipseFocus(var rx, var ry,var rotate){
+        void calc_EllipseFocus(Point_2D& out, var rx, var ry,var rotate){
             if(ry>rx){
                 rotate+=DEG_90;
             }
             var c_focus_length=0.5*calc_EllipseFocalLength(rx, ry);
-            Point_2D item=calc_Point2D__Rotate(rotate);
-            return {c_focus_length*item.x, c_focus_length*item.y};
+            Point_2D item;
+            setup_Vector2__Rotate(item,rotate);
+            out[0]=c_focus_length*item[0];
+            out[1]=c_focus_length*item[1];
         }
 
         Idx_Algebra calc_Intersection__Theta_Theta(Points_Iterator& out, var theta0_min, var theta0_max, var theta1_min, var theta1_max){
@@ -152,30 +138,28 @@ namespace NML{
         }
 
         var calc_cross__Line_Line(Point_2D& line0_p0, Point_2D& line0_p1, Point_2D& line1_p0, Point_2D& line1_p1){
-            var loc_tx = line0_p1.x - line0_p0.x;
-            var loc_ty = line0_p1.y - line0_p0.y;
-            return  (loc_tx*(line1_p0.y-line0_p0.y) - (line1_p0.x-line0_p0.x)*loc_ty) *
-                    (loc_tx*(line1_p1.y-line0_p0.y) - (line1_p1.x-line0_p0.x)*loc_ty) ;
+            var loc_tx = line0_p1[0] - line0_p0[0];
+            var loc_ty = line0_p1[1] - line0_p0[1];
+            return  (loc_tx*(line1_p0[1]-line0_p0[1]) - (line1_p0[0]-line0_p0[0])*loc_ty) *
+                    (loc_tx*(line1_p1[1]-line0_p0[1]) - (line1_p1[0]-line0_p0[0])*loc_ty) ;
         }
         
-        Point_2D calc_Intersection__Line_Line(Point_2D& line0_p0, Point_2D& line0_p1, Point_2D& line1_p0, Point_2D& line1_p1){
-            Point_2D rtn;
-            var bx=line0_p1.x-line0_p0.x,
-                by=line0_p1.y-line0_p0.y,
-                dx=line1_p1.x-line1_p0.x,
-                dy=line1_p1.y-line1_p0.y;
-            var *rtn_p=(var*)&rtn;
+        void calc_Intersection__Line_Line(Point_2D& out, Point_2D& line0_p0, Point_2D& line0_p1, Point_2D& line1_p0, Point_2D& line1_p1){
+            var bx=line0_p1[0]-line0_p0[0],
+                by=line0_p1[1]-line0_p0[1],
+                dx=line1_p1[0]-line1_p0[0],
+                dy=line1_p1[1]-line1_p0[1];
+            var *rtn_p=(var*)&out;
 
-            if(!Algebra::clac_EquationSolution__Linear(rtn_p,line0_p0.x,bx,line1_p0.x,dx,line0_p0.y,by,line1_p0.y,dy)){
-                rtn.x=rtn.y=INFINITY;
+            if(!Algebra::clac_EquationSolution__Linear(rtn_p,line0_p0[0],bx,line1_p0[0],dx,line0_p0[1],by,line1_p0[1],dy)){
+                out[0]=out[1]=INFINITY;
             }
-            if( rtn.x<=1 && rtn.x>=0 && rtn.y<=1 && rtn.y>=0 ){
-                rtn.x=rtn.x*bx+line0_p0.x;
-                rtn.y=rtn.x*by+line0_p0.y;
+            if( out[0]<=1 && out[0]>=0 && out[1]<=1 && out[1]>=0 ){
+                out[0]=out[0]*bx+line0_p0[0];
+                out[1]=out[0]*by+line0_p0[1];
             }else{
-                rtn.x=rtn.y=INFINITY;
+                out[0]=out[1]=INFINITY;
             }
-            return rtn;
         }
         
         Idx_Algebra calc_Intersection__Circle_Circle(Points_Iterator& out, var c0x, var c0y, var r0, var c1x, var c1y, var r1){
@@ -230,8 +214,8 @@ namespace NML{
             if(flag_cycles1=theta1_offset>=DEG_360){ theta1_ed  = DEG_180; theta1_op = DEG_180_I; theta1_offset=DEG_360; }
             
             if(_use_normalize){
-                if(theta0_op<DEG_180_I||theta0_op>DEG_180){   theta0_op=atan2(theta0_op_point.y,theta0_op_point.x);   theta0_ed=theta0_op+theta0_offset;}
-                if(theta1_op<DEG_180_I||theta1_op>DEG_180){   theta1_op=atan2(theta1_op_point.y,theta1_op_point.x);   theta1_ed=theta1_op+theta1_offset;}
+                if(theta0_op<DEG_180_I||theta0_op>DEG_180){   theta0_op=atan2(theta0_op_point[1],theta0_op_point[0]);   theta0_ed=theta0_op+theta0_offset;}
+                if(theta1_op<DEG_180_I||theta1_op>DEG_180){   theta1_op=atan2(theta1_op_point[1],theta1_op_point[0]);   theta1_ed=theta1_op+theta1_offset;}
                 if(flag_il==-1){
                     // 圆重合
                     return calc_Intersection__Theta_Theta(out,theta0_op,theta0_ed,theta1_op,theta1_ed);
@@ -260,8 +244,8 @@ namespace NML{
             }
 
             temp_out=out[1];
-            point__loc0={ temp_out[0]-c0_x, temp_out[1]-c0_y };
-            point__loc1={ temp_out[0]-c1_x, temp_out[1]-c1_y };
+            point__loc0[0]=temp_out[0]-c0_x;   point__loc0[1]=temp_out[1]-c0_y;
+            point__loc1[0]=temp_out[0]-c1_x;   point__loc1[1]=temp_out[1]-c1_y;
             
             if( check_Inside__Angle(theta0_ed_point,theta0_op_point,point__loc0,is_theta0_offset_more_than_pi) && 
                 check_Inside__Angle(theta1_ed_point,theta1_op_point,point__loc1,is_theta1_offset_more_than_pi) 
@@ -274,8 +258,8 @@ namespace NML{
 
 
         Idx_Algebra calc_Intersection__Circle_Line(Points_Iterator& out, var c_x, var c_y, var r, Point_2D& line_p0, Point_2D& line_p1){
-            Point_2D loc_p0_to_p1   = {line_p1.x-line_p0.x,line_p1.y-line_p0.y};
-            Point_2D loc_c_to_p0    = {line_p1.x-c_x,line_p1.y-c_y};
+            Point_2D loc_p0_to_p1   = {line_p1[0]-line_p0[0],line_p1[1]-line_p0[1]};
+            Point_2D loc_c_to_p0    = {line_p1[0]-c_x,line_p1[1]-c_y};
             var *p__loc_p0_to_p1    = (var*)&loc_p0_to_p1;
             var *p__loc_c_to_p0     = (var*)&loc_c_to_p0;
 
@@ -293,14 +277,14 @@ namespace NML{
             Idx_Algebra i=0;
 
             if (t1 >= 0 && t1 <= 1) {
-                out[i][0]=loc_c_to_p0.x*t1+line_p0.x;
-                out[i][1]=loc_c_to_p0.y*t1+line_p0.y;
+                out[i][0]=loc_c_to_p0[0]*t1+line_p0[0];
+                out[i][1]=loc_c_to_p0[1]*t1+line_p0[1];
                 ++i;
             }
 
             if (t2 >= 0 && t2 <= 1) {
-                out[i][0]=loc_c_to_p0.x*t2+line_p0.x;
-                out[i][1]=loc_c_to_p0.y*t2+line_p0.y;
+                out[i][0]=loc_c_to_p0[0]*t2+line_p0[0];
+                out[i][1]=loc_c_to_p0[1]*t2+line_p0[1];
                 ++i;
             }
             return i;
@@ -310,8 +294,10 @@ namespace NML{
             Idx_Algebra length = calc_Intersection__Circle_Line(out, c_x, c_y, r, line_p0, line_p1);
             Idx_Algebra rtn=0;
             if(!length) return length;
-            Point_2D point__op = calc_Point2D__Rotate(theta_op);
-            Point_2D point__ed = calc_Point2D__Rotate(theta_ed);
+            Point_2D point__op;
+            setup_Vector2__Rotate(point__op,theta_op);
+            Point_2D point__ed;
+            setup_Vector2__Rotate(point__ed,theta_ed);
             bool is_ray_more_than_pi=(theta_ed-theta_op>PI);
 
             if(check_Inside__Angle(point__op, point__ed, *(Point_2D*)(out[0]), is_ray_more_than_pi)) {

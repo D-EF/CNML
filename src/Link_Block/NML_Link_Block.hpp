@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-03-06 11:34:26
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-06-28 16:53:20
+ * @LastEditTime: 2024-07-10 14:28:01
  * @FilePath: \CNML\src\NML_Link_Block.hpp
  * @Description: 块状链表存储结构
  */
@@ -1147,6 +1147,20 @@ namespace NML{
             friend std::ostream& operator<<(std::ostream& os, const Link_Block_Ctrl& link_block) {
                 out_LinkBlock(link_block.head_node, &os);
                 return os;
+            }
+
+            /**
+             * 直接设置使用长度
+             */
+            void set_UsedLength(Idx new_length){
+                Idx l=new_length-used_length;
+                if(used_length<new_length){
+                    Value_Type init_data=new Value_Type[l];
+                    push_Items(init_data,l);
+                    delete[] init_data;
+                }else{
+                    remove_EndItems(-l);
+                }
             }
             
         };

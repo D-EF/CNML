@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-05-07 09:40:52
+ * @LastEditTime: 2024-07-10 16:42:54
  * @FilePath: \CNML\src\Geometry_2D\NML_Matrix_2D.cpp
  * @Description: 2D 矩阵计算
  */
@@ -14,7 +14,7 @@ namespace NML{
         //默认使用 3*3 左乘向量 (vector * matrix)
         M2D_Type _using_m2d_type=M2D__3X3_L;
         // 数据类型的数据对应宽高
-            Idx_VM m2d_w=3, m2d_h=3;
+            Idx_VM m2d_w=3, m2d_h=3, m2d_l=9;
         // 数据类型的数据对应下标
             Idx_VM 
                 mxx=0,   mxy=1,   mxz=2,
@@ -29,28 +29,28 @@ namespace NML{
             _using_m2d_type=type;
             switch (_using_m2d_type){
                 case M2D__2X3:
-                    m2d_w=2, m2d_h=3;
-                    mxx=0,   mxy=1,    mx_null=0,
-                    myx=2,   myy=3,    my_null=0,
-                    tx =4,   ty =5,    mi_full=0;
+                    m2d_w=2,   m2d_h=3;   m2d_l=6;
+                    mxx=0,     mxy=1,     mx_null=0,
+                    myx=2,     myy=3,     my_null=0,
+                    tx =4,     ty =5,     mi_full=0;
                 break;
 
                 case M2D__3X2:
-                    m2d_w=3, m2d_h=2;
+                    m2d_w=3,      m2d_h=2;      m2d_l=6;
                     mxx=0,        myx=1,        tx=2,
                     mxy=3,        myy=4,        ty=5,
                     mx_null =0,   my_null =0,   mi_full=0;
                 break;
 
                 case M2D__3X3_L:
-                    m2d_w=3, m2d_h=3;
-                    mxx=0,   mxy=1,   mx_null=2,
-                    myx=3,   myy=4,   my_null=5,
-                    tx =6,   ty =7,   mi_full=8;
+                    m2d_w=3,   m2d_h=3;   m2d_l=9;
+                    mxx=0,     mxy=1,     mx_null=2,
+                    myx=3,     myy=4,     my_null=5,
+                    tx =6,     ty =7,     mi_full=8;
                 break;
 
                 case M2D__3X3_R:
-                    m2d_w=3,     m2d_h=3;
+                    m2d_w=3,     m2d_h=3;     m2d_l=9;
                     mxx=0,       myx=1,       tx=2,
                     mxy=3,       myy=4,       ty=5,
                     mx_null=6,   my_null=7,   mi_full=8;

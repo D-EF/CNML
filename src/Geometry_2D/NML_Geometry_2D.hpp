@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-07-01 14:32:40
+ * @LastEditTime: 2024-10-16 04:22:53
  * @FilePath: \CNML\src\Geometry_2D\NML_Geometry_2D.hpp
  * @Description: 2D图形相关内容
  */
@@ -22,16 +22,31 @@ namespace NML{
         // open * 2D 基本数据结构体 * open
 
             /** @brief 2D点 */
-            typedef struct Point_2D {
-                /** @brief 坐标 */
-                var x, y; 
+            typedef union Point_2D{
+                struct {
+                    var x,y;
+                };
+                var data[2];
+                
+                inline operator var*() {
+                    return data;
+                }
             } Point_2D;
             
             /** @brief 一条2D线段图元数据 */
-            typedef struct Line_2D
-            {
-                Point_2D p0;
-                Point_2D p1;
+            typedef union Line_2D{
+                struct{
+                    Point_2D p0;
+                    Point_2D p1;
+                };
+                struct{
+                    var p0x, p0y;
+                    var p1x, p1y;
+                };
+                var data[4];
+                inline operator var*() {
+                    return data;
+                }
             } Line_2D;
             
             typedef Line_2D AABB_2D;
@@ -42,16 +57,17 @@ namespace NML{
              * @param p_0 参数点 0
              * @param p_1 参数点 1
              */
-            void setup_AABB_ByPoint(var* out, var*& p_0, var*& p_1);
-            
+            void setup_AABB_ByPoint(Line_2D& out, Point_2D p_0, Point_2D p_1);
+
             /**
-             * @brief 使用两个点设置 AABB
+             * @brief 使用两个点生成 AABB
              * @param out AABB 的输出对象
              * @param p_0 参数点 0
              * @param p_1 参数点 1
              */
-            void setup_AABB_ByPoint(var* out, Point_2D& p_0, Point_2D& p_1);
-
+            inline Line_2D load_AABB_ByPoint(Point_2D p_0, Point_2D p_1){
+                return {__min(p_0.x,p_1.x) , __min(p_0.y,p_1.y), __max(p_0.x,p_1.x) , __max(p_0.y,p_1.y)};
+            }
 
             /**
              * @brief 检查点是否在AABB内部
@@ -61,8 +77,8 @@ namespace NML{
              * @return 返回 {0, 1, 2} 表示 [ 不在内部, 在内部, 在边上 ]; 如果图元为非闭合图元, 将始终返回0.
              */
             inline Idx_Algebra check_Inside__AABB(Point_2D& aabb_p0, Point_2D& aabb_p1, Point_2D& p){
-                return check_Inside__Range(aabb_p0.x,aabb_p1.x,p.x) && 
-                       check_Inside__Range(aabb_p0.y,aabb_p1.y,p.y) ;
+                return check_Inside__Range(aabb_p0[0],aabb_p1[0],p[0]) && 
+                       check_Inside__Range(aabb_p0[1],aabb_p1[1],p[1]) ;
             }
 
             
@@ -72,7 +88,7 @@ namespace NML{
              * @param max 原 AABB 的 max 向量, 函数执行后将被修改 
              * @param transform_matrix 变换矩阵
              */
-            void transform_AABB(var*& min, var*& max, var*& transform_matrix);
+            void transform_AABB(Point_2D& min, Point_2D& max, var*& transform_matrix);
 
             
             // open * 矩形 * open
@@ -126,9 +142,9 @@ namespace NML{
                  * @param arc_data 原矩形数据
                  * @return 使用 normalize_DrawArcTheta 另弧度值规范化
                  */
-                inline Arc_Data& normalize_DrawArcData(Arc_Data& arc_data){
+                inline void normalize_DrawArcData(Arc_Data& arc_data){
                     normalize_DrawArcTheta(arc_data.theta_op,arc_data.theta_ed);
-                    return arc_data;
+                    arc_data.radius=abs(arc_data.radius);
                 }
                 
 
@@ -166,12 +182,12 @@ namespace NML{
                 
                 /** 
                  * @brief 计算椭圆相对圆心的焦点
+                 * @param point  计算结果的输出
                  * @param rx     x方向上的半径
                  * @param ry     y方向上的半径
                  * @param rotate 椭圆的旋转偏移量
-                 * @return 返回椭圆的焦点相对于圆心的位置(正方向)
                  */
-                Point_2D calc_EllipseFocus(var rx, var ry,var rotate);
+                void calc_EllipseFocus(Point_2D& out, var rx, var ry,var rotate);
                 
                 /** 
                  * @brief 计算椭圆的焦距
@@ -196,8 +212,8 @@ namespace NML{
                  * @param ellipse_arc_data 椭圆的数据
                  * @return 返回椭圆的焦点
                  */
-                inline Point_2D calc_EllipseFocus(Ellipse_Arc_Data ellipse_arc_data){
-                    return calc_EllipseFocus(ellipse_arc_data.radius_x,ellipse_arc_data.radius_y,ellipse_arc_data.rotate);
+                inline void calc_EllipseFocus(Ellipse_Arc_Data& ellipse_arc_data){
+                    return calc_EllipseFocus(ellipse_arc_data.centre,ellipse_arc_data.radius_x,ellipse_arc_data.radius_y,ellipse_arc_data.rotate);
                 }
 
             // end  * 弧形 & 椭圆弧线 * end 
@@ -209,17 +225,9 @@ namespace NML{
          * @brief 生成旋转值单位向量
          * @param out   输出地址
          * @param theta 旋转量
-         * @return 修改并返回 out
          */
-        inline var*& setup_Vector2__Rotate(var*&out, var theta){   out[0]=cos(theta);   out[1]=sin(theta);   return out;   }
+        inline void setup_Vector2__Rotate(Point_2D out, var theta){   out[0]=cos(theta);   out[1]=sin(theta);   }
 
-        /**
-         * @brief 生成旋转值单位向量
-         * @param out   输出地址
-         * @param theta 旋转量
-         * @return 修改并返回 out
-         */
-        inline Point_2D calc_Point2D__Rotate(var theta){   return { cos(theta), sin(theta) };   }
 
         /**
          * @brief 判断点是否在夹角的内部
@@ -230,8 +238,8 @@ namespace NML{
          * @return 返回点是否在夹角内部
          */
         inline bool check_Inside__Angle(Point_2D& ray_op,Point_2D& ray_ed, Point_2D& point, bool is_angle_more_than_pi){
-            return (Vector::cross_V2(ray_op.x,ray_op.y,point.x,point.y)>=0) && 
-                   ((Vector::cross_V2(ray_ed.x,ray_ed.y,point.x,point.y)<=0)||(is_angle_more_than_pi));
+            return (Vector::cross_V2(ray_op[0],ray_op[1],point[0],point[1])>=0) && 
+                   ((Vector::cross_V2(ray_ed[0],ray_ed[1],point[0],point[1])<=0)||(is_angle_more_than_pi));
         }
 
         /**
@@ -242,8 +250,8 @@ namespace NML{
          * @return 返回点是否在夹角内部
          */
         inline bool check_Inside__Angle(var theta_op, var theta_ed, Point_2D& point){
-            Point_2D op=calc_Point2D__Rotate(theta_op);
-            Point_2D ed=calc_Point2D__Rotate(theta_ed);
+            Point_2D op;setup_Vector2__Rotate(op,theta_op);
+            Point_2D ed;setup_Vector2__Rotate(ed,theta_ed);
             return check_Inside__Angle(op,ed, point,(theta_ed-theta_op>PI));
         }
 
@@ -254,8 +262,8 @@ namespace NML{
          * @return 返回计算的长度值
          */
         inline var calc_LineLength(Point_2D& point_0, Point_2D& point_1){   
-            var x=point_0.x-point_1.x;   
-            var y=point_0.y-point_1.y;   
+            var x=point_0[0]-point_1[0];   
+            var y=point_0[1]-point_1[1];   
             return sqrt(x*x+y*y);  
         }
         
@@ -273,7 +281,7 @@ namespace NML{
          * @param y 向量 y 坐标
          * @return 返回计算的弧度值
          */
-        inline var calc_VectorAngle(Point_2D& point){return atan2(point.y, point.x);}
+        inline var calc_VectorAngle(Point_2D& point){return atan2(point[1], point[0]);}
 
 
         /** 
@@ -282,7 +290,7 @@ namespace NML{
          * @param p1 点 p1 的坐标
          * @return 返回计算的弧度值
          */
-        inline var calc_LineAngle(Point_2D& p0, Point_2D& p1){return atan2(p1.y-p0.y, p1.x-p0.x);}
+        inline var calc_LineAngle(Point_2D& p0, Point_2D& p1){return atan2(p1[1]-p0[1], p1[0]-p0[0]);}
         
         /** 
          * @brief 求直线与x正方向的夹角弧度
@@ -300,10 +308,10 @@ namespace NML{
          * @return 返回投影系数 t, 表示投射落点在 p0->p1 的位置
          */
         inline var calc_PointInLine(Point_2D& line_p0, Point_2D& line_p1, Point_2D& point){
-            Point_2D temp0 = { point.x-line_p0.x,     point.y-line_p0.y     };
-            Point_2D temp1 = { line_p1.x-line_p0.x,   line_p1.y-line_p0.y   };
+            Point_2D temp0 = { point[0]-line_p0[0],     point[1]-line_p0[1]     };
+            Point_2D temp1 = { line_p1[0]-line_p0[0],   line_p1[1]-line_p0[1]   };
 
-            return temp0.x*temp1.x+temp0.y*temp1.y / (sqrt(temp1.x*temp1.x+temp1.y*temp1.y));
+            return temp0[0]*temp1[0]+temp0[1]*temp1[1] / (sqrt(temp1[0]*temp1[0]+temp1[1]*temp1[1]));
         }
 
         /**
@@ -314,11 +322,10 @@ namespace NML{
          * @param point_ed   线段终点 y 坐标
          * @return 修改并返回 out
          */
-        inline var*& sample_Line(var*& out, var t, Point_2D& point_op, Point_2D& point_ed){
+        inline void sample_Line(Point_2D& out, var t, Point_2D& point_op, Point_2D& point_ed){
             var td=1-t;
-            out[0]=point_op.x*td+point_ed.x*t;
-            out[1]=point_op.y*td+point_ed.y*t;
-            return out;
+            out[0]=point_op[0]*td+point_ed[0]*t;
+            out[1]=point_op[1]*td+point_ed[1]*t;
         }
 
         
@@ -332,7 +339,7 @@ namespace NML{
         inline var calc_DistanceOfPointToLine(Point_2D& line_p0, Point_2D& line_p1, Point_2D& point){
             var t=calc_PointInLine(line_p0, line_p1, point);
             var td=1-t;
-            Point_2D point_t = {line_p0.x*td+line_p1.x*t,   line_p0.y*td+line_p1.y*t};
+            Point_2D point_t = {line_p0[0]*td+line_p1[0]*t,   line_p0[1]*td+line_p1[1]*t};
             return calc_LineLength(point_t,point);
         }
 
@@ -349,8 +356,8 @@ namespace NML{
              * @return 返回 AABB 盒是否重叠
              */
             inline bool check_Overlap__AABB_AABB(Point_2D& min0, Point_2D& max0, Point_2D& min1, Point_2D& max1){
-                return  min0.x<=max1.x && min1.x<=max0.x &&
-                        min0.y<=max1.y && min1.y<=max0.y ;
+                return  min0[0]<=max1[0] && min1[0]<=max0[0] &&
+                        min0[1]<=max1[1] && min1[1]<=max0[1] ;
             }
 
             /**
@@ -412,13 +419,13 @@ namespace NML{
             
             /**
              * @brief 求两线段交点
+             * @param out 存储计算的线段交点 ; 如果内容为 INFINITY 则表示找不到交点
              * @param line0_p0    线段 0 的起点坐标
              * @param line0_p1    线段 0 的终点坐标
              * @param line1_p0    线段 1 的起点坐标
              * @param line1_p1    线段 1 的终点坐标
-             * @return 计算出线段交点 ; 如果内容为 INFINITY 则表示找不到交点
              */
-            Point_2D calc_Intersection__Line_Line(Point_2D& line0_p0, Point_2D& line0_p1, Point_2D& line1_p0, Point_2D& line1_p1);
+            void calc_Intersection__Line_Line(Point_2D& out,Point_2D& line0_p0, Point_2D& line0_p1, Point_2D& line1_p0, Point_2D& line1_p1);
 
             /**
              * @brief 检查两圆是否相交 ( 仅检查圆的边是否有相交, 无视一个圆完全被另一个圆覆盖的情况 )
@@ -513,14 +520,6 @@ namespace NML{
 
 
         // open * 不同参数调用原函数的重载函数 * open
-
-            /**
-             * @brief 计算线段长度
-             * @param point_0 线段端点0 的坐标
-             * @param point_1 线段端点1 的坐标
-             * @return 返回计算的长度值
-             */
-            inline var calc_LineLength(var* point_0, var* point_1){ return calc_LineLength(*(Point_2D*)point_0, *(Point_2D*)point_1); }
 
             /** 
              * @brief 取向量和x正方向的夹角弧度

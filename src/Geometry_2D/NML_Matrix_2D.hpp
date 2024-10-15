@@ -27,7 +27,7 @@ namespace NML{
         extern M2D_Type _using_m2d_type;
 
         // 数据类型的数据对应宽高
-            extern Idx_VM m2d_w, m2d_h;
+            extern Idx_VM m2d_w, m2d_h, m2d_l;
         // 数据类型的数据对应下标
             extern Idx_VM 
                 mxx,   mxy,   mxz,
