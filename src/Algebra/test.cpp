@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-04-28 16:52:54
+ * @LastEditTime: 2024-10-16 06:42:03
  * @FilePath: \CNML\src\Algebra\test.cpp
  * @Description: test 基本代数计算、向量、矩阵
  */
@@ -321,8 +321,8 @@ namespace NML_Test{
 
                 check_Test(
                     (i==2) &&
-                    ( check_Equal(-8.385164807134505 ,temp_0[0])  ||  check_Equal(2.3851648071345037,temp_0[0]) )&&
-                    ( check_Equal(-8.385164807134505 ,temp_0[1])  ||  check_Equal(2.3851648071345037,temp_0[1]) ), 
+                    ( check_Equal(-0.8385164807134505 ,temp_0[0])  ||  check_Equal(0.23851648071345037,temp_0[0]) )&&
+                    ( check_Equal(-0.8385164807134505 ,temp_0[1])  ||  check_Equal(0.23851648071345037,temp_0[1]) ), 
                     "test calc_Roots__Square(temp_0, {-1,3,5})"
                 );
 
@@ -332,7 +332,7 @@ namespace NML_Test{
 
                 i=calc_Roots__Cubic(temp_0, temp_1);
 
-                check_Test( i==1 && check_Equal(temp_0[0], -0.6316346932473378) , "test calc_Roots__Cubic(temp_0, {-1,3,5,7})" );
+                check_Test( i==1 && check_Equal(temp_0[0], 0.22375267927400244) , "test calc_Roots__Cubic(temp_0, {-1,3,5,7})" );
 
             // calc_Roots__UnivariatePolynomials(var*& out, var*& coefficients,Idx_Algebra length);
 

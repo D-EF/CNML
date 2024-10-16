@@ -35,6 +35,19 @@ project (NML)
 # 设置项目代码根目录为 /src/
 include_directories("${PROJECT_SOURCE_DIR}/src")
 
+# open * 宏定义 * open
+    # 检查当前操作系统
+    if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+        add_definitions(-DBUILD_SYSTEM_MACRO=0)
+    elseif(CMAKE_SYSTEM_NAME MATCHES "Windows")
+        add_definitions(-DBUILD_SYSTEM_MACRO=1)
+    elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
+        add_definitions(-DBUILD_SYSTEM_MACRO=2)
+    else()
+        add_definitions(-DBUILD_SYSTEM_MACRO=-1)
+    endif()
+# end  * 宏定义 * end 
+
 # open * 设置编译文件 * open
     file(GLOB_RECURSE SRC_FILES
         "${PROJECT_SOURCE_DIR}/src/**.c"

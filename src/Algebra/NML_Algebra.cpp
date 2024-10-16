@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-02-28 10:05:05
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-05-13 11:19:11
+ * @LastEditTime: 2024-10-16 16:43:18
  * @FilePath: \CNML\src\Algebra\NML_Algebra.cpp
  * @Description: 基本数与代数运算
  */
@@ -197,14 +197,14 @@ namespace NML{
         }
 
 
-        Idx_Algebra find_Roots__UnivariatePolynomials__IterationMethod (var*& out, var*& coefficients, Idx_Algebra length, var _tolerance){
+        Idx_Algebra find_Roots__UnivariatePolynomials__IterationMethod (var*& out, var*& coefficients, Idx_Algebra length, var _tolerance, int _max_iterations__Newton, int _max_iterations__Bisection){
             // 筛去高次的0系数
             while(coefficients[length-1]==0) --length;
             if(length<=4) return calc_Roots__UnivariatePolynomials (out, coefficients, length);
 
             Idx i, l=(length-3)*(length+4)/2;
             var *derivatives=new var[l];
-            std::copy(derivatives, derivatives+length, coefficients);
+            std::copy(coefficients, coefficients+length, derivatives);
             
             // 加载导数集合直到可以被公式求根的多项式 (一元三次函数)
             // q = 第 n 次计算导数起始位置, p = 第 n+1 次计算导数起始位置
@@ -225,25 +225,27 @@ namespace NML{
                     if(out[0]>out[1]) std::swap(out[0], out[1]);
                 }
             }
-
+            
             // 寻根
+            var* d_roots=new var(length-1);
             for(i=5;  i<=length;  ++i){
+                std::copy(out,out+roots_length,d_roots);
                 p  = q;
                 q -= i;
-                roots_length = find_Roots__UnivariatePolynomials__IterationMethod(out, q, p, i, out, roots_length, _tolerance);
+                roots_length = find_Roots__UnivariatePolynomials__IterationMethod(out, q, p, i, d_roots, roots_length, _tolerance, _max_iterations__Newton, _max_iterations__Bisection);
             }
 
             return roots_length;
         }
 
 
-        Idx_Algebra find_Roots__UnivariatePolynomials__IterationMethod (var*& out, var*& coefficients, var*& derivatives, Idx_Algebra length__coefficients, var*& derivatives_roots, Idx_Algebra length__derivatives_roots, var _tolerance){
+        Idx_Algebra find_Roots__UnivariatePolynomials__IterationMethod (var*& out, var*& coefficients, var*& derivatives, Idx_Algebra length__coefficients, var*& derivatives_roots, Idx_Algebra length__derivatives_roots, var _tolerance, int _max_iterations__Newton, int _max_iterations__Bisection){
             Idx_Algebra roots_length = 0;
             Idx_Algebra i;
             var temp_root,  temp_root_0,  temp_root_1;
             var temp_value, temp_value_0, temp_value_1, temp_value_next;
 
-            // 判断 -INFINITY ~ 当前位置的单调性, n_flag >> true:+,  false:-;
+            // 判断 -INFINITY ~ 当前位置(第一折点)的单调性, n_flag >> true:+,  false:-;
             bool n_flag=coefficients[length__coefficients-1]>0;
             if(length__coefficients%2)n_flag=!n_flag;
 
@@ -254,7 +256,7 @@ namespace NML{
             
             if(n_flag == temp_value>0){  
                 out[roots_length] = find_Roots__UnivariatePolynomials__IterationMethod__NewtonThenBisection(
-                    temp_root-1, coefficients, derivatives, length__coefficients, _tolerance
+                    temp_root-1, coefficients, derivatives, length__coefficients, _tolerance, _max_iterations__Newton, _max_iterations__Bisection
                 );
                 ++roots_length;
             }
@@ -274,7 +276,7 @@ namespace NML{
 
                     out[roots_length]=find_Roots__UnivariatePolynomials__IterationMethod__Bisection(
                         temp_root_0, temp_root_1, coefficients, length__coefficients, 
-                        _tolerance, temp_value_0,temp_value_1
+                        _tolerance, temp_value_0,temp_value_1, _max_iterations__Bisection
                     );
                     ++roots_length;
                 }
@@ -290,7 +292,7 @@ namespace NML{
 
             if(n_flag == temp_value<0){  
                 out[roots_length] = find_Roots__UnivariatePolynomials__IterationMethod__NewtonThenBisection(
-                    temp_root+1, coefficients, derivatives, length__coefficients, _tolerance
+                    temp_root+1, coefficients, derivatives, length__coefficients, _tolerance, _max_iterations__Newton, _max_iterations__Bisection
                 );
                 ++roots_length;
             }
@@ -299,14 +301,14 @@ namespace NML{
         }
 
 
-        var find_Roots__UnivariatePolynomials__IterationMethod__NewtonThenBisection(var init_param, var*& coefficients, var*& derivatives, Idx_Algebra length__coefficients, var _tolerance, var _init_value){
-            var &root=init_param, &temp_value=_init_value;
+        var find_Roots__UnivariatePolynomials__IterationMethod__NewtonThenBisection(var init_param, var*& coefficients, var*& derivatives, Idx_Algebra length__coefficients, var _tolerance, int _max_iterations__Newton, int _max_iterations__Bisection){
+            var &root=init_param, temp_value = calc_UnivariatePolynomials(coefficients, length__coefficients,  root);
             var derivative;
             var low_value,low_root;
 
-            if(temp_value==INFINITY) temp_value = calc_UnivariatePolynomials(coefficients, length__coefficients,  root);
-
-            while(!check_Zero(temp_value,_tolerance)){
+            int i=0;
+            while(!check_Zero(temp_value,_tolerance) && i<_max_iterations__Newton){
+                ++i;
                 low_value=temp_value;
                 low_root=root;
                 derivative = calc_UnivariatePolynomials(derivatives, length__coefficients-1, root);
@@ -314,21 +316,21 @@ namespace NML{
                 temp_value = calc_UnivariatePolynomials(coefficients, length__coefficients,  root);
 
                 if(low_value>0 != temp_value>0){ // 发现异号函数值切换使用二分法方案
-                    return find_Roots__UnivariatePolynomials__IterationMethod__Bisection(low_root, root, coefficients, length__coefficients, _tolerance, low_value, temp_value);
+                    return find_Roots__UnivariatePolynomials__IterationMethod__Bisection(low_root, root, coefficients, length__coefficients, _tolerance, low_value, temp_value, _max_iterations__Bisection);
                 }
             }
             return root;
         };
         
 
-        var find_Roots__UnivariatePolynomials__IterationMethod__Bisection(var init_open, var init_end, var*& coefficients, Idx_Algebra length__coefficients, var _tolerance, var _init_value_0, var _init_value_1){
+        var find_Roots__UnivariatePolynomials__IterationMethod__Bisection(var init_open, var init_end, var*& coefficients, Idx_Algebra length__coefficients, var _tolerance, var _init_value_0, var _init_value_1, int _max_iterations){
             var temp_root, temp_value;
             var &temp_value_0=_init_value_0, &temp_value_1=_init_value_1;
             var &temp_root_0=init_open, &temp_root_1=init_end;
 
             if(temp_value_0==INFINITY) temp_value_0 = calc_UnivariatePolynomials(coefficients, length__coefficients, temp_root_0);
             if(temp_value_1==INFINITY) temp_value_1 = calc_UnivariatePolynomials(coefficients, length__coefficients, temp_root_1);
-
+            int i=0;
             do{
                 temp_root=(temp_root_0+temp_root_1)*0.5;
                 temp_value=calc_UnivariatePolynomials(coefficients, length__coefficients, temp_root);
@@ -338,19 +340,20 @@ namespace NML{
                 }else{
                     temp_root_1  = temp_root;
                 }
-            }while(!check_Zero(temp_value,_tolerance));
+                ++i;
+            }while(!check_Zero(temp_value,_tolerance) && i<_max_iterations);
 
             return (temp_root_0+temp_root_1)*0.5;
         };
 
 
-        Idx_Algebra calc_Roots__UnivariatePolynomials(var*& out, var*& coefficients,Idx_Algebra length, var _tolerance){
+        Idx_Algebra calc_Roots__UnivariatePolynomials(var*& out, var*& coefficients,Idx_Algebra length, var _tolerance, int _max_iterations__Newton, int _max_iterations__Bisection){
             if(length<=0) return -1;
             switch (length){
                 case 1:  return calc_Roots__Line(out,coefficients);  break;
                 case 2:  return calc_Roots__Square(out,coefficients); break;
                 case 3:  return calc_Roots__Cubic(out,coefficients); break;
-                default: return find_Roots__UnivariatePolynomials__IterationMethod(out,coefficients,length, _tolerance); break;
+                default: return find_Roots__UnivariatePolynomials__IterationMethod(out,coefficients,length, _tolerance, _max_iterations__Newton, _max_iterations__Bisection); break;
             }
         }
 

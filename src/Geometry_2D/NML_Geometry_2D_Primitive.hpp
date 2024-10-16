@@ -21,6 +21,8 @@ namespace NML{
          * @brief 2D 图元
          */
         namespace Primitive_2D{             
+            
+            // todo 先写 Geometry_2D 再做图元部分
 
             class Primitive_2D{
                 using AABB_Nodes = Geometry::AABB_Nodes;

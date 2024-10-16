@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-06-03 11:53:56
+ * @LastEditTime: 2024-10-16 06:27:18
  * @FilePath: \CNML\src\unit_test_basics.cpp
  * @Description: 单元测试
  */
@@ -10,6 +10,12 @@
 #include <iostream>
 #include <chrono>
 #include "unit_test_basics.hpp"
+
+#define SYSTEM_ENUM__LINUX     0
+#define SYSTEM_ENUM__WINDOWS   1
+#define SYSTEM_ENUM__DARWIN    2
+#define SYSTEM_ENUM__OTHER     -1
+
 
 namespace NML_Test{
     
@@ -28,16 +34,42 @@ namespace NML_Test{
 
     namespace print__check_Test{
         const bool FLAG__TEST_PRINT=true;
+        
+        // windows 修改输出字符颜色
+        #if BUILD_SYSTEM_MACRO == SYSTEM_ENUM__WINDOWS
+            #include <windows.h>
+            void _set_ConsoleColor(WORD wAttributes) {
+                HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+                SetConsoleTextAttribute(hConsole, wAttributes);
+            }
+        #endif
+
         void check_Test(bool flag, const char* msg){
             ++_test_count;
-            if(flag){
-                printf("    \033[32m done -> %s \033[0m \n", msg);
-                return;
-            }
-            else {
-                ++_test_error_count;
-                printf("    \033[31m error -> %s \033[0m \n", msg);
-            }
+
+            #if BUILD_SYSTEM_MACRO == SYSTEM_ENUM__WINDOWS
+                if(flag){
+                    _set_ConsoleColor(FOREGROUND_GREEN);
+                    printf("    done -> %s \n", msg);
+                    _set_ConsoleColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+                    return;
+                }
+                else {
+                    ++_test_error_count;
+                    _set_ConsoleColor(FOREGROUND_RED);
+                    printf("    error -> %s \n", msg);
+                    _set_ConsoleColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+                }
+            #else
+                if(flag){
+                    printf("    \033[32m done -> %s \033[0m \n", msg);
+                    return;
+                }
+                else {
+                    ++_test_error_count;
+                    printf("    \033[31m error -> %s \033[0m \n", msg);
+                }
+            #endif
         }
     }
 

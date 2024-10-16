@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-02-28 10:05:05
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-05-31 15:47:47
+ * @LastEditTime: 2024-10-16 16:43:41
  * @FilePath: \CNML\src\Algebra\NML_Algebra.hpp
  * @Description: 基本数与代数运算
  */
@@ -122,40 +122,43 @@ namespace NML{
 
                 /**
                  * @brief 使用迭代法寻找一元多项式的根 0 = c_0·x^0 + c_1·x^1 + c_2·x^2 + ... + c_n·x^n
-                 * 
-                 * @param out            计算结果输出目标, 长度应该等于 length
-                 * @param coefficients   函数的系数集合, 从低次幂到高次幂 [ a, b, c, d ] 下标 = x 的指数
-                 * @param length         函数的系数个数
-                 * @param _tolerance     数值根的容差
+                 * @param out                          计算结果输出目标, 长度应该等于 length
+                 * @param coefficients                 函数的系数集合, 从低次幂到高次幂 [ a, b, c, d ] 下标 = x 的指数
+                 * @param length                       函数的系数个数
+                 * @param _tolerance                   数值根的容差
+                 * @param _max_iterations__Newton      拟牛顿迭代法的最大迭代次数, 默认为 50
+                 * @param _max_iterations__Bisection   二分法部分的迭代法最大迭代次数, 默认为32
                  * @return 返回计算后得到了几个根
                  */
-                Idx_Algebra find_Roots__UnivariatePolynomials__IterationMethod (var*& out, var*& coefficients,Idx_Algebra length, var _tolerance=NML_TOLERANCE);
+                Idx_Algebra find_Roots__UnivariatePolynomials__IterationMethod (var*& out, var*& coefficients,Idx_Algebra length, var _tolerance=NML_TOLERANCE, int _max_iterations__Newton=50, int _max_iterations__Bisection=32);
                 
                 /** 
                  * @brief 使用迭代进行寻根
-                 * 
-                 * @param out                         结果输出对象
-                 * @param coefficients                多项式的系数
-                 * @param derivatives                 多项式的导数系数
-                 * @param length                      多项式的系数的长度
-                 * @param derivatives_roots           多项式的导数的根, 用于初始化寻根过程, 需要从小到大排序
-                 * @param length__derivatives_roots   多项式的导数的根的长度
-                 * @param _tolerance     数值根的容差
+                 * @param out                          结果输出对象
+                 * @param coefficients                 多项式的系数
+                 * @param derivatives                  多项式的导数系数
+                 * @param length                       多项式的系数的长度
+                 * @param derivatives_roots            多项式的导数的根, 用于初始化寻根过程, 需要从小到大排序
+                 * @param length__derivatives_roots    多项式的导数的根的长度
+                 * @param _tolerance                   数值根的容差
+                 * @param _max_iterations__Newton      拟牛顿迭代法的最大迭代次数, 默认为 50
+                 * @param _max_iterations__Bisection   二分法部分的迭代法最大迭代次数, 默认为32
                  * @return 返回计算后得到了几个根
                  */
-                Idx_Algebra find_Roots__UnivariatePolynomials__IterationMethod (var*& out, var*& coefficients, var*& derivatives, Idx_Algebra length__coefficients, var*& derivatives_roots, Idx_Algebra length__derivatives_roots, var _tolerance=NML_TOLERANCE);
+                Idx_Algebra find_Roots__UnivariatePolynomials__IterationMethod (var*& out, var*& coefficients, var*& derivatives, Idx_Algebra length__coefficients, var*& derivatives_roots, Idx_Algebra length__derivatives_roots, var _tolerance=NML_TOLERANCE, int _max_iterations__Newton=50, int _max_iterations__Bisection=32);
 
                 /** 
                  * @brief 牛顿法配合二分法求根
-                 * @param init_param             初始位置
-                 * @param coefficients           函数计算系数
-                 * @param derivatives            函数的导数
-                 * @param length__coefficients   计算系数长度
-                 * @param _tolerance             容差
-                 * @param _init_value            初始化的值, 用于省略初始化函数计算值 
+                 * @param init_param                   初始位置
+                 * @param coefficients                 函数计算系数
+                 * @param derivatives                  函数的导数
+                 * @param length__coefficients         计算系数长度
+                 * @param _tolerance                   容差
+                 * @param _max_iterations__Newton      拟牛顿迭代法的最大迭代次数, 默认为 50
+                 * @param _max_iterations__Bisection   二分法部分的迭代法最大迭代次数, 默认为32
                  * @return 迭代演算并返回结果
                  */
-                var find_Roots__UnivariatePolynomials__IterationMethod__NewtonThenBisection(var init_param, var*& coefficients, var*& derivatives, Idx_Algebra length__coefficients, var _tolerance=NML_TOLERANCE, var _init_value=INFINITY);
+                var find_Roots__UnivariatePolynomials__IterationMethod__NewtonThenBisection(var init_param, var*& coefficients, var*& derivatives, Idx_Algebra length__coefficients, var _tolerance=NML_TOLERANCE, int _max_iterations__Newton=50, int _max_iterations__Bisection=32);
 
                 /** 
                  * @brief 二分法求根
@@ -166,19 +169,22 @@ namespace NML{
                  * @param _tolerance             容差
                  * @param _init_value_0          起始位置初始化的值, 用于省略初始化函数计算值 
                  * @param _init_value_1          结束位置初始化的值, 用于省略初始化函数计算值 
+                 * @param _max_iterations        二分法最大迭代次数, 默认为32
                  * @return 迭代演算并返回结果
                  */
-                var find_Roots__UnivariatePolynomials__IterationMethod__Bisection(var init_open, var init_end, var*& coefficients, Idx_Algebra length__coefficients, var _tolerance=NML_TOLERANCE, var _init_value_0=INFINITY, var _init_value_1=INFINITY);
+                var find_Roots__UnivariatePolynomials__IterationMethod__Bisection(var init_open, var init_end, var*& coefficients, Idx_Algebra length__coefficients, var _tolerance=NML_TOLERANCE, var _init_value_0=INFINITY, var _init_value_1=INFINITY, int _max_iterations=32);
 
                 /**
                  * @brief 求一元多项式的根 0 = c_0·x^0 + c_1·x^1 + c_2·x^2 + ... + c_n·x^n
-                 * @param out            计算结果输出目标, 长度应该等于 length
-                 * @param coefficients   函数的系数集合, 从低次幂到高次幂 [ a, b, c, d ] 下标 = x 的指数
-                 * @param length         函数的系数个数
-                 * @param _tolerance     容差, 在4次以上的函数中需要使用数值算法所以需要容差
+                 * @param out                          计算结果输出目标, 长度应该等于 length
+                 * @param coefficients                 函数的系数集合, 从低次幂到高次幂 [ a, b, c, d ] 下标 = x 的指数
+                 * @param length                       函数的系数个数
+                 * @param _tolerance                   容差, 在4次以上的函数中需要使用数值算法所以需要容差
+                 * @param _max_iterations__Newton      拟牛顿迭代法的最大迭代次数, 默认为 50
+                 * @param _max_iterations__Bisection   二分法部分的迭代法最大迭代次数, 默认为32
                  * @return 返回计算后得到了几个根
                  */
-                Idx_Algebra calc_Roots__UnivariatePolynomials(var*& out, var*& coefficients,Idx_Algebra length, var _tolerance=NML_TOLERANCE);
+                Idx_Algebra calc_Roots__UnivariatePolynomials(var*& out, var*& coefficients,Idx_Algebra length, var _tolerance=NML_TOLERANCE, int _max_iterations__Newton=50, int _max_iterations__Bisection=32);
 
             // end  * 一元多项式求根 * end 
         // end  * 一元多项式 * end  
