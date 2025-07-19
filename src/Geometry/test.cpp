@@ -41,10 +41,10 @@ namespace NML_Test{
             printf_IntLine(4, get_PascalsTriangleLine(4)->data);
             printf_IntLine(5, get_PascalsTriangleLine(5)->data);
 
-            var *org = new var[5]{0, 1.1, 1.2};
+            var *from = new var[5]{0, 1.1, 1.2};
             var *d   = new var[4];
             printf("\n setup_Derivatives__UnivariatePolynomials=");
-            setup_Derivatives__UnivariatePolynomials(d, org, 3);
+            setup_Derivatives__UnivariatePolynomials(d, from, 3);
             printf_Vec(d, 2);
 
             printf("\n get_BezierCalcMatrix:\n");

@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-10-16 04:22:53
+ * @LastEditTime: 2025-07-19 05:26:33
  * @FilePath: \CNML\src\Geometry_2D\NML_Geometry_2D.hpp
  * @Description: 2D图形相关内容
  */
@@ -77,8 +77,8 @@ namespace NML{
              * @return 返回 {0, 1, 2} 表示 [ 不在内部, 在内部, 在边上 ]; 如果图元为非闭合图元, 将始终返回0.
              */
             inline Idx_Algebra check_Inside__AABB(Point_2D& aabb_p0, Point_2D& aabb_p1, Point_2D& p){
-                return check_Inside__Range(aabb_p0[0],aabb_p1[0],p[0]) && 
-                       check_Inside__Range(aabb_p0[1],aabb_p1[1],p[1]) ;
+                return check_Inside__Range(aabb_p0.x,aabb_p1.x,p.x) && 
+                       check_Inside__Range(aabb_p0.y,aabb_p1.y,p.y) ;
             }
 
             
@@ -182,7 +182,7 @@ namespace NML{
                 
                 /** 
                  * @brief 计算椭圆相对圆心的焦点
-                 * @param point  计算结果的输出
+                 * @param out    计算结果的输出
                  * @param rx     x方向上的半径
                  * @param ry     y方向上的半径
                  * @param rotate 椭圆的旋转偏移量
@@ -208,12 +208,11 @@ namespace NML{
                 }
 
                 /** 
-                 * @brief 计算椭圆的焦点
+                 * @brief 计算椭圆的焦点，取 x/y 正方向上的焦点
                  * @param ellipse_arc_data 椭圆的数据
-                 * @return 返回椭圆的焦点
                  */
-                inline void calc_EllipseFocus(Ellipse_Arc_Data& ellipse_arc_data){
-                    return calc_EllipseFocus(ellipse_arc_data.centre,ellipse_arc_data.radius_x,ellipse_arc_data.radius_y,ellipse_arc_data.rotate);
+                inline void calc_EllipseFocus(Point_2D& out, Ellipse_Arc_Data& ellipse_arc_data){
+                    calc_EllipseFocus(out,ellipse_arc_data.radius_x,ellipse_arc_data.radius_y,ellipse_arc_data.rotate);
                 }
 
             // end  * 弧形 & 椭圆弧线 * end 
@@ -226,7 +225,7 @@ namespace NML{
          * @param out   输出地址
          * @param theta 旋转量
          */
-        inline void setup_Vector2__Rotate(Point_2D out, var theta){   out[0]=cos(theta);   out[1]=sin(theta);   }
+        inline void setup_Vector2__Rotate(Point_2D& out, var theta){   out.x=cos(theta);   out.y=sin(theta);   }
 
 
         /**
@@ -238,8 +237,8 @@ namespace NML{
          * @return 返回点是否在夹角内部
          */
         inline bool check_Inside__Angle(Point_2D& ray_op,Point_2D& ray_ed, Point_2D& point, bool is_angle_more_than_pi){
-            return (Vector::cross_V2(ray_op[0],ray_op[1],point[0],point[1])>=0) && 
-                   ((Vector::cross_V2(ray_ed[0],ray_ed[1],point[0],point[1])<=0)||(is_angle_more_than_pi));
+            return (Vector::cross_V2(ray_op.x,ray_op.y,point.x,point.y)>=0) && 
+                   ((Vector::cross_V2(ray_ed.x,ray_ed.y,point.x,point.y)<=0)||(is_angle_more_than_pi));
         }
 
         /**
@@ -262,8 +261,8 @@ namespace NML{
          * @return 返回计算的长度值
          */
         inline var calc_LineLength(Point_2D& point_0, Point_2D& point_1){   
-            var x=point_0[0]-point_1[0];   
-            var y=point_0[1]-point_1[1];   
+            var x=point_0.x-point_1.x;   
+            var y=point_0.y-point_1.y;   
             return sqrt(x*x+y*y);  
         }
         
@@ -281,7 +280,7 @@ namespace NML{
          * @param y 向量 y 坐标
          * @return 返回计算的弧度值
          */
-        inline var calc_VectorAngle(Point_2D& point){return atan2(point[1], point[0]);}
+        inline var calc_VectorAngle(Point_2D& point){return atan2(point.y, point.x);}
 
 
         /** 
@@ -290,15 +289,7 @@ namespace NML{
          * @param p1 点 p1 的坐标
          * @return 返回计算的弧度值
          */
-        inline var calc_LineAngle(Point_2D& p0, Point_2D& p1){return atan2(p1[1]-p0[1], p1[0]-p0[0]);}
-        
-        /** 
-         * @brief 求直线与x正方向的夹角弧度
-         * @param p0 点 p0 的坐标
-         * @param p1 点 p1 的坐标
-         * @return 返回计算的弧度值
-         */
-        inline var calc_LineAngle(var* p0, var* p1){return atan2(p1[1]-p0[1], p1[0]-p0[0]);}
+        inline var calc_LineAngle(Point_2D& p0, Point_2D& p1){return atan2(p1.y-p0.y, p1.x-p0.x);}
 
         /** 
          * @brief 获取点在线段上的投影信息
@@ -308,10 +299,10 @@ namespace NML{
          * @return 返回投影系数 t, 表示投射落点在 p0->p1 的位置
          */
         inline var calc_PointInLine(Point_2D& line_p0, Point_2D& line_p1, Point_2D& point){
-            Point_2D temp0 = { point[0]-line_p0[0],     point[1]-line_p0[1]     };
-            Point_2D temp1 = { line_p1[0]-line_p0[0],   line_p1[1]-line_p0[1]   };
+            Point_2D temp0 = { point.x-line_p0.x,     point.y-line_p0.y     };
+            Point_2D temp1 = { line_p1.x-line_p0.x,   line_p1.y-line_p0.y   };
 
-            return temp0[0]*temp1[0]+temp0[1]*temp1[1] / (sqrt(temp1[0]*temp1[0]+temp1[1]*temp1[1]));
+            return temp0.x*temp1.x+temp0.y*temp1.y / (sqrt(temp1.x*temp1.x+temp1.y*temp1.y));
         }
 
         /**
@@ -324,8 +315,8 @@ namespace NML{
          */
         inline void sample_Line(Point_2D& out, var t, Point_2D& point_op, Point_2D& point_ed){
             var td=1-t;
-            out[0]=point_op[0]*td+point_ed[0]*t;
-            out[1]=point_op[1]*td+point_ed[1]*t;
+            out.x=point_op.x*td+point_ed.x*t;
+            out.y=point_op.y*td+point_ed.y*t;
         }
 
         
@@ -339,7 +330,7 @@ namespace NML{
         inline var calc_DistanceOfPointToLine(Point_2D& line_p0, Point_2D& line_p1, Point_2D& point){
             var t=calc_PointInLine(line_p0, line_p1, point);
             var td=1-t;
-            Point_2D point_t = {line_p0[0]*td+line_p1[0]*t,   line_p0[1]*td+line_p1[1]*t};
+            Point_2D point_t = {line_p0.x*td+line_p1.x*t,   line_p0.y*td+line_p1.y*t};
             return calc_LineLength(point_t,point);
         }
 
@@ -356,22 +347,9 @@ namespace NML{
              * @return 返回 AABB 盒是否重叠
              */
             inline bool check_Overlap__AABB_AABB(Point_2D& min0, Point_2D& max0, Point_2D& min1, Point_2D& max1){
-                return  min0[0]<=max1[0] && min1[0]<=max0[0] &&
-                        min0[1]<=max1[1] && min1[1]<=max0[1] ;
+                return  min0.x<=max1.x && min1.x<=max0.x &&
+                        min0.y<=max1.y && min1.y<=max0.y ;
             }
-
-            /**
-             * @brief 检查两个 AABB 盒是否有重叠部分
-             * @param aabb_0  AABB 0 : {min_x, min_y, max_x, max_y}
-             * @param aabb_1  AABB 1 : {min_x, min_y, max_x, max_y}
-             * @return 返回 AABB 盒是否重叠
-             */
-            inline bool check_Overlap__AABB_AABB(var* aabb_0, var* aabb_1){
-                return  aabb_0[0]<=aabb_1[2] && aabb_1[0]<=aabb_0[2] &&
-                        aabb_0[1]<=aabb_1[3] && aabb_1[1]<=aabb_0[3] ;
-            }
-
-
             
             /**
              * @brief 求两组夹角的绘制交集 (同圆心同半径的扇形的交集)
@@ -483,7 +461,7 @@ namespace NML{
              * @param theta1_op        弧形1 起点弧度
              * @param theta1_ed        弧形1 终点弧度
              * @param _use_normalize   是否执行规范化弧度值的操作, 默认为false, 应仅在不确认传入数据是否合法时使用 true
-             * @return 返回 0:无相交; 1: [out[0]]; 2:[out[1]]; 3:[out[0],out[1]]; -1:弧形有重合部分, 重合的弧度存储到out[0]中;
+             * @return 返回 0:无相交; 1: [out.x]; 2:[out.y]; 3:[out.x,out.y]; -1:弧形有重合部分, 重合的弧度存储到out.x中;
              */
             Idx_Algebra calc_Intersection__Arc_Arc(Points_Iterator& out, var c0_x, var c0_y, var r0, var theta0_op, var theta0_ed, var c1_x, var c1_y, var r1, var theta1_op, var theta1_ed, bool _use_normalize=false);
 
@@ -528,6 +506,26 @@ namespace NML{
              */
             inline var calc_VectorAngle(var* v){return atan2(v[1], v[0]);}
             
+            /** 
+             * @brief 求直线与x正方向的夹角弧度
+             * @param p0 点 p0 的坐标
+             * @param p1 点 p1 的坐标
+             * @return 返回计算的弧度值
+             */
+            inline var calc_LineAngle(var* p0, var* p1){return atan2(p1[1]-p0[1], p1[0]-p0[0]);}
+            
+            /**
+             * @brief 检查两个 AABB 盒是否有重叠部分
+             * @param aabb_0  AABB 0 : {min_x, min_y, max_x, max_y}
+             * @param aabb_1  AABB 1 : {min_x, min_y, max_x, max_y}
+             * @return 返回 AABB 盒是否重叠
+             */
+            inline bool check_Overlap__AABB_AABB(var* aabb_0, var* aabb_1){
+                return  aabb_0[0]<=aabb_1[2] && aabb_1[0]<=aabb_0[2] &&
+                        aabb_0[1]<=aabb_1[3] && aabb_1[1]<=aabb_0[3] ;
+            }
+
+
         // end  * 不同参数调用原函数的重载函数 * end 
                 
     }

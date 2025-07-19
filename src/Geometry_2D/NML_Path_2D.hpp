@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-07-01 14:23:29
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-07-05 17:59:35
+ * @LastEditTime: 2025-07-19 07:09:23
  * @FilePath: \CNML\src\Geometry_2D\NML_Path_2D.hpp
  * @Description: 2D 路径组
  */
@@ -51,8 +51,8 @@ namespace NML{
 
             /**
              * @brief 解析svg指令
+             * @param 输出对象
              * @param path_d  svg 中 path元素的 d 属性内容
-             * @return 返回 svg 指令实例集合
              */
             void load_SVGPath(SVG_Path_Cmds& out, const char* path_d);
 
@@ -74,7 +74,11 @@ namespace NML{
              */
             SVG_Path_Cmds& normalize_SvgCmd(SVG_Path_Cmds& cmds);
 
-
+            /** 
+             * @brief 输出svg指令
+             * @param cmds 一组 svg 指令集合
+             */
+            void print_SVGPathCmds(SVG_Path_Cmds& cmds, std::ostream* os=&std::cout);
 
             /**
              * 路径组对象

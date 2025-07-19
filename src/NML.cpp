@@ -70,14 +70,14 @@ namespace NML{
         printf("}\n");
     }
 
-    bool check_Equal(Idx length, var*& val_left, var*& val_right, var _tolerance){
+    bool check_Equal(Idx length, var* val_left, var* val_right, var _tolerance){
         for(Idx i=0;  i<length;  ++i){
             if(!check_Equal(val_left[i], val_right[i], _tolerance))return false;
         }
         return true;
     }
 
-    bool check_Equal(Idx length, int*& val_left, int*& val_right){
+    bool check_Equal(Idx length, int* val_left, int* val_right){
         for(Idx i=0;  i<length;  ++i){
             if(val_left[i]!=val_right[i])return false;
         }

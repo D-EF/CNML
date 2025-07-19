@@ -108,11 +108,11 @@ EXPORT_SYMBOL namespace NML{
      * @param _tolerance    容差
      * @return  返回是否相等
      */
-    bool check_Equal(Idx length, var*& val_left, var*& val_right, var _tolerance=NML_TOLERANCE);
-    inline bool check_Equal(var*& val_left, var*& val_right, Idx length, var _tolerance=NML_TOLERANCE){return check_Equal(length, val_left, val_right, _tolerance);}
+    bool check_Equal(Idx length, var* val_left, var* val_right, var _tolerance=NML_TOLERANCE);
+    inline bool check_Equal(var* val_left, var* val_right, Idx length, var _tolerance=NML_TOLERANCE){return check_Equal(length, val_left, val_right, _tolerance);}
     
-    bool check_Equal(Idx length, int*& val_left, int*& val_right);
-    inline bool check_Equal(int*& val_left, int*& val_right, Idx length){return check_Equal(length, val_left, val_right);}
+    bool check_Equal(Idx length, int* val_left, int* val_right);
+    inline bool check_Equal(int* val_left, int* val_right, Idx length){return check_Equal(length, val_left, val_right);}
     
     /**
      * @brief 判断是否趋近零

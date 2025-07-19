@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-06-28 16:24:47
+ * @LastEditTime: 2025-07-19 06:44:53
  * @FilePath: \CNML\src\Link_Block\test.cpp
  * @Description: 块链 单元测试
  */
@@ -17,14 +17,14 @@ namespace NML_Test{
         using namespace NML::Link_Block;
 
         template <typename T>
-        void printf_TestLinkBlock(Link_Block_Node<T>* head_node, std::ostream* os=&std::cout, const char* line_head=0){
+        void printf_TestLinkBlock(Link_Block_Node<T>* head_node, std::ostream* os=&std::cout){
             using namespace NML;
             using namespace NML::Link_Block;
 
             Idx i;
             Link_Block_Node<T> *now_node = head_node;
             do{
-                (*os) << line_head << "[";
+                (*os) << "[";
                 i=0;
                 while(i<now_node->used_length){
                     (*os) << (T)now_node->data[i] <<  ",";
@@ -41,8 +41,8 @@ namespace NML_Test{
         }
 
         template <typename T>
-        void _printf_Test(Link_Block_Ctrl<T>& lbc, const char* line_head=0){
-            printf_TestLinkBlock(lbc.head_node, &std::cout, line_head);
+        void _printf_Test(Link_Block_Ctrl<T>& lbc){
+            printf_TestLinkBlock(lbc.head_node, &std::cout);
             printf("\tLink_Block_Ctrl max_length  : %d ; used_length : %d ;\n\n", lbc.max_length, lbc.used_length);
         }
 
@@ -150,13 +150,13 @@ namespace NML_Test{
             d.set_Option(option__256);
             d.reload_Length();
 
-            printf_TestLinkBlock(d.head_node);
+            _printf_Test(d);
 
             // d.splice(0,0,test_data_i,1);
             d.push_Items(test_data_i,5);
             d.splice(255,0,test_data_i,1);
-
-            printf_TestLinkBlock(d.head_node);
+            d.push_Item(666);
+            _printf_Test(d);
         }
 
         void test_Points_Iterator__LinkBlock(){

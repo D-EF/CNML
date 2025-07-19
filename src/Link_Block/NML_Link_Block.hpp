@@ -992,6 +992,7 @@ namespace NML{
             void push_Item(Value_Type item){
                 Option_Act_LinkBlock* option = get_Option();
                 Idx add_node_length=push_LinkBlockItem(end_node,item,option->ex_link_block_length);
+                // todo
                 ++used_length;
                 if(add_node_length){
                     max_length += option->ex_link_block_length;

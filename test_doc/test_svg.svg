@@ -1,0 +1,7 @@
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg id="root" xmlns="http://www.w3.org/2000/svg" width="1600" height="1600" version="1.1" >
+<path x="200" y="100" fill="#0000" stroke="#f00" stroke-width="4" d="
+M 10 80 h 50 C 40 10 65 10 95 80 S -150 150 180 80 q -25 -80 80 0 t 80 80 l 40 240 a 300 180 45 0 0 -320 -40 z l 20 20" />
+<path x="200" y="100" fill="#0000" stroke="#0f0" stroke-width="2" d="
+M 10 80 L 60 80 C 40 10 65 10 95 80 C 125 150 -150 150 180 80 Q 155 0 260 80 Q 365 160 340 160 L 380 400 A 300 180 45 0 0 60 360 Z L 30 100" />
+</svg>

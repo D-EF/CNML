@@ -111,7 +111,7 @@ namespace NML{
         var*& act_Matrix2D__Translate            (const _M2d_Act_Fnc& act, var*& out, var translate_x, var translate_y=0);
         var*& act_Matrix2D__Scale                (const _M2d_Act_Fnc& act, var*& out, var scale_x, var scale_y);
         var*& act_Matrix2D__Rotate               (const _M2d_Act_Fnc& act, var*& out, var theta);
-        var*& act_Matrix2D__Rotate__Vector       (const _M2d_Act_Fnc& act, var*& out, var*& unit_vec__org, var*& unit_vec__to);
+        var*& act_Matrix2D__Rotate__Vector       (const _M2d_Act_Fnc& act, var*& out, var*& unit_vec__from, var*& unit_vec__to);
         var*& act_Matrix2D__Reflect              (const _M2d_Act_Fnc& act, var*& out, var normal_x, var normal_y);
         var*& act_Matrix2D__Shear                (const _M2d_Act_Fnc& act, var*& out, var axis_x, var axis_y, var k);
         var*& act_Matrix2D__Reflect__Collinear   (const _M2d_Act_Fnc& act, var*& out, var normal_x, var normal_y);
@@ -158,12 +158,12 @@ namespace NML{
             /**
              * @brief 使用向量设置旋转矩阵
              * @param out             输出目标
-             * @param unit_vec__org   起点坐标 需要是单位坐标
+             * @param unit_vec__from   起点坐标 需要是单位坐标
              * @param unit_vec__to    终点坐标 需要是单位坐标
-             * @return 修改并返回 out, 将 unit_vec__to 旋转到 unit_vec__org 的变换矩阵
+             * @return 修改并返回 out, 将 unit_vec__to 旋转到 unit_vec__from 的变换矩阵
              */
-            inline var*& setup_Matrix2D__Rotate__Vector(var*& out, var*& unit_vec__org, var*& unit_vec__to)
-            {return act_Matrix2D__Rotate__Vector(setup_Matrix2D, out, unit_vec__org, unit_vec__to);}
+            inline var*& setup_Matrix2D__Rotate__Vector(var*& out, var*& unit_vec__from, var*& unit_vec__to)
+            {return act_Matrix2D__Rotate__Vector(setup_Matrix2D, out, unit_vec__from, unit_vec__to);}
             /**
              * @brief 设置 镜像矩阵
              * @param out        输出目标
@@ -246,12 +246,12 @@ namespace NML{
             /**
              * @brief 使用向量 矩阵进行旋转变换
              * @param out             输出目标
-             * @param unit_vec__org   起点坐标 需要是单位坐标
+             * @param unit_vec__from   起点坐标 需要是单位坐标
              * @param unit_vec__to    终点坐标 需要是单位坐标
-             * @return 修改并返回 out, 矩阵将 unit_vec__to 旋转到 unit_vec__org 
+             * @return 修改并返回 out, 矩阵将 unit_vec__to 旋转到 unit_vec__from 
              */
-            inline var*& transform_Matrix2D__Rotate__Vector(var*& out, var*& unit_vec__org, var*& unit_vec__to)
-            {return act_Matrix2D__Rotate__Vector(transform_Matrix2D, out, unit_vec__org, unit_vec__to);}
+            inline var*& transform_Matrix2D__Rotate__Vector(var*& out, var*& unit_vec__from, var*& unit_vec__to)
+            {return act_Matrix2D__Rotate__Vector(transform_Matrix2D, out, unit_vec__from, unit_vec__to);}
             /**
              * @brief 矩阵进行镜像变换
              * @param out        输出目标

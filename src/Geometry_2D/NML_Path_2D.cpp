@@ -2,8 +2,8 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-07-01 14:23:29
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-07-10 16:13:44
- * @FilePath: \CNML\src\Geometry_2D\NML_Path_2D.hpp
+ * @LastEditTime: 2025-07-19 09:36:10
+ * @FilePath: \CNML\src\Geometry_2D\NML_Path_2D.cpp
  * @Description: 2D 路径组
  */
 
@@ -47,13 +47,16 @@ namespace NML{
 
 
             int setup_Values__ByString(var* out,const char* str, int& idx_str, int max_value_length) {
-                int i=0, e;
+                int i=0, e, flag_i=1;
                 var d;
                 bool flag=true,flag_e;
-                while(str[idx_str] && !(str[idx_str]>='0' && str[idx_str]<='9')) ++idx_str;
+                while(str[idx_str] && !( (str[idx_str]>='0' && str[idx_str]<='9') || str[idx_str]=='-' )) ++idx_str;
                 out[i]=0;
                 while(str[idx_str] && i<max_value_length){
-                    if(str[idx_str]=='.'){
+                    if(str[idx_str]=='-'){
+                        flag_i=-1;
+                    }
+                    else if(str[idx_str]=='.'){
                         flag=false;
                         d=0.1;
                     } else if(str[idx_str]>='0' && str[idx_str]<='9'){
@@ -86,13 +89,16 @@ namespace NML{
                                 out[i]/=pow(10,e);
                             }
                         }
+                        out[i]*=flag_i;
+                        flag_i=1;
                         ++i;
-                        while(!(str[idx_str]>='0' && str[idx_str]<='9')) {
+                        while(!( (str[idx_str]>='0' && str[idx_str]<='9') || str[idx_str]=='-' )) {
                             // 遇到 svg cmd 符号, 退出
                             if((str[idx_str]>='A' && str[idx_str]<='Z')  ||  (str[idx_str]>='a' && str[idx_str]<='z')  ||  (!str[idx_str])  ||  i>max_value_length ) return i;
                             ++idx_str;
                         }
-                        out[i]=str[idx_str]-'0';
+                        --idx_str;
+                        out[i]=0;
                         flag=true;
                     }
                     ++idx_str;
@@ -107,14 +113,15 @@ namespace NML{
 
                 SVG_Path_Cmd temp_cmd;
                 int i=0;
-
+                temp_cmd.type=0;
                 do{
-                    while(path_d[i] && (path_d[i]<'0' || path_d[i]>'9') && path_d[i]!='-' && path_d[i]!='+'){
-                        if(MAP__SVG_PATH_CMD_VALUE_STEP_SIZE[path_d[i]]>=0) temp_cmd.type = path_d[i];
+                    while(path_d[i] && (MAP__SVG_PATH_CMD_VALUE_STEP_SIZE[temp_cmd.type]<0)){
+                        temp_cmd.type = path_d[i];
                         ++i;
                     }
                     setup_Values__ByString(temp_cmd.param,path_d,i,MAP__SVG_PATH_CMD_VALUE_STEP_SIZE[temp_cmd.type]);
                     out.push_Item(temp_cmd);
+                    temp_cmd.type=0;
                 }while(path_d[i]);
             }
 
@@ -122,8 +129,8 @@ namespace NML{
             void toAbsolute_SvgCmd(SVG_Path_Cmd& cmd, var relative_x, var relative_y){
                 Idx i,l;
                 if(cmd.type=='a'){
-                    cmd.param[6] += relative_x;
-                    cmd.param[7] += relative_y;
+                    cmd.param[5] += relative_x;
+                    cmd.param[6] += relative_y;
                     cmd.type='A';
                 }
                 else if(cmd.type>'a' && cmd.type<='z'){
@@ -139,15 +146,15 @@ namespace NML{
 
             SVG_Path_Cmds& normalize_SvgCmd(SVG_Path_Cmds& cmds){
                 Idx i,l, cmd_length=cmds.used_length;
-                var x, y;
+                var x, y, mx, my;
                 SVG_Path_Cmd *prev_cmd=0;
-                x=y=0;
+                mx=my=x=y=0;
 
-                for(i=0;  i<9;  ++i){
+                for(i=0;  i<cmd_length;  ++i){
                     SVG_Path_Cmd &cmd=cmds[i];
                     toAbsolute_SvgCmd(cmd,x,y);
 
-                    // 处理简化直线段
+                    // 处理 M & 简化直线段 H/V
                     switch(cmd.type){
                         case 'H': // 水平线
                             cmd.type='L';
@@ -158,17 +165,22 @@ namespace NML{
                             cmd.param[1]=cmd.param[0];
                             cmd.param[0]=x;
                         break;
+
+                        case 'M': 
+                            mx=cmd.param[0];
+                            my=cmd.param[1];
+                        break;
                     }
 
                     // 处理简化曲线
                     if(cmd.type=='S'||cmd.type=='T'){
                         switch(cmd.type){
                             case 'S': // 三阶贝塞尔曲线
-                                std::copy_backward(cmd.param, cmd.param+2, cmd.param+2);
+                                std::copy_backward(cmd.param, cmd.param+4, cmd.param+6);
                                 cmd.type='C';
                             break;
                             case 'T': // 二阶贝塞尔曲线
-                                std::copy_backward(cmd.param, cmd.param+4, cmd.param+2);
+                                std::copy_backward(cmd.param, cmd.param+2, cmd.param+4);
                                 cmd.type='Q';
                             break;
                         }
@@ -183,14 +195,42 @@ namespace NML{
                     }
 
                     l=MAP__SVG_PATH_CMD_VALUE_STEP_SIZE[cmd.type]-2;
-                    x=cmd.param[l];
-                    y=cmd.param[l+1];
+                    if(l>=0){
+                        x=cmd.param[l];
+                        y=cmd.param[l+1];
+                    }else{
+                        x=mx;
+                        y=my;
+                    }
                     prev_cmd=&cmd;
                 }
 
                 return cmds;
             }
 
+            void print_SVGPathCmds(SVG_Path_Cmds& cmds, std::ostream* os){
+                using namespace NML;
+                using namespace NML::Link_Block;
+                init__Map__SVG_PATH_CMD_VALUE_STEP_SIZE(MAP__SVG_PATH_CMD_VALUE_STEP_SIZE);
+                Idx i,j,cmd_type_length;
+                Link_Block_Node<SVG_Path_Cmd> *now_node = cmds.head_node;
+                do{
+                    (*os) << "";
+                    i=0;
+                    while(i<now_node->used_length){
+                        (*os) << now_node->data[i].type <<  " ";
+                        cmd_type_length=MAP__SVG_PATH_CMD_VALUE_STEP_SIZE[now_node->data[i].type];
+                        j=0;
+                        while(j<cmd_type_length){
+                            (*os) << now_node->data[i].param[j] << ' ';
+                            ++j;
+                        }
+                        ++i;
+                    }
+                    (*os) << "\b";
+                    now_node=now_node->next;
+                }while(now_node && now_node!=cmds.head_node);
+            }
 
             
             void Path_2D::init_Primitives(){

@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-07-10 16:42:54
+ * @LastEditTime: 2024-10-26 01:34:00
  * @FilePath: \CNML\src\Geometry_2D\NML_Matrix_2D.cpp
  * @Description: 2D 矩阵计算
  */
@@ -75,9 +75,9 @@ namespace NML{
             );
         }
 
-        var*& act_Matrix2D__Rotate__Vector (const _M2d_Act_Fnc& act, var*& out, var*& unit_vec__org, var*& unit_vec__to){
-            var c=unit_vec__org[0]*unit_vec__to[0]+unit_vec__org[1]*unit_vec__to[1],
-                s=unit_vec__org[1]*unit_vec__to[0]-unit_vec__org[0]*unit_vec__to[1];
+        var*& act_Matrix2D__Rotate__Vector (const _M2d_Act_Fnc& act, var*& out, var*& unit_vec__from, var*& unit_vec__to){
+            var c=unit_vec__from[0]*unit_vec__to[0]+unit_vec__from[1]*unit_vec__to[1],
+                s=unit_vec__from[1]*unit_vec__to[0]-unit_vec__from[0]*unit_vec__to[1];
             return act(out,
                 c,   s,
                -s,   c,

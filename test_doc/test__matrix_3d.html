@@ -180,11 +180,11 @@
             var world=document.getElementsByClassName("world")[0];
 
             /** @type {number} 鼠标原坐标 */
-            var org_x=0, org_y=0;
+            var op_x=0, op_y=0;
             /** @type {number} 当前旋转量 */
             var rx=-10, ry=10;
             /** @type {number} 原旋转量 */
-            var org_rx=-10, org_ry=10;
+            var op_rx=-10, op_ry=10;
             var s=-1;
 
             /**
@@ -192,8 +192,8 @@
              * @param {MouseEvent} e 鼠标事件
              */
             function callback_DragView(e){
-                rx=(org_rx-(e.y-org_y)*0.5);
-                ry=(org_ry-(e.x-org_x)*0.5)%360;
+                rx=(op_rx-(e.y-op_y)*0.5);
+                ry=(op_ry-(e.x-op_x)*0.5)%360;
                 if(rx>90)rx=90;
                 else if(rx<-90) rx=-90;
                 world.style.transform=`scaleZ(${s}) scaleY(${s}) scaleX(${-s}) rotateX(${rx}deg) rotateY(${ry}deg)`;
@@ -204,10 +204,10 @@
              */
             viewport.onmousedown=function(e){
                 console.log(e);
-                org_rx=rx;
-                org_ry=ry;
-                org_x=e.x;
-                org_y=e.y;
+                op_rx=rx;
+                op_ry=ry;
+                op_x=e.x;
+                op_y=e.y;
                 viewport.onmousemove=callback_DragView;
             }
             viewport.onmouseleave = viewport.onmouseup=function(e){
