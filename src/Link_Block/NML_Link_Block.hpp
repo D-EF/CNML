@@ -1210,14 +1210,7 @@ namespace NML{
              * @param dimensional   维度
              * @param points_length 点的个数
              */
-            void install_Data(Idx_Algebra dimensional, Idx points_length) override{ 
-                if(data) free_Data();
-                Idx l = dimensional*points_length;
-                data = new LBC(l); 
-                ((LBC*)data)->used_length  =  ((LBC*)data)->head_node->used_length  =  l;
-                this->dimensional   = dimensional;
-                this->points_length = points_length;
-            }
+            void install_Data(Idx_Algebra dimensional, Idx points_length) override;
             
             void free_Data(){delete (LBC*)data; data=0;}
 

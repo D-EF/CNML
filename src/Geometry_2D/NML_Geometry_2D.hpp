@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2025-07-19 05:26:33
+ * @LastEditTime: 2025-08-04 23:37:46
  * @FilePath: \CNML\src\Geometry_2D\NML_Geometry_2D.hpp
  * @Description: 2D图形相关内容
  */
@@ -292,17 +292,17 @@ namespace NML{
         inline var calc_LineAngle(Point_2D& p0, Point_2D& p1){return atan2(p1.y-p0.y, p1.x-p0.x);}
 
         /** 
-         * @brief 获取点在线段上的投影信息
+         * @brief 获取点在向量上的投影信息
          * @param line_p0   线段的端点 0 
          * @param line_p1   线段的端点 1 
          * @param point     需要投射的点
          * @return 返回投影系数 t, 表示投射落点在 p0->p1 的位置
          */
         inline var calc_PointInLine(Point_2D& line_p0, Point_2D& line_p1, Point_2D& point){
-            Point_2D temp0 = { point.x-line_p0.x,     point.y-line_p0.y     };
-            Point_2D temp1 = { line_p1.x-line_p0.x,   line_p1.y-line_p0.y   };
-
-            return temp0.x*temp1.x+temp0.y*temp1.y / (sqrt(temp1.x*temp1.x+temp1.y*temp1.y));
+            Point_2D offset_point   = { point.x     -   line_p0.x   ,   point.y     -   line_p0.y   };
+            Point_2D offset_lp1     = { line_p1.x   -   line_p0.x   ,   line_p1.y   -   line_p0.y   };
+            var i_mov=1/sqrt(offset_lp1.x*offset_lp1.x+offset_lp1.y*offset_lp1.y);
+            return (offset_point.x*offset_lp1.x+offset_point.y*offset_lp1.y) * i_mov * i_mov;
         }
 
         /**

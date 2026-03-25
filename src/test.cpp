@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-04-20 00:58:11
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2025-07-19 06:09:24
+ * @LastEditTime: 2026-03-25 00:59:27
  * @FilePath: \CNML\src\test.cpp
  * @Description: 单元测试 入口文件
  */
@@ -25,11 +25,13 @@ int main(int argc, char **argv){
     // add_TestAct(test_LinkBlock,"test_LinkBlock");
     // add_TestAct(test_LinkBlock_256,"test_LinkBlock_256");
     // add_TestAct(test_Points_Iterator__LinkBlock,"test_Points_Iterator__LinkBlock");
+    // add_TestAct(test_Bezier__sp,"test_Bezier__sp");
     // add_TestAct(test_Bezier,"test_Bezier");
     // add_TestAct(test_G2D,"test_G2D");
     // add_TestAct(test_g2d_arc,"test_g2d_arc");
-    add_TestAct(test_Path,"test_Path");
+    // add_TestAct(test_PathLoader,"test_PathLoader");
     // add_TestAct(test_2D_Bezier,"test_2D_Bezier");
-    run_Test();
+    // run_Test();
+    
     return 0;
 }

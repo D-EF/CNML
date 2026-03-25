@@ -2,8 +2,8 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-02-28 20:18:33
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-06-26 10:07:47
- * @FilePath: \cnml\src\NML.hpp
+ * @LastEditTime: 2025-07-20 05:09:19
+ * @FilePath: \CNML\src\NML.hpp
  * @Description: Nittle Math Library 简单数学库
  */
 
@@ -75,7 +75,8 @@ EXPORT_SYMBOL namespace NML{
 
     /**
      * @brief 打印点云数据
-     * @param points    点云数据访问器
+     * @param points      点云数据访问器
+     * @param line_head   追加字符串
      */
     void printf_Points(Points_Iterator& points, const char* line_head=0);
 

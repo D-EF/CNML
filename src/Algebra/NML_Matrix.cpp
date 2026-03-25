@@ -265,7 +265,7 @@ namespace NML{
             Idx_VM u, v;
             for(v=0;  v<n-1;  ++v){
                 for(u=v+1;  u<n;  ++u){
-                    if(mat[clac_Index(n, u, v)]!=-mat[clac_Index(n, v, u)])return false;
+                    if(mat[calc_Index(n, u, v)]!=-mat[calc_Index(n, v, u)])return false;
                 }
             }
             return true;
@@ -287,7 +287,7 @@ namespace NML{
 
             for(Idx_VM u=0;  u<width_mat;  ++u){
                 for(Idx_VM v=0;  v<height_mat;  ++v){
-                    out[idx_out]=mat[clac_Index(width_mat, u, v)];
+                    out[idx_out]=mat[calc_Index(width_mat, u, v)];
                     ++idx_out;
                 }
             }

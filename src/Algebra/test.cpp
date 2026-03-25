@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-15 08:37:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-10-16 06:42:03
+ * @LastEditTime: 2026-03-25 01:26:44
  * @FilePath: \CNML\src\Algebra\test.cpp
  * @Description: test 基本代数计算、向量、矩阵
  */
@@ -168,9 +168,9 @@ namespace NML_Test{
                 1,   2,   1,   2,
                 3,   4,   3,   4
             };
-            // clac_Index
-                check_Test(clac_Index(3, 0, 1)==3,                                                                        "clac_Index(3, 0, 1)");
-                check_Test(clac_Index(3, 2, 2)==8,                                                                        "clac_Index(3, 2, 2)");
+            // calc_Index
+                check_Test(calc_Index(3, 0, 1)==3,                                                                        "calc_Index(3, 0, 1)");
+                check_Test(calc_Index(3, 2, 2)==8,                                                                        "calc_Index(3, 2, 2)");
             // setup_Matrix__Identity
                 check_Test(check_Equal(3, setup_Matrix__Identity(temp_m3, 3, 3), temp_m3_i),                             "setup_Matrix__Identity(temp_m3, 3, 3)");
                 check_Test(check_Equal(2, setup_Matrix__Identity(temp_m2, 2, 2), temp_m2_i),                             "setup_Matrix__Identity(temp_m2, 2, 2)");
@@ -269,15 +269,15 @@ namespace NML_Test{
                 // 9   :   1   -   9   -   36   -    84   -    126   -    126   -    84   -    36   -   9   -   1
 
 
-            // clac_EquationSolution__Linear(var*& out, var z1, var o1, var z2, var o2, var z3, var o3, var z4, var o4);
+            // calc_EquationSolution__Linear(var*& out, var z1, var o1, var z2, var o2, var z3, var o3, var z4, var o4);
                 temp_1[0]=-1;
                 temp_1[1]=-1;
 
                 // 9+8x=7+6y
                 // 5+4x=3+2y
-                clac_EquationSolution__Linear(temp_0,9,8,7,6,5,4,3,2);
+                calc_EquationSolution__Linear(temp_0,9,8,7,6,5,4,3,2);
 
-                check_Test( check_Equal(2, temp_0, temp_1), "test clac_EquationSolution__Linear(temp_0,9,8,7,6,5,4,3,2)");
+                check_Test( check_Equal(2, temp_0, temp_1), "test calc_EquationSolution__Linear(temp_0,9,8,7,6,5,4,3,2)");
 
 
             // calc_UnivariatePolynomials(var* coefficients, Idx_Algebra length, var param_value);
@@ -346,6 +346,24 @@ namespace NML_Test{
                     ( check_Equal(3.2041110508468353 ,temp_0[1])  ||  check_Equal(-0.7859614615400179,temp_0[1]) ), 
                     "test calc_Roots__UnivariatePolynomials(temp_0, {4,7,9,6,-3})"
                 );
+
+                temp_1[0]=1;   temp_1[1]=5;   temp_1[2]=8;   temp_1[3]=5;   temp_1[4]=1;
+                int l=NML::Algebra::calc_Roots__UnivariatePolynomials(temp_0,temp_1,5);
+                // printf_Vec(temp_0,l);
+                for(i=0;i<l;++i){
+                    temp_0[i]=Algebra::calc_UnivariatePolynomials(temp_1,5,temp_0[i]);
+                }
+                // printf_Vec(temp_0,l);
+                
+                for(int i=0;i<5;++i){
+                    temp_1[i]=0;
+                }
+                
+                check_Test(
+                    check_Equal(temp_0,temp_1,l),
+                    "test calc_Roots__UnivariatePolynomials(temp_0, {1,5,8,5,1})"
+                );
+                
 
             // normalize_Radians(var theta);
             

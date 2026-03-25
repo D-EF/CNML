@@ -49,7 +49,7 @@ namespace NML{
          * @param  out 输出目标{ x , y }
          * @return 返回计算状态:{ 0: 正常相交, 1:无解(平行), 2无限解(重合) } 
          */
-        Idx_Algebra clac_EquationSolution__Linear(var*& out, var z1, var o1, var z2, var o2, var z3, var o3, var z4, var o4);
+        Idx_Algebra calc_EquationSolution__Linear(var*& out, var z1, var o1, var z2, var o2, var z3, var o3, var z4, var o4);
         
         // open * 一元多项式 * open 
             // 一元多项式:
@@ -153,12 +153,13 @@ namespace NML{
                  * @param coefficients                 函数计算系数
                  * @param derivatives                  函数的导数
                  * @param length__coefficients         计算系数长度
+                 * @param convergence_interval_boundary       取值区间边界, 应为导函数的根
                  * @param _tolerance                   容差
                  * @param _max_iterations__Newton      拟牛顿迭代法的最大迭代次数, 默认为 50
                  * @param _max_iterations__Bisection   二分法部分的迭代法最大迭代次数, 默认为32
                  * @return 迭代演算并返回结果
                  */
-                var find_Roots__UnivariatePolynomials__IterationMethod__NewtonThenBisection(var init_param, var*& coefficients, var*& derivatives, Idx_Algebra length__coefficients, var _tolerance=NML_TOLERANCE, int _max_iterations__Newton=50, int _max_iterations__Bisection=32);
+                var find_Roots__UnivariatePolynomials__IterationMethod__NewtonThenBisection(var init_param, var*& coefficients, var*& derivatives, Idx_Algebra length__coefficients, var convergence_interval_boundary, var _tolerance=NML_TOLERANCE, int _max_iterations__Newton=50, int _max_iterations__Bisection=32);
 
                 /** 
                  * @brief 二分法求根

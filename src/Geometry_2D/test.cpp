@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-06-04 15:37:53
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2025-07-19 09:37:22
+ * @LastEditTime: 2026-03-24 01:43:13
  * @FilePath: \CNML\src\Geometry_2D\test.cpp
  * @Description: 2D 测试用, 编辑 svg 绘制代码
  */
@@ -10,6 +10,7 @@
 #include <iostream>
 #include "NML_Define.hpp"
 #include "NML.hpp"
+#include "Algebra/NML_Algebra.hpp"
 #include "Link_Block/NML_Link_Block.hpp"
 #include "Geometry/NML_Bezier.hpp"
 #include "Geometry/NML_Geometry.hpp"
@@ -39,6 +40,10 @@ namespace NML_Test{
             Matrix_2D::setup_Matrix2D__Rotate(transform_m2d__rotate_45deg,45*DEG);
 
             l1=load_AABB_ByPoint(p3,p4);
+
+            var t=calc_PointInLine(p0, p1_d, p1);
+            check_Test(check_Equal(t,1.5), "calc_PointInLine");
+            
             check_Test(l1.p0[0]==-1 && l1.p0[1]==-1 && l1.p1[0]==1 && l1.p1[1]==1, "setup_AABB_ByPoint");
             check_Test(check_Inside__AABB(l1.p0, l1.p1, p0), "check_Inside__AABB");
             check_Test(!check_Inside__AABB(l1.p0, l1.p1, p1_d), "check_Inside__AABB");
@@ -83,30 +88,59 @@ namespace NML_Test{
             check_Test(check_Equal(calc_EllipseFocalLength(ellipse_arc_data),296.49957841454007706573620234012),"calc_EllipseFocalLength");
         }
         
-        void test_Path(){
+        void test_PathLoader(){
             var temp[6];
             int i=0;
             setup_Values__ByString(temp,"-123.321, -456.789e+2,233,   -332  l123.456 -1e-3,5",i);
 
             SVG_Path_Cmds* d = new SVG_Path_Cmds();
-            load_SVGPath(*d, "M10 80 h50 C 40 10, 65 10, 95 80 S -150 150, 180 80 q-25 -80, 80 0 t 80 80l 40 240a 300 180 45 0 0 -320 -40zM10 10 l20 20");
-            
 
+            var *rotate_180deg=new var[Matrix_2D::m2d_l];
+            Matrix_2D::setup_Matrix2D__Rotate(rotate_180deg,DEG_180);
+            Matrix_2D::transform_Matrix2D__Translate(rotate_180deg,100,100);
+
+            // load_SVGPath(*d, "M10 80 h50 C 40 10, 65 10, 95 80 S -150 150, 180 80 q-25 -80, 80 0 t 80 80l 40 240a 300 180 45 0 0 -320 -40zM10 10 l20 20");
+            load_SVGPath(*d, "M 75 40 V30 l-15 -20 H40 l -15 20 V60 M25 55 v20 l15 15 h20 l15 -15 v-20 l-15 -15 h-20 l-15 15 z ");
+            
             std::cout<<"<path x=\"200\" y=\"100\" fill=\"#0000\" stroke=\"#f00\" stroke-width=\"4\" d=\"\n";
             print_SVGPathCmds(*d);
             std::cout<<"\n\" />\n";
             
+            // 标准化
             normalize_SvgCmd(*d);
-            
             std::cout<<"<path x=\"200\" y=\"100\" fill=\"#0000\" stroke=\"#0f0\" stroke-width=\"2\" d=\"\n";
             print_SVGPathCmds(*d);
             std::cout<<"\n\" />\n";
 
+            // 矩阵变换
+            transform_SvgCmd(*d,rotate_180deg);
+            std::cout<<"<path x=\"200\" y=\"100\" fill=\"#0000\" stroke=\"#0f0\" stroke-width=\"2\" d=\"\n";
+            print_SVGPathCmds(*d);
+            std::cout<<"\n\" />\n";
             return;
         }
 
         void test_2D_Bezier(){
-            // todo
+            // todo  M 60 80 C 40 10 65 10 95 80 
+            var *c=new var[8]{60,80,40,10,65,10,95,80};
+            Points_Iterator__1DList d(2,4);
+            Points_Iterator__1DList ctrl_point(2,4);
+            ctrl_point.free_Data();
+            ctrl_point.data=c;
+            Points_Iterator__1DList coefficients(2,4);
+
+            Arc_Data arc_data={{50,50},30,0,DEG_360};
+
+            Ellipse_Arc_Data ellipse_arc_data={ {100,200}, 123, 321, 30*DEG, DEG_180, 45*DEG };
+
+            Bezier::setup_BezierCoefficients(coefficients,ctrl_point);
+            Point_2D a={0,50},b={200,100};
+            
+            Idx_Algebra i=calc_Intersection__Bezier_Line(d,coefficients,a,b);
+            while(i--)  printf_Vec(d[i], d.dimensional);
+
+            printf("test_svg__calc_Intersection__Bezier_Line.svg");
+
             return;
         }
     }

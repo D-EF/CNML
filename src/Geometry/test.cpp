@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-04-28 16:42:11
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2024-10-16 04:42:51
+ * @LastEditTime: 2025-07-20 23:12:01
  * @FilePath: \CNML\src\Geometry\test.cpp
  * @Description: test 贝塞尔曲线 、 通用图形算法 、 线性变换
  */
@@ -68,6 +68,7 @@ namespace NML_Test{
             };
             Points_Iterator__1DList _bezier_coefficients (2, 4);
             Points_Iterator__1DList bezier_ctrl_points   (dd, 2, 4);
+            printf("bezier_ctrl_points");
             printf_Points(bezier_ctrl_points);
             // [2,  3,  6,  -7] T
             // [5, -6, 18, -16]
@@ -99,11 +100,13 @@ namespace NML_Test{
             printf_Points(cut_o2);
 
             calc_BezierCtrlPoints__Coefficients(cut_o1, _bezier_coefficients);
+            check_Test(check_Equal(8,(var*)cut_o1.data,(var*)bezier_ctrl_points.data),"calc_BezierCtrlPoints__Coefficients");
+            printf("out by calc_BezierCtrlPoints__Coefficients():");
             printf_Points(cut_o1);
         }
 
         void test_Bezier(){
-            
+            // calc_BezierCtrlPoints__Coefficients
         }
     }
 }

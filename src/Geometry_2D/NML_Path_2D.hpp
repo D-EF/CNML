@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-07-01 14:23:29
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2025-07-19 07:09:23
+ * @LastEditTime: 2026-01-18 17:49:38
  * @FilePath: \CNML\src\Geometry_2D\NML_Path_2D.hpp
  * @Description: 2D 路径组
  */
@@ -74,12 +74,21 @@ namespace NML{
              */
             SVG_Path_Cmds& normalize_SvgCmd(SVG_Path_Cmds& cmds);
 
+
+            /**
+             * @brief 对 svg path 命令内容进行矩阵变换, 需要先进行 normalize_SvgCmd
+             * @param cmds 变换目标
+             * @param transform_matrix 变换矩阵
+             * @return 返回目标的引用
+             */
+            SVG_Path_Cmds& transform_SvgCmd(SVG_Path_Cmds& cmds , var*& transform_matrix);
+
             /** 
              * @brief 输出svg指令
              * @param cmds 一组 svg 指令集合
              */
             void print_SVGPathCmds(SVG_Path_Cmds& cmds, std::ostream* os=&std::cout);
-
+            
             /**
              * 路径组对象
              */

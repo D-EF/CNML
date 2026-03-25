@@ -20,6 +20,14 @@ namespace NML{
         };
         Option_Act_LinkBlock* get_DefaultLinkBlockActOption(){return &_DEFAULT_Link_Block_ACT_OPTION;}
 
+        void Points_Iterator__LinkBlock::install_Data(Idx_Algebra dimensional, Idx points_length) { 
+            if(data) free_Data();
+            Idx l = dimensional*points_length;
+            data = new LBC(l); 
+            ((LBC*)data)->used_length  =  ((LBC*)data)->head_node->used_length  =  l;
+            this->dimensional   = dimensional;
+            this->points_length = points_length;
+        }
 
         Idx Points_Iterator__LinkBlock::calc_UsedPointsLength(){
             LBC* d = (LBC*)data;

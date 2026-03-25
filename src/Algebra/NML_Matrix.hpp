@@ -34,7 +34,7 @@ namespace NML{
          * @param v         纵坐标 v
          * @return 返回下标index
          */
-        inline Idx_VM clac_Index(Idx_VM width, Idx_VM u, Idx_VM v){return u+width*v;}
+        inline Idx_VM calc_Index(Idx_VM width, Idx_VM u, Idx_VM v){return u+width*v;}
 
         /**
          * @brief 创建单位矩阵

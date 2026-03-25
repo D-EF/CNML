@@ -151,7 +151,7 @@ namespace NML{
                 dy=line1_p1.y-line1_p0.y;
             var *rtn_p=(var*)&out;
 
-            if(!Algebra::clac_EquationSolution__Linear(rtn_p,line0_p0.x,bx,line1_p0.x,dx,line0_p0.y,by,line1_p0.y,dy)){
+            if(!Algebra::calc_EquationSolution__Linear(rtn_p,line0_p0.x,bx,line1_p0.x,dx,line0_p0.y,by,line1_p0.y,dy)){
                 out.x=out.y=INFINITY;
             }
             if( out.x<=1 && out.x>=0 && out.y<=1 && out.y>=0 ){

@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2024-07-01 14:23:29
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2025-07-19 09:36:10
+ * @LastEditTime: 2026-01-18 18:20:08
  * @FilePath: \CNML\src\Geometry_2D\NML_Path_2D.cpp
  * @Description: 2D 路径组
  */
@@ -152,10 +152,23 @@ namespace NML{
 
                 for(i=0;  i<cmd_length;  ++i){
                     SVG_Path_Cmd &cmd=cmds[i];
+                    
+                    switch(cmd.type){
+                        case 'h': // 水平线
+                            cmd.type='l';
+                            cmd.param[1]=0;
+                        break;
+                        case 'v': // 垂直线
+                            cmd.type='l';
+                            cmd.param[1]=cmd.param[0];
+                            cmd.param[0]=0;
+                        break;
+                    }
                     toAbsolute_SvgCmd(cmd,x,y);
 
                     // 处理 M & 简化直线段 H/V
                     switch(cmd.type){
+
                         case 'H': // 水平线
                             cmd.type='L';
                             cmd.param[1]=y;
@@ -207,6 +220,23 @@ namespace NML{
 
                 return cmds;
             }
+
+            SVG_Path_Cmds& transform_SvgCmd(SVG_Path_Cmds& cmds , var*& transform_matrix){
+                Idx i,l, cmd_length=cmds.used_length;
+                var x, y, mx, my;
+                SVG_Path_Cmd *prev_cmd=0;
+                mx=my=x=y=0;
+                var* v;
+
+                for(i=0;  i<cmd_length;  ++i){
+                    SVG_Path_Cmd &cmd=cmds[i];
+                    for(l=0;  l<MAP__SVG_PATH_CMD_VALUE_STEP_SIZE[cmd.type];  l+=2){
+                        v = cmd.param+l;
+                        Matrix_2D::transform_Vector2D(v,transform_matrix);
+                    }
+                }
+            }
+
 
             void print_SVGPathCmds(SVG_Path_Cmds& cmds, std::ostream* os){
                 using namespace NML;
